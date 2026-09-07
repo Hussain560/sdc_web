@@ -1,0 +1,140 @@
+.sdc-hero-section {
+  background-color: #08090C;
+  padding: 60px 24px 40px 24px;
+  direction: inherit;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.sdc-hero-wrapper {
+  max-width: 1200px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.sdc-hero-content-free {
+  width: 100%;
+  display: flex;
+  flex-direction: row; 
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px;
+}
+
+
+.sdc-hero-text-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: start;
+  gap: 20px;
+}
+
+.sdc-hero-title {
+  font-size: 3.2rem;
+  font-weight: 800;
+  line-height: 1.2;
+  color: #FFFFFF;
+  margin: 0;
+}
+
+.sdc-hero-description {
+  font-size: 1.15rem;
+  color: #9CA3AF;
+  line-height: 1.6;
+  margin: 0;
+  max-width: 500px;
+}
+
+.sdc-btn-primary-hero {
+  background-color: #1B3D31; /* أو #28674B حسب الدرجة المطلوبة */
+  border: 1px solid #00E676;
+  color: #FFFFFF;
+  padding: 10px 28px;
+  border-radius: 50px; /* جعل الحواف مستديرة بالكامل بنفس انحناء عرض الكل */
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.sdc-btn-primary-hero:hover {
+  background-color: #00E676;
+  color: #050D09;
+  transform: translateY(-2px);
+}
+
+
+.sdc-hero-image-wrapper {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.sdc-hero-image-wrapper::before {
+  content: '';
+  position: absolute;
+  width: 320px;
+  height: 320px;
+  background: radial-gradient(circle, rgba(0, 230, 118, 0.2) 0%, rgba(8, 9, 12, 0) 70%);
+  border-radius: 50%;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.sdc-hero-image {
+  max-width: 100%;
+  max-height: 360px;
+  object-fit: contain;
+  position: relative;
+  z-index: 2;
+  mix-blend-mode: lighten;
+}
+
+@media (max-width: 900px) {
+  .sdc-hero-content-free {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .sdc-hero-text-content {
+    align-items: center;
+    text-align: center;
+  }
+}
+/* تحسين إضافي للشاشات الصغيرة جداً (أقل من 480px) */
+@media (max-width: 480px) {
+  .sdc-hero-section {
+    padding: 40px 16px 30px;
+  }
+
+  .sdc-hero-title {
+    font-size: 2.1rem; /* تصغير حجم العنوان الكبير ليناسب شاشة الهاتف */
+  }
+
+  .sdc-hero-description {
+    font-size: 0.98rem;
+  }
+
+  .sdc-btn-primary-hero {
+    width: 100%; /* جعل زر الانضمام بعرض الشاشة لسهولة الضغط */
+    padding: 12px 16px;
+  }
+
+  .sdc-hero-image-wrapper::before {
+    width: 220px;
+    height: 220px;
+  }
+}

@@ -1,0 +1,202 @@
+.sdc-header {
+  background-color: #0D0E12;
+  border-bottom: 1px solid rgba(0, 230, 118, 0.15);
+  width: 100%;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  direction: inherit;
+  box-sizing: border-box;
+}
+
+.sdc-header-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 14px 24px;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+}
+
+.sdc-logo {
+  display: flex;
+  align-items: center;
+}
+
+.sdc-logo img {
+  height: 38px;
+  width: auto;
+  object-fit: contain;
+}
+
+.sdc-nav ul {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center;
+  list-style: none;
+  gap: 32px;
+  margin: 0;
+  padding: 0;
+}
+
+.sdc-nav a {
+  color: #E5E7EB;
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.sdc-nav a:hover {
+  color: #28674B;
+}
+
+.sdc-actions {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center;
+  gap: 20px;
+}
+
+.sdc-icon-btn {
+  background: none;
+  border: none;
+  color: #E5E7EB;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.sdc-btn-primary {
+  background-color: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.3); /* حد ناعم يطابق عرض الكل */
+  color: #FFFFFF;
+  padding: 8px 24px;
+  border-radius: 50px; /* شكل بيضاوي دافئ (Capsule) */
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.sdc-btn-primary:hover {
+  border-color: #00E676;
+  color: #00E676;
+  background-color: rgba(0, 230, 118, 0.05);
+}
+
+/* ================== التجاوب مع الجوال والشاشات الصغيرة ================== */
+@media (max-width: 992px) {
+  .sdc-header-container {
+    padding: 12px 16px;
+    gap: 12px;
+  }
+
+  .sdc-nav ul {
+    gap: 16px;
+  }
+
+  .sdc-nav a {
+    font-size: 13px;
+  }
+
+  .sdc-actions {
+    gap: 10px;
+  }
+
+  .sdc-btn-primary {
+    padding: 6px 12px;
+    font-size: 13px;
+  }
+}
+/*
+@media (max-width: 640px) {
+  .sdc-header-container {
+    flex-wrap: wrap !important;
+    justify-content: space-between !important;
+  }*/
+@media (max-width: 640px) {
+  .sdc-header-container {
+    flex-wrap: wrap !important;
+    justify-content: space-between !important;
+    padding: 10px 12px;
+    gap: 8px;
+  }
+  /* إخفاء القائمة الطويلة في الجوال الصغير جداً لترتيب المسافة */
+ /* .sdc-nav {
+    display: none;
+  }*/
+
+  .sdc-logo img {
+    height: 32px;
+  }
+
+  .sdc-btn-primary span {
+    display: none; /* إخفاء النص مع الإبقاء على الأيقونة للشاشات الصغيرة */
+  }
+}
+/* ================== نافذة البحث المنبثقة ================== */
+.sdc-search-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.75);
+  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px);
+  z-index: 2000;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 100px;
+}
+
+.sdc-search-modal {
+  background: #13151B;
+  border: 1px solid rgba(0, 230, 118, 0.3);
+  border-radius: 12px;
+  width: 90%;
+  max-width: 600px;
+  padding: 16px 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.sdc-search-modal form {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sdc-search-modal input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #FFFFFF;
+  font-size: 1rem;
+  direction: inherit;
+}
+
+.sdc-modal-search-icon {
+  color: #56987B;
+}
+
+.sdc-close-btn {
+  background: none;
+  border: none;
+  color: #9CA3AF;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.sdc-close-btn:hover {
+  color: #FFFFFF;
+}

@@ -1,0 +1,434 @@
+.sdc-events-articles-sec {
+  background-color: #08090C;
+  padding: 60px 24px;
+  direction: inherit;
+  display: flex;
+  justify-content: center;
+}
+
+.sdc-ea-container {
+  max-width: 1200px;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+}
+
+.sdc-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  min-height: 40px;
+}
+
+.sdc-section-title {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #FFFFFF;
+  margin: 0;
+}
+
+.sdc-view-all-btn {
+  background: rgba(255, 255, 255, 0.03); /* خلفية داكنة خفيفة جداً */
+  border: 1px solid rgba(255, 255, 255, 0.25); /* إطار رمادي ناعم ودقيق */
+  color: #FFFFFF;
+  padding: 8px 30px; /* مسافة أفقية أوسع لمطابقة أبعاد الصورة */
+  border-radius: 9999px; /* انحناء دائري كامل بأسلوب Capsule */
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.sdc-view-all-btn:hover {
+  border-color: #00E676;
+  color: #00E676;
+  background-color: rgba(0, 230, 118, 0.08);
+}
+
+.sdc-events-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.sdc-events-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.sdc-event-card {
+  background-color: #0D0E12;
+  border: 1.5px solid rgba(171, 239, 198, 0.3);
+  border-radius: 20px;
+  padding: 16px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 20px;
+  transition: all 0.25s ease;
+}
+
+.sdc-event-card:hover {
+  border-color: #ABEFC6;
+  box-shadow: 0 4px 20px rgba(171, 239, 198, 0.15);
+}
+
+.sdc-event-image-wrapper {
+  position: relative;
+  width: 190px;
+  height: 125px;
+  border-radius: 12px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.sdc-event-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ================== الشارة الديناميكية فوق الصورة ================== */
+
+.sdc-badge-status {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 6px;
+  z-index: 2;
+  white-space: nowrap;
+}
+
+/* حالة: متاح التسجيل (أخضر) */
+.sdc-badge-status.available {
+  background-color: #E6F4F1;
+  color: #067847;
+}
+
+/* حالة: قريباً (أصفر / برتقالي) */
+.sdc-badge-status.coming-soon {
+  background-color: rgba(255, 171, 0, 0.2);
+  color: #FFAB00;
+  border: 1px solid #FFAB00;
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+}
+
+/* =================================================================== */
+
+.sdc-event-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  text-align: start;
+}
+
+.sdc-event-tags {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.sdc-tag {
+  background-color: #FFFFFF;
+  font-size: 0.75rem;
+  font-weight: 800;
+  padding: 3px 12px;
+  border-radius: 6px;
+  border: none;
+}
+
+.sdc-tag.tag-students {
+  color: #1F2937;
+}
+
+.sdc-tag.tag-tech {
+  color: #2563EB;
+}
+
+.sdc-tag.tag-competitions {
+  color: #067847;
+}
+
+.sdc-event-title {
+  color: #FFFFFF;
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.sdc-event-meta {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  color: #E5E7EB;
+  font-size: 0.8rem;
+  flex-wrap: wrap;
+}
+
+.sdc-event-meta span {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.sdc-icon-green {
+  color: #ABEFC6;
+}
+
+.sdc-event-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 2px;
+  width: 100%;
+}
+
+.sdc-btn-register {
+  background-color: #067847;
+  color: #FFFFFF;
+  border: none;
+  padding: 6px 22px;
+  border-radius: 50px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.sdc-btn-register:hover {
+  background-color: #ABEFC6;
+  color: #000000;
+}
+
+.sdc-btn-more {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  color: #FFFFFF;
+  padding: 6px 22px;
+  border-radius: 50px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.sdc-btn-more:hover {
+  border-color: #ABEFC6;
+  color: #ABEFC6;
+}
+
+.sdc-articles-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.sdc-articles-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.sdc-article-item {
+  background-color: #0D0E12;
+  border-top: 1px solid rgba(171, 239, 198, 0.2);
+  border-left: 1px solid rgba(171, 239, 198, 0.2);
+  border-right: 2.5px solid #ABEFC6;
+  border-bottom: 2.5px solid #ABEFC6;
+  border-radius: 20px;
+  padding: 16px 28px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 2px 4px 12px rgba(171, 239, 198, 0.15); 
+}
+
+.sdc-article-item:hover {
+  box-shadow: 4px 6px 20px rgba(171, 239, 198, 0.35);
+  transform: translateY(-2px);
+}
+
+.sdc-article-title {
+  color: #FFFFFF;
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin: 0;
+  text-align: start;
+  width: 100%;
+}
+
+/* ================== التجاوب مع التابلت والجوال ================== */
+
+@media (max-width: 992px) {
+  .sdc-ea-container {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+}
+
+@media (max-width: 600px) {
+  .sdc-events-articles-sec {
+    padding: 40px 16px;
+  }
+
+  .sdc-section-title {
+    font-size: 1.6rem;
+  }
+
+  .sdc-event-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .sdc-event-image-wrapper {
+    width: 100%;
+    height: 160px;
+  }
+
+  .sdc-event-actions {
+    width: 100%;
+  }
+
+  .sdc-btn-register,
+  .sdc-btn-more {
+    flex: 1;
+    text-align: center;
+  }
+
+  .sdc-article-item {
+    padding: 14px 20px;
+  }
+
+  .sdc-article-title {
+    font-size: 0.88rem;
+  }
+}
+
+/* زر التسجيل بعد التأكيد */
+.sdc-btn-register.registered {
+  background-color: #10B981 !important;
+  color: #FFFFFF !important;
+  cursor: default;
+}
+
+/* النافذة المنبثقة (Modal Overlay) */
+.sdc-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+}
+
+.sdc-modal-card {
+  background-color: #0D1117;
+  border: 1px solid rgba(0, 230, 118, 0.3);
+  border-radius: 16px;
+  width: 90%;
+  max-width: 440px;
+  padding: 24px;
+  position: relative;
+  direction: inherit;
+  color: #FFFFFF;
+}
+
+.sdc-modal-close {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  background: none;
+  border: none;
+  color: #9CA3AF;
+  cursor: pointer;
+}
+
+.sdc-modal-header {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.sdc-modal-icon {
+  color: #00E676;
+  margin-bottom: 8px;
+}
+
+.sdc-modal-header h3 {
+  font-size: 1.2rem;
+  margin: 0;
+}
+
+.sdc-modal-event-name {
+  color: #00E676;
+  font-weight: 700;
+  text-align: center;
+  font-size: 0.95rem;
+  margin-bottom: 16px;
+}
+
+.sdc-modal-user-info {
+  background-color: rgba(255, 255, 255, 0.05);
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  color: #D1D5DB;
+}
+
+.sdc-modal-user-info ul {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0 0 0;
+}
+
+.sdc-modal-user-info li {
+  margin-bottom: 4px;
+}
+
+.sdc-modal-footer {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.sdc-btn-confirm {
+  flex: 1;
+  background-color: #00E676;
+  color: #08090C;
+  border: none;
+  padding: 10px;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.sdc-btn-cancel {
+  flex: 1;
+  background-color: transparent;
+  color: #FFFFFF;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+}

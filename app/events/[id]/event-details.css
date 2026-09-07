@@ -1,0 +1,488 @@
+/* الخلفية العامة */
+.sdc-event-detail-wrapper {
+  background-color: #050D09;
+  min-height: 100vh;
+  direction: inherit;
+  color: #FFFFFF;
+}
+
+.sdc-event-detail-main {
+  width: 100%;
+  padding-bottom: 80px;
+  background-color: #050D09;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+/* ================= البنر العلوي الموحد (1440px * 164px) ================= */
+.sdc-event-hero-banner {
+  position: relative;
+  width: 100vw;
+  margin-right: calc(-50vw + 50%);
+  margin-left: calc(-50vw + 50%);
+  height: 164px;
+  min-height: 164px;
+  max-height: 164px;
+  background-color: #050D09;
+  background-image: 
+    linear-gradient(90deg, rgba(122, 175, 152, 0.22) 0%, rgba(5, 20, 15, 0.85) 55%, #050D09 100%),
+    url('/assets/Service(1).png');
+  background-repeat: no-repeat, repeat-x;
+  background-position: center left, center right;
+  background-size: cover, cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 24px;
+  box-sizing: border-box;
+}
+
+/* حاوية المحتوى القياسية 1440px */
+.sdc-hero-overlay {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  max-width: 1440px;
+  padding: 0 24px;
+  box-sizing: border-box;
+}
+
+.sdc-hero-top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.sdc-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  color: #9CA3AF;
+}
+
+.sdc-breadcrumb a {
+  color: #9CA3AF;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.sdc-breadcrumb a:hover {
+  color: #00E676 !important;
+}
+
+.sdc-bc-sep {
+  color: #6B7280;
+}
+
+/* زر التسجيل بالبنر */
+.sdc-hero-btn-register {
+  background-color: #067847;
+  color: #FFFFFF;
+  border: none;
+  padding: 6px 24px;
+  border-radius: 50px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sdc-hero-btn-register:hover {
+  background-color: #ABEFC6;
+  color: #000000;
+}
+
+.sdc-hero-btn-register.registered {
+  background-color: #10B981 !important;
+  color: #FFFFFF !important;
+  cursor: default;
+}
+
+.sdc-event-hero-title {
+  font-size: 1.6rem;
+  font-weight: 800;
+  margin: 0;
+  color: #FFFFFF;
+}
+
+/* الحاوية المركزية لجميع عناصر الصفحة */
+.sdc-event-body-container {
+  max-width: 1440px;
+  width: 100%;
+  padding: 0 24px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ================= قسم ما هو المجتمع السعودي للمطورين ================= */
+.sdc-about-community-block {
+  padding: 16px 0 24px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.sdc-about-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin: 0 0 8px 0;
+}
+
+.sdc-about-desc {
+  font-size: 0.92rem;
+  color: #9CA3AF;
+  line-height: 1.8;
+  margin: 0;
+}
+
+/* ================= الشبكة الرئيسية (Grid) ================= */
+.sdc-event-content-grid {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 32px;
+  margin-top: 32px;
+  width: 100%;
+}
+
+.sdc-event-main-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.sdc-detail-card {
+  border: 1.5px solid rgba(163, 230, 53, 0.4);
+  border-radius: 16px;
+  padding: 24px;
+  background-color: rgba(13, 17, 23, 0.6);
+  display: flex;
+  flex-direction: column;
+}
+
+.sdc-card-header {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  direction: inherit;
+}
+
+.sdc-card-header h3 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin: 0;
+  text-align: start;
+}
+
+.sdc-card-icon {
+  font-size: 1.2rem;
+  color: #A3E635;
+}
+
+.sdc-card-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sdc-card-list li {
+  position: relative;
+  padding-right: 20px;
+  margin-bottom: 10px;
+  color: #D1D5DB;
+  font-size: 0.95rem;
+  line-height: 1.7;
+}
+
+.sdc-card-list li::before {
+  content: "•";
+  position: absolute;
+  right: 0;
+  color: #D1D5DB;
+}
+
+/* ================= الـ Sidebar الأيسر ================= */
+.sdc-sidebar-card {
+  border: 1.5px solid rgba(122, 175, 152, 0.4);
+  border-radius: 16px;
+  padding: 24px;
+  background: linear-gradient(180deg, rgba(122, 175, 152, 0.18) 0%, rgba(5, 20, 15, 0.95) 100%);
+  background-color: #061812;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  text-align: start;
+  direction: inherit;
+}
+
+.sdc-sidebar-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.sdc-sidebar-item-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+  width: 100%;
+}
+
+.sdc-sb-icon-style {
+  color: #7AAF98;
+  flex-shrink: 0;
+}
+
+.sdc-sidebar-item-header h4 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin: 0;
+  color: #FFFFFF;
+}
+
+.sdc-sb-val {
+  color: #D1D5DB;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin: 0;
+  width: 100%;
+}
+
+.sdc-link-val, 
+.sdc-sb-link {
+  color: #7AAF98 !important;
+  text-decoration: none;
+  font-size: 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+  transition: opacity 0.2s ease;
+}
+
+.sdc-link-val:hover, 
+.sdc-sb-link:hover {
+  color: #ABEFC6 !important;
+  text-decoration: underline;
+}
+
+.sdc-ext-icon {
+  color: #7AAF98;
+  flex-shrink: 0;
+}
+
+.sdc-sb-divider {
+  border: none;
+  border-top: 1px solid rgba(122, 175, 152, 0.25);
+  margin: 4px 0;
+}
+
+.sdc-download-guide-btn {
+  background-color: #FFFFFF;
+  color: #08090C;
+  font-weight: 800;
+  border: none;
+  border-radius: 8px;
+  padding: 12px;
+  cursor: pointer;
+  width: 100%;
+  font-size: 0.95rem;
+  margin-top: 4px;
+  transition: all 0.2s ease;
+}
+
+.sdc-download-guide-btn:hover {
+  background-color: #E5E7EB;
+  transform: translateY(-1px);
+}
+
+.sdc-sidebar-socials h4 {
+  color: #FFFFFF;
+  font-size: 0.95rem;
+  margin: 0 0 12px 0;
+}
+
+.sdc-social-icons {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.sdc-soc-box {
+  border: 1px solid rgba(122, 175, 152, 0.4);
+  border-radius: 8px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #7AAF98;
+  text-decoration: none;
+  background: rgba(122, 175, 152, 0.08);
+  transition: all 0.2s ease;
+}
+
+.sdc-soc-box:hover {
+  background-color: #00E676;
+  color: #08090C;
+  border-color: #00E676;
+  transform: translateY(-2px);
+}
+
+.sdc-x-icon {
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+/* ================= النافذة المنبثقة (Modal) ================= */
+.sdc-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+}
+
+.sdc-modal-card {
+  background-color: #0D1117;
+  border: 1px solid rgba(0, 230, 118, 0.3);
+  border-radius: 16px;
+  width: 90%;
+  max-width: 440px;
+  padding: 24px;
+  position: relative;
+  direction: inherit;
+  color: #FFFFFF;
+}
+
+.sdc-modal-close {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  background: none;
+  border: none;
+  color: #9CA3AF;
+  cursor: pointer;
+}
+
+.sdc-modal-header {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.sdc-modal-icon {
+  color: #00E676;
+  margin-bottom: 8px;
+}
+
+.sdc-modal-header h3 {
+  font-size: 1.2rem;
+  margin: 0;
+}
+
+.sdc-modal-event-name {
+  color: #00E676;
+  font-weight: 700;
+  text-align: center;
+  font-size: 0.95rem;
+  margin-bottom: 16px;
+}
+
+.sdc-modal-user-info {
+  background-color: rgba(255, 255, 255, 0.05);
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  color: #D1D5DB;
+}
+
+.sdc-modal-user-info ul {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0 0 0;
+}
+
+.sdc-modal-user-info li {
+  margin-bottom: 4px;
+}
+
+.sdc-modal-footer {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.sdc-btn-confirm {
+  flex: 1;
+  background-color: #00E676;
+  color: #08090C;
+  border: none;
+  padding: 10px;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.sdc-btn-cancel {
+  flex: 1;
+  background-color: transparent;
+  color: #FFFFFF;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* ================== تجاوب الشاشات والجوال ================== */
+@media (max-width: 992px) {
+  .sdc-event-content-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .sdc-event-hero-banner {
+    height: auto;
+    min-height: 140px;
+    padding: 20px 0;
+  }
+
+  .sdc-event-hero-title {
+    font-size: 1.3rem;
+  }
+
+  .sdc-hero-top-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .sdc-hero-btn-register {
+    width: 100%;
+    padding: 8px;
+  }
+
+  .sdc-event-body-container {
+    padding: 0 16px;
+  }
+}

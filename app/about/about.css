@@ -1,0 +1,205 @@
+.sdc-about-wrapper {
+  background-color: #050D09;
+  color: #FFFFFF;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  direction: inherit;
+}
+
+.sdc-about-main-content {
+  flex: 1;
+  padding-bottom: 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+/* ================= البنر العلوي الموحد (1440px * 164px) ================= */
+.sdc-about-hero-banner {
+  position: relative;
+  width: 100vw;
+  margin-right: calc(-50vw + 50%);
+  margin-left: calc(-50vw + 50%);
+  height: 164px;
+  min-height: 164px;
+  max-height: 164px;
+  background-color: #050D09;
+  background-image: 
+    linear-gradient(90deg, rgba(122, 175, 152, 0.22) 0%, rgba(5, 20, 15, 0.85) 55%, #050D09 100%),
+    url('/assets/Service(1).png');
+  background-repeat: no-repeat, repeat-x;
+  background-position: center left, center right;
+  background-size: cover, cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 40px;
+  box-sizing: border-box;
+}
+
+.sdc-about-hero-overlay {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  max-width: 1440px;
+  padding: 0 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  text-align: start;
+  box-sizing: border-box;
+  gap: 10px;
+}
+
+/* التتبع داخل البنر */
+.sdc-about-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  color: #9CA3AF;
+}
+
+.sdc-about-breadcrumb a {
+  color: #9CA3AF;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.sdc-about-breadcrumb a:hover {
+  color: #00E676 !important;
+}
+
+.sdc-about-bc-sep {
+  color: #6B7280;
+}
+
+.sdc-about-main-title {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #FFFFFF;
+  margin: 0;
+}
+
+/* الحاوية الرئيسية للمحتوى */
+.sdc-about-container {
+  max-width: 1440px;
+  width: 100%;
+  padding: 0 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  box-sizing: border-box;
+}
+
+/* فقرة التقديم */
+.sdc-about-intro-box {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sdc-intro-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin: 0;
+}
+
+.sdc-intro-text {
+  color: #D1D5DB;      
+  font-size: 1.05rem;   
+  line-height: 1.8;     
+  max-width: 1100px;     
+}
+
+/* شبكة الأعمدة */
+.sdc-vision-mission-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-top: 10px;
+  width: 100%;
+}
+
+.sdc-vm-column {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sdc-vm-outside-title {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #FFFFFF;
+  margin: 0;
+  text-align: start;
+}
+
+.sdc-vm-card-box {
+  background-color: #0D0E12;
+  border-top: 1px solid rgba(171, 239, 198, 0.2);
+  border-left: 1px solid rgba(171, 239, 198, 0.2);
+  border-right: 2.5px solid #ABEFC6;
+  border-bottom: 2.5px solid #ABEFC6;
+  border-radius: 20px;
+  padding: 24px 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: start;
+  gap: 16px;
+  transition: all 0.25s ease;
+  box-shadow: 2px 4px 12px rgba(171, 239, 198, 0.15);
+  box-sizing: border-box;
+}
+
+.sdc-vm-card-box:hover {
+  border-color: #ABEFC6;
+  box-shadow: 4px 6px 20px rgba(171, 239, 198, 0.35);
+  transform: translateY(-2px);
+}
+
+.sdc-vm-icon-right {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.sdc-vm-icon-img {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+}
+
+.sdc-vm-text {
+  color: #D1D5DB;
+  font-size: 1rem;
+  line-height: 1.7;
+  margin: 0;
+}
+
+/* ================= تجاوب الشاشات والجوال ================= */
+@media (max-width: 768px) {
+  .sdc-about-hero-banner {
+    height: auto;
+    min-height: 140px;
+    padding: 20px 0;
+  }
+
+  .sdc-about-main-title {
+    font-size: 1.3rem;
+  }
+
+  .sdc-about-container {
+    padding: 0 16px;
+  }
+
+  .sdc-vision-mission-grid {
+    grid-template-columns: 1fr;
+  }
+}

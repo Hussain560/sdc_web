@@ -1,0 +1,498 @@
+/* ================== الغلاف الرئيسي للصفحة ================== */
+.sdc-details-page-wrapper {
+  background-color: #050D09;
+  min-height: 100vh;
+  direction: inherit;
+  display: flex;
+  flex-direction: column;
+  color: #FFFFFF;
+}
+
+.sdc-details-main {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ================= البنر العلوي الموحد (1440px * 164px) ================= */
+.sdc-member-hero-banner {
+  position: relative;
+  width: 100vw;
+  margin-right: calc(-50vw + 50%);
+  margin-left: calc(-50vw + 50%);
+  height: 164px;
+  min-height: 164px;
+  max-height: 164px;
+  background-color: #050D09;
+  background-image: 
+    linear-gradient(90deg, rgba(122, 175, 152, 0.22) 0%, rgba(5, 20, 15, 0.85) 55%, #050D09 100%),
+    url('/assets/Service(1).png');
+  background-repeat: no-repeat, repeat-x;
+  background-position: center left, center right;
+  background-size: cover, cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 32px;
+  box-sizing: border-box;
+}
+
+.sdc-member-hero-container {
+  max-width: 1440px;
+  width: 100%;
+  padding: 0 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-sizing: border-box;
+}
+
+/* التتبع داخل البنر */
+.sdc-member-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  color: #9CA3AF;
+}
+
+.sdc-member-breadcrumb a {
+  color: #9CA3AF;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.sdc-member-breadcrumb a:hover {
+  color: #00E676 !important;
+}
+
+.sdc-member-bc-sep {
+  color: #6B7280;
+}
+
+.sdc-member-hero-title {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #FFFFFF;
+  margin: 0;
+}
+
+/* ================== سكشن المحتوى وهيدر القسم ================== */
+.sdc-details-content-section {
+  padding: 0 24px 80px;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.sdc-details-content-container {
+  max-width: 1440px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.sdc-details-section-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  direction: inherit;
+  box-sizing: border-box;
+}
+
+.sdc-header-right-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: start;
+}
+
+.sdc-section-main-title {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #FFFFFF;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.sdc-section-sub-title {
+  color: #9CA3AF;
+  font-size: 0.95rem;
+  margin: 0;
+  line-height: 1.6;
+}
+
+.sdc-view-all-btn {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  color: #FFFFFF;
+  padding: 10px 28px;
+  border-radius: 50px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sdc-view-all-btn:hover {
+  border-color: #00E676;
+  color: #00E676;
+  background-color: rgba(0, 230, 118, 0.05);
+}
+
+/* ================== كارت التفاصيل الرئيسي ================== */
+.sdc-member-detail-card {
+  background-color: #050D09;
+  border-radius: 28px;
+  border: 1px solid #435448;
+  width: 100%;
+  padding: 48px 56px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 36px;
+  box-sizing: border-box;
+  margin: 0 auto;
+  position: relative;
+}
+
+.sdc-card-top-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+  direction: inherit;
+  gap: 40px;
+}
+
+.sdc-profile-meta-right {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  text-align: start;
+  direction: inherit;
+}
+
+.sdc-avatar-circle {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 1px solid rgba(122, 175, 152, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #7AAF98;
+  flex-shrink: 0;
+}
+
+.sdc-name-role-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  text-align: start;
+}
+
+.sdc-detail-name {
+  color: #FFFFFF;
+  font-size: 1.45rem;
+  font-weight: 800;
+  margin: 0;
+}
+
+.sdc-name-underline {
+  height: 1px;
+  background: rgba(122, 175, 152, 0.3);
+  width: 100%;
+  margin: 4px 0;
+}
+
+.sdc-detail-role {
+  color: #7AAF98;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.sdc-detail-tags {
+  display: flex;
+  gap: 6px;
+  margin-top: 6px;
+  flex-wrap: wrap;
+}
+
+.sdc-tag-item {
+  font-size: 0.78rem;
+  padding: 3px 12px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #D2D6DB;
+}
+
+.sdc-tag-item.tag-active {
+  background-color: #1B3D31;
+  border-color: #00E676;
+  color: #FFFFFF;
+}
+
+.sdc-academic-info-center {
+  display: flex;
+  align-items: flex-start;
+  gap: 40px;
+  text-align: start;
+}
+
+.sdc-info-block {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: flex-start;
+}
+
+.sdc-info-label-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #FFFFFF;
+  font-size: 0.98rem;
+}
+
+.sdc-info-icon {
+  width: 25px;
+  height: 25px;
+  object-fit: contain;
+}
+
+.sdc-info-sub {
+  color: #7AAF98;
+  font-size: 0.88rem;
+}
+
+/* ================== بوكس النبذة الداخلي ================== */
+.sdc-bio-box {
+  background-color: rgba(255, 255, 255, 0.02);
+  border-radius: 18px;
+  border: 1px solid #435448;
+  width: 100%;
+  min-height: 160px;
+  padding: 32px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.sdc-pattern-watermark {
+  position: absolute;
+  left: -20px;
+  bottom: -20px;
+  width: 140px;
+  height: 120px;
+  background-image: url('/assets/Group 38.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.5;
+}
+
+.sdc-bio-text {
+  color: #E5E7EB;
+  font-size: 1.1rem;
+  line-height: 1.9;
+  text-align: center;
+  margin: 0;
+  position: relative;
+  z-index: 2;
+}
+
+/* ================== أيقونات التواصل ================== */
+.sdc-social-icons-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+}
+
+.sdc-social-icon-link {
+  color: rgba(255, 255, 255, 0.6);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.sdc-social-icon-link:hover {
+  color: #00E676;
+  transform: translateY(-2px);
+}
+
+.sdc-social-img-icon {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  opacity: 0.8;
+  transition: opacity 0.2s ease;
+}
+
+.sdc-social-icon-link:hover .sdc-social-img-icon {
+  opacity: 1;
+}
+
+.sdc-contact-me-btn {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #FFFFFF;
+  padding: 10px 36px;
+  border-radius: 50px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  align-self: center;
+  transition: all 0.2s ease;
+}
+
+.sdc-contact-me-btn:hover {
+  border-color: #00E676;
+  color: #00E676;
+}
+
+/* ================== Modal / النافذة المنبثقة ================== */
+.sdc-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.75);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.sdc-modal-content {
+  background-color: #0C0E12;
+  border: 1px solid #435448;
+  border-radius: 20px;
+  padding: 32px;
+  width: 90%;
+  max-width: 480px;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.sdc-modal-close {
+  position: absolute;
+  top: 16px;
+  left: 20px;
+  background: transparent;
+  border: none;
+  color: #9CA3AF;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.sdc-modal-content h3 {
+  color: #FFFFFF;
+  margin-top: 0;
+  margin-bottom: 8px;
+}
+
+.sdc-modal-content p {
+  color: #9CA3AF;
+  font-size: 0.9rem;
+  margin-bottom: 20px;
+}
+
+.sdc-contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sdc-modal-input {
+  background: #050D09;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  padding: 10px 14px;
+  color: #FFFFFF;
+  font-family: inherit;
+}
+
+.sdc-modal-input:focus {
+  outline: none;
+  border-color: #00E676;
+}
+
+.sdc-modal-submit-btn {
+  background: #00E676;
+  color: #050D09;
+  border: none;
+  padding: 12px;
+  border-radius: 50px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: opacity 0.2s;
+}
+
+.sdc-modal-submit-btn:hover {
+  opacity: 0.9;
+}
+
+/* ================= تجاوب الشاشات والجوال ================= */
+@media (max-width: 992px) {
+  .sdc-card-top-header {
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .sdc-member-detail-card {
+    padding: 32px 24px;
+  }
+}
+
+@media (max-width: 768px) {
+  .sdc-member-hero-banner {
+    height: auto;
+    min-height: 140px;
+    padding: 20px 0;
+  }
+
+  .sdc-member-hero-title {
+    font-size: 1.3rem;
+  }
+
+  .sdc-details-section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .sdc-academic-info-center {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .sdc-details-content-section {
+    padding: 0 16px 60px;
+  }
+}

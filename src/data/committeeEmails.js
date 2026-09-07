@@ -1,0 +1,1 @@
+export const COMMITTEE_EMAILS = ['ah08nd@gmail.com'];

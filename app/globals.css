@@ -1,0 +1,88 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
+
+:root {
+  --background: #050D09;
+  --foreground: #ffffff;
+}
+
+html {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: 'Rubik', 'IBM Plex Sans Arabic', system-ui, -apple-system, sans-serif;
+}
+
+:lang(ar) {
+  font-family: 'IBM Plex Sans Arabic', 'Rubik', system-ui, -apple-system, sans-serif;
+}
+
+:lang(en) {
+  font-family: 'Rubik', 'IBM Plex Sans Arabic', system-ui, -apple-system, sans-serif;
+}
+
+html[dir='rtl'] {
+  direction: rtl;
+}
+
+html[dir='ltr'] {
+  direction: ltr;
+}
+
+* {
+  box-sizing: border-box;
+  font-family: inherit;
+  letter-spacing: normal !important;
+  word-spacing: normal !important;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: inherit;
+  direction: inherit;
+  text-align: start;
+}
+
+body {
+  min-height: 100vh;
+}
+
+img, video, canvas, svg {
+  max-width: 100%;
+  height: auto;
+}
+
+@media (max-width: 768px) {
+  .sdc-member-detail-card {
+    padding: 24px 20px !important;
+    min-height: unset !important;
+    gap: 24px !important;
+  }
+
+  .sdc-card-top-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 20px !important;
+  }
+
+  .sdc-academic-info-center {
+    gap: 20px !important;
+    width: 100% !important;
+    justify-content: space-between !important;
+  }
+
+  .sdc-bio-box {
+    padding: 20px 16px !important;
+    min-height: unset !important;
+  }
+
+  .sdc-bio-text {
+    font-size: 1rem !important;
+    line-height: 1.7 !important;
+  }
+}

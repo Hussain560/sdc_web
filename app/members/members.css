@@ -1,0 +1,301 @@
+/* ================== غلاف الصفحة والبنر الممتد ================== */
+.sdc-members-page-wrapper {
+  background-color: #050D09;
+  min-height: 100vh;
+  direction: inherit;
+  display: flex;
+  flex-direction: column;
+}
+
+.sdc-members-main {
+  flex: 1;
+  width: 100%;
+}
+
+/* سكشن البنر يمتد بعرض الشاشة كاملاً بدون بادينج جانبي */
+.sdc-members-hero {
+  width: 100%;
+  background-color: #050D09;
+  padding: 0 0 30px 0;
+  display: flex;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.sdc-members-hero-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* صندوق البنر المتوازن بتدرج أخضر ناعم وهادئ */
+.sdc-members-banner-box {
+  position: relative;
+  width: 100%;
+  height: 146px;
+  border-radius: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(ellipse at center, rgba(0, 230, 118, 0.12) 0%, rgba(5, 13, 9, 0.98) 80%);
+}
+
+.sdc-members-banner-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 1;
+  filter: brightness(1.05) contrast(1.05);
+  opacity: 0.75;
+}
+
+.sdc-members-banner-box::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg, 
+    rgba(0, 230, 118, 0.08) 0%, 
+    transparent 50%, 
+    rgba(0, 230, 118, 0.08) 100%
+  );
+  z-index: 2;
+  pointer-events: none;
+}
+
+.sdc-members-banner-overlay {
+  position: relative;
+  z-index: 10;
+  max-width: 1200px;
+  width: 100%;
+  padding: 0 40px;
+  text-align: start;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+  box-sizing: border-box;
+}
+
+.sdc-members-banner-title {
+  font-size: 1.6rem;    
+  font-weight: 900;
+  color: #FFFFFF;
+  margin: 0;
+  line-height: 1.25;
+}
+
+/* ================== سكشن الأعضاء والهيدر ================== */
+.sdc-members-slider-section {
+  padding: 30px 40px 80px;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.sdc-members-slider-container {
+  max-width: 1200px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.sdc-members-section-header {
+  display: flex;
+  flex-direction: row-reverse; 
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.sdc-header-right-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  text-align: start;
+}
+
+.sdc-section-main-title {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #FFFFFF;
+  margin: 0;
+}
+
+.sdc-section-sub-title {
+  color: #9CA3AF;
+  font-size: 0.88rem;
+  margin: 0;
+}
+
+.sdc-view-all-members-btn {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  color: #FFFFFF;
+  padding: 8px 24px;
+  border-radius: 50px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.sdc-view-all-members-btn:hover {
+  border-color: #00E676;
+  color: #00E676;
+  background-color: rgba(0, 230, 118, 0.05);
+}
+
+/* ================== كروت الأعضاء ================== */
+.sdc-members-cards-row {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  padding: 10px 4px 20px 4px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.sdc-members-cards-row::-webkit-scrollbar {
+  display: none;
+}
+
+.sdc-member-figma-card {
+  background-color: #0D0E12;
+  border-radius: 20px;
+  padding: 24px 20px;
+  min-width: 240px;
+  width: 240px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: start;
+  gap: 10px;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+  border: 1px solid rgba(0, 230, 118, 0.3);
+  border-top: 2px solid #00E676;
+}
+
+.sdc-member-figma-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0, 230, 118, 0.15);
+}
+
+.sdc-member-icon-circle {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 1px solid rgba(239, 68, 68, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #EF4444;
+  margin-bottom: 2px;
+  align-self: flex-start;
+}
+
+.sdc-card-name {
+  color: #FFFFFF;
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 0;
+  width: 100%;
+}
+
+.sdc-card-role {
+  color: #56987B;
+  font-size: 0.85rem;
+  margin: 0;
+  width: 100%;
+}
+
+.sdc-card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: flex-start;
+  width: 100%;
+  margin: 4px 0;
+  row-gap: 8px;
+}
+
+.sdc-tag-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 100%;
+  font-size: 0.75rem;
+  padding: 3px 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #E5E7EB;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  text-align: center;
+}
+
+.sdc-tag-pill.tag-green {
+  background-color: #1B3D31;
+  border-color: #00E676;
+  color: #FFFFFF;
+}
+
+.sdc-card-info-btn {
+  width: 100%;
+  background: transparent;
+  border: 1.5px solid rgba(255, 255, 255, 0.5);
+  color: #FFFFFF;
+  padding: 8px 12px;
+  border-radius: 50px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-decoration: none;
+  text-align: center;
+  transition: all 0.2s ease;
+  margin-top: 6px;
+  display: block;
+  box-sizing: border-box;
+}
+
+.sdc-card-info-btn:hover {
+  border-color: #00E676;
+  color: #00E676;
+  background-color: rgba(0, 230, 118, 0.05);
+}
+
+.sdc-pagination-dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.sdc-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.sdc-dot.active {
+  background-color: #FFFFFF;
+  width: 10px;
+  height: 10px;
+}

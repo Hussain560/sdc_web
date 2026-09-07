@@ -1,0 +1,34 @@
+.sdc-breadcrumb-nav {
+  display: flex;
+  align-items: center;
+}
+
+.sdc-breadcrumb-list {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: 0.85rem;
+}
+
+.sdc-breadcrumb-item a {
+  color: #9CA3AF;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.sdc-breadcrumb-item a:hover {
+  color: #00E676;
+}
+
+.sdc-breadcrumb-separator {
+  color: #6B7280;
+  margin: 0 4px;
+}
+
+.sdc-breadcrumb-current {
+  color: #E5E7EB;
+  font-weight: 600;
+}
