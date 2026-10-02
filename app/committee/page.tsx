@@ -8,8 +8,13 @@ import { useAuth } from '../../src/context/AuthContext';
 import { supabase } from '../../src/lib/supabase';
 import { allEventsData } from '../../src/data/allEvents';
 import { COMMITTEE_EMAILS } from '../../src/data/committeeEmails';
+import type { Database } from '../../src/lib/supabase';
 
-function normalizeName(name) {
+type Registration = Database['public']['Tables']['event_registrations']['Row'];
+type MemberName = Pick<Database['public']['Tables']['members']['Row'], 'first_name' | 'last_name'>;
+type RegistrationStatus = 'accepted' | 'rejected';
+
+function normalizeName(name: string | null | undefined) {
   return (name || '').replace(/\s+/g, ' ').trim().toLowerCase();
 }
 
@@ -17,12 +22,12 @@ export default function CommitteePage() {
   const router = useRouter();
   const { user, isLoggedIn, loading } = useAuth();
 
-  const [registrations, setRegistrations] = useState([]);
-  const [members, setMembers] = useState([]);
+  const [registrations, setRegistrations] = useState<Registration[]>([]);
+  const [members, setMembers] = useState<MemberName[]>([]);
   const [loadingData, setLoadingData] = useState(true);
-  const [actionId, setActionId] = useState(null);
+  const [actionId, setActionId] = useState<number | null>(null);
 
-  const isAuthorized = isLoggedIn && COMMITTEE_EMAILS.includes(user?.email);
+  const isAuthorized = isLoggedIn && COMMITTEE_EMAILS.includes(user?.email ?? '');
 
   useEffect(() => {
     if (loading) return;
@@ -51,13 +56,13 @@ export default function CommitteePage() {
     loadData();
   }, [isAuthorized]);
 
-  const isMemberName = (fullName) => {
+  const isMemberName = (fullName: string | null) => {
     const typed = normalizeName(fullName);
     if (!typed) return false;
     return members.some((m) => normalizeName(`${m.first_name || ''} ${m.last_name || ''}`) === typed);
   };
 
-  const handleStatusChange = async (regId, newStatus) => {
+  const handleStatusChange = async (regId: number, newStatus: RegistrationStatus) => {
     setActionId(regId);
     const { error } = await supabase
       .from('event_registrations')
@@ -93,7 +98,7 @@ export default function CommitteePage() {
     if (!acc[key]) acc[key] = [];
     acc[key].push(reg);
     return acc;
-  }, {});
+  }, {} as Record<number, Registration[]>);
 
   if (loading || (isLoggedIn && loadingData)) {
     return (
@@ -138,7 +143,7 @@ export default function CommitteePage() {
         {eventIdsWithRegs.map((eventId) => {
           const eventInfo = allEventsData.find((e) => e.id === eventId);
           const eventTitle = eventInfo ? eventInfo.title.ar : `فعالية #${eventId}`;
-          const regs = registrationsByEvent[eventId];
+          const regs = registrationsByEvent[eventId] ?? [];
 
           return (
             <div key={eventId} style={{ marginBottom: '40px' }}>

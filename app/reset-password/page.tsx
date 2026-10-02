@@ -43,7 +43,7 @@ export default function ResetPasswordPage() {
     return () => { listener?.subscription?.unsubscribe(); };
   }, []);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setErrorMsg('');
     setShowSuccess(false);

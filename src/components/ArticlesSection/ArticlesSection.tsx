@@ -9,6 +9,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useLanguage } from '../../context/LanguageContext';
 import { supabase } from '../../lib/supabase';
 import { allEventsData } from '../../data/allEvents';
+import type { LegacyEventSummary } from '../../types/content';
 import './ArticlesSection.css';
 
 const articles = [
@@ -30,9 +31,9 @@ export default function ArticlesSection() {
   const { lang, t } = useLanguage();
   const isEnglish = lang === 'en';
 
-  const [selectedEvent, setSelectedEvent] = useState(null);
-  const [endedEvent, setEndedEvent] = useState(null);
-  const [registeredEvents, setRegisteredEvents] = useState([]);
+  const [selectedEvent, setSelectedEvent] = useState<LegacyEventSummary | null>(null);
+  const [endedEvent, setEndedEvent] = useState<LegacyEventSummary | null>(null);
+  const [registeredEvents, setRegisteredEvents] = useState<number[]>([]);
   const [sending, setSending] = useState(false);
   const [registerError, setRegisterError] = useState('');
 
@@ -56,12 +57,12 @@ export default function ArticlesSection() {
     loadRegistrations();
   }, [isLoggedIn, user]);
 
-  const isEventEnded = (event) => {
+  const isEventEnded = (event: LegacyEventSummary) => {
     const status = event.status?.[isEnglish ? 'en' : 'ar'];
     return status === 'Ended' || status === 'منتهي';
   };
 
-  const handleRegisterClick = (event) => {
+  const handleRegisterClick = (event: LegacyEventSummary) => {
     if (isEventEnded(event)) {
       setEndedEvent(event);
       return;

@@ -7,6 +7,7 @@ import Footer from '../../src/components/Footer/Footer';
 import { useSearch } from '../../src/context/SearchContext';
 import { useLanguage } from '../../src/context/LanguageContext';
 import { supabase } from '../../src/lib/supabase';
+import type { Localized } from '../../src/types/content';
 import './members.css';
 import './all/all-members.css';
 
@@ -53,14 +54,41 @@ const TEAM_LEADS = [
 
 // عشان ما يتكرر أي شخص موجود فعليًا كعضو بالجدول ظاهر فوق بالهرم —
 // حط رقم الـ id تبعه من Supabase هنا فيتم استثناؤه من قائمة "الأعضاء" تلقائيًا
-const MEMBER_IDS_SHOWN_ABOVE = [10, 15, 3]; // مهند الحربي، ريم الشمري، جواهر
+const MEMBER_IDS_SHOWN_ABOVE: readonly number[] = [10, 15, 3]; // مهند الحربي، ريم الشمري، جواهر
 
-const EMPTY_FILTERS = { universities: [], majors: [], subMajors: [], statuses: [], tracks: [] };
+type FilterCategory = 'universities' | 'majors' | 'subMajors' | 'statuses' | 'tracks';
+type SelectedFilters = Record<FilterCategory, string[]>;
+type FilterOptions = Record<FilterCategory, Localized[]>;
+
+interface DirectoryMember {
+  id: number;
+  name: Localized;
+  role: Localized;
+  subMajor: Localized;
+  status: Localized;
+  university: Localized;
+  tags: Localized<string[]>;
+  activeTag: Localized;
+}
+
+interface MemberCardProps {
+  name: string;
+  role?: string;
+  bio?: string;
+  university?: string;
+  tags?: string[];
+  activeTag?: string;
+  href?: string;
+  infoLabel?: string;
+}
+
+const EMPTY_FILTERS: SelectedFilters = { universities: [], majors: [], subMajors: [], statuses: [], tracks: [] };
+const EMPTY_FILTER_OPTIONS: FilterOptions = { universities: [], majors: [], subMajors: [], statuses: [], tracks: [] };
 
 // تدرّج ثابت واحد لكل الأفاتارات (بدون تمييز حسب الاسم)
 const AVATAR_GRADIENT = 'linear-gradient(135deg, #00E676, #00B85C)';
 
-function getInitial(name) {
+function getInitial(name: string) {
   const trimmed = (name || '').trim();
   return trimmed ? trimmed.charAt(0).toUpperCase() : '؟';
 }
@@ -85,11 +113,11 @@ function MemberCardSkeleton() {
 }
 
 // ============================ الكارد الموحّد لكل المستويات ============================
-function MemberCard({ name, role, bio, university, tags, activeTag, href, infoLabel }) {
+function MemberCard({ name, role, bio, university, tags, activeTag, href, infoLabel }: MemberCardProps) {
   return (
     <div className="sdc-member-card">
       <div className="sdc-member-card-top">
-        <div className="sdc-member-avatar" style={{ background: getAvatarGradient(name) }}>
+        <div className="sdc-member-avatar" style={{ background: getAvatarGradient() }}>
           {getInitial(name)}
         </div>
         <div className="sdc-member-heading">
@@ -112,7 +140,7 @@ function MemberCard({ name, role, bio, university, tags, activeTag, href, infoLa
 
       {tags && tags.length > 0 && (
         <div className="sdc-card-tags">
-          {tags.map((tag, idx) => (
+          {tags.map((tag: string, idx: number) => (
             <span key={idx} className={`sdc-tag-pill ${tag === activeTag || (!activeTag && idx === 0) ? 'tag-green' : ''}`}>
               {tag}
             </span>
@@ -136,15 +164,15 @@ export default function MembersPage() {
   const { searchQuery } = useSearch();
   const { lang } = useLanguage();
   const isEnglish = lang === 'en';
-  const t = (obj) => obj[isEnglish ? 'en' : 'ar'];
+  const t = <T,>(obj: Localized<T>): T => obj[isEnglish ? 'en' : 'ar'];
 
-  const [membersData, setMembersData] = useState([]);
+  const [membersData, setMembersData] = useState<DirectoryMember[]>([]);
   const [loading, setLoading] = useState(true);
 
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const [selectedFilters, setSelectedFilters] = useState(EMPTY_FILTERS);
-  const [filterOptions, setFilterOptions] = useState(EMPTY_FILTERS);
-  const [openSections, setOpenSections] = useState({});
+  const [selectedFilters, setSelectedFilters] = useState<SelectedFilters>(EMPTY_FILTERS);
+  const [filterOptions, setFilterOptions] = useState<FilterOptions>(EMPTY_FILTER_OPTIONS);
+  const [openSections, setOpenSections] = useState<Partial<Record<FilterCategory, boolean>>>({});
 
   useEffect(() => {
     async function fetchMembers() {
@@ -162,8 +190,8 @@ export default function MembersPage() {
         const fullNameAr = `${m.first_name || ''} ${m.last_name || ''}`.trim();
         const fullNameEn = `${m.first_name_en || ''} ${m.last_name_en || ''}`.trim() || fullNameAr;
 
-        const tagsListAr = [m.major, m.sub_major, m.track].filter(Boolean);
-        const tagsListEn = [m.major_en, m.sub_major_en, m.track_en].filter(Boolean);
+        const tagsListAr = [m.major, m.sub_major, m.track].filter((value): value is string => Boolean(value));
+        const tagsListEn = [m.major_en, m.sub_major_en, m.track_en].filter((value): value is string => Boolean(value));
 
         return {
           id: m.id,
@@ -177,11 +205,11 @@ export default function MembersPage() {
         };
       });
 
-      const universityMap = {};
-      const majorMap = {};
-      const subMajorMap = {};
-      const statusMap = {};
-      const trackMap = {};
+      const universityMap: Record<string, string> = {};
+      const majorMap: Record<string, string> = {};
+      const subMajorMap: Record<string, string> = {};
+      const statusMap: Record<string, string> = {};
+      const trackMap: Record<string, string> = {};
 
       rows.forEach((m) => {
         if (m.university) universityMap[m.university] = m.university_en || m.university;
@@ -191,7 +219,7 @@ export default function MembersPage() {
         if (m.track) trackMap[m.track] = m.track_en || m.track;
       });
 
-      const toOptionsList = (map) => Object.entries(map).map(([ar, en]) => ({ ar, en }));
+      const toOptionsList = (map: Record<string, string>): Localized[] => Object.entries(map).map(([ar, en]) => ({ ar, en }));
 
       setFilterOptions({
         universities: toOptionsList(universityMap),
@@ -208,7 +236,7 @@ export default function MembersPage() {
     fetchMembers();
   }, []);
 
-  const matchesCategory = (selectedList, rawValue) =>
+  const matchesCategory = (selectedList: string[], rawValue: string) =>
     selectedList.length === 0 || selectedList.includes(rawValue);
 
   const filteredMembers = membersData.filter((member) => {
@@ -237,7 +265,7 @@ export default function MembersPage() {
     return matchesSearch && matchesFilters;
   });
 
-  const toggleFilterValue = (category, arValue) => {
+  const toggleFilterValue = (category: FilterCategory, arValue: string) => {
     setSelectedFilters((prev) => {
       const current = prev[category];
       const next = current.includes(arValue)
@@ -247,7 +275,7 @@ export default function MembersPage() {
     });
   };
 
-  const toggleSection = (key) => {
+  const toggleSection = (key: FilterCategory) => {
     setOpenSections((prev) => ({ ...prev, [key]: !prev[key] }));
   };
 
@@ -255,7 +283,7 @@ export default function MembersPage() {
 
   const activeFiltersCount = Object.values(selectedFilters).reduce((acc, arr) => acc + arr.length, 0);
 
-  const filterSections = [
+  const filterSections: { key: FilterCategory; label: string; list: Localized[] }[] = [
     { key: 'universities', label: isEnglish ? 'University' : 'الجامعة', list: filterOptions.universities },
     { key: 'majors', label: isEnglish ? 'Major' : 'التخصص', list: filterOptions.majors },
     { key: 'subMajors', label: isEnglish ? 'Sub-major' : 'التخصص الدقيق', list: filterOptions.subMajors },

@@ -10,9 +10,10 @@ import { useSearch } from '../../src/context/SearchContext';
 import { useAuth } from '../../src/context/AuthContext';
 import { useLanguage } from '../../src/context/LanguageContext';
 import { supabase } from '../../src/lib/supabase';
+import type { LegacyEventSummary } from '../../src/types/content';
 import './all-events.css';
 
-const allEventsData = [
+const allEventsData: LegacyEventSummary[] = [
   { id: 1, title: { ar: 'لقاء تقني: بيئات العمل التقنية وأساسيات Github', en: 'Technical Meetup: Tech Work Environments and GitHub Basics' }, location: { ar: 'أونلاين', en: 'Online' }, date: { ar: 'قريبًا سيعلن عنه', en: 'To be announced soon' }, status: { ar: 'قريبًا', en: 'Coming Soon' }, image: '/assets/event-card.png' },
   { id: 2, title: { ar: 'ورشة Google AI Studio', en: 'Google AI Studio Workshop' }, location: { ar: 'أونلاين', en: 'Online' }, date: { ar: '5/8/2026', en: '5/8/2026' }, status: { ar: 'منتهي', en: 'Ended' }, image: '/assets/Picture1.png' },
   { id: 3, title: { ar: 'ورشة تحليل البيانات باستخدام Excel & Power BI', en: 'Data Analysis Workshop using Excel & Power BI' }, location: { ar: 'أونلاين', en: 'Online' }, date: { ar: '20/9/2025', en: '20/9/2025' }, status: { ar: 'منتهي', en: 'Ended' }, image: '/assets/power bi.png' },
@@ -28,9 +29,9 @@ export default function AllEventsPage() {
   const { lang, t } = useLanguage();
   const isEnglish = lang === 'en';
 
-  const [selectedEvent, setSelectedEvent] = useState(null);
-  const [endedEvent, setEndedEvent] = useState(null);
-  const [registeredEvents, setRegisteredEvents] = useState([]);
+  const [selectedEvent, setSelectedEvent] = useState<LegacyEventSummary | null>(null);
+  const [endedEvent, setEndedEvent] = useState<LegacyEventSummary | null>(null);
+  const [registeredEvents, setRegisteredEvents] = useState<number[]>([]);
   const [sending, setSending] = useState(false);
   const [registerError, setRegisterError] = useState('');
 
@@ -51,12 +52,12 @@ export default function AllEventsPage() {
     loadRegistrations();
   }, [isLoggedIn, user]);
 
-  const isEventEnded = (event) => {
+  const isEventEnded = (event: LegacyEventSummary) => {
     const status = event.status[isEnglish ? 'en' : 'ar'];
     return status === 'Ended' || status === 'منتهي';
   };
 
-  const handleRegisterClick = (event) => {
+  const handleRegisterClick = (event: LegacyEventSummary) => {
     if (isEventEnded(event)) {
       setEndedEvent(event);
       return;

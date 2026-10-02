@@ -139,12 +139,21 @@ const translations = {
   }
 };
 
-const LanguageContext = createContext();
+export type Lang = 'ar' | 'en';
+export type TranslationKey = keyof typeof translations.ar;
 
-export function LanguageProvider({ children }) {
-  const [lang, setLang] = useState('ar');
+interface LanguageContextValue {
+  lang: Lang;
+  toggleLanguage: () => void;
+  t: (key: string) => string;
+}
 
-  const updateDOMAndStorage = (newLang) => {
+const LanguageContext = createContext<LanguageContextValue | null>(null);
+
+export function LanguageProvider({ children }: { children: React.ReactNode }) {
+  const [lang, setLang] = useState<Lang>('ar');
+
+  const updateDOMAndStorage = (newLang: Lang) => {
     if (typeof window !== 'undefined') {
       document.documentElement.dir = newLang === 'ar' ? 'rtl' : 'ltr';
       document.documentElement.lang = newLang;
@@ -154,7 +163,7 @@ export function LanguageProvider({ children }) {
   };
 
   const toggleLanguage = () => {
-    const nextLang = lang === 'ar' ? 'en' : 'ar';
+    const nextLang: Lang = lang === 'ar' ? 'en' : 'ar';
     setLang(nextLang);
     updateDOMAndStorage(nextLang);
   };
@@ -162,6 +171,8 @@ export function LanguageProvider({ children }) {
   useEffect(() => {
     const savedLang = localStorage.getItem('app_lang');
     if (savedLang && (savedLang === 'ar' || savedLang === 'en')) {
+      // Hydrates the saved preference after mount (SSR always renders 'ar'). Replaced by URL locales — ADR-010.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setLang(savedLang);
       updateDOMAndStorage(savedLang);
     } else {
@@ -169,7 +180,7 @@ export function LanguageProvider({ children }) {
     }
   }, []);
 
-  const t = (key) => translations[lang]?.[key] || key;
+  const t = (key: string): string => (translations[lang] as Record<string, string>)[key] || key;
 
   return (
     <LanguageContext.Provider value={{ lang, toggleLanguage, t }}>
@@ -178,4 +189,10 @@ export function LanguageProvider({ children }) {
   );
 }
 
-export const useLanguage = () => useContext(LanguageContext);
+export function useLanguage(): LanguageContextValue {
+  const context = useContext(LanguageContext);
+  if (!context) {
+    throw new Error('useLanguage must be used within a LanguageProvider');
+  }
+  return context;
+}

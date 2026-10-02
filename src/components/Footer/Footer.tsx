@@ -75,7 +75,7 @@ export default function Footer() {
               alt={lang === 'ar' ? 'المجتمع السعودي للمطورين' : 'Saudi Developer Community'}
               className="sdc-footer-logo"
               onError={(e) => {
-                e.target.src = 'https://via.placeholder.com/100x95/050D09/FFFFFF?text=SDC';
+                (e.target as HTMLImageElement).src = 'https://via.placeholder.com/100x95/050D09/FFFFFF?text=SDC';
               }}
             />
           </div>

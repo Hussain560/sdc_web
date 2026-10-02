@@ -7,7 +7,21 @@ import Header from '../../../src/components/Header/Header';
 import Footer from '../../../src/components/Footer/Footer';
 import { useLanguage } from '../../../src/context/LanguageContext';
 import { supabase } from '../../../src/lib/supabase';
+import type { Localized } from '../../../src/types/content';
 import './details.css';
+
+interface MemberDetails {
+  id: number;
+  name: Localized;
+  role: Localized;
+  university: Localized;
+  major: Localized;
+  status: Localized;
+  bio: Localized;
+  tags: Localized<string[]>;
+  activeTag: Localized;
+  socials: { portfolio: string; x: string; linkedin: string; github: string };
+}
 
 export default function MemberDetailsPage() {
   const params = useParams();
@@ -15,7 +29,7 @@ export default function MemberDetailsPage() {
   const { lang } = useLanguage();
   const isEnglish = lang === 'en';
 
-  const [member, setMember] = useState(null);
+  const [member, setMember] = useState<MemberDetails | null>(null);
   const [loading, setLoading] = useState(true);
 
   const [isContactOpen, setIsContactOpen] = useState(false);
@@ -28,7 +42,7 @@ export default function MemberDetailsPage() {
       const { data, error } = await supabase
         .from('members')
         .select('*')
-        .eq('id', parseInt(memberId, 10))
+        .eq('id', parseInt(String(memberId), 10))
         .single();
 
       if (error || !data) {
@@ -41,8 +55,8 @@ export default function MemberDetailsPage() {
       const fullNameAr = `${data.first_name || ''} ${data.last_name || ''}`.trim();
       const fullNameEn = `${data.first_name_en || ''} ${data.last_name_en || ''}`.trim() || fullNameAr;
 
-      const tagsListAr = [data.major, data.sub_major, data.track].filter(Boolean);
-      const tagsListEn = [data.major_en, data.sub_major_en, data.track_en].filter(Boolean);
+      const tagsListAr = [data.major, data.sub_major, data.track].filter((value): value is string => Boolean(value));
+      const tagsListEn = [data.major_en, data.sub_major_en, data.track_en].filter((value): value is string => Boolean(value));
 
       setMember({
         id: data.id,
@@ -70,11 +84,11 @@ export default function MemberDetailsPage() {
     if (memberId) fetchMember();
   }, [memberId]);
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleContactSubmit = async (e) => {
+  const handleContactSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setSending(true);
 
@@ -182,7 +196,7 @@ export default function MemberDetailsPage() {
                     <p className="sdc-detail-role">{memberRole}</p>
 
                     <div className="sdc-detail-tags">
-                      {memberTags.map((tag, idx) => (
+                      {memberTags.map((tag: string, idx: number) => (
                         <span key={idx} className={`sdc-tag-item ${tag === activeTag ? 'tag-active' : ''}`}>
                           {tag}
                         </span>
@@ -275,7 +289,7 @@ export default function MemberDetailsPage() {
                 <textarea
                   name="message"
                   placeholder={isEnglish ? 'Write your message here...' : 'اكتب رسالتك هنا...'}
-                  rows="4"
+                  rows={4}
                   value={formData.message}
                   onChange={handleInputChange}
                   required

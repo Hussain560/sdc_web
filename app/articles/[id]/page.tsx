@@ -7,9 +7,21 @@ import { Calendar, Clock, User } from 'lucide-react';
 import Header from '../../../src/components/Header/Header';
 import Footer from '../../../src/components/Footer/Footer';
 import { useLanguage } from '../../../src/context/LanguageContext';
+import type { Localized } from '../../../src/types/content';
 import './article-details.css';
 
-const articlesDatabase = {
+interface ArticleRecord {
+  title: Localized;
+  author: Localized;
+  date: Localized;
+  readTime: Localized;
+  tags: Localized<string[]>;
+  content: Localized;
+  sourceLink?: string;
+  sourceLabel?: Localized;
+}
+
+const articlesDatabase: Record<string, ArticleRecord> = {
   '1': {
     title: { ar: 'هندسة الأوامر (Prompt Engineering)', en: 'Prompt Engineering' },
     author: { ar: 'لجنة الذكاء الاصطناعي', en: 'AI Committee' },
@@ -253,10 +265,10 @@ Although this field is still developing, its applications show promising possibi
 
 export default function ArticleDetailPage() {
   const params = useParams();
-  const articleId = params?.id || '1';
+  const articleId = String(params?.id ?? '1');
   const { lang } = useLanguage();
   const isEnglish = lang === 'en';
-  const article = articlesDatabase[articleId] || articlesDatabase['1'];
+  const article: ArticleRecord = articlesDatabase[articleId] ?? articlesDatabase['1']!;
 
   return (
     <div className="sdc-article-detail-wrapper">
@@ -286,7 +298,7 @@ export default function ArticleDetailPage() {
             </div>
 
             <div className="sdc-article-tags-row">
-              {article.tags[isEnglish ? 'en' : 'ar'].map((tag, idx) => (
+              {article.tags[isEnglish ? 'en' : 'ar'].map((tag: string, idx: number) => (
                 <span key={idx} className="sdc-article-tag-pill">
                   {tag}
                 </span>
@@ -306,7 +318,7 @@ export default function ArticleDetailPage() {
       rel="noopener noreferrer"
       className="sdc-article-source-link"
     >
-      {article.sourceLabel[isEnglish ? 'en' : 'ar']}
+      {article.sourceLabel?.[isEnglish ? 'en' : 'ar']}
     </a>
   )}
 </div>

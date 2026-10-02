@@ -11,11 +11,11 @@ const memberPlaceholdersCount = 4;
 const partnersCount = Array.from({ length: 12 });
 
 export default function MembersSection() {
-  const sliderRef = useRef(null);
+  const sliderRef = useRef<HTMLDivElement>(null);
   const { lang } = useLanguage();
   const isEnglish = lang === 'en';
 
-  const scroll = (direction) => {
+  const scroll = (direction: 'left' | 'right') => {
     if (sliderRef.current) {
       const scrollAmount = direction === 'right' ? -260 : 260;
       sliderRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
@@ -74,7 +74,7 @@ export default function MembersSection() {
                   alt={isEnglish ? 'Platform logo' : 'شعار'}
                   className="sdc-partner-logo"
                   onError={(e) => {
-                    e.target.src = 'https://via.placeholder.com/28/000000/FFFFFF?text=🇸🇦';
+                    (e.target as HTMLImageElement).src = 'https://via.placeholder.com/28/000000/FFFFFF?text=🇸🇦';
                   }}
                 />
                 <span className="sdc-partner-text">{isEnglish ? 'Platform Logo' : 'شعار المنصة'}</span>

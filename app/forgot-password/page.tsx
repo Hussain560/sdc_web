@@ -19,7 +19,7 @@ export default function ForgotPasswordPage() {
   const isEnglish = lang === 'en';
   const { resetPasswordForEmail } = useAuth();
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setErrorMsg('');
     setShowSuccess(false);

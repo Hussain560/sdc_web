@@ -11,7 +11,11 @@ import { useTheme } from '../../context/ThemeContext';
 import { COMMITTEE_EMAILS } from '../../data/committeeEmails';
 import './Header.css';
 
-export default function Header({ onSearch }) {
+interface HeaderProps {
+  onSearch?: (query: string) => void;
+}
+
+export default function Header({ onSearch }: HeaderProps) {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const { isDarkMode, toggleTheme } = useTheme();
   const pathname = usePathname();
@@ -26,15 +30,17 @@ export default function Header({ onSearch }) {
     setSearchQuery('');
     if (onSearch) onSearch('');
   }
+  // Intentionally runs only on navigation: clears the page-scoped search when the route changes.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
 }, [pathname]);
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearchQuery(value);
     if (onSearch) onSearch(value);
   };
 
-  const handleSearchSubmit = (e) => {
+  const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
   e.preventDefault();
 
   const query = searchQuery.trim();
@@ -69,7 +75,7 @@ export default function Header({ onSearch }) {
   };
 
   const displayName = user?.user_metadata?.full_name || user?.email || '';
-  const isCommittee = isLoggedIn && COMMITTEE_EMAILS.includes(user?.email);
+  const isCommittee = isLoggedIn && COMMITTEE_EMAILS.includes(user?.email ?? '');
 
   return (
     <>

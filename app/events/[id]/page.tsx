@@ -3,17 +3,36 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { User, MapPin, Calendar, Clock, Trophy, ExternalLink, Phone, Mail, CheckCircle, X, Globe } from 'lucide-react';
+import { User, MapPin, Calendar, Clock, Trophy, ExternalLink, Phone, Mail, CheckCircle, X } from 'lucide-react';
 import Header from '../../../src/components/Header/Header';
 import Footer from '../../../src/components/Footer/Footer';
 import { useAuth } from '../../../src/context/AuthContext';
-import { useSearch } from '../../../src/context/SearchContext';
 import { useLanguage } from '../../../src/context/LanguageContext';
 import { supabase } from '../../../src/lib/supabase';
+import type { Localized } from '../../../src/types/content';
 import './event-details.css';
 
+interface EventRecord {
+  title: Localized;
+  location: Localized;
+  mapUrl: string;
+  date: Localized;
+  duration: Localized;
+  prizes: Localized;
+  target: Localized;
+  email: string;
+  // Not present in the legacy data; kept so the page renders exactly as before (TD-027 area).
+  phone?: string;
+  status: Localized;
+  faq: Localized<string[]>;
+  responsibilities: Localized<string[]>;
+  requirements: Localized<string[]>;
+  deliverables: Localized<string[]>;
+  benefits: Localized<string[]>;
+}
 
-const eventsDatabase = {
+
+const eventsDatabase: Record<string, EventRecord> = {
   '1': {
     title: { ar: 'لقاء تقني: بيئات العمل التقنية وأساسيات Github', en: 'Technical Meetup: Tech Work Environments and GitHub Basics' },
     location: { ar: 'أونلاين', en: 'Online' },
@@ -170,7 +189,6 @@ export default function EventDetailPage() {
   const params = useParams();
   const router = useRouter();
   const { user, isLoggedIn } = useAuth();
-  const { searchQuery } = useSearch();
   const { lang, t } = useLanguage();
   const isEnglish = lang === 'en';
 
@@ -180,8 +198,8 @@ export default function EventDetailPage() {
   const [sending, setSending] = useState(false);
   const [registerError, setRegisterError] = useState('');
 
-  const eventId = params?.id || '2';
-  const event = eventsDatabase[eventId] || eventsDatabase['2'];
+  const eventId = String(params?.id ?? '2');
+  const event: EventRecord = eventsDatabase[eventId] ?? eventsDatabase['2']!;
 
   useEffect(() => {
     async function checkRegistration() {
@@ -318,7 +336,7 @@ export default function EventDetailPage() {
                   <h3>{isEnglish ? 'Tasks and Responsibilities' : 'المهام والمسؤوليات:'}</h3>
                 </div>
                 <ul className="sdc-card-list">
-                  {responsibilities.map((item, idx) => <li key={idx}>{item}</li>)}
+                  {responsibilities.map((item: string, idx: number) => <li key={idx}>{item}</li>)}
                 </ul>
               </div>
 
@@ -328,7 +346,7 @@ export default function EventDetailPage() {
                   <h3>{isEnglish ? 'Requirements and Criteria' : 'الشروط والمعايير'}</h3>
                 </div>
                 <ul className="sdc-card-list">
-                  {requirements.map((item, idx) => <li key={idx}>{item}</li>)}
+                  {requirements.map((item: string, idx: number) => <li key={idx}>{item}</li>)}
                 </ul>
               </div>
 
@@ -338,7 +356,7 @@ export default function EventDetailPage() {
                   <h3>{isEnglish ? 'Deliverables' : 'المخرجات :'}</h3>
                 </div>
                 <ul className="sdc-card-list">
-                  {deliverables.map((item, idx) => <li key={idx}>{item}</li>)}
+                  {deliverables.map((item: string, idx: number) => <li key={idx}>{item}</li>)}
                 </ul>
               </div>
 
@@ -348,7 +366,7 @@ export default function EventDetailPage() {
                   <h3>{isEnglish ? 'Opportunities and Benefits' : 'الفرص والمزايا :'}</h3>
                 </div>
                 <ul className="sdc-card-list">
-                  {benefits.map((item, idx) => <li key={idx}>{item}</li>)}
+                  {benefits.map((item: string, idx: number) => <li key={idx}>{item}</li>)}
                 </ul>
               </div>
             </div>
@@ -401,7 +419,7 @@ export default function EventDetailPage() {
                 <hr className="sdc-sb-divider" />
                 <div className="sdc-sidebar-item">
                   <h4>{isEnglish ? 'FAQ' : 'الأسئلة الشائعة'}</h4>
-                  {faqItems.map((item, index) => <p key={index} className="sdc-sb-val">{item}</p>)}
+                  {faqItems.map((item: string, index: number) => <p key={index} className="sdc-sb-val">{item}</p>)}
                 </div>
 
                 <div className="sdc-sidebar-item">

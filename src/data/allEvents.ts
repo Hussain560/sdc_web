@@ -1,4 +1,6 @@
-export const allEventsData = [
+import type { LegacyEventSummary } from '../types/content';
+
+export const allEventsData: LegacyEventSummary[] = [
   {
     id: 1,
     title: { ar: 'لقاء تقني: بيئات العمل التقنية وأساسيات Github', en: 'Technical Meetup: Tech Work Environments and GitHub Basics' },
