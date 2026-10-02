@@ -71,6 +71,10 @@ jobs:
         with: { version: latest }
       - run: supabase db start
       - run: supabase test db
+      - name: Generated DB types are up to date
+        run: |
+          supabase gen types typescript --local > /tmp/database.types.ts
+          diff -u src/lib/supabase/database.types.ts /tmp/database.types.ts
 
   commits:
     name: Conventional Commits (PR title)
