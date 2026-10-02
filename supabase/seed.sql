@@ -15,6 +15,10 @@ insert into public.members (
   ('هند', 'المطيري', 'Hind', 'Almutairi', 'علوم الحاسب', 'Computer Science', 'هندسة البرمجيات', 'Software Engineering', 'طالب', 'Student', 'جامعة الملك سعود', 'King Saud University', 'تطوير الويب', 'Web Development', 'مطوّر يحب بناء المنتجات المفيدة للمجتمع.', 'A developer who loves building useful products for the community.'),
   ('تركي', 'السبيعي', 'Turki', 'Alsubaie', 'علوم الحاسب', 'Computer Science', 'هندسة البرمجيات', 'Software Engineering', 'طالب', 'Student', 'جامعة الملك سعود', 'King Saud University', 'الذكاء الاصطناعي', 'Artificial Intelligence', 'مطوّر يحب بناء المنتجات المفيدة للمجتمع.', 'A developer who loves building useful products for the community.');
 
-insert into public.event_registrations (event_id, full_name, email, status) values
-  (1, 'سارة العتيبي', 'sara@example.test', 'pending'),
-  (1, 'خالد الزهراني', 'khalid@example.test', 'accepted');
+insert into public.event_registrations (event_id, full_name_snapshot, email_snapshot, status)
+select e.id, v.name, v.email, v.status
+from (values
+  ('سارة العتيبي', 'sara@example.test', 'pending'),
+  ('خالد الزهراني', 'khalid@example.test', 'accepted')
+) as v(name, email, status)
+join public.events e on e.legacy_id = 1;

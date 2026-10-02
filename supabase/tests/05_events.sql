@@ -4,6 +4,8 @@ begin;
 select no_plan();
 
 delete from public.role_assignments; -- isolate from dev personas / E2E leftovers (rolled back)
+delete from public.event_registrations;
+delete from public.events where legacy_id is not null; -- the migrated legacy events would skew counts
 
 create temp table _c as select (select id from public.committees where slug = 'ai') as a,
                                (select id from public.committees where slug = 'cybersecurity') as b;

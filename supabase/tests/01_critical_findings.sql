@@ -6,8 +6,8 @@ select plan(9);
 insert into auth.users (id, aud, role, email, raw_user_meta_data) values
   ('00000000-0000-0000-0000-0000000000d1', 'authenticated', 'authenticated', 'owner@example.test', '{"full_name":"Owner Of Registration"}'),
   ('00000000-0000-0000-0000-0000000000d2', 'authenticated', 'authenticated', 'other@example.test', '{"full_name":"Some Other Person"}');
-insert into public.event_registrations (user_id, event_id, full_name, email)
-values ('00000000-0000-0000-0000-0000000000d1', 1, 'Owner Of Registration', 'owner@example.test');
+insert into public.event_registrations (user_id, event_id, full_name_snapshot, email_snapshot)
+select '00000000-0000-0000-0000-0000000000d1', id, 'Owner Of Registration', 'owner@example.test' from public.events where legacy_id = 1;
 
 -- anonymous visitor
 set local role anon;
@@ -20,7 +20,7 @@ select throws_ok($$delete from public.members$$, '42501', null,
 select throws_ok($$select count(*) from public.event_registrations$$, '42501', null,
   'F-02: anon cannot read registrations');
 select throws_ok(
-  $$insert into public.event_registrations (user_id, event_id, full_name, email) values (null, 1, 'x', 'x@example.test')$$,
+  $$insert into public.event_registrations (user_id, event_id, full_name_snapshot, email_snapshot) values (null, gen_random_uuid(), 'x', 'x@example.test')$$,
   '42501', null, 'F-02: anon cannot create registrations');
 select lives_ok($$select count(*) from public.members$$, 'the public directory stays readable');
 reset role;
@@ -34,8 +34,8 @@ select is((select count(*)::int from public.event_registrations), 0,
 select throws_ok($$insert into public.members (first_name) values ('probe')$$, '42501', null,
   'F-01: a signed-in user without members.manage cannot insert members');
 select throws_ok(
-  $$insert into public.event_registrations (user_id, event_id, full_name, email)
-    values ('00000000-0000-0000-0000-0000000000d1', 1, 'forged', 'forged@example.test')$$,
+  $$insert into public.event_registrations (user_id, event_id, full_name_snapshot, email_snapshot)
+    values ('00000000-0000-0000-0000-0000000000d1', gen_random_uuid(), 'forged', 'forged@example.test')$$,
   '42501', null, 'a user cannot create a registration in someone else''s name');
 reset role;
 

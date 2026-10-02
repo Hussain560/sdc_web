@@ -144,6 +144,49 @@ isOneToOne: true
                   ]
                 },"event_registrations": {
                   Row: {
+                    "answers": NonNullable<Json>,"attendance_percent": number | null,"attendance_result": string | null,"cancelled_at": string | null,"cancelled_by": string | null,"created_at": string,"decided_at": string | null,"decided_by": string | null,"decision_note": string | null,"email_snapshot": string,"event_id": string,"full_name_snapshot": string,"id": string,"legacy_id": number | null,"notify_status": string,"status": string,"updated_at": string,"user_id": string | null,"was_member": boolean
+                  }
+                  Insert: {
+                    "answers"?: NonNullable<Json>,"attendance_percent"?: number | null,"attendance_result"?: string | null,"cancelled_at"?: string | null,"cancelled_by"?: string | null,"created_at"?: string,"decided_at"?: string | null,"decided_by"?: string | null,"decision_note"?: string | null,"email_snapshot": string,"event_id": string,"full_name_snapshot": string,"id"?: string,"legacy_id"?: number | null,"notify_status"?: string,"status"?: string,"updated_at"?: string,"user_id"?: string | null,"was_member"?: boolean
+                  }
+                  Update: {
+                    "answers"?: NonNullable<Json>,"attendance_percent"?: number | null,"attendance_result"?: string | null,"cancelled_at"?: string | null,"cancelled_by"?: string | null,"created_at"?: string,"decided_at"?: string | null,"decided_by"?: string | null,"decision_note"?: string | null,"email_snapshot"?: string,"event_id"?: string,"full_name_snapshot"?: string,"id"?: string,"legacy_id"?: number | null,"notify_status"?: string,"status"?: string,"updated_at"?: string,"user_id"?: string | null,"was_member"?: boolean
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "event_registrations_cancelled_by_fkey"
+      columns: ["cancelled_by"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "event_registrations_decided_by_fkey"
+      columns: ["decided_by"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "event_registrations_event_id_fkey"
+      columns: ["event_id"]
+isOneToOne: false
+      referencedRelation: "events"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "event_registrations_event_id_fkey"
+      columns: ["event_id"]
+isOneToOne: false
+      referencedRelation: "public_events"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "event_registrations_user_id_fkey"
+      columns: ["user_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"event_registrations_legacy": {
+                  Row: {
                     "created_at": string | null,"email": string | null,"event_id": number,"full_name": string | null,"id": number,"status": string | null,"user_id": string | null
                   }
                   Insert: {
@@ -346,12 +389,50 @@ isOneToOne: false
       referencedColumns: ["key"]
     }
                   ]
+                },"event_registration_counts": {
+                  Row: {
+                    "event_id": string | null,"status": string | null,"total": number | null
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "event_registrations_event_id_fkey"
+      columns: ["event_id"]
+isOneToOne: false
+      referencedRelation: "events"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "event_registrations_event_id_fkey"
+      columns: ["event_id"]
+isOneToOne: false
+      referencedRelation: "public_events"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"event_status_counts": {
                   Row: {
                     "status": string | null,"total": number | null
                   }
                   Relationships: [
                     
+                  ]
+                },"my_registrations": {
+                  Row: {
+                    "attendance_result": string | null,"cancelled_at": string | null,"cover_image_path": string | null,"created_at": string | null,"decided_at": string | null,"end_date": string | null,"event_id": string | null,"event_status": string | null,"group_link": string | null,"id": string | null,"location_ar": string | null,"location_en": string | null,"location_mode": string | null,"meeting_notes": string | null,"meeting_url": string | null,"slug": string | null,"start_date": string | null,"start_time": string | null,"status": string | null,"title_ar": string | null,"title_en": string | null
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "event_registrations_event_id_fkey"
+      columns: ["event_id"]
+isOneToOne: false
+      referencedRelation: "events"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "event_registrations_event_id_fkey"
+      columns: ["event_id"]
+isOneToOne: false
+      referencedRelation: "public_events"
+      referencedColumns: ["id"]
+    }
                   ]
                 },"public_events": {
                   Row: {
@@ -378,6 +459,15 @@ isOneToOne: false
             "assign_role":
 { Args: { "p_bio_ar"?: string,"p_bio_en"?: string,"p_committee"?: string,"p_ends_at"?: string,"p_role": string,"p_starts_at"?: string,"p_tags_ar"?: (string)[],"p_tags_en"?: (string)[],"p_title_ar"?: string,"p_title_en"?: string,"p_user": string }; Returns: string
                            },
+"cancel_registration":
+{ Args: { "p_id": string }; Returns: undefined
+                           },
+"cancel_registration_by_organizer":
+{ Args: { "p_id": string,"p_reason": string }; Returns: undefined
+                           },
+"decide_registrations":
+{ Args: { "p_decision": string,"p_ids": (string)[],"p_note"?: string }; Returns: Json
+                           },
 "delete_event_draft":
 { Args: { "p_id": string }; Returns: undefined
                            },
@@ -396,6 +486,9 @@ isOneToOne: false
                            },
 "handover_head":
 { Args: { "p_at"?: string,"p_committee": string,"p_new_head": string }; Returns: string
+                           },
+"register_for_event":
+{ Args: { "p_answers"?: Json,"p_event": string }; Returns: Json
                            },
 "save_event":
 { Args: { "p": Json,"p_event_id": string,"p_expected_updated_at"?: string }; Returns: Json
