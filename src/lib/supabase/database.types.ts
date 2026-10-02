@@ -61,6 +61,87 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"event_dates": {
+                  Row: {
+                    "ends_at": string | null,"event_date": string,"event_id": string,"id": string,"starts_at": string | null
+                  }
+                  Insert: {
+                    "ends_at"?: string | null,"event_date": string,"event_id": string,"id"?: string,"starts_at"?: string | null
+                  }
+                  Update: {
+                    "ends_at"?: string | null,"event_date"?: string,"event_id"?: string,"id"?: string,"starts_at"?: string | null
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "event_dates_event_id_fkey"
+      columns: ["event_id"]
+isOneToOne: false
+      referencedRelation: "events"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "event_dates_event_id_fkey"
+      columns: ["event_id"]
+isOneToOne: false
+      referencedRelation: "public_events"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"event_presenters": {
+                  Row: {
+                    "event_id": string,"guest_link": string | null,"guest_name_ar": string | null,"guest_name_en": string | null,"guest_photo_path": string | null,"guest_title_ar": string | null,"guest_title_en": string | null,"id": string,"profile_id": string | null,"role": string,"sort_order": number
+                  }
+                  Insert: {
+                    "event_id": string,"guest_link"?: string | null,"guest_name_ar"?: string | null,"guest_name_en"?: string | null,"guest_photo_path"?: string | null,"guest_title_ar"?: string | null,"guest_title_en"?: string | null,"id"?: string,"profile_id"?: string | null,"role"?: string,"sort_order"?: number
+                  }
+                  Update: {
+                    "event_id"?: string,"guest_link"?: string | null,"guest_name_ar"?: string | null,"guest_name_en"?: string | null,"guest_photo_path"?: string | null,"guest_title_ar"?: string | null,"guest_title_en"?: string | null,"id"?: string,"profile_id"?: string | null,"role"?: string,"sort_order"?: number
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "event_presenters_event_id_fkey"
+      columns: ["event_id"]
+isOneToOne: false
+      referencedRelation: "events"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "event_presenters_event_id_fkey"
+      columns: ["event_id"]
+isOneToOne: false
+      referencedRelation: "public_events"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "event_presenters_profile_id_fkey"
+      columns: ["profile_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"event_private_details": {
+                  Row: {
+                    "event_id": string,"group_link": string | null,"meeting_notes": string | null,"meeting_url": string | null,"organizer_notes": string | null,"updated_at": string
+                  }
+                  Insert: {
+                    "event_id": string,"group_link"?: string | null,"meeting_notes"?: string | null,"meeting_url"?: string | null,"organizer_notes"?: string | null,"updated_at"?: string
+                  }
+                  Update: {
+                    "event_id"?: string,"group_link"?: string | null,"meeting_notes"?: string | null,"meeting_url"?: string | null,"organizer_notes"?: string | null,"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "event_private_details_event_id_fkey"
+      columns: ["event_id"]
+isOneToOne: true
+      referencedRelation: "events"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "event_private_details_event_id_fkey"
+      columns: ["event_id"]
+isOneToOne: true
+      referencedRelation: "public_events"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"event_registrations": {
                   Row: {
                     "created_at": string | null,"email": string | null,"event_id": number,"full_name": string | null,"id": number,"status": string | null,"user_id": string | null
@@ -73,6 +154,55 @@ isOneToOne: false
                   }
                   Relationships: [
                     
+                  ]
+                },"events": {
+                  Row: {
+                    "archived_at": string | null,"attendance_finalized_at": string | null,"attendance_finalized_by": string | null,"audience": string,"awards_ar": string | null,"awards_en": string | null,"cancel_reason": string | null,"cancelled_at": string | null,"certificate_available": boolean,"committee_id": string,"completed_at": string | null,"contact_email": string | null,"contact_phone": string | null,"cover_image_path": string | null,"created_at": string,"created_by": string | null,"description_ar": string | null,"description_en": string | null,"details": NonNullable<Json>,"display_config": NonNullable<Json>,"end_date": string | null,"end_time": string | null,"faq": NonNullable<Json>,"goals": NonNullable<Json>,"id": string,"legacy_id": number | null,"location_ar": string | null,"location_en": string | null,"location_mode": string,"map_url": string | null,"published_at": string | null,"registration_end_at": string | null,"registration_start_at": string | null,"requires_approval": boolean,"review_note": string | null,"reviewed_at": string | null,"reviewed_by": string | null,"schedule_type": string,"seats": number | null,"slug": string,"start_date": string | null,"start_time": string | null,"status": string,"submission_note": string | null,"submitted_at": string | null,"submitted_by": string | null,"summary_ar": string | null,"summary_en": string | null,"title_ar": string,"title_en": string | null,"type": string,"updated_at": string,"waitlist_enabled": boolean
+                  }
+                  Insert: {
+                    "archived_at"?: string | null,"attendance_finalized_at"?: string | null,"attendance_finalized_by"?: string | null,"audience"?: string,"awards_ar"?: string | null,"awards_en"?: string | null,"cancel_reason"?: string | null,"cancelled_at"?: string | null,"certificate_available"?: boolean,"committee_id": string,"completed_at"?: string | null,"contact_email"?: string | null,"contact_phone"?: string | null,"cover_image_path"?: string | null,"created_at"?: string,"created_by"?: string | null,"description_ar"?: string | null,"description_en"?: string | null,"details"?: NonNullable<Json>,"display_config"?: NonNullable<Json>,"end_date"?: string | null,"end_time"?: string | null,"faq"?: NonNullable<Json>,"goals"?: NonNullable<Json>,"id"?: string,"legacy_id"?: number | null,"location_ar"?: string | null,"location_en"?: string | null,"location_mode"?: string,"map_url"?: string | null,"published_at"?: string | null,"registration_end_at"?: string | null,"registration_start_at"?: string | null,"requires_approval"?: boolean,"review_note"?: string | null,"reviewed_at"?: string | null,"reviewed_by"?: string | null,"schedule_type"?: string,"seats"?: number | null,"slug": string,"start_date"?: string | null,"start_time"?: string | null,"status"?: string,"submission_note"?: string | null,"submitted_at"?: string | null,"submitted_by"?: string | null,"summary_ar"?: string | null,"summary_en"?: string | null,"title_ar": string,"title_en"?: string | null,"type": string,"updated_at"?: string,"waitlist_enabled"?: boolean
+                  }
+                  Update: {
+                    "archived_at"?: string | null,"attendance_finalized_at"?: string | null,"attendance_finalized_by"?: string | null,"audience"?: string,"awards_ar"?: string | null,"awards_en"?: string | null,"cancel_reason"?: string | null,"cancelled_at"?: string | null,"certificate_available"?: boolean,"committee_id"?: string,"completed_at"?: string | null,"contact_email"?: string | null,"contact_phone"?: string | null,"cover_image_path"?: string | null,"created_at"?: string,"created_by"?: string | null,"description_ar"?: string | null,"description_en"?: string | null,"details"?: NonNullable<Json>,"display_config"?: NonNullable<Json>,"end_date"?: string | null,"end_time"?: string | null,"faq"?: NonNullable<Json>,"goals"?: NonNullable<Json>,"id"?: string,"legacy_id"?: number | null,"location_ar"?: string | null,"location_en"?: string | null,"location_mode"?: string,"map_url"?: string | null,"published_at"?: string | null,"registration_end_at"?: string | null,"registration_start_at"?: string | null,"requires_approval"?: boolean,"review_note"?: string | null,"reviewed_at"?: string | null,"reviewed_by"?: string | null,"schedule_type"?: string,"seats"?: number | null,"slug"?: string,"start_date"?: string | null,"start_time"?: string | null,"status"?: string,"submission_note"?: string | null,"submitted_at"?: string | null,"submitted_by"?: string | null,"summary_ar"?: string | null,"summary_en"?: string | null,"title_ar"?: string,"title_en"?: string | null,"type"?: string,"updated_at"?: string,"waitlist_enabled"?: boolean
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "events_attendance_finalized_by_fkey"
+      columns: ["attendance_finalized_by"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "events_committee_id_fkey"
+      columns: ["committee_id"]
+isOneToOne: false
+      referencedRelation: "committees"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "events_committee_id_fkey"
+      columns: ["committee_id"]
+isOneToOne: false
+      referencedRelation: "current_positions"
+      referencedColumns: ["committee_id"]
+    },{
+      foreignKeyName: "events_created_by_fkey"
+      columns: ["created_by"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "events_reviewed_by_fkey"
+      columns: ["reviewed_by"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "events_submitted_by_fkey"
+      columns: ["submitted_by"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
                   ]
                 },"members": {
                   Row: {
@@ -216,17 +346,57 @@ isOneToOne: false
       referencedColumns: ["key"]
     }
                   ]
+                },"event_status_counts": {
+                  Row: {
+                    "status": string | null,"total": number | null
+                  }
+                  Relationships: [
+                    
+                  ]
+                },"public_events": {
+                  Row: {
+                    "accepted_count": number | null,"audience": string | null,"awards_ar": string | null,"awards_en": string | null,"cancel_reason": string | null,"cancelled_at": string | null,"certificate_available": boolean | null,"committee_id": string | null,"committee_name_ar": string | null,"committee_name_en": string | null,"committee_slug": string | null,"contact_email": string | null,"contact_phone": string | null,"cover_image_path": string | null,"description_ar": string | null,"description_en": string | null,"details": Json | null,"display_config": Json | null,"end_date": string | null,"end_time": string | null,"faq": Json | null,"goals": Json | null,"id": string | null,"last_date": string | null,"legacy_id": number | null,"location_ar": string | null,"location_en": string | null,"location_mode": string | null,"map_url": string | null,"phase": string | null,"published_at": string | null,"registration_end_at": string | null,"registration_start_at": string | null,"requires_approval": boolean | null,"schedule_type": string | null,"seats": number | null,"seats_left": number | null,"slug": string | null,"start_date": string | null,"start_time": string | null,"status": string | null,"summary_ar": string | null,"summary_en": string | null,"title_ar": string | null,"title_en": string | null,"type": string | null,"waitlist_enabled": boolean | null
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "events_committee_id_fkey"
+      columns: ["committee_id"]
+isOneToOne: false
+      referencedRelation: "committees"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "events_committee_id_fkey"
+      columns: ["committee_id"]
+isOneToOne: false
+      referencedRelation: "current_positions"
+      referencedColumns: ["committee_id"]
+    }
+                  ]
                 }
           }
           Functions: {
             "assign_role":
 { Args: { "p_bio_ar"?: string,"p_bio_en"?: string,"p_committee"?: string,"p_ends_at"?: string,"p_role": string,"p_starts_at"?: string,"p_tags_ar"?: (string)[],"p_tags_en"?: (string)[],"p_title_ar"?: string,"p_title_en"?: string,"p_user": string }; Returns: string
                            },
+"delete_event_draft":
+{ Args: { "p_id": string }; Returns: undefined
+                           },
 "end_role_assignment":
 { Args: { "p_ends_at"?: string,"p_id": string,"p_reason": string }; Returns: undefined
                            },
+"event_history":
+{ Args: { "p_id": string }; Returns: {
+              "action": string,"actor_name": string,"occurred_at": string,"summary": Json
+            }[]
+                           },
 "handover_head":
 { Args: { "p_at"?: string,"p_committee": string,"p_new_head": string }; Returns: string
+                           },
+"save_event":
+{ Args: { "p": Json,"p_event_id": string,"p_expected_updated_at"?: string }; Returns: Json
+                           },
+"transition_event":
+{ Args: { "p_action": string,"p_id": string,"p_note"?: string }; Returns: string
                            }
           }
           Enums: {
