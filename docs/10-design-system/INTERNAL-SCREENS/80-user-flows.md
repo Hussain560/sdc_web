@@ -145,7 +145,7 @@ sequenceDiagram
     CH->>CH: sidebar shows "Committee" group for their committee
     CH->>M: 20 Add M as committee_member
     M->>M: sidebar gains "Committee" group (drafting)
-    Note over SA,M: COMMITTEE_EMAILS removed; /committee → /dashboard/events (redirect)
+    Note over SA,M: COMMITTEE_EMAILS removed · /committee → /dashboard/events (redirect)
 ```
 
 Every assignment change writes an audit entry and changes navigation on the affected user's next request.

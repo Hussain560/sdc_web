@@ -36,7 +36,9 @@
 | `registration.cancelled_by_organizer` | Organizer cancels a registration | Participant | Notice |
 | `event.cancelled` | Event cancelled | All pending/accepted/waitlisted registrants | Cancellation + reason |
 | `event.changed` | Date/time/format/location of a published event changed | Accepted registrants | What changed |
-| `event.reminder` | 24 h before `starts_at` | Accepted registrants | Reminder + link — **optional, Phase 4** |
+| `event.reminder` | 24 h before the first day starts | Accepted registrants | Reminder + link — **optional, Phase 4** |
+| `member.claim_invite` | Leadership sends a claim invite for a legacy member record | Invited e-mail | One-time 7-day link to claim the profile |
+| `certificate.issued` | Certificate generated for an eligible attendee (**Q-020**) | Participant | Certificate PDF link + verification URL |
 | `committee.assigned` | Added to a committee | Member | Welcome to committee — **optional** |
 | `review.pending` | Event/article submitted for review | Approvers | Digest — **optional, Phase 4** |
 

@@ -30,8 +30,8 @@ This retires TD-001 (no version control) and R-001/R-002 (open production data),
 | -------- | ----- | -------- | ------ | ----- | ------ |
 | FND-006 | Push branch `chore/platform-foundation` to `sdc-saudi/SDC_website`, open a PR to `main`, review, merge | P0 | 2 | PO + TL | ⛔ On hold — owner said do not push (2026-10-02); local commits ready |
 | FND-004 | Branch protection on `main` (+ `develop`), ≥ 2 org owners, `CODEOWNERS` | P0 | 1 | PO | ⬜ |
-| FND-003 | Inspect remote `sdc-members` read-only: schema dump, policies, grants, buckets, data volumes (Q-025) | P0 | 2 | Supabase owner + TL | ⬜ |
-| SEC-001 | Containment migration (only if FND-003 confirms exposure) | P0 | 3 | TL | ⬜ conditional |
+| FND-003 | Inspect remote `sdc-members` read-only: schema dump, policies, grants, buckets, data volumes (Q-025) | P0 | 2 | Supabase owner + TL | ⏸ Deferred by owner (2026-10-02) |
+| SEC-001 | Containment migration (only if FND-003 confirms exposure) | P0 | 3 | TL | ⏸ Deferred with FND-003 |
 | FND-005 | Access inventory: GitHub, Vercel, Supabase, Gmail/SMTP, domain owners; shared password manager | P0 | 1 | PO | ⬜ |
 | FND-002 | Answer the P1 open questions (list below) | P0 | 3 | Leadership | ⬜ |
 | FND-001 | Review the documentation; mark the reviewed docs *In Review* / *Approved* | P0 | 3 | PO + TL | ⬜ |

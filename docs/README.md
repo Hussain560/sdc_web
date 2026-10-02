@@ -73,7 +73,7 @@ docs/
 | -------- | ------------------ |
 | New to the project | [Product overview](./00-product/product-overview.md) → [Current-system audit](./01-project/current-system-audit.md) → [Target architecture](./04-architecture/target-architecture.md) |
 | Answering stakeholder questions | [Open questions](./90-decisions/open-questions.md) → [Organizational structure](./03-business-domain/organizational-structure.md) |
-| Designing a feature | [Requirements](./02-requirements/README.md) → [Business rules](./03-business-domain/business-rules.md) → the module in [11-modules](./11-modules/README.md) |
+| Designing a feature | [Requirements](./02-requirements/README.md) → [Business processes](./03-business-domain/business-processes.md) → [Business rules](./03-business-domain/business-rules.md) → the module spec in [11-modules](./11-modules/README.md) |
 | Touching the database | [Database README](./05-database/README.md) → [RLS model](./05-database/rls-security-model.md) → [Migration strategy](./05-database/migration-strategy.md) |
 | Opening a pull request | [Git workflow](./07-engineering/git-workflow.md) → [Definition of Done](./99-project-management/definition-of-done.md) |
 | Building UI | [Design system](./10-design-system/README.md) → [Internal screens](./10-design-system/INTERNAL-SCREENS/README.md) / [Public screens](./10-design-system/PUBLIC-SCREENS/README.md) → [AI agent skills](./07-engineering/ai-agent-skills.md) |

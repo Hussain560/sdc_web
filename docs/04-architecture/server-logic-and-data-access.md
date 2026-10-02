@@ -27,7 +27,7 @@
 | ------ | ------ | --- | ------- | --- |
 | Server (user) | `lib/supabase/server.ts` | anon/publishable key + user's cookie session | Server Components, Server Actions, Route Handlers | **Applies** (as the user) |
 | Browser | `lib/supabase/browser.ts` | anon/publishable key | Only where realtime or direct client calls are justified (rare) | Applies |
-| Middleware | `lib/supabase/middleware.ts` | anon key | Session refresh | — |
+| Proxy (Next.js 16 `proxy.ts`, formerly middleware) | `lib/supabase/proxy.ts` | anon key | Session refresh | — |
 | Admin | `lib/supabase/admin.ts` (`import 'server-only'`) | **service role / secret key** | Narrow operations impossible as the user: Auth admin (invite/claim links), system jobs | **Bypassed** — every call must check permissions explicitly first and be audited |
 
 Rule: application code uses the **user client by default**. Using the admin client requires a code comment stating why and a review approval.

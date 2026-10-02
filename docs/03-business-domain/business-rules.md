@@ -64,7 +64,7 @@ Detail: [event-lifecycle.md](./event-lifecycle.md)
 | BR-EVT-002 | Status transitions follow the editorial state diagram. | P | SVR (transition function) + DB (CHECK on values) |
 | BR-EVT-003 | Publishing requires approval by an approver (fast-track allowed for approvers). | P (Q-005) | SVR + RLS |
 | BR-EVT-004 | Timing phase (coming soon / registration open / ended…) is derived from dates, never stored. | P | DRV |
-| BR-EVT-005 | `ends_at >= starts_at`; `registration_closes_at >= registration_opens_at`. | P | DB (CHECK) |
+| BR-EVT-005 | Schedule consistency (KFUCS model): `end_date >= start_date`; same-day `end_time > start_time`; specific dates unique; `registration_end_at` after the first day's start (may be extended while in progress). | P | DB (CHECK) |
 | BR-EVT-006 | Cancelling a published event requires a reason and notifies registrants. | P | SVR |
 | BR-EVT-007 | Online meeting URL is visible only to accepted registrants and organizers. | P | RLS / separate column privilege or table |
 | BR-EVT-008 | Unpublished events are visible only to their committee roles and approvers. | P | RLS |

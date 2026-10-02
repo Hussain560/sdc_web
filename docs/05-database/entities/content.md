@@ -47,4 +47,6 @@ Indexes: `slug` unique; partial `(published_at desc) where status = 'published'`
 | `tag_id` | uuid | FK → `tags` RESTRICT |
 | | | PK (`article_id`, `tag_id`) |
 
+Supporting table `article_slug_redirects` (`old_slug` PK, `article_id` FK) keeps old URLs working when a slug changes ([articles module](../../11-modules/articles/README.md)).
+
 RLS (all three): public reads rows of `published` articles; committee roles with `articles.edit` read/write drafts in scope; publish/archive through `transition_article()` with `articles.publish` in scope.

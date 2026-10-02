@@ -25,10 +25,11 @@ Reports are **derived** from operational data (no separately maintained numbers)
 | Active members | Members with status `active` | by joining cycle, university, academic status, track, committee | Community, committee (own) |
 | New members per cycle | Accepted applications in a cycle | by cycle | Community |
 | Application funnel | Submitted → accepted / rejected / waitlisted / withdrawn | by cycle | Community |
-| Events held | Events `published`/`completed` with `ends_at` in period | by committee, type, format | Community, committee |
+| Events held | Events `published`/`completed` whose last scheduled date (`event_dates`) is in the period | by committee, type, location mode | Community, committee |
 | Registrations | Registrations created in period | by event, status | Community, committee |
 | Acceptance rate | accepted ÷ (accepted + rejected) | by event | Community, committee |
-| Attendance rate | attended ÷ accepted (events with attendance recorded) | by event, committee | Community, committee |
+| Attendance rate | Average `attendance_percent` of accepted registrations (events with finalized attendance only — KFUCS canonical formula, [ADR-012](../90-decisions/ADR-012-event-model-and-wizard-from-kfucs.md)) | by event, committee | Community, committee |
+| Certificates issued | Certificates with `delivery_status = sent` in period (**Q-020**) | by event | Community, committee |
 | Member participation | Share of registrations made by members vs non-members | by event | Community, committee |
 | Content output | Articles published in period | by committee | Community, committee |
 | Committee size | Active committee members | by committee | Community, committee (own) |

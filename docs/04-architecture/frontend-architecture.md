@@ -106,7 +106,7 @@ src/
 │   ├── ui/                   design-system primitives (Button, Card, Badge, Modal, Input…)
 │   └── layout/               Header, Footer, DashboardShell, Breadcrumbs
 ├── lib/
-│   ├── supabase/             server.ts · browser.ts · middleware.ts · admin.ts (server-only)
+│   ├── supabase/             server.ts · browser.ts · proxy.ts · admin.ts (server-only)
 │   ├── auth/                 session.ts · permissions.ts (can(), requirePermission())
 │   ├── i18n/                 config, request, formatters
 │   ├── email/                provider.ts · templates/ · send.ts

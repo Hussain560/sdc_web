@@ -35,3 +35,4 @@ Proposed rules are written so they can be accepted or changed without restructur
 | [notification-rules.md](./notification-rules.md) | Which events trigger which messages, to whom, in which language |
 | [reporting-model.md](./reporting-model.md) | Metrics, definitions and who may see them |
 | [business-rules.md](./business-rules.md) | Consolidated catalogue of all rules (BR-*) |
+| [business-processes.md](./business-processes.md) | End-to-end processes across modules: landscape, the SDC year, event and intake journeys, term handover, RACI, process KPIs |

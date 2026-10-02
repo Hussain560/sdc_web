@@ -13,8 +13,8 @@ One page that answers *"what do we do next, and who does it?"*. Details live in 
 | # | Action | Owner | Blocks | Done when |
 | - | ------ | ----- | ------ | --------- |
 | 1 | **On hold (owner instruction 2026-10-02: do not push).** The 4 local commits on `chore/platform-foundation` stay local; the push URL is disabled. The owner decides when (and whether) to push and open a PR | Project owner | CI on GitHub (Sprint 01) | Owner gives an explicit go |
-| 2 | Log in to Supabase with the account that owns `sdc-members` and run the read-only dump (commands in [Sprint 00 task 3](./sprints/sprint-00-foundation-close/plan.md#technical-tasks)) | Supabase owner | Containment decision, migration baseline | Q-025 answered |
-| 3 | If production is exposed: apply the containment migration (`v0.1.1`) | Tech lead | Security | Anon can no longer write `members` or read registrations |
+| 2 | **Deferred by the owner (2026-10-02)** — log in to Supabase with the account that owns `sdc-members` and run the read-only dump (commands in [Sprint 00 task 3](./sprints/sprint-00-foundation-close/plan.md#technical-tasks)) | Supabase owner | Containment decision, migration baseline | Q-025 answered |
+| 3 | **Deferred with item 2** — if production is exposed: apply the containment migration (`v0.1.1`) | Tech lead | Security | Anon can no longer write `members` or read registrations |
 | 4 | Leadership session to answer the P1 questions (Q-003, Q-004, Q-005, Q-010, Q-011, Q-017, Q-039, Q-040) | Project owner + leadership | Sprints 03–05 | Answers recorded in [open questions](../90-decisions/open-questions.md) |
 | 5 | Review the docs — start with [ADR-012](../90-decisions/ADR-012-event-model-and-wizard-from-kfucs.md), the [public](../10-design-system/PUBLIC-SCREENS/README.md) and [internal](../10-design-system/INTERNAL-SCREENS/README.md) screens | Project owner + tech lead | M0 | PR comments resolved |
 | 6 | Access inventory (GitHub, Vercel, Supabase, Gmail, domain) and a shared password manager | Project owner | Staging, deployments | [Risk R-013](../01-project/risk-register.md) closed |

@@ -63,6 +63,9 @@ RLS: applicant reads own; applicant updates own while `submitted` and cycle open
 
 ## 3. `members`
 
+> Related table `member_claim_tokens` (`id`, `member_id` FK, `email`, `token_hash`, `expires_at` (7 days), `used_at`, `created_by`) supports the legacy claim flow ([members module](../../11-modules/members/README.md)). RLS: no client access; used only by `claim_legacy_member()` and `sendClaimInvites`.
+
+
 | Column | Type | Null | Default / Constraint | Cls | Description |
 | ------ | ---- | ---- | -------------------- | --- | ----------- |
 | `id` | uuid | no | PK | P | Public profile URL key |

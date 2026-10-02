@@ -5,43 +5,67 @@
 | **Last Updated** | YYYY-MM-DD |
 | **Status**       | Draft / In Review / Approved |
 | **Owner**        | <committee / person> |
-| **Phase**        | <roadmap phase> |
+| **Phase / Sprints** | <roadmap phase> / <sprint numbers> |
+| **Code**         | `src/modules/<module>/` |
 
-## 1. Purpose
-One paragraph: what problem this module solves for SDC.
+> Module documents **link** to requirements (FR-), business rules (BR-), entities and permissions instead of restating them. They add what is module-specific: process, logic, operations, screens, edge cases and tests.
 
-## 2. Current state
-CURRENT behaviour and PROBLEMS (link to the audit section).
+## 1. Purpose and scope
+One paragraph on the problem this module solves for SDC, then:
+
+| In scope | Out of scope |
+| -------- | ------------ |
+
+## 2. Current state (CURRENT / PROBLEM)
+What exists today and what is wrong, with links to the [audit](../01-project/current-system-audit.md).
 
 ## 3. Actors and permissions
-| Actor | Can | Permission key / ownership rule |
-| ----- | --- | ------------------------------- |
+| Actor | Can | Permission key / ownership rule | Scope |
+| ----- | --- | ------------------------------- | ----- |
 
-## 4. Requirements
-Links to FR-/NFR- ids.
+## 4. Business process
+A Mermaid `flowchart` with one `subgraph` per actor (a swimlane), from trigger to outcome.
 
-## 5. Business rules and lifecycle
-Links to BR- ids and the lifecycle document; module-specific clarifications only.
+## 5. Lifecycle
+A Mermaid `stateDiagram-v2`, plus a transition table: from → to, who, guard, side effects.
 
-## 6. Data
-Links to entity docs; module-specific views/functions.
+## 6. Key sequences
+One Mermaid `sequenceDiagram` per non-trivial operation (UI → Server Action → DB function → notifications).
 
-## 7. Routes and screens
-| Route | Audience | Purpose | Key states |
-| ----- | -------- | ------- | ---------- |
+## 7. Data
+A Mermaid `erDiagram` subset and a table of the tables, views and functions this module owns or reads.
 
-## 8. Server operations
-| Operation (Server Action / function) | Input | Authorization | Side effects |
-| ------------------------------------ | ----- | ------------- | ------------ |
+## 8. Business logic and validation
+| # | Rule | Enforced in (UI / Server Action / DB) | Source (BR-/FR-) |
+| - | ---- | ------------------------------------- | ---------------- |
 
-## 9. Notifications
-Template keys sent by this module.
+## 9. Routes and screens
+| Route | Audience | Purpose | Blueprint |
+| ----- | -------- | ------- | --------- |
 
-## 10. Edge cases
-Numbered list with expected behaviour.
+## 10. Server operations
+| Operation | Input (Zod) | Authorization | DB call | Side effects | Error codes |
+| --------- | ----------- | ------------- | ------- | ------------ | ----------- |
 
-## 11. Testing
-pgTAP, integration and E2E scenarios (reference requirement ids).
+## 11. Notifications
+Template keys sent, with their trigger and recipient.
 
-## 12. Open questions
+## 12. Error codes
+| Code | When | User message (ar / en) |
+| ---- | ---- | ---------------------- |
+
+## 13. Edge cases
+A numbered list, each with its expected behaviour.
+
+## 14. Testing
+| Level | Scenarios |
+| ----- | --------- |
+| Unit | |
+| pgTAP | |
+| E2E | |
+
+## 15. Implementation plan
+Sprint mapping, the module folder layout, migration names and the order of work.
+
+## 16. Open questions
 Links to Q- ids.

@@ -117,7 +117,7 @@ sequenceDiagram
     B->>SA: registerForEvent(eventId)
     SA->>SA: getUser() (verified), validate input
     SA->>DB: rpc register_for_event(event_id) as user
-    Note over DB: checks phase, audience, uniqueness,<br/>capacity; snapshots name/email;<br/>inserts; writes audit row
+    Note over DB: checks phase, audience, uniqueness,<br/>capacity · snapshots name/email ·<br/>inserts · writes audit row
     DB-->>SA: registration (status pending/accepted/waitlisted)
     SA->>E: send(registration.received | confirmed) with idempotency key
     E->>DB: insert email_logs (sent/failed)
@@ -134,7 +134,7 @@ sequenceDiagram
     participant E as Email service
     B->>SA: decideApplications(ids, 'accepted', note)
     SA->>DB: rpc decide_membership_application(...) as user
-    Note over DB: RLS/has_permission('membership.review');<br/>transition check; create/reactivate member;<br/>audit — all in one transaction
+    Note over DB: RLS/has_permission('membership.review') ·<br/>transition check · create/reactivate member ·<br/>audit — all in one transaction
     DB-->>SA: decided rows
     loop each decided application
         SA->>E: send(membership.application_accepted)
