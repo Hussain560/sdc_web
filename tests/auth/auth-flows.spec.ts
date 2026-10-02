@@ -31,7 +31,7 @@ for (const lang of ['ar', 'en'] as const) {
       baseURL,
     }) => {
       const email = uniqueEmail('signup');
-      await gotoReady(page, `${prefix}/register?redirect=/events/2`);
+      await gotoReady(page, `${prefix}/register?redirect=/events/google-ai-studio-workshop`);
       await fillRegister(page, email);
       await expect(page.getByText(/check your email|تحقق من بريدك/i)).toBeVisible();
 
@@ -41,7 +41,7 @@ for (const lang of ['ar', 'en'] as const) {
       expect(mail.html).toContain('type=signup');
 
       await gotoReady(page, confirmLink(mail, baseURL!));
-      await expect(page).toHaveURL(new RegExp(`${prefix}/events/2$`));
+      await expect(page).toHaveURL(new RegExp(`${prefix}/events/google-ai-studio-workshop$`));
       await expectHeaderName(page, FULL_NAME);
 
       // The cookie session is readable on the server: /account renders without a redirect.
@@ -54,8 +54,13 @@ for (const lang of ['ar', 'en'] as const) {
       const email = uniqueEmail('signin');
       const id = await createConfirmedUser(email);
       try {
-        await signInViaUi(page, email, PASSWORD, `${prefix}/login?redirect=/events/3`);
-        await expect(page).toHaveURL(new RegExp(`${prefix}/events/3$`));
+        await signInViaUi(
+          page,
+          email,
+          PASSWORD,
+          `${prefix}/login?redirect=/events/excel-power-bi-workshop`,
+        );
+        await expect(page).toHaveURL(new RegExp(`${prefix}/events/excel-power-bi-workshop$`));
       } finally {
         await deleteUser(id);
       }

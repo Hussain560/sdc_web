@@ -39,7 +39,7 @@ Copy `.env.example` to `.env.local` and fill the values from `npx supabase statu
 npm run dev            # Next.js 16 (Turbopack)  →  / (Arabic) and /en (English)
 npm run check          # prettier --check + eslint + tsc + unit tests (what the pre-push gate runs)
 npm run test           # Vitest (jsdom)
-npm run e2e            # Playwright: smoke + visual regression of every public page (mocked Supabase)
+npm run e2e            # Playwright: smoke + visual regression of every public page (needs `npx supabase start`: events come from the database)
 npm run e2e:update     # regenerate visual baselines — ONLY for an approved redesign (D-009)
 npm run db:test        # pgTAP via `supabase test db` (647 assertions)
 npm run e2e:auth       # auth + RBAC end-to-end against the real local Auth, database and Mailpit

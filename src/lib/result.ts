@@ -40,6 +40,12 @@ export type ErrorCode =
   | 'INVALID_TRANSITION'
   | 'FILE_TOO_LARGE'
   | 'FILE_TYPE'
+  | 'ALREADY_REGISTERED'
+  | 'REGISTRATION_CLOSED'
+  | 'EVENT_FULL'
+  | 'MEMBERS_ONLY'
+  | 'TOO_LATE_TO_CANCEL'
+  | 'CAPACITY_REACHED'
   | 'INTERNAL';
 
 export type Result<T = void> =

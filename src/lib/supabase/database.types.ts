@@ -61,6 +61,25 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"email_logs": {
+                  Row: {
+                    "attempt": number,"created_at": string,"entity_id": string | null,"entity_type": string | null,"error_code": string | null,"error_message": string | null,"id": string,"idempotency_key": string,"locale": string,"provider": string | null,"provider_message_id": string | null,"recipient_email": string,"recipient_user_id": string | null,"status": string,"template_key": string
+                  }
+                  Insert: {
+                    "attempt"?: number,"created_at"?: string,"entity_id"?: string | null,"entity_type"?: string | null,"error_code"?: string | null,"error_message"?: string | null,"id"?: string,"idempotency_key": string,"locale": string,"provider"?: string | null,"provider_message_id"?: string | null,"recipient_email": string,"recipient_user_id"?: string | null,"status": string,"template_key": string
+                  }
+                  Update: {
+                    "attempt"?: number,"created_at"?: string,"entity_id"?: string | null,"entity_type"?: string | null,"error_code"?: string | null,"error_message"?: string | null,"id"?: string,"idempotency_key"?: string,"locale"?: string,"provider"?: string | null,"provider_message_id"?: string | null,"recipient_email"?: string,"recipient_user_id"?: string | null,"status"?: string,"template_key"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "email_logs_recipient_user_id_fkey"
+      columns: ["recipient_user_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"event_dates": {
                   Row: {
                     "ends_at": string | null,"event_date": string,"event_id": string,"id": string,"starts_at": string | null

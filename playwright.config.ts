@@ -1,13 +1,28 @@
+import { execSync } from 'node:child_process';
 import { defineConfig, devices } from '@playwright/test';
 
 const PORT = 3100;
 const isCI = !!process.env.CI;
 
-// Public pages read Supabase from the browser; the e2e suite mocks those calls
-// (tests/e2e/fixtures.ts) so screenshots never depend on live data.
+// Public pages (events, home block) read the database on the server, so the browser-level mocks in
+// tests/e2e/fixtures.ts are not enough any more: the suite runs against the local Supabase stack, whose
+// migrations seed the six legacy events. Start it first with `npx supabase start` (CI does the same).
+function localSupabase() {
+  const out = execSync('npx supabase status -o env', {
+    encoding: 'utf8',
+    stdio: ['ignore', 'pipe', 'ignore'],
+  });
+  const env: Record<string, string> = {};
+  for (const line of out.split(/\r?\n/)) {
+    const m = /^([A-Z_]+)="?(.*?)"?$/.exec(line.trim());
+    if (m?.[1]) env[m[1]] = m[2] ?? '';
+  }
+  return env;
+}
+const sb = localSupabase();
 const testEnv = {
-  NEXT_PUBLIC_SUPABASE_URL: 'http://127.0.0.1:54321',
-  NEXT_PUBLIC_SUPABASE_ANON_KEY: 'test-anon-key',
+  NEXT_PUBLIC_SUPABASE_URL: sb.API_URL ?? 'http://127.0.0.1:54321',
+  NEXT_PUBLIC_SUPABASE_ANON_KEY: sb.ANON_KEY ?? '',
 };
 
 const themes = ['dark', 'light'] as const;

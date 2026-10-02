@@ -56,6 +56,11 @@ const ICONS: Record<NavIcon, LucideIcon> = {
 
 const ACCOUNT_LINKS = [
   { href: '/account/profile', icon: UserRound, label: { ar: 'ملفي الشخصي', en: 'My profile' } },
+  {
+    href: '/account/registrations',
+    icon: Ticket,
+    label: { ar: 'تسجيلاتي', en: 'My registrations' },
+  },
   { href: '/account/roles', icon: BadgeCheck, label: { ar: 'مناصبي', en: 'My positions' } },
   { href: '/account/security', icon: ShieldCheck, label: { ar: 'الأمان', en: 'Security' } },
 ] as const;

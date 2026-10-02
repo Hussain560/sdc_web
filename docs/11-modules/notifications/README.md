@@ -100,7 +100,7 @@ erDiagram
 | `email_logs` | One row per attempt ([platform entities §2](../../05-database/entities/platform.md#2-email_logs)) |
 | `notify_status` on `event_registrations` (and equivalent on applications, certificates) | Claim-before-send state |
 | `lib/email/provider.ts` | Transport adapter (provider chosen in ADR-006 / Q-010); Mailpit SMTP locally |
-| `lib/email/templates/<key>.tsx` | React Email templates, ar + en, shared layout in the SDC brand (frozen identity) |
+| `lib/email/templates.ts` | Plain-HTML templates (no React Email dependency), ar + en, one shared layout in the SDC e-mail green; values are escaped (Sprint 06) |
 | `/api/cron/email-retry` | Protected route (Vercel Cron, secret header) running the retry job |
 
 ## 8. Business logic and validation

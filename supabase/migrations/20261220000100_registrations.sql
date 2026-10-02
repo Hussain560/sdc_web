@@ -203,7 +203,7 @@ begin
   select * into prof from public.profiles where id = caller;
   if r.id is not null then
     update public.event_registrations
-       set status = v_status, cancelled_at = null, cancelled_by = null, decided_at = null, decided_by = null,
+       set status = v_status, created_at = now(), cancelled_at = null, cancelled_by = null, decided_at = null, decided_by = null,
            decision_note = null, notify_status = 'not_sent', answers = coalesce(p_answers, '{}'::jsonb),
            full_name_snapshot = prof.full_name_ar, email_snapshot = prof.email, was_member = private.is_active_member(caller)
      where id = r.id returning id into v_id;

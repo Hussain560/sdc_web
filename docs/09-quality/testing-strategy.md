@@ -78,7 +78,7 @@ Coverage is a signal, not a goal; untested authorization paths are blocking rega
 | Level | Tool | Location | State |
 | ----- | ---- | -------- | ----- |
 | Unit / component | Vitest + Testing Library (jsdom) | `tests/unit/` | Language, theme, env validation, UI primitives (14 tests) |
-| E2E + visual | Playwright (Chromium) | `tests/e2e/` | 12 public pages × ar/en × dark/light × desktop/mobile = 96 baselines + locale and shell tests; Supabase calls mocked with fictional fixtures (`tests/fixtures/`) |
+| E2E + visual | Playwright (Chromium) | `tests/e2e/` | 12 public pages × ar/en × dark/light × desktop/mobile = 96 baselines + locale and shell tests; since Sprint 06 the suite runs against the local Supabase stack (server-rendered event pages read `public_events`; the six legacy events are seeded by migration). Browser-side calls that remain are still mocked (`tests/e2e/fixtures.ts`) |
 | Database | pgTAP (`supabase test db`) | `supabase/tests/` | Smoke tests + `todo` regression tests that document the legacy exposure (they flip to hard assertions in the containment/RBAC migration) |
 
 Visual-regression rules: threshold 0.1 % of pixels, animations disabled, copyright text masked, one retry; baselines change only in a PR that explicitly approves a redesign (D-009).

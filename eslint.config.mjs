@@ -25,6 +25,14 @@ const eslintConfig = defineConfig([
       ],
     },
   },
+  // The public pages keep their frozen legacy styling (D-009): same markup and inline hex values as before the rewrite.
+  {
+    files: [
+      'src/modules/events/components/public/**/*.tsx',
+      'src/modules/registrations/components/useRegistrationFlow.tsx',
+    ],
+    rules: { 'no-restricted-syntax': 'off' },
+  },
   // Override default ignores of eslint-config-next.
   globalIgnores([
     // Default ignores of eslint-config-next:

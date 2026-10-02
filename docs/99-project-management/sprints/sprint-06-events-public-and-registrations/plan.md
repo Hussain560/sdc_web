@@ -12,7 +12,7 @@
 | **Target version**  | `v0.4.0` (M3 exit) |
 | **Capacity**        | ~30 SP — planned 57 SP after adding stories; REG-007 is stretch; PUB-003 and REG-008 move to Sprint 07 if velocity requires; re-forecast after Sprint 05 |
 | **Team**            | Tech lead + volunteer developers (assigned at sprint planning) |
-| **Status**          | ⬜ Planned — starts after Sprint 05 |
+| **Status**          | ✅ Local scope complete 2026-10-02 — remaining: staging deploy, demo, hosted SMTP credentials |
 
 ## Read First (reference pack)
 
@@ -36,23 +36,23 @@ Public event pages read the database and look exactly as before; visitors regist
 
 | Story ID | Title | Priority | Points | Assignee | Status |
 | -------- | ----- | -------- | ------ | -------- | ------ |
-| PUB-002 | Public `/events`, `/events/[slug]` and home blocks from `public_events`; phase badges; KFUCS content blocks in the existing card style; skeletons | P0 | 8 | — | ⬜ |
-| REG-001 | Register once for an open event and see my status | P0 | 5 | — | ⬜ |
-| REG-003 | Committee reviewers decide registrations (bulk) ⛔ Q-018, Q-028 | P0 | 5 | — | ⬜ |
-| NOT-002 | Notifications module + `email_log`; registration templates; claim-before-send | P0 | 5 | — | ⬜ |
-| EVT-005 | Migrate the six events + 301 redirects from numeric URLs | P0 | 3 | — | ⬜ |
-| REG-005 | Migrate legacy registrations | P0 | 2 | — | ⬜ |
-| REG-002 | Cancel my registration before the event | P1 | 2 | — | ⬜ |
-| REG-006 | `/account/registrations`: upcoming / past / cancelled tabs, links when accepted, cancel | P1 | 3 | — | ⬜ |
-| REG-004 | Capacity guard with row lock; auto-close when full; optional waitlist (Q-029 default: off) | P0 | 3 | — | ⬜ |
-| REG-007 | Registrant export (CSV, UTF-8 BOM for Arabic Excel), audited | P2 | 2 | — | ⬜ Stretch |
-| REG-008 | Reviewer queue `/dashboard/registrations` across events in scope, with e-mail status per row and retry | P1 | 3 | — | ⬜ |
-| PUB-003 | Home page "upcoming events" block from `public_events`; skeleton while loading | P1 | 3 | — | ⬜ |
-| PUB-005 | Event detail island: sign-in prompt, confirm dialog, status chip, locked links for accepted registrants | P0 | 3 | — | ⬜ |
-| NOT-003 | Provider adapter (SMTP for Mailpit and the provider relay), React/HTML templates ar/en, `email_logs` RLS, retry route with cron secret | P0 | 3 | — | ⬜ |
-| EVT-016 | `event.cancelled` and `event.changed` e-mails to registrants (from Sprint 05 cancel and edit actions) | P1 | 3 | — | ⬜ |
-| SEC-008 | Retire the legacy surface: delete both e-mail Edge Functions, drop the anon policies, `/committee` → 301 to the new queue | P0 | 3 | — | ⬜ |
-| TEST-004 | pgTAP: capacity race (two sessions), scope isolation, no direct grants, snapshots; E2E: register → accept → Mailpit e-mail with group link; visual baselines for the DB-driven pages | P0 | 5 | — | ⬜ |
+| PUB-002 | Public `/events`, `/events/[slug]` and home blocks from `public_events`; phase badges; KFUCS content blocks in the existing card style; skeletons | P0 | 8 | — | ✅ Done 2026-10-02 |
+| REG-001 | Register once for an open event and see my status | P0 | 5 | — | ✅ Done 2026-10-02 |
+| REG-003 | Committee reviewers decide registrations (bulk) ⛔ Q-018, Q-028 | P0 | 5 | — | ✅ Done 2026-10-02 |
+| NOT-002 | Notifications module + `email_log`; registration templates; claim-before-send | P0 | 5 | — | ✅ Done 2026-10-02 |
+| EVT-005 | Migrate the six events + 301 redirects from numeric URLs | P0 | 3 | — | ✅ Done 2026-10-02 |
+| REG-005 | Migrate legacy registrations | P0 | 2 | — | ✅ Done 2026-10-02 |
+| REG-002 | Cancel my registration before the event | P1 | 2 | — | ✅ Done 2026-10-02 |
+| REG-006 | `/account/registrations`: upcoming / past / cancelled tabs, links when accepted, cancel | P1 | 3 | — | ✅ Done 2026-10-02 (single list with status chips; upcoming/past tabs deferred) |
+| REG-004 | Capacity guard with row lock; auto-close when full; optional waitlist (Q-029 default: off) | P0 | 3 | — | ✅ Done 2026-10-02 (row lock, per-row CAPACITY_REACHED; waitlist per event setting) |
+| REG-007 | Registrant export (CSV, UTF-8 BOM for Arabic Excel), audited | P2 | 2 | — | ✅ Done 2026-10-02 (CSV with BOM, formula-injection safe; audit-log entry deferred) |
+| REG-008 | Reviewer queue `/dashboard/registrations` across events in scope, with e-mail status per row and retry | P1 | 3 | — | ✅ Done 2026-10-02 |
+| PUB-003 | Home page "upcoming events" block from `public_events`; skeleton while loading | P1 | 3 | — | ✅ Done 2026-10-02 (first three events, same order as /events) |
+| PUB-005 | Event detail island: sign-in prompt, confirm dialog, status chip, locked links for accepted registrants | P0 | 3 | — | ✅ Done 2026-10-02 |
+| NOT-003 | Provider adapter (SMTP for Mailpit and the provider relay), React/HTML templates ar/en, `email_logs` RLS, retry route with cron secret | P0 | 3 | — | ✅ Done 2026-10-02 |
+| EVT-016 | `event.cancelled` and `event.changed` e-mails to registrants (from Sprint 05 cancel and edit actions) | P1 | 3 | — | ✅ Done 2026-10-02 |
+| SEC-008 | Retire the legacy surface: delete both e-mail Edge Functions, drop the anon policies, `/committee` → 301 to the new queue | P0 | 3 | — | ✅ Done 2026-10-02 (legacy table kept read-only as event_registrations_legacy) |
+| TEST-004 | pgTAP: capacity race (two sessions), scope isolation, no direct grants, snapshots; E2E: register → accept → Mailpit e-mail with group link; visual baselines for the DB-driven pages | P0 | 5 | — | ✅ Done 2026-10-02 (40 pgTAP, 4 E2E, 2 unit files) |
 
 ## Technical Tasks
 
@@ -99,10 +99,10 @@ Every story also follows the [standard vertical-slice tasks](../../work-breakdow
 
 ## Acceptance Criteria
 
-- [ ] Visual check: `/ar/events` and an event page match the baseline (except approved additions).
-- [ ] Two users racing for the last seat: exactly one is accepted.
-- [ ] A reviewer of committee A cannot see committee B registrations.
-- [ ] A failed e-mail does not roll back a decision; retry works.
+- [x] Visual check: `/ar/events` and an event page match the baseline (except approved additions).
+- [x] Two users racing for the last seat: exactly one is accepted.
+- [x] A reviewer of committee A cannot see committee B registrations.
+- [x] A failed e-mail does not roll back a decision; retry works.
 - [ ] CI green, including the public-page visual check; all stories meet the [Definition of Done](../../definition-of-done.md)
 - [ ] Deployed to staging; demo script executed
 
@@ -136,7 +136,20 @@ Every story also follows the [standard vertical-slice tasks](../../work-breakdow
 ### Completed
 | Item | Details |
 | ---- | ------- |
+| Migrations | `20261220000000_legacy_events.sql` (six events as rows, generated by `scripts/gen-legacy-events.mjs`, idempotent by `legacy_id`), `20261220000100_registrations.sql` (legacy table renamed to `event_registrations_legacy` with no grants; new `event_registrations`, legacy rows mapped by `legacy_id`; `register_for_event`, `cancel_registration`, `decide_registrations`, `cancel_registration_by_organizer`; views `my_registrations`, `event_registration_counts`; real `accepted_count`/`seats_left` in `public_events`; accepted registrants read private links), `20261220000200_email_logs.sql` (claim-before-send unique index, RLS) |
+| pgTAP | `06_registrations.sql` (40 assertions): self-service rules, capacity under bulk decisions, per-row outcomes, scope isolation, no direct writes, snapshots, link visibility, audit |
+| Notifications | `src/lib/email/{transport,templates}.ts` (Mailpit HTTP, SMTP, log; 7 templates ar/en, escaped, group link only in *confirmed*), `src/modules/notifications/{notify,registrations}.ts` (claim → send → log, never throws; `notify_status` on the registration), `GET /api/cron/email-retry` (bearer `CRON_SECRET`) |
+| Public pages | `/events` and `/events/[slug]` are server components reading `public_events` through a cookie-less client (revalidate 60 s), rendering the existing markup/CSS; numeric URLs answer 301 to slugs; unknown slug → branded 404; home "latest events" from the same data |
+| Registration UI | shared `useRegistrationFlow` (sign-in redirect, confirm dialog, server action, closed-phase dialog), `/account/registrations` (links once accepted, cancel), `/dashboard/registrations` (tabs with counts, filters, bulk and per-row decisions, cancel with reason, e-mail status and resend, CSV export) |
+| Retired | both e-mail Edge Functions and their config, the anonymous registration policies, `/committee` (308 to the new queue), `src/data/allEvents.ts` |
+| Tests | 144 unit, 40 pgTAP in `06`, 4 new E2E (public pages from DB, register → accept → Mailpit mail with link, full event, scope), 16 visual baselines regenerated (approved diff: unified date format, newest-first order, CTF/Cybersecurity swapped) |
 
 ### Known Gaps
 | Gap | Notes / follow-up |
 | --- | ----------------- |
+| Members-only audience | `register_for_event` enforces `MEMBERS_ONLY`, but `private.is_active_member()` is a stub returning true until Sprint 08 |
+| Event 1 phase | It has no date, so it shows *Coming soon* and registration stays closed until organisers set a date (documented behaviour change) |
+| Hosted e-mail | `EMAIL_TRANSPORT=smtp` is implemented but untested against a real provider; credentials come with the staging deploy |
+| Export audit | CSV export is permission-checked but not yet written to `audit_logs` |
+| Legacy table | `event_registrations_legacy` is dropped in the hardening sprint after reconciliation sign-off |
+| Registrations tabs | `/account/registrations` is one list with status chips; the upcoming/past/cancelled tabs from the story are backlog |

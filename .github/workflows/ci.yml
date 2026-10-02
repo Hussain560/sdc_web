@@ -50,6 +50,11 @@ jobs:
         with: { node-version-file: .nvmrc, cache: npm }
       - run: npm ci
       - run: npx playwright install --with-deps chromium
+      # Public event pages read the database on the server, so the visual suite needs the local stack
+      # (its migrations seed the six legacy events the baselines show).
+      - uses: supabase/setup-cli@v1
+        with: { version: latest }
+      - run: supabase start -x studio,imgproxy,vector,logflare,edge-runtime
       - run: npm run e2e
         env:
           CI: 'true'

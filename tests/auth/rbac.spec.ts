@@ -345,14 +345,19 @@ test.describe('public leadership comes from the database', () => {
     const plain = await persona(null);
     try {
       await signInAndWait(page, plain.email, undefined, '/en/login');
-      await gotoReady(page, '/en/committee');
-      await expect(page.getByText('غير مصرح لك بالدخول لهذه الصفحة')).toBeVisible();
+      await gotoReady(page, '/en/dashboard/registrations');
+      // A plain user is sent to the account area; nothing of the review queue renders.
+      await expect(page.getByRole('heading', { name: 'Registrations', exact: true })).toHaveCount(
+        0,
+      );
 
       const ctx = await browser.newContext({ baseURL: 'http://127.0.0.1:3300' });
       const other = await ctx.newPage();
       await signInAndWait(other, reviewer.email, undefined, '/en/login');
-      await gotoReady(other, '/en/committee');
-      await expect(other.getByText('مراجعة تسجيلات الفعاليات')).toBeVisible();
+      await gotoReady(other, '/en/dashboard/registrations');
+      await expect(
+        other.getByRole('heading', { name: 'Registrations', exact: true }),
+      ).toBeVisible();
       await ctx.close();
     } finally {
       await remove(reviewer, plain);

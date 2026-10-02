@@ -53,6 +53,10 @@ export default defineConfig({
       NEXT_PUBLIC_SUPABASE_URL: sb.API_URL ?? '',
       NEXT_PUBLIC_SUPABASE_ANON_KEY: sb.ANON_KEY ?? '',
       SUPABASE_SERVICE_ROLE_KEY: sb.SERVICE_ROLE_KEY ?? '',
+      EMAIL_TRANSPORT: 'mailpit',
+      MAILPIT_URL: sb.MAILPIT_URL ?? sb.INBUCKET_URL ?? '',
+      SITE_URL: `http://127.0.0.1:${PORT}`,
+      CRON_SECRET: 'e2e-cron-secret-0123456789',
     },
   },
 });

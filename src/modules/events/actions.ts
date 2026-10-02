@@ -1,6 +1,8 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
+import { after } from 'next/server';
+import { notifyEventRegistrants } from '@/modules/notifications/registrations';
 import { fail, ok, type ErrorCode, type Result } from '@/lib/result';
 import { createClient } from '@/lib/supabase/server';
 import { isLang, type Lang } from '@/modules/auth/messages';
@@ -28,6 +30,17 @@ function dbFailure(error: { message?: string; code?: string }, lang: Lang): Resu
   );
 }
 const failCode = (code: ErrorCode, lang: Lang) => fail(code, eventMessage(code, lang));
+
+/** Tells registrants after the response is sent; a mail problem never fails the action (EVT-016). */
+function mailRegistrants(eventId: string, kind: 'cancelled' | 'changed') {
+  after(async () => {
+    try {
+      await notifyEventRegistrants(eventId, kind);
+    } catch (e) {
+      console.error('[events] registrant notification failed', (e as Error).message);
+    }
+  });
+}
 
 export type SavedEvent = {
   id: string;
@@ -65,6 +78,7 @@ export async function saveEvent(
     updated_at: string;
     significant_change: boolean;
   };
+  if (r.significant_change && r.status === 'published') mailRegistrants(r.id, 'changed');
   revalidatePath('/', 'layout');
   return ok({
     id: r.id,
@@ -94,6 +108,7 @@ export async function transitionEvent(
   });
   if (error) return dbFailure(error, lang);
 
+  if (input.action === 'cancel') mailRegistrants(input.id, 'cancelled');
   revalidatePath('/', 'layout');
   return ok({ status: data as string });
 }
