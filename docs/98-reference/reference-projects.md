@@ -1,0 +1,66 @@
+# Reference Projects — Adopted, Adapted, Rejected
+
+| Field            | Value      |
+| ---------------- | ---------- |
+| **Last Updated** | 2026-10-02 |
+| **Status**       | Draft      |
+
+## 1. Noviq documentation
+
+**What it is:** documentation for a commercial, multi-tenant POS SaaS (≈ 1,450 files across 22 sections), including product, architecture, database entities, API, design system, and a detailed project-management module (charter, roadmaps, milestones, agile framework, sprint plans, notes, audit reports, templates).
+
+| Adopted | Adapted for SDC | Rejected |
+| ------- | --------------- | -------- |
+| Numbered top-level sections (`00-product` … `99-project-management`) | Fewer, purpose-driven files (~100 vs ~1,450) | SaaS concepts: tenants, plans, pricing, subscriptions, POS, ZATCA, offline sync |
+| Metadata table at the top of each doc | Status vocabulary includes CURRENT/PROBLEM/TARGET tags | Marketing/conversion-funnel/pricing documentation |
+| Entity docs with field reference tables and Mermaid ERDs | Grouped by aggregate (6 entity files instead of one per table) | EF Core / .NET-specific sections |
+| Sprint plan structure: metadata, objective, user stories table, numbered technical tasks, dependencies, acceptance criteria, review checklist, risks, references, implementation status | Same sections; volunteer-sized capacity; story ids per module | Fixed 2-week cadence with team allocation tables for paid roles |
+| Sprint **Notes** (working backlog with per-epic status) and **reports/audits** inserted between sprints when gaps are found | Kept as `sprints/<sprint>/notes.md` and `reports/` | — |
+| DoR / DoD checklists | Simplified, SDC-specific (bilingual, RLS tests) | Two-senior-approval rule, SonarQube, ZATCA/PDPL-SaaS items |
+| WBS hierarchy (Epic → Story → Task) and Fibonacci points | Same, smaller scale | — |
+| Design-system organization (foundations, components, patterns, tokens, guidelines) | Documented from the **existing** SDC CSS rather than invented; dark-first (Noviq is light-only) | Noviq's palette, fonts (Satoshi), "Technical Capsule" brand |
+| Glossary as bilingual term tables | Added code identifiers and "current UI wording" columns | — |
+
+## 2. KFUCS Portal
+
+**What it is:** a Next.js 16 + Supabase portal for a university cybersecurity club: roles `SUPER_ADMIN`, `CLUB_LEADER`, `VICE_PRESIDENT`, `COMMITTEE_HEAD`, `COMMITTEE_VICE_HEAD`, `MEMBER`, `EXTERNAL_STUDENT`; committees; event proposal → review → publish workflow; registrations with acceptance; attendance sessions with QR; certificates; email outbox via Brevo; dashboards per role; Vitest/Playwright tests; migration-based schema with RLS hardening.
+
+| Concept | SDC treatment | Reason |
+| ------- | ------------- | ------ |
+| Leadership hierarchy (leader, vice, committee head/vice, member, external) | **Adapted**: community leader, advisor, founders, committee head/deputy/member; no vice-president | SDC's observed structure differs |
+| Single `role` + `committee_id` on profile | **Rejected** → time-bound role assignments with optional committee scope | SDC needs multiple positions and term history |
+| Hardcoded role arrays in code (`CLUB_ADMIN_ROLES`, …) | **Rejected** → permissions in the database | KFUCS's own audit (F-53) found 8 drifting copies causing access bugs (F-10, F-51) |
+| `requireRole()` server guard using `getUser()` | **Adopted** in spirit → `requireUser()` + `requirePermission()` | Server-side verification of the JWT |
+| Role-escalation trigger (`prevent_role_escalation`) | **Adopted** → anti-escalation in `assign_role()` + audit trigger | Same threat |
+| Event lifecycle `DRAFT → PENDING_REVIEW → PUBLISHED/REJECTED → … → COMPLETED → ARCHIVED` with transition tables and guards | **Adopted** with two adaptations: `changes_requested` instead of `REJECTED`; `REGISTRATION_CLOSED`/`IN_PROGRESS` derived from dates instead of a sweep cron | Avoids cron dependency on free tiers |
+| 4-step event creation wizard (Identity → Logistics → Content → Review) and event data model | **Adopted** ([ADR-012](../90-decisions/ADR-012-event-model-and-wizard-from-kfucs.md), [field mapping](./kfucs-event-model-alignment.md)) | Same organizers use both systems; KFUCS model already audited |
+| Acceptance separate from email; failed email never rolls back a decision; claim-before-send; per-recipient email log; quota-aware chunked batches | **Adopted** (BR-NOT, NT-*) | Proven lessons |
+| Presenters on events (`event_presenters`) | **Adopted** (accounts or guests); presenter *permissions* (event-scoped grants) deferred | Public pages show presenters; grants not needed yet |
+| Attendance sessions + canonical percentage function + certificates | **Adopted** ([ADR-012](../90-decisions/ADR-012-event-model-and-wizard-from-kfucs.md)); certificate issuance behind a setting (Q-020) | Stakeholder direction 2026-10-02: same data and logic as KFUCS |
+| Member statuses PENDING/INVITED/ACTIVE/BLOCKED with invitations | **Adapted** → applications + member statuses + legacy claim | SDC joins through annual intake (D-001) |
+| `next-intl` with `[locale]` routing | **Adopted** (ADR-010) | Solves SDC's direction flash |
+| Brevo behind a provider interface | **Adopted as recommendation** (ADR-006) | Free tier fits bursts |
+| Academic tables (colleges, majors, semesters) | **Adapted** → universities, majors (with sub-majors), tracks | SDC members come from many universities |
+
+## 3. Innosoft engineering standards
+
+**What it is:** organization-wide standards for version control (Conventional Commits with 12 types, Git Flow with `main`/`develop`/`feat`/`fix`/`release`/`version`), immutable version tags, automated release pipelines (GitLab), repository standards gates (warn → block), API conventions (nouns, plural, hyphenated, `page/size`, `{success, code, message, data}`), URL routing, `.nvmrc`, ESLint/Prettier/Husky/lint-staged, and a policy on AI agents for government projects.
+
+| Standard | SDC treatment |
+| -------- | ------------- |
+| Conventional Commits (types, scopes, breaking indicators) | **Adopted** with SDC module scopes; enforced on PR titles |
+| Git Flow branches | **Adapted**: `main`, `develop`, `feat/*`, `fix/*`, other typed branches; `release/*` optional; **no `version/*`** (single deployed version) |
+| Tags: immutable, deploy only tagged versions, keep all tags | **Adopted** |
+| RC tags `vX.Y.Z-rc.N` | **Optional** (only with `release/*`) |
+| Automated releases (GitLab templates, release-it) | **Adapted** → GitHub `release-please` |
+| Changelog format and commit-type mapping | **Adopted** |
+| Post-release sync main → develop | **Adopted** (automated or manual) |
+| Standards gate (evidence → evaluation → policy; warn then block) | **Adapted** → GitHub required checks with progressive enforcement; no separate evaluator service |
+| Branch protection (no direct pushes) | **Adopted** |
+| API conventions | **Adopted** for Route Handlers; response envelope aligned with the `Result` type |
+| `lang` header for locale | **Not needed** (locale in URL) |
+| URL routing (lowercase, hyphens, plural, semantic) | **Adopted** |
+| `.nvmrc` | **Adopted** |
+| ESLint + Prettier + Husky + lint-staged; strict TS rules (`no-explicit-any`, etc.) | **Adopted** with `eslint-config-next` |
+| SonarQube, SigNoz, Umami, Frappe/Flutter guides | **Not adopted** (enterprise/irrelevant tooling) |
+| AI-agent prohibition (government projects) | **Not applicable**; SDC policy proposed separately (Q-043) |
