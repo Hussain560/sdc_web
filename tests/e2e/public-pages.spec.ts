@@ -14,6 +14,8 @@ const routes = [
   { name: 'member-profile', path: '/members/100' },
   { name: 'login', path: '/login' },
   { name: 'register', path: '/register' },
+  // Sprint 07: /join with no open cycle (the local database has none) = the "closed" state.
+  { name: 'join', path: '/join' },
   { name: 'forgot-password', path: '/forgot-password' },
   { name: 'not-found', path: '/this-page-does-not-exist' },
 ] as const;

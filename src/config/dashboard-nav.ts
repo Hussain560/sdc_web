@@ -92,7 +92,7 @@ export const DASHBOARD_NAV: NavGroupDef[] = [
         icon: 'clipboard',
         scoped: true,
         requires: { permission: 'registrations.review', scope: 'committee' },
-        ready: false,
+        ready: true,
       },
       {
         key: 'committee-articles',
@@ -136,12 +136,20 @@ export const DASHBOARD_NAV: NavGroupDef[] = [
         ready: true,
       },
       {
+        key: 'all-registrations',
+        label: { ar: 'التسجيلات', en: 'Registrations' },
+        href: '/dashboard/registrations',
+        icon: 'clipboard',
+        requires: { permission: 'registrations.review', scope: 'global' },
+        ready: true,
+      },
+      {
         key: 'membership-cycles',
         label: { ar: 'دورات الاستقبال', en: 'Intake cycles' },
         href: '/dashboard/membership/cycles',
         icon: 'card',
         requires: { permission: 'membership.manage_cycles', scope: 'any' },
-        ready: false,
+        ready: true,
       },
       {
         key: 'membership-applications',
@@ -228,7 +236,7 @@ export const DASHBOARD_NAV: NavGroupDef[] = [
         href: '/dashboard/admin/reference-data',
         icon: 'list',
         requires: { permission: 'reference_data.manage', scope: 'any' },
-        ready: false,
+        ready: true,
       },
       {
         key: 'admin-settings',

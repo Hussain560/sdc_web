@@ -8,13 +8,15 @@ export type TemplateKey =
   | 'registration.waitlisted'
   | 'registration.cancelled_by_organizer'
   | 'event.cancelled'
-  | 'event.changed';
+  | 'event.changed'
+  | 'membership.application_received';
 
 export type TemplateData = {
   name: string;
   eventTitle: string;
   eventUrl?: string;
   registrationsUrl?: string;
+  membershipUrl?: string;
   when?: string;
   where?: string;
   /** Only ever set for registration.confirmed (NO-6). */
@@ -109,6 +111,19 @@ function copy(key: TemplateKey, lang: Lang, d: TemplateData): Copy {
           : `The organising team cancelled your registration for “${t}”.`,
         body: reason,
         action: browse,
+      };
+    case 'membership.application_received':
+      return {
+        subject: ar ? 'تم استلام طلب عضويتك' : 'We received your membership application',
+        lead: ar
+          ? `تم استلام طلب انضمامك إلى المجتمع السعودي للمطورين في «${t}».`
+          : `We received your application to join the Saudi Developer Community (“${t}”).`,
+        body: [
+          ar
+            ? 'سيراجع الفريق الطلبات بعد إغلاق باب التقديم، وسيصلك القرار بالبريد الإلكتروني. يمكنك متابعة حالة طلبك من حسابك.'
+            : 'The team reviews applications once the window closes and you will get the decision by e-mail. You can follow your status in your account.',
+        ],
+        action: { label: ar ? 'طلبي' : 'My application', url: d.membershipUrl },
       };
     case 'event.cancelled':
       return {

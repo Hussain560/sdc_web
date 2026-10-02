@@ -12,7 +12,7 @@
 | **Target version**  | contributes to `v0.5.0` |
 | **Capacity**        | ~28 SP — planned 24 SP |
 | **Team**            | Tech lead + volunteer developers (assigned at sprint planning) |
-| **Status**          | ⬜ Planned — dates indicative; re-forecast after Sprint 02 velocity |
+| **Status**          | ✅ Local scope complete 2026-10-02 — remaining: Q-002/Q-011/Q-012/Q-031 confirmation, staging deploy, demo |
 
 ## Sprint Objective
 
@@ -22,11 +22,11 @@ The leader schedules the annual intake cycle; `/join` shows closed / upcoming / 
 
 | Story ID | Title | Priority | Points | Assignee | Status |
 | -------- | ----- | -------- | ------ | -------- | ------ |
-| MEM-001 | Reference data tables (universities, majors, tracks) seeded from legacy values | P0 | 3 | — | ⬜ |
-| MBR-001 | Create and schedule an intake cycle ⛔ Q-011 | P0 | 5 | — | ⬜ |
-| MBR-002 | `/join` shows open / upcoming / closed | P0 | 5 | — | ⬜ |
-| MBR-003 | Apply while the cycle is open ⛔ Q-002 | P0 | 8 | — | ⬜ |
-| MBR-005 | See my application status and withdraw | P1 | 3 | — | ⬜ |
+| MEM-001 | Reference data tables (universities, majors, tracks) seeded from legacy values | P0 | 3 | — | ✅ Done 2026-10-02 (universities, majors with sub-majors, tracks; seeded from legacy values plus defaults; admin list/edit at `/dashboard/admin/reference-data`) |
+| MBR-001 | Create and schedule an intake cycle ⛔ Q-011 | P0 | 5 | — | ✅ Done 2026-10-02 |
+| MBR-002 | `/join` shows open / upcoming / closed | P0 | 5 | — | ✅ Done 2026-10-02 |
+| MBR-003 | Apply while the cycle is open ⛔ Q-002 | P0 | 8 | — | ✅ Done 2026-10-02 (5 steps, draft in sessionStorage, "other" university/major typed, cycle questions) |
+| MBR-005 | See my application status and withdraw | P1 | 3 | — | ✅ Done 2026-10-02 (`/account/membership` and `/join`: edit and withdraw while submitted and open) |
 
 ## Technical Tasks
 
@@ -44,9 +44,9 @@ Every story also follows the [standard vertical-slice tasks](../../work-breakdow
 
 ## Acceptance Criteria
 
-- [ ] Applying outside the window is rejected by the database.
-- [ ] One application per user per cycle.
-- [ ] `/join` matches the public visual language (design review sign-off).
+- [x] Applying outside the window is rejected by the database.
+- [x] One application per user per cycle.
+- [x] `/join` matches the public visual language (design review sign-off).
 - [ ] CI green, including the public-page visual check; all stories meet the [Definition of Done](../../definition-of-done.md)
 - [ ] Deployed to staging; demo script executed
 
@@ -76,7 +76,19 @@ Every story also follows the [standard vertical-slice tasks](../../work-breakdow
 ### Completed
 | Item | Details |
 | ---- | ------- |
+| Migration | `20270103000000_membership_intake.sql`: reference tables (RLS: public read, `reference_data.manage` writes), `membership_cycles` (overlap exclusion constraint, derived `private.cycle_phase`, public view `membership_cycle_phase`), `membership_applications` (unique per cycle+user, no direct writes, owner view `my_membership_application` without the internal note), `save_membership_cycle`, `transition_membership_cycle` (publish, unpublish, open now, extend, close early, complete, delete), `submit/update/withdraw_membership_application` |
+| pgTAP | `07_membership_intake.sql` (57 assertions): seeds, RLS, boundary instants of the phase, overlap, transitions, MB-1…MB-5, MB-9, MB-10, question lock, audit |
+| Module | `src/modules/membership/` (types, schemas incl. the 5-step validation and Riyadh time helpers, messages, queries, actions), `src/modules/reference/`, notification `membership.application_received` |
+| Screens | `/join` (closed · scheduled · closed-awaiting · open signed-out · open signed-in form · applied panel), `/account/membership`, `/dashboard/membership/cycles` (+ new/edit with question builder, contextual actions), `/dashboard/admin/reference-data`; profile menu gets *My registrations* and *Membership* |
+| Navigation | sidebar items *Registrations* (committee and global), *Intake cycles*, *Reference data* are now live |
+| Tests | 11 new unit tests (steps, payload, cycle form, time), 2 E2E (leader opens cycle → applicant applies, gets the e-mail, withdraws → leader closes early; reference data admin-only), `/join` visual baselines (closed state, 8) |
 
 ### Known Gaps
 | Gap | Notes / follow-up |
 | --- | ----------------- |
+| Review and decisions | Sprint 08 (claim, bulk decide, member creation, decision e-mails, export) |
+| Already-a-member check | `private.applicant_is_member()` returns false until the members table exists (Sprint 08) |
+| Privacy notice | The consent text and version (`CONSENT_VERSION`) are placeholders until Q-031 is answered |
+| Phone and preferred committee | Optional, per Q-011/Q-013 defaults |
+| Merge duplicates and "needs mapping" list | Reference-data merge and the reviewers' mapping of typed "other" answers come with the review screen (Sprint 08) |
+| `/join` countdown | Whole days only; the live "opens in one minute" demo works through the derived phase on refresh |

@@ -62,7 +62,7 @@ const cases: Array<{
     role: 'committee_head',
     committeeSlug: 'cybersecurity',
     start: '/en/dashboard',
-    expected: ['/en/dashboard', '/en/dashboard/events'],
+    expected: ['/en/dashboard', '/en/dashboard/events', '/en/dashboard/registrations'],
   },
   {
     name: 'founder',
@@ -77,8 +77,11 @@ const cases: Array<{
     expected: [
       '/en/dashboard',
       '/en/dashboard/events',
+      '/en/dashboard/registrations',
+      '/en/dashboard/membership/cycles',
       '/en/dashboard/admin/users',
       '/en/dashboard/admin/roles',
+      '/en/dashboard/admin/reference-data',
     ],
   },
   {
@@ -88,8 +91,11 @@ const cases: Array<{
     expected: [
       '/en/dashboard',
       '/en/dashboard/events',
+      '/en/dashboard/registrations',
+      '/en/dashboard/membership/cycles',
       '/en/dashboard/admin/users',
       '/en/dashboard/admin/roles',
+      '/en/dashboard/admin/reference-data',
     ],
   },
 ];
