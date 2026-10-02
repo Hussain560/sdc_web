@@ -1,5 +1,5 @@
 .sdc-hero-section {
-  background-color: #08090c;
+  background-color: var(--c-08090c);
   padding: 60px 24px 40px 24px;
   direction: inherit;
   display: flex;
@@ -39,22 +39,22 @@
   font-size: 3.2rem;
   font-weight: 800;
   line-height: 1.2;
-  color: #ffffff;
+  color: var(--c-ffffff);
   margin: 0;
 }
 
 .sdc-hero-description {
   font-size: 1.15rem;
-  color: #9ca3af;
+  color: var(--c-9ca3af);
   line-height: 1.6;
   margin: 0;
   max-width: 500px;
 }
 
 .sdc-btn-primary-hero {
-  background-color: #1b3d31; /* أو #28674B حسب الدرجة المطلوبة */
-  border: 1px solid #00e676;
-  color: #ffffff;
+  background-color: var(--c-1b3d31); /* أو var(--c-28674b) حسب الدرجة المطلوبة */
+  border: 1px solid var(--c-00e676);
+  color: var(--c-ffffff);
   padding: 10px 28px;
   border-radius: 50px; /* جعل الحواف مستديرة بالكامل بنفس انحناء عرض الكل */
   font-weight: 700;
@@ -68,8 +68,8 @@
 }
 
 .sdc-btn-primary-hero:hover {
-  background-color: #00e676;
-  color: #050d09;
+  background-color: var(--c-00e676);
+  color: var(--c-050d09);
   transform: translateY(-2px);
 }
 
@@ -139,26 +139,26 @@
 /* ================= LIGHT MODE - HERO ================= */
 
 :root[data-theme='light'] .sdc-hero-section {
-  background-color: #f4faf6;
+  background-color: var(--c-f4faf6);
 }
 
 :root[data-theme='light'] .sdc-hero-title {
-  color: #123b35;
+  color: var(--c-123b35);
 }
 
 :root[data-theme='light'] .sdc-hero-description {
-  color: #52766c;
+  color: var(--c-52766c);
 }
 
 :root[data-theme='light'] .sdc-btn-primary-hero {
-  background-color: #a9d8bc;
-  border-color: #72c99a;
-  color: #123b35;
+  background-color: var(--c-a9d8bc);
+  border-color: var(--c-72c99a);
+  color: var(--c-123b35);
 }
 
 :root[data-theme='light'] .sdc-btn-primary-hero:hover {
-  background-color: #72c99a;
-  color: #0d3329;
+  background-color: var(--c-72c99a);
+  color: var(--c-0d3329);
 }
 
 :root[data-theme='light'] .sdc-hero-image-wrapper::before {

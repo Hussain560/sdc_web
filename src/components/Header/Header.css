@@ -1,5 +1,5 @@
 .sdc-header {
-  background-color: #0d0e12;
+  background-color: var(--c-0d0e12);
   border-bottom: 1px solid rgba(0, 230, 118, 0.15);
   width: 100%;
   position: sticky;
@@ -42,7 +42,7 @@
 }
 
 .sdc-nav a {
-  color: #e5e7eb;
+  color: var(--c-e5e7eb);
   text-decoration: none;
   font-size: 15px;
   font-weight: 500;
@@ -50,7 +50,7 @@
 }
 
 .sdc-nav a:hover {
-  color: #28674b;
+  color: var(--c-28674b);
 }
 
 .sdc-actions {
@@ -64,7 +64,7 @@
 .sdc-icon-btn {
   background: none;
   border: none;
-  color: #e5e7eb;
+  color: var(--c-e5e7eb);
   display: flex;
   align-items: center;
   gap: 6px;
@@ -75,7 +75,7 @@
 .sdc-btn-primary {
   background-color: transparent;
   border: 1px solid rgba(255, 255, 255, 0.3); /* حد ناعم يطابق عرض الكل */
-  color: #ffffff;
+  color: var(--c-ffffff);
   padding: 8px 24px;
   border-radius: 50px; /* شكل بيضاوي دافئ (Capsule) */
   font-size: 14px;
@@ -89,8 +89,8 @@
 }
 
 .sdc-btn-primary:hover {
-  border-color: #00e676;
-  color: #00e676;
+  border-color: var(--c-00e676);
+  color: var(--c-00e676);
   background-color: rgba(0, 230, 118, 0.05);
 }
 
@@ -162,7 +162,7 @@
 }
 
 .sdc-search-modal {
-  background: #13151b;
+  background: var(--c-13151b);
   border: 1px solid rgba(0, 230, 118, 0.3);
   border-radius: 12px;
   width: 90%;
@@ -182,54 +182,54 @@
   background: transparent;
   border: none;
   outline: none;
-  color: #ffffff;
+  color: var(--c-ffffff);
   font-size: 1rem;
   direction: inherit;
 }
 
 .sdc-modal-search-icon {
-  color: #56987b;
+  color: var(--c-56987b);
 }
 
 .sdc-close-btn {
   background: none;
   border: none;
-  color: #9ca3af;
+  color: var(--c-9ca3af);
   cursor: pointer;
   transition: color 0.2s;
 }
 
 .sdc-close-btn:hover {
-  color: #ffffff;
+  color: var(--c-ffffff);
 }
 /* ================== LIGHT MODE ================== */
 
 :root[data-theme='light'] .sdc-header {
-  background-color: #f3f9f6;
-  border-bottom: 1px solid #d8ede0;
+  background-color: var(--c-f3f9f6);
+  border-bottom: 1px solid var(--c-d8ede0);
 }
 
 :root[data-theme='light'] .sdc-nav a {
-  color: #123b35;
+  color: var(--c-123b35);
 }
 
 :root[data-theme='light'] .sdc-icon-btn {
-  color: #123b35;
+  color: var(--c-123b35);
 }
 
 :root[data-theme='light'] .sdc-btn-primary {
-  color: #123b35;
-  border-color: #a9d8bc;
-  background-color: #dbede1;
+  color: var(--c-123b35);
+  border-color: var(--c-a9d8bc);
+  background-color: var(--c-dbede1);
 }
 
 :root[data-theme='light'] .sdc-nav a:hover,
 :root[data-theme='light'] .sdc-icon-btn:hover {
-  color: #16a765;
+  color: var(--c-16a765);
 }
 
 :root[data-theme='light'] .sdc-btn-primary:hover {
-  color: #0b8f55;
-  border-color: #16a765;
-  background-color: #d8f0e1;
+  color: var(--c-0b8f55);
+  border-color: var(--c-16a765);
+  background-color: var(--c-d8f0e1);
 }

@@ -1,5 +1,5 @@
 .sdc-all-articles-wrapper {
-  background-color: #050d09;
+  background-color: var(--c-050d09);
   min-height: 100vh;
   direction: inherit;
   display: flex;
@@ -25,9 +25,14 @@
   height: 164px;
   min-height: 164px;
   max-height: 164px;
-  background-color: #050d09;
+  background-color: var(--c-050d09);
   background-image:
-    linear-gradient(90deg, rgba(122, 175, 152, 0.22) 0%, rgba(5, 20, 15, 0.85) 55%, #050d09 100%),
+    linear-gradient(
+      90deg,
+      rgba(122, 175, 152, 0.22) 0%,
+      rgba(5, 20, 15, 0.85) 55%,
+      var(--c-050d09) 100%
+    ),
     url('/assets/Service(1).png');
   background-repeat: no-repeat, repeat-x;
   background-position:
@@ -57,27 +62,27 @@
   align-items: center;
   gap: 8px;
   font-size: 0.9rem;
-  color: #9ca3af;
+  color: var(--c-9ca3af);
 }
 
 .sdc-articles-breadcrumb a {
-  color: #9ca3af;
+  color: var(--c-9ca3af);
   text-decoration: none;
   transition: color 0.2s ease;
 }
 
 .sdc-articles-breadcrumb a:hover {
-  color: #00e676 !important;
+  color: var(--c-00e676) !important;
 }
 
 .sdc-articles-bc-sep {
-  color: #6b7280;
+  color: var(--c-6b7280);
 }
 
 .sdc-articles-hero-title {
   font-size: 1.6rem;
   font-weight: 800;
-  color: #ffffff;
+  color: var(--c-ffffff);
   margin: 0;
 }
 
@@ -101,7 +106,7 @@
 }
 
 .sdc-article-figma-card {
-  background-color: #0d0e12;
+  background-color: var(--c-0d0e12);
   border-radius: 20px;
   padding: 24px 20px;
   display: flex;
@@ -112,7 +117,7 @@
   transition: all 0.3s ease;
   box-sizing: border-box;
   border: 1px solid rgba(0, 230, 118, 0.3);
-  border-top: 2px solid #00e676;
+  border-top: 2px solid var(--c-00e676);
 }
 
 .sdc-article-figma-card:hover {
@@ -129,11 +134,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #00e676;
+  color: var(--c-00e676);
 }
 
 .sdc-card-title {
-  color: #ffffff;
+  color: var(--c-ffffff);
   font-size: 1.1rem;
   font-weight: 700;
   margin: 0;
@@ -141,7 +146,7 @@
 }
 
 .sdc-card-author {
-  color: #56987b;
+  color: var(--c-56987b);
   font-size: 0.85rem;
   margin: 0;
 }
@@ -149,7 +154,7 @@
 .sdc-card-meta {
   display: flex;
   gap: 14px;
-  color: #9ca3af;
+  color: var(--c-9ca3af);
   font-size: 0.8rem;
 }
 
@@ -170,20 +175,20 @@
   padding: 3px 10px;
   border-radius: 6px;
   border: 1px solid rgba(255, 255, 255, 0.2);
-  color: #e5e7eb;
+  color: var(--c-e5e7eb);
 }
 
 .sdc-tag-pill.tag-green {
-  background-color: #1b3d31;
-  border-color: #00e676;
-  color: #ffffff;
+  background-color: var(--c-1b3d31);
+  border-color: var(--c-00e676);
+  color: var(--c-ffffff);
 }
 
 .sdc-card-read-btn {
   width: 100%;
   background: transparent;
   border: 1.5px solid rgba(255, 255, 255, 0.5);
-  color: #ffffff;
+  color: var(--c-ffffff);
   padding: 8px 12px;
   border-radius: 50px;
   font-size: 0.85rem;
@@ -197,13 +202,13 @@
 }
 
 .sdc-card-read-btn:hover {
-  border-color: #00e676;
-  color: #00e676;
+  border-color: var(--c-00e676);
+  color: var(--c-00e676);
   background-color: rgba(0, 230, 118, 0.08);
 }
 
 .sdc-no-results {
-  color: #9ca3af;
+  color: var(--c-9ca3af);
   text-align: center;
   padding: 40px;
   font-size: 1.05rem;
@@ -232,44 +237,44 @@
 /* ================== LIGHT MODE - THREADS ================== */
 
 :root[data-theme='light'] .sdc-all-articles-wrapper {
-  background-color: #f4faf6;
+  background-color: var(--c-f4faf6);
 }
 
 /* البنر */
 :root[data-theme='light'] .sdc-articles-hero-banner {
-  background-color: #eaf6ee;
+  background-color: var(--c-eaf6ee);
   background-image:
     linear-gradient(
       90deg,
       rgba(169, 216, 188, 0.55) 0%,
       rgba(229, 245, 234, 0.88) 55%,
-      #f4faf6 100%
+      var(--c-f4faf6) 100%
     ),
     url('/assets/Service(1).png');
 }
 
 :root[data-theme='light'] .sdc-articles-hero-title {
-  color: #123b35;
+  color: var(--c-123b35);
 }
 
 :root[data-theme='light'] .sdc-articles-breadcrumb,
 :root[data-theme='light'] .sdc-articles-breadcrumb a {
-  color: #52766c;
+  color: var(--c-52766c);
 }
 
 :root[data-theme='light'] .sdc-articles-bc-sep {
-  color: #8aa39c;
+  color: var(--c-8aa39c);
 }
 
 :root[data-theme='light'] .sdc-articles-breadcrumb a:hover {
-  color: #0b8f55 !important;
+  color: var(--c-0b8f55) !important;
 }
 
 /* كروت الثريدات */
 :root[data-theme='light'] .sdc-article-figma-card {
-  background-color: #ffffff;
-  border-color: #cbe7d4;
-  border-top-color: #72c99a;
+  background-color: var(--c-ffffff);
+  border-color: var(--c-cbe7d4);
+  border-top-color: var(--c-72c99a);
 }
 
 :root[data-theme='light'] .sdc-article-figma-card:hover {
@@ -278,50 +283,50 @@
 
 /* الأيقونة */
 :root[data-theme='light'] .sdc-article-icon-circle {
-  background-color: #e5f5ea;
-  border-color: #a9d8bc;
-  color: #168a5b;
+  background-color: var(--c-e5f5ea);
+  border-color: var(--c-a9d8bc);
+  color: var(--c-168a5b);
 }
 
 /* النصوص */
 :root[data-theme='light'] .sdc-card-title {
-  color: #123b35;
+  color: var(--c-123b35);
 }
 
 :root[data-theme='light'] .sdc-card-author {
-  color: #168a5b;
+  color: var(--c-168a5b);
 }
 
 :root[data-theme='light'] .sdc-card-meta {
-  color: #52766c;
+  color: var(--c-52766c);
 }
 
 /* Tags */
 :root[data-theme='light'] .sdc-tag-pill {
-  background-color: #f4faf6;
-  border-color: #cbe7d4;
-  color: #52766c;
+  background-color: var(--c-f4faf6);
+  border-color: var(--c-cbe7d4);
+  color: var(--c-52766c);
 }
 
 :root[data-theme='light'] .sdc-tag-pill.tag-green {
-  background-color: #e5f5ea;
-  border-color: #72c99a;
-  color: #0d3329;
+  background-color: var(--c-e5f5ea);
+  border-color: var(--c-72c99a);
+  color: var(--c-0d3329);
 }
 
 /* زر قراءة الثريد */
 :root[data-theme='light'] .sdc-card-read-btn {
-  background-color: #ffffff;
-  border-color: #a9d8bc;
-  color: #123b35;
+  background-color: var(--c-ffffff);
+  border-color: var(--c-a9d8bc);
+  color: var(--c-123b35);
 }
 
 :root[data-theme='light'] .sdc-card-read-btn:hover {
-  background-color: #e5f5ea;
-  border-color: #16a765;
-  color: #0b8f55;
+  background-color: var(--c-e5f5ea);
+  border-color: var(--c-16a765);
+  color: var(--c-0b8f55);
 }
 
 :root[data-theme='light'] .sdc-no-results {
-  color: #52766c;
+  color: var(--c-52766c);
 }

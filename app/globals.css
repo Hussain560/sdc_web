@@ -1,13 +1,15 @@
 @import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
 @import 'tailwindcss';
+@import '../src/styles/primitives.css';
+@import '../src/styles/tokens.css';
 
 :root {
-  --background: #050d09;
-  --foreground: #ffffff;
+  --background: var(--c-050d09);
+  --foreground: var(--c-ffffff);
 }
 :root[data-theme='light'] {
-  --background: #f4faf6;
-  --foreground: #123b35;
+  --background: var(--c-f4faf6);
+  --foreground: var(--c-123b35);
 }
 
 html {

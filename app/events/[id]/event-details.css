@@ -1,15 +1,15 @@
 /* الخلفية العامة */
 .sdc-event-detail-wrapper {
-  background-color: #050d09;
+  background-color: var(--c-050d09);
   min-height: 100vh;
   direction: inherit;
-  color: #ffffff;
+  color: var(--c-ffffff);
 }
 
 .sdc-event-detail-main {
   width: 100%;
   padding-bottom: 80px;
-  background-color: #050d09;
+  background-color: var(--c-050d09);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -25,9 +25,14 @@
   height: 164px;
   min-height: 164px;
   max-height: 164px;
-  background-color: #050d09;
+  background-color: var(--c-050d09);
   background-image:
-    linear-gradient(90deg, rgba(122, 175, 152, 0.22) 0%, rgba(5, 20, 15, 0.85) 55%, #050d09 100%),
+    linear-gradient(
+      90deg,
+      rgba(122, 175, 152, 0.22) 0%,
+      rgba(5, 20, 15, 0.85) 55%,
+      var(--c-050d09) 100%
+    ),
     url('/assets/Service(1).png');
   background-repeat: no-repeat, repeat-x;
   background-position:
@@ -66,27 +71,27 @@
   align-items: center;
   gap: 8px;
   font-size: 0.9rem;
-  color: #9ca3af;
+  color: var(--c-9ca3af);
 }
 
 .sdc-breadcrumb a {
-  color: #9ca3af;
+  color: var(--c-9ca3af);
   text-decoration: none;
   transition: color 0.2s ease;
 }
 
 .sdc-breadcrumb a:hover {
-  color: #00e676 !important;
+  color: var(--c-00e676) !important;
 }
 
 .sdc-bc-sep {
-  color: #6b7280;
+  color: var(--c-6b7280);
 }
 
 /* زر التسجيل بالبنر */
 .sdc-hero-btn-register {
-  background-color: #067847;
-  color: #ffffff;
+  background-color: var(--c-067847);
+  color: var(--c-ffffff);
   border: none;
   padding: 6px 24px;
   border-radius: 50px;
@@ -100,13 +105,13 @@
 }
 
 .sdc-hero-btn-register:hover {
-  background-color: #abefc6;
-  color: #000000;
+  background-color: var(--c-abefc6);
+  color: var(--c-000000);
 }
 
 .sdc-hero-btn-register.registered {
-  background-color: #10b981 !important;
-  color: #ffffff !important;
+  background-color: var(--c-10b981) !important;
+  color: var(--c-ffffff) !important;
   cursor: default;
 }
 
@@ -114,7 +119,7 @@
   font-size: 1.6rem;
   font-weight: 800;
   margin: 0;
-  color: #ffffff;
+  color: var(--c-ffffff);
 }
 
 /* الحاوية المركزية لجميع عناصر الصفحة */
@@ -136,13 +141,13 @@
 .sdc-about-title {
   font-size: 1.25rem;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--c-ffffff);
   margin: 0 0 8px 0;
 }
 
 .sdc-about-desc {
   font-size: 0.92rem;
-  color: #9ca3af;
+  color: var(--c-9ca3af);
   line-height: 1.8;
   margin: 0;
 }
@@ -183,14 +188,14 @@
 .sdc-card-header h3 {
   font-size: 1.2rem;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--c-ffffff);
   margin: 0;
   text-align: start;
 }
 
 .sdc-card-icon {
   font-size: 1.2rem;
-  color: #a3e635;
+  color: var(--c-a3e635);
 }
 
 .sdc-card-list {
@@ -203,7 +208,7 @@
   position: relative;
   padding-right: 20px;
   margin-bottom: 10px;
-  color: #d1d5db;
+  color: var(--c-d1d5db);
   font-size: 0.95rem;
   line-height: 1.7;
 }
@@ -212,7 +217,7 @@
   content: '•';
   position: absolute;
   right: 0;
-  color: #d1d5db;
+  color: var(--c-d1d5db);
 }
 
 /* ================= الـ Sidebar الأيسر ================= */
@@ -221,7 +226,7 @@
   border-radius: 16px;
   padding: 24px;
   background: linear-gradient(180deg, rgba(122, 175, 152, 0.18) 0%, rgba(5, 20, 15, 0.95) 100%);
-  background-color: #061812;
+  background-color: var(--c-061812);
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -244,7 +249,7 @@
 }
 
 .sdc-sb-icon-style {
-  color: #7aaf98;
+  color: var(--c-7aaf98);
   flex-shrink: 0;
 }
 
@@ -252,11 +257,11 @@
   font-size: 1rem;
   font-weight: 700;
   margin: 0;
-  color: #ffffff;
+  color: var(--c-ffffff);
 }
 
 .sdc-sb-val {
-  color: #d1d5db;
+  color: var(--c-d1d5db);
   font-size: 0.9rem;
   line-height: 1.6;
   margin: 0;
@@ -265,7 +270,7 @@
 
 .sdc-link-val,
 .sdc-sb-link {
-  color: #7aaf98 !important;
+  color: var(--c-7aaf98) !important;
   text-decoration: none;
   font-size: 0.9rem;
   display: inline-flex;
@@ -277,12 +282,12 @@
 
 .sdc-link-val:hover,
 .sdc-sb-link:hover {
-  color: #abefc6 !important;
+  color: var(--c-abefc6) !important;
   text-decoration: underline;
 }
 
 .sdc-ext-icon {
-  color: #7aaf98;
+  color: var(--c-7aaf98);
   flex-shrink: 0;
 }
 
@@ -293,8 +298,8 @@
 }
 
 .sdc-download-guide-btn {
-  background-color: #ffffff;
-  color: #08090c;
+  background-color: var(--c-ffffff);
+  color: var(--c-08090c);
   font-weight: 800;
   border: none;
   border-radius: 8px;
@@ -307,12 +312,12 @@
 }
 
 .sdc-download-guide-btn:hover {
-  background-color: #e5e7eb;
+  background-color: var(--c-e5e7eb);
   transform: translateY(-1px);
 }
 
 .sdc-sidebar-socials h4 {
-  color: #ffffff;
+  color: var(--c-ffffff);
   font-size: 0.95rem;
   margin: 0 0 12px 0;
 }
@@ -331,16 +336,16 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #7aaf98;
+  color: var(--c-7aaf98);
   text-decoration: none;
   background: rgba(122, 175, 152, 0.08);
   transition: all 0.2s ease;
 }
 
 .sdc-soc-box:hover {
-  background-color: #00e676;
-  color: #08090c;
-  border-color: #00e676;
+  background-color: var(--c-00e676);
+  color: var(--c-08090c);
+  border-color: var(--c-00e676);
   transform: translateY(-2px);
 }
 
@@ -366,7 +371,7 @@
 }
 
 .sdc-modal-card {
-  background-color: #0d1117;
+  background-color: var(--c-0d1117);
   border: 1px solid rgba(0, 230, 118, 0.3);
   border-radius: 16px;
   width: 90%;
@@ -374,7 +379,7 @@
   padding: 24px;
   position: relative;
   direction: inherit;
-  color: #ffffff;
+  color: var(--c-ffffff);
 }
 
 .sdc-modal-close {
@@ -383,7 +388,7 @@
   left: 16px;
   background: none;
   border: none;
-  color: #9ca3af;
+  color: var(--c-9ca3af);
   cursor: pointer;
 }
 
@@ -393,7 +398,7 @@
 }
 
 .sdc-modal-icon {
-  color: #00e676;
+  color: var(--c-00e676);
   margin-bottom: 8px;
 }
 
@@ -403,7 +408,7 @@
 }
 
 .sdc-modal-event-name {
-  color: #00e676;
+  color: var(--c-00e676);
   font-weight: 700;
   text-align: center;
   font-size: 0.95rem;
@@ -415,7 +420,7 @@
   padding: 12px 16px;
   border-radius: 8px;
   font-size: 0.88rem;
-  color: #d1d5db;
+  color: var(--c-d1d5db);
 }
 
 .sdc-modal-user-info ul {
@@ -436,8 +441,8 @@
 
 .sdc-btn-confirm {
   flex: 1;
-  background-color: #00e676;
-  color: #08090c;
+  background-color: var(--c-00e676);
+  color: var(--c-08090c);
   border: none;
   padding: 10px;
   border-radius: 8px;
@@ -448,7 +453,7 @@
 .sdc-btn-cancel {
   flex: 1;
   background-color: transparent;
-  color: #ffffff;
+  color: var(--c-ffffff);
   border: 1px solid rgba(255, 255, 255, 0.2);
   padding: 10px;
   border-radius: 8px;
@@ -492,153 +497,153 @@
 
 :root[data-theme='light'] .sdc-event-detail-wrapper,
 :root[data-theme='light'] .sdc-event-detail-main {
-  background-color: #f4faf6;
-  color: #123b35;
+  background-color: var(--c-f4faf6);
+  color: var(--c-123b35);
 }
 
 /* البنر */
 :root[data-theme='light'] .sdc-event-hero-banner {
-  background-color: #eaf6ee;
+  background-color: var(--c-eaf6ee);
   background-image:
     linear-gradient(
       90deg,
       rgba(169, 216, 188, 0.55) 0%,
       rgba(229, 245, 234, 0.88) 55%,
-      #f4faf6 100%
+      var(--c-f4faf6) 100%
     ),
     url('/assets/Service(1).png');
 }
 
 :root[data-theme='light'] .sdc-event-hero-title {
-  color: #123b35;
+  color: var(--c-123b35);
 }
 
 :root[data-theme='light'] .sdc-breadcrumb,
 :root[data-theme='light'] .sdc-breadcrumb a {
-  color: #52766c;
+  color: var(--c-52766c);
 }
 
 :root[data-theme='light'] .sdc-bc-sep {
-  color: #8aa39c;
+  color: var(--c-8aa39c);
 }
 
 :root[data-theme='light'] .sdc-breadcrumb a:hover {
-  color: #0b8f55 !important;
+  color: var(--c-0b8f55) !important;
 }
 
 /* زر التسجيل */
 :root[data-theme='light'] .sdc-hero-btn-register {
-  background-color: #72c99a;
-  color: #0d3329;
+  background-color: var(--c-72c99a);
+  color: var(--c-0d3329);
 }
 
 :root[data-theme='light'] .sdc-hero-btn-register:hover {
-  background-color: #5db987;
-  color: #ffffff;
+  background-color: var(--c-5db987);
+  color: var(--c-ffffff);
 }
 
 /* التعريف */
 :root[data-theme='light'] .sdc-about-community-block {
-  border-bottom-color: #d8ede0;
+  border-bottom-color: var(--c-d8ede0);
 }
 
 :root[data-theme='light'] .sdc-about-title {
-  color: #123b35;
+  color: var(--c-123b35);
 }
 
 :root[data-theme='light'] .sdc-about-desc {
-  color: #52766c;
+  color: var(--c-52766c);
 }
 
 /* كروت التفاصيل */
 :root[data-theme='light'] .sdc-detail-card {
-  background-color: #ffffff;
-  border-color: #a9d8bc;
+  background-color: var(--c-ffffff);
+  border-color: var(--c-a9d8bc);
 }
 
 :root[data-theme='light'] .sdc-card-header h3 {
-  color: #123b35;
+  color: var(--c-123b35);
 }
 
 :root[data-theme='light'] .sdc-card-icon {
-  color: #16a765;
+  color: var(--c-16a765);
 }
 
 :root[data-theme='light'] .sdc-card-list li {
-  color: #4b635a;
+  color: var(--c-4b635a);
 }
 
 :root[data-theme='light'] .sdc-card-list li::before {
-  color: #72c99a;
+  color: var(--c-72c99a);
 }
 
 /* Sidebar */
 :root[data-theme='light'] .sdc-sidebar-card {
-  background: linear-gradient(180deg, #e5f5ea 0%, #ffffff 100%);
-  border-color: #a9d8bc;
+  background: linear-gradient(180deg, var(--c-e5f5ea) 0%, var(--c-ffffff) 100%);
+  border-color: var(--c-a9d8bc);
 }
 
 :root[data-theme='light'] .sdc-sidebar-item-header h4,
 :root[data-theme='light'] .sdc-sidebar-socials h4 {
-  color: #123b35;
+  color: var(--c-123b35);
 }
 
 :root[data-theme='light'] .sdc-sb-val {
-  color: #52766c;
+  color: var(--c-52766c);
 }
 
 :root[data-theme='light'] .sdc-sb-icon-style,
 :root[data-theme='light'] .sdc-ext-icon {
-  color: #168a5b;
+  color: var(--c-168a5b);
 }
 
 :root[data-theme='light'] .sdc-link-val,
 :root[data-theme='light'] .sdc-sb-link {
-  color: #168a5b !important;
+  color: var(--c-168a5b) !important;
 }
 
 :root[data-theme='light'] .sdc-sb-divider {
-  border-top-color: #cbe7d4;
+  border-top-color: var(--c-cbe7d4);
 }
 
 :root[data-theme='light'] .sdc-soc-box {
-  background-color: #ffffff;
-  border-color: #a9d8bc;
-  color: #168a5b;
+  background-color: var(--c-ffffff);
+  border-color: var(--c-a9d8bc);
+  color: var(--c-168a5b);
 }
 
 /* نافذة التسجيل */
 :root[data-theme='light'] .sdc-modal-card {
-  background-color: #ffffff;
-  border-color: #a9d8bc;
-  color: #123b35;
+  background-color: var(--c-ffffff);
+  border-color: var(--c-a9d8bc);
+  color: var(--c-123b35);
 }
 
 :root[data-theme='light'] .sdc-modal-header h3 {
-  color: #123b35;
+  color: var(--c-123b35);
 }
 
 :root[data-theme='light'] .sdc-modal-event-name,
 :root[data-theme='light'] .sdc-modal-icon {
-  color: #168a5b;
+  color: var(--c-168a5b);
 }
 
 :root[data-theme='light'] .sdc-modal-user-info {
-  background-color: #f4faf6;
-  color: #52766c;
+  background-color: var(--c-f4faf6);
+  color: var(--c-52766c);
 }
 
 :root[data-theme='light'] .sdc-modal-close {
-  color: #52766c;
+  color: var(--c-52766c);
 }
 
 :root[data-theme='light'] .sdc-btn-confirm {
-  background-color: #72c99a;
-  color: #0d3329;
+  background-color: var(--c-72c99a);
+  color: var(--c-0d3329);
 }
 
 :root[data-theme='light'] .sdc-btn-cancel {
-  background-color: #ffffff;
-  color: #123b35;
-  border-color: #a9d8bc;
+  background-color: var(--c-ffffff);
+  color: var(--c-123b35);
+  border-color: var(--c-a9d8bc);
 }

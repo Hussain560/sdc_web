@@ -1,0 +1,57 @@
+/* Semantic tokens (ADR-009). Values reference ONLY primitives from primitives.css — no new colours.
+ * Dark is the default theme; light overrides under [data-theme='light'] (decision D-009).
+ * Dashboard and new components use these; legacy public CSS keeps working through the primitives. */
+:root {
+  --canvas: var(--c-050d09);
+  --surface: var(--c-0d0e12);
+  --surface-raised: var(--c-16181d);
+  --surface-overlay: var(--c-0d1117);
+  --text: var(--c-ffffff);
+  --text-muted: var(--c-9ca3af);
+  --text-on-accent: var(--c-08090c);
+  --accent: var(--c-00e676);
+  --accent-hover: var(--c-00c853);
+  --accent-soft: var(--c-abefc6);
+  --brand: var(--c-067847);
+  --warning: var(--c-ffab00);
+  --danger: var(--c-ef4444);
+  --border: rgb(255 255 255 / 0.15);
+  --border-accent: rgb(0 230 118 / 0.3);
+}
+
+:root[data-theme='light'] {
+  --canvas: var(--c-f4faf6);
+  --surface: var(--c-ffffff);
+  --surface-raised: var(--c-f8fcf9);
+  --surface-overlay: var(--c-ffffff);
+  --text: var(--c-123b35);
+  --text-muted: var(--c-52766c);
+  --text-on-accent: var(--c-0d3329);
+  --accent: var(--c-0b8f55);
+  --accent-hover: var(--c-16a765);
+  --accent-soft: var(--c-cbe7d4);
+  --brand: var(--c-72c99a);
+  --warning: var(--c-ffab00);
+  --danger: var(--c-ef4444);
+  --border: var(--c-cbe7d4);
+  --border-accent: var(--c-a9d8bc);
+}
+
+/* Tailwind v4: expose the semantic tokens as utilities (bg-surface, text-muted, …). */
+@theme inline {
+  --color-canvas: var(--canvas);
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-surface-overlay: var(--surface-overlay);
+  --color-text: var(--text);
+  --color-muted: var(--text-muted);
+  --color-on-accent: var(--text-on-accent);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-soft: var(--accent-soft);
+  --color-brand: var(--brand);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+  --color-line: var(--border);
+  --color-line-accent: var(--border-accent);
+}

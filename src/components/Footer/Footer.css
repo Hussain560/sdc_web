@@ -1,9 +1,9 @@
 /* ================== الفوتر المطبّق مطابق للفيجما ================== */
 .sdc-footer {
-  background-color: #050d09;
+  background-color: var(--c-050d09);
   border-top: 1px solid rgba(255, 255, 255, 0.15); /* الخط الفاصل الأفقي في الأعلى */
   padding: 30px 48px 40px;
-  color: #ffffff;
+  color: var(--c-ffffff);
   direction: inherit;
   display: flex;
   justify-content: center;
@@ -28,7 +28,7 @@
 }
 
 .sdc-footer-follow-label {
-  color: #d1d5db;
+  color: var(--c-d1d5db);
   font-size: 0.95rem;
   font-weight: 500;
   margin: 0;
@@ -50,14 +50,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #ffffff;
+  color: var(--c-ffffff);
   text-decoration: none;
   transition: all 0.2s ease;
 }
 
 .sdc-social-icon:hover {
-  border-color: #56987b;
-  color: #56987b;
+  border-color: var(--c-56987b);
+  color: var(--c-56987b);
   transform: translateY(-2px);
 }
 
@@ -79,7 +79,7 @@
 }
 
 .sdc-footer-app-link {
-  color: #ffffff;
+  color: var(--c-ffffff);
   font-size: 1rem;
   font-weight: 700;
   text-decoration: underline;
@@ -89,11 +89,11 @@
 }
 
 .sdc-footer-app-link:hover {
-  color: #56987b;
+  color: var(--c-56987b);
 }
 
 .sdc-footer-text {
-  color: #9ca3af;
+  color: var(--c-9ca3af);
   font-size: 0.82rem;
   margin: 0;
   line-height: 1.6;
@@ -135,33 +135,33 @@
 /* ================= LIGHT MODE - FOOTER ================= */
 
 :root[data-theme='light'] .sdc-footer {
-  background-color: #e5f5ea;
-  color: #123b35;
-  border-top: 1px solid #cbe7d4;
+  background-color: var(--c-e5f5ea);
+  color: var(--c-123b35);
+  border-top: 1px solid var(--c-cbe7d4);
 }
 
 :root[data-theme='light'] .sdc-footer-follow-label {
-  color: #355e54;
+  color: var(--c-355e54);
 }
 
 :root[data-theme='light'] .sdc-social-icon {
-  color: #123b35;
-  border-color: #a9d8bc;
+  color: var(--c-123b35);
+  border-color: var(--c-a9d8bc);
 }
 
 :root[data-theme='light'] .sdc-social-icon:hover {
-  color: #16a765;
-  border-color: #16a765;
+  color: var(--c-16a765);
+  border-color: var(--c-16a765);
 }
 
 :root[data-theme='light'] .sdc-footer-app-link {
-  color: #123b35;
+  color: var(--c-123b35);
 }
 
 :root[data-theme='light'] .sdc-footer-app-link:hover {
-  color: #16a765;
+  color: var(--c-16a765);
 }
 
 :root[data-theme='light'] .sdc-footer-text {
-  color: #52766c;
+  color: var(--c-52766c);
 }

@@ -1,11 +1,11 @@
 /* ================== الغلاف الرئيسي للصفحة ================== */
 .sdc-details-page-wrapper {
-  background-color: #050d09;
+  background-color: var(--c-050d09);
   min-height: 100vh;
   direction: inherit;
   display: flex;
   flex-direction: column;
-  color: #ffffff;
+  color: var(--c-ffffff);
 }
 
 .sdc-details-main {
@@ -25,9 +25,14 @@
   height: 164px;
   min-height: 164px;
   max-height: 164px;
-  background-color: #050d09;
+  background-color: var(--c-050d09);
   background-image:
-    linear-gradient(90deg, rgba(122, 175, 152, 0.22) 0%, rgba(5, 20, 15, 0.85) 55%, #050d09 100%),
+    linear-gradient(
+      90deg,
+      rgba(122, 175, 152, 0.22) 0%,
+      rgba(5, 20, 15, 0.85) 55%,
+      var(--c-050d09) 100%
+    ),
     url('/assets/Service(1).png');
   background-repeat: no-repeat, repeat-x;
   background-position:
@@ -57,27 +62,27 @@
   align-items: center;
   gap: 8px;
   font-size: 0.9rem;
-  color: #9ca3af;
+  color: var(--c-9ca3af);
 }
 
 .sdc-member-breadcrumb a {
-  color: #9ca3af;
+  color: var(--c-9ca3af);
   text-decoration: none;
   transition: color 0.2s ease;
 }
 
 .sdc-member-breadcrumb a:hover {
-  color: #00e676 !important;
+  color: var(--c-00e676) !important;
 }
 
 .sdc-member-bc-sep {
-  color: #6b7280;
+  color: var(--c-6b7280);
 }
 
 .sdc-member-hero-title {
   font-size: 1.6rem;
   font-weight: 800;
-  color: #ffffff;
+  color: var(--c-ffffff);
   margin: 0;
 }
 
@@ -118,13 +123,13 @@
 .sdc-section-main-title {
   font-size: 1.8rem;
   font-weight: 800;
-  color: #ffffff;
+  color: var(--c-ffffff);
   margin: 0;
   line-height: 1.2;
 }
 
 .sdc-section-sub-title {
-  color: #9ca3af;
+  color: var(--c-9ca3af);
   font-size: 0.95rem;
   margin: 0;
   line-height: 1.6;
@@ -133,7 +138,7 @@
 .sdc-view-all-btn {
   background: transparent;
   border: 1px solid rgba(255, 255, 255, 0.4);
-  color: #ffffff;
+  color: var(--c-ffffff);
   padding: 10px 28px;
   border-radius: 50px;
   font-size: 0.95rem;
@@ -148,16 +153,16 @@
 }
 
 .sdc-view-all-btn:hover {
-  border-color: #00e676;
-  color: #00e676;
+  border-color: var(--c-00e676);
+  color: var(--c-00e676);
   background-color: rgba(0, 230, 118, 0.05);
 }
 
 /* ================== كارت التفاصيل الرئيسي ================== */
 .sdc-member-detail-card {
-  background-color: #050d09;
+  background-color: var(--c-050d09);
   border-radius: 28px;
-  border: 1px solid #435448;
+  border: 1px solid var(--c-435448);
   width: 100%;
   padding: 48px 56px;
   display: flex;
@@ -194,7 +199,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #7aaf98;
+  color: var(--c-7aaf98);
   flex-shrink: 0;
 }
 
@@ -206,7 +211,7 @@
 }
 
 .sdc-detail-name {
-  color: #ffffff;
+  color: var(--c-ffffff);
   font-size: 1.45rem;
   font-weight: 800;
   margin: 0;
@@ -220,7 +225,7 @@
 }
 
 .sdc-detail-role {
-  color: #7aaf98;
+  color: var(--c-7aaf98);
   font-size: 0.9rem;
   margin: 0;
 }
@@ -237,13 +242,13 @@
   padding: 3px 12px;
   border-radius: 6px;
   border: 1px solid rgba(255, 255, 255, 0.2);
-  color: #d2d6db;
+  color: var(--c-d2d6db);
 }
 
 .sdc-tag-item.tag-active {
-  background-color: #1b3d31;
-  border-color: #00e676;
-  color: #ffffff;
+  background-color: var(--c-1b3d31);
+  border-color: var(--c-00e676);
+  color: var(--c-ffffff);
 }
 
 .sdc-academic-info-center {
@@ -264,7 +269,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  color: #ffffff;
+  color: var(--c-ffffff);
   font-size: 0.98rem;
 }
 
@@ -275,7 +280,7 @@
 }
 
 .sdc-info-sub {
-  color: #7aaf98;
+  color: var(--c-7aaf98);
   font-size: 0.88rem;
 }
 
@@ -283,7 +288,7 @@
 .sdc-bio-box {
   background-color: rgba(255, 255, 255, 0.02);
   border-radius: 18px;
-  border: 1px solid #435448;
+  border: 1px solid var(--c-435448);
   width: 100%;
   min-height: 160px;
   padding: 32px;
@@ -310,7 +315,7 @@
 }
 
 .sdc-bio-text {
-  color: #e5e7eb;
+  color: var(--c-e5e7eb);
   font-size: 1.1rem;
   line-height: 1.9;
   text-align: center;
@@ -340,7 +345,7 @@
 }
 
 .sdc-social-icon-link:hover {
-  color: #00e676;
+  color: var(--c-00e676);
   transform: translateY(-2px);
 }
 
@@ -359,7 +364,7 @@
 .sdc-contact-me-btn {
   background: transparent;
   border: 1px solid rgba(255, 255, 255, 0.3);
-  color: #ffffff;
+  color: var(--c-ffffff);
   padding: 10px 36px;
   border-radius: 50px;
   font-size: 0.9rem;
@@ -370,8 +375,8 @@
 }
 
 .sdc-contact-me-btn:hover {
-  border-color: #00e676;
-  color: #00e676;
+  border-color: var(--c-00e676);
+  color: var(--c-00e676);
 }
 
 /* ================== Modal / النافذة المنبثقة ================== */
@@ -391,8 +396,8 @@
 }
 
 .sdc-modal-content {
-  background-color: #0c0e12;
-  border: 1px solid #435448;
+  background-color: var(--c-0c0e12);
+  border: 1px solid var(--c-435448);
   border-radius: 20px;
   padding: 32px;
   width: 90%;
@@ -407,19 +412,19 @@
   left: 20px;
   background: transparent;
   border: none;
-  color: #9ca3af;
+  color: var(--c-9ca3af);
   font-size: 1.2rem;
   cursor: pointer;
 }
 
 .sdc-modal-content h3 {
-  color: #ffffff;
+  color: var(--c-ffffff);
   margin-top: 0;
   margin-bottom: 8px;
 }
 
 .sdc-modal-content p {
-  color: #9ca3af;
+  color: var(--c-9ca3af);
   font-size: 0.9rem;
   margin-bottom: 20px;
 }
@@ -431,22 +436,22 @@
 }
 
 .sdc-modal-input {
-  background: #050d09;
+  background: var(--c-050d09);
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 8px;
   padding: 10px 14px;
-  color: #ffffff;
+  color: var(--c-ffffff);
   font-family: inherit;
 }
 
 .sdc-modal-input:focus {
   outline: none;
-  border-color: #00e676;
+  border-color: var(--c-00e676);
 }
 
 .sdc-modal-submit-btn {
-  background: #00e676;
-  color: #050d09;
+  background: var(--c-00e676);
+  color: var(--c-050d09);
   border: none;
   padding: 12px;
   border-radius: 50px;
@@ -501,176 +506,176 @@
 /* ================== LIGHT MODE - MEMBER DETAILS ================== */
 
 :root[data-theme='light'] .sdc-details-page-wrapper {
-  background-color: #f4faf6;
-  color: #123b35;
+  background-color: var(--c-f4faf6);
+  color: var(--c-123b35);
 }
 
 /* البنر */
 :root[data-theme='light'] .sdc-member-hero-banner {
-  background-color: #eaf6ee;
+  background-color: var(--c-eaf6ee);
   background-image:
     linear-gradient(
       90deg,
       rgba(169, 216, 188, 0.55) 0%,
       rgba(229, 245, 234, 0.88) 55%,
-      #f4faf6 100%
+      var(--c-f4faf6) 100%
     ),
     url('/assets/Service(1).png');
 }
 
 :root[data-theme='light'] .sdc-member-hero-title {
-  color: #123b35;
+  color: var(--c-123b35);
 }
 
 :root[data-theme='light'] .sdc-member-breadcrumb,
 :root[data-theme='light'] .sdc-member-breadcrumb a {
-  color: #52766c;
+  color: var(--c-52766c);
 }
 
 :root[data-theme='light'] .sdc-member-bc-sep {
-  color: #8aa39c;
+  color: var(--c-8aa39c);
 }
 
 :root[data-theme='light'] .sdc-member-breadcrumb a:hover {
-  color: #0b8f55 !important;
+  color: var(--c-0b8f55) !important;
 }
 
 /* عنوان القسم */
 :root[data-theme='light'] .sdc-section-main-title {
-  color: #123b35;
+  color: var(--c-123b35);
 }
 
 :root[data-theme='light'] .sdc-section-sub-title {
-  color: #52766c;
+  color: var(--c-52766c);
 }
 
 :root[data-theme='light'] .sdc-view-all-btn {
-  background-color: #ffffff;
-  border-color: #a9d8bc;
-  color: #123b35;
+  background-color: var(--c-ffffff);
+  border-color: var(--c-a9d8bc);
+  color: var(--c-123b35);
 }
 
 :root[data-theme='light'] .sdc-view-all-btn:hover {
-  background-color: #e5f5ea;
-  border-color: #16a765;
-  color: #0b8f55;
+  background-color: var(--c-e5f5ea);
+  border-color: var(--c-16a765);
+  color: var(--c-0b8f55);
 }
 
 /* كرت العضو */
 :root[data-theme='light'] .sdc-member-detail-card {
-  background-color: #ffffff;
-  border-color: #cbe7d4;
+  background-color: var(--c-ffffff);
+  border-color: var(--c-cbe7d4);
   box-shadow: 0 8px 25px rgba(18, 59, 53, 0.06);
 }
 
 :root[data-theme='light'] .sdc-avatar-circle {
-  background-color: #e5f5ea;
-  border-color: #a9d8bc;
-  color: #168a5b;
+  background-color: var(--c-e5f5ea);
+  border-color: var(--c-a9d8bc);
+  color: var(--c-168a5b);
 }
 
 :root[data-theme='light'] .sdc-detail-name {
-  color: #123b35;
+  color: var(--c-123b35);
 }
 
 :root[data-theme='light'] .sdc-name-underline {
-  background-color: #d8ede0;
+  background-color: var(--c-d8ede0);
 }
 
 :root[data-theme='light'] .sdc-detail-role,
 :root[data-theme='light'] .sdc-info-sub {
-  color: #168a5b;
+  color: var(--c-168a5b);
 }
 
 /* Tags */
 :root[data-theme='light'] .sdc-tag-item {
-  background-color: #f4faf6;
-  border-color: #cbe7d4;
-  color: #52766c;
+  background-color: var(--c-f4faf6);
+  border-color: var(--c-cbe7d4);
+  color: var(--c-52766c);
 }
 
 :root[data-theme='light'] .sdc-tag-item.tag-active {
-  background-color: #e5f5ea;
-  border-color: #72c99a;
-  color: #0d3329;
+  background-color: var(--c-e5f5ea);
+  border-color: var(--c-72c99a);
+  color: var(--c-0d3329);
 }
 
 /* المعلومات الأكاديمية */
 :root[data-theme='light'] .sdc-info-label-group {
-  color: #123b35;
+  color: var(--c-123b35);
 }
 
 /* النبذة */
 :root[data-theme='light'] .sdc-bio-box {
-  background-color: #f8fcf9;
-  border-color: #cbe7d4;
+  background-color: var(--c-f8fcf9);
+  border-color: var(--c-cbe7d4);
 }
 
 :root[data-theme='light'] .sdc-bio-text {
-  color: #294e46;
+  color: var(--c-294e46);
 }
 
 /* التواصل */
 :root[data-theme='light'] .sdc-social-icon-link {
-  color: #52766c;
+  color: var(--c-52766c);
 }
 
 :root[data-theme='light'] .sdc-social-icon-link:hover {
-  color: #168a5b;
+  color: var(--c-168a5b);
 }
 
 :root[data-theme='light'] .sdc-contact-me-btn {
-  background-color: #ffffff;
-  border-color: #a9d8bc;
-  color: #123b35;
+  background-color: var(--c-ffffff);
+  border-color: var(--c-a9d8bc);
+  color: var(--c-123b35);
 }
 
 :root[data-theme='light'] .sdc-contact-me-btn:hover {
-  background-color: #e5f5ea;
-  border-color: #16a765;
-  color: #0b8f55;
+  background-color: var(--c-e5f5ea);
+  border-color: var(--c-16a765);
+  color: var(--c-0b8f55);
 }
 
 /* ================== Contact Modal ================== */
 
 :root[data-theme='light'] .sdc-modal-content {
-  background-color: #ffffff;
-  border-color: #cbe7d4;
+  background-color: var(--c-ffffff);
+  border-color: var(--c-cbe7d4);
   box-shadow: 0 12px 35px rgba(18, 59, 53, 0.12);
 }
 
 :root[data-theme='light'] .sdc-modal-content h3 {
-  color: #123b35;
+  color: var(--c-123b35);
 }
 
 :root[data-theme='light'] .sdc-modal-content p {
-  color: #52766c;
+  color: var(--c-52766c);
 }
 
 :root[data-theme='light'] .sdc-modal-close {
-  color: #52766c;
+  color: var(--c-52766c);
 }
 
 :root[data-theme='light'] .sdc-modal-input {
-  background-color: #f8fcf9;
-  border-color: #cbe7d4;
-  color: #123b35;
+  background-color: var(--c-f8fcf9);
+  border-color: var(--c-cbe7d4);
+  color: var(--c-123b35);
 }
 
 :root[data-theme='light'] .sdc-modal-input::placeholder {
-  color: #8aa39c;
+  color: var(--c-8aa39c);
 }
 
 :root[data-theme='light'] .sdc-modal-input:focus {
-  background-color: #ffffff;
-  border-color: #72c99a;
+  background-color: var(--c-ffffff);
+  border-color: var(--c-72c99a);
 }
 
 :root[data-theme='light'] .sdc-modal-submit-btn {
-  background-color: #72c99a;
-  color: #0d3329;
+  background-color: var(--c-72c99a);
+  color: var(--c-0d3329);
 }
 
 :root[data-theme='light'] .sdc-modal-submit-btn:hover {
-  background-color: #5db987;
+  background-color: var(--c-5db987);
 }

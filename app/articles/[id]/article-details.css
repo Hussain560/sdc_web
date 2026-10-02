@@ -1,8 +1,8 @@
 .sdc-article-detail-wrapper {
-  background-color: #050d09;
+  background-color: var(--c-050d09);
   min-height: 100vh;
   direction: inherit;
-  color: #ffffff;
+  color: var(--c-ffffff);
   display: flex;
   flex-direction: column;
 }
@@ -26,9 +26,14 @@
   height: 164px;
   min-height: 164px;
   max-height: 164px;
-  background-color: #050d09;
+  background-color: var(--c-050d09);
   background-image:
-    linear-gradient(90deg, rgba(122, 175, 152, 0.22) 0%, rgba(5, 20, 15, 0.85) 55%, #050d09 100%),
+    linear-gradient(
+      90deg,
+      rgba(122, 175, 152, 0.22) 0%,
+      rgba(5, 20, 15, 0.85) 55%,
+      var(--c-050d09) 100%
+    ),
     url('/assets/Service(1).png');
   background-repeat: no-repeat, repeat-x;
   background-position:
@@ -58,27 +63,27 @@
   align-items: center;
   gap: 8px;
   font-size: 0.9rem;
-  color: #9ca3af;
+  color: var(--c-9ca3af);
 }
 
 .sdc-article-breadcrumb a {
-  color: #9ca3af;
+  color: var(--c-9ca3af);
   text-decoration: none;
   transition: color 0.2s ease;
 }
 
 .sdc-article-breadcrumb a:hover {
-  color: #00e676 !important;
+  color: var(--c-00e676) !important;
 }
 
 .sdc-article-bc-sep {
-  color: #6b7280;
+  color: var(--c-6b7280);
 }
 
 .sdc-article-hero-title {
   font-size: 1.6rem;
   font-weight: 800;
-  color: #ffffff;
+  color: var(--c-ffffff);
   margin: 0;
 }
 
@@ -104,7 +109,7 @@
 .sdc-article-meta-row {
   display: flex;
   gap: 20px;
-  color: #9ca3af;
+  color: var(--c-9ca3af);
   font-size: 0.88rem;
   flex-wrap: wrap;
 }
@@ -127,7 +132,7 @@
   border-radius: 6px;
   background-color: rgba(0, 230, 118, 0.1);
   border: 1px solid rgba(0, 230, 118, 0.3);
-  color: #00e676;
+  color: var(--c-00e676);
 }
 
 .sdc-article-content-card {
@@ -137,7 +142,7 @@
   padding: 32px;
   line-height: 1.9;
   font-size: 1.05rem;
-  color: #d1d5db;
+  color: var(--c-d1d5db);
 }
 
 .sdc-article-text {
@@ -169,67 +174,67 @@
 /* ================== LIGHT MODE - ARTICLE DETAILS ================== */
 
 :root[data-theme='light'] .sdc-article-detail-wrapper {
-  background-color: #f4faf6;
-  color: #123b35;
+  background-color: var(--c-f4faf6);
+  color: var(--c-123b35);
 }
 
 /* البنر */
 :root[data-theme='light'] .sdc-article-hero-banner {
-  background-color: #eaf6ee;
+  background-color: var(--c-eaf6ee);
   background-image:
     linear-gradient(
       90deg,
       rgba(169, 216, 188, 0.55) 0%,
       rgba(229, 245, 234, 0.88) 55%,
-      #f4faf6 100%
+      var(--c-f4faf6) 100%
     ),
     url('/assets/Service(1).png');
 }
 
 :root[data-theme='light'] .sdc-article-hero-title {
-  color: #123b35;
+  color: var(--c-123b35);
 }
 
 /* Breadcrumb */
 :root[data-theme='light'] .sdc-article-breadcrumb,
 :root[data-theme='light'] .sdc-article-breadcrumb a {
-  color: #52766c;
+  color: var(--c-52766c);
 }
 
 :root[data-theme='light'] .sdc-article-bc-sep {
-  color: #8aa39c;
+  color: var(--c-8aa39c);
 }
 
 :root[data-theme='light'] .sdc-article-breadcrumb a:hover {
-  color: #0b8f55 !important;
+  color: var(--c-0b8f55) !important;
 }
 
 /* معلومات الثريد */
 :root[data-theme='light'] .sdc-article-header {
-  border-bottom-color: #d8ede0;
+  border-bottom-color: var(--c-d8ede0);
 }
 
 :root[data-theme='light'] .sdc-article-meta-row {
-  color: #52766c;
+  color: var(--c-52766c);
 }
 
 /* التصنيفات */
 :root[data-theme='light'] .sdc-article-tag-pill {
-  background-color: #e5f5ea;
-  border-color: #a9d8bc;
-  color: #168a5b;
+  background-color: var(--c-e5f5ea);
+  border-color: var(--c-a9d8bc);
+  color: var(--c-168a5b);
 }
 
 /* محتوى الثريد */
 :root[data-theme='light'] .sdc-article-content-card {
-  background-color: #ffffff;
-  border-color: #cbe7d4;
-  color: #294e46;
+  background-color: var(--c-ffffff);
+  border-color: var(--c-cbe7d4);
+  color: var(--c-294e46);
   box-shadow: 0 6px 20px rgba(18, 59, 53, 0.06);
 }
 
 :root[data-theme='light'] .sdc-article-text {
-  color: #294e46;
+  color: var(--c-294e46);
 }
 .sdc-article-source-link {
   display: inline-flex;
@@ -237,8 +242,8 @@
   justify-content: center;
   margin-top: 24px;
   padding: 12px 22px;
-  background: #16a765;
-  color: #ffffff !important;
+  background: var(--c-16a765);
+  color: var(--c-ffffff) !important;
   border-radius: 10px;
   text-decoration: none;
   font-weight: 700;

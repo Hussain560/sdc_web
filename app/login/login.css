@@ -1,5 +1,5 @@
 .sdc-login-page-wrapper {
-  background-color: #050d09;
+  background-color: var(--c-050d09);
   min-height: 100vh;
   direction: inherit;
   display: flex;
@@ -15,9 +15,9 @@
 }
 
 .sdc-login-card {
-  background-color: #0d0e12;
+  background-color: var(--c-0d0e12);
   border: 1px solid rgba(0, 230, 118, 0.3);
-  border-top: 2px solid #00e676;
+  border-top: 2px solid var(--c-00e676);
   border-radius: 20px;
   padding: 40px 32px;
   width: 100%;
@@ -32,14 +32,14 @@
 }
 
 .sdc-login-title {
-  color: #ffffff;
+  color: var(--c-ffffff);
   font-size: 1.8rem;
   font-weight: 800;
   margin: 0 0 8px 0;
 }
 
 .sdc-login-subtitle {
-  color: #9ca3af;
+  color: var(--c-9ca3af);
   font-size: 0.88rem;
   margin: 0;
 }
@@ -58,30 +58,30 @@
 }
 
 .sdc-form-group label {
-  color: #e5e7eb;
+  color: var(--c-e5e7eb);
   font-size: 0.88rem;
   font-weight: 600;
 }
 
 .sdc-form-group input {
-  background-color: #16181d;
+  background-color: var(--c-16181d);
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 10px;
   padding: 12px 16px;
-  color: #ffffff;
+  color: var(--c-ffffff);
   font-size: 0.95rem;
   outline: none;
   transition: all 0.2s ease;
 }
 
 .sdc-form-group input:focus {
-  border-color: #00e676;
+  border-color: var(--c-00e676);
   box-shadow: 0 0 8px rgba(0, 230, 118, 0.2);
 }
 
 .sdc-login-submit-btn {
-  background-color: #00e676;
-  color: #050d09;
+  background-color: var(--c-00e676);
+  color: var(--c-050d09);
   border: none;
   border-radius: 50px;
   padding: 12px;
@@ -93,7 +93,7 @@
 }
 
 .sdc-login-submit-btn:hover {
-  background-color: #00c853;
+  background-color: var(--c-00c853);
   box-shadow: 0 4px 15px rgba(0, 230, 118, 0.3);
 }
 
@@ -103,11 +103,11 @@
   padding-top: 18px;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   font-size: 0.88rem;
-  color: #9ca3af;
+  color: var(--c-9ca3af);
 }
 
 .sdc-login-link {
-  color: #00e676;
+  color: var(--c-00e676);
   text-decoration: none;
   font-weight: 700;
   margin-right: 4px;
@@ -125,63 +125,63 @@
 /* ================== LIGHT MODE - LOGIN ================== */
 
 :root[data-theme='light'] .sdc-login-page-wrapper {
-  background-color: #f4faf6;
+  background-color: var(--c-f4faf6);
 }
 
 :root[data-theme='light'] .sdc-login-card {
-  background-color: #ffffff;
-  border-color: #cbe7d4;
-  border-top-color: #72c99a;
+  background-color: var(--c-ffffff);
+  border-color: var(--c-cbe7d4);
+  border-top-color: var(--c-72c99a);
   box-shadow: 0 10px 30px rgba(18, 59, 53, 0.08);
 }
 
 :root[data-theme='light'] .sdc-login-title {
-  color: #123b35;
+  color: var(--c-123b35);
 }
 
 :root[data-theme='light'] .sdc-login-subtitle {
-  color: #52766c;
+  color: var(--c-52766c);
 }
 
 :root[data-theme='light'] .sdc-form-group label {
-  color: #294e46;
+  color: var(--c-294e46);
 }
 
 :root[data-theme='light'] .sdc-form-group input {
-  background-color: #f8fcf9;
-  border-color: #cbe7d4;
-  color: #123b35;
+  background-color: var(--c-f8fcf9);
+  border-color: var(--c-cbe7d4);
+  color: var(--c-123b35);
 }
 
 :root[data-theme='light'] .sdc-form-group input::placeholder {
-  color: #8aa39c;
+  color: var(--c-8aa39c);
 }
 
 :root[data-theme='light'] .sdc-form-group input:focus {
-  background-color: #ffffff;
-  border-color: #72c99a;
+  background-color: var(--c-ffffff);
+  border-color: var(--c-72c99a);
   box-shadow: 0 0 0 3px rgba(114, 201, 154, 0.15);
 }
 
 :root[data-theme='light'] .sdc-login-submit-btn {
-  background-color: #72c99a;
-  color: #0d3329;
+  background-color: var(--c-72c99a);
+  color: var(--c-0d3329);
 }
 
 :root[data-theme='light'] .sdc-login-submit-btn:hover {
-  background-color: #5db987;
-  color: #ffffff;
+  background-color: var(--c-5db987);
+  color: var(--c-ffffff);
 }
 
 :root[data-theme='light'] .sdc-login-footer {
-  color: #52766c;
-  border-top-color: #d8ede0;
+  color: var(--c-52766c);
+  border-top-color: var(--c-d8ede0);
 }
 
 :root[data-theme='light'] .sdc-login-link {
-  color: #168a5b;
+  color: var(--c-168a5b);
 }
 
 :root[data-theme='light'] .sdc-login-link:hover {
-  color: #0f7049;
+  color: var(--c-0f7049);
 }

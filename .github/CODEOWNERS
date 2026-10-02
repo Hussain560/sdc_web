@@ -1,0 +1,5 @@
+# Review ownership (docs/07-engineering/contributing.md). Replace with real GitHub handles/teams.
+*                         @sdc-saudi/tech-leads
+/docs/                    @sdc-saudi/tech-leads @sdc-saudi/product-owners
+/supabase/                @sdc-saudi/tech-leads
+/.github/                 @sdc-saudi/tech-leads
