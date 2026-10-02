@@ -31,7 +31,8 @@ const translations = {
     aboutCommunity: 'عن المجتمع',
     whoWeAre: 'ما هو المجتمع السعودي للمطورين',
     memberSectionTitle: 'أعضاء المجتمع',
-    memberSectionSubtitle: 'تعرّف على أعضاء مجتمعنا الذين يجمعهم الشغف بالتقنية، والتعاون، وصناعة الأثر.',
+    memberSectionSubtitle:
+      'تعرّف على أعضاء مجتمعنا الذين يجمعهم الشغف بالتقنية، والتعاون، وصناعة الأثر.',
     allMemberCards: 'جميع الأعضاء',
     contactMe: 'تواصل معي',
     sendMessage: 'إرسال الرسالة',
@@ -98,7 +99,8 @@ const translations = {
     aboutCommunity: 'About the community',
     whoWeAre: 'What is the Saudi Developer Community?',
     memberSectionTitle: 'Community Members',
-    memberSectionSubtitle: 'Meet the members of our community who share a passion for technology, collaboration, and making an impact.',
+    memberSectionSubtitle:
+      'Meet the members of our community who share a passion for technology, collaboration, and making an impact.',
     allMemberCards: 'All Members',
     contactMe: 'Contact Me',
     sendMessage: 'Send Message',
@@ -136,7 +138,7 @@ const translations = {
     createAccount: 'Create a new account',
     verify: 'Verifying...',
     noResultsSearch: 'No results matched your search.',
-  }
+  },
 };
 
 export type Lang = 'ar' | 'en';

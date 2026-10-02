@@ -1,6 +1,6 @@
 /* ================== توحيد خلفية الصفحة بالكامل مع الفوتر ================== */
 .sdc-notfound-page-wrapper {
-  background-color: #050D09 !important;
+  background-color: #050d09 !important;
   min-height: 100vh;
   direction: inherit;
   display: flex;
@@ -13,7 +13,7 @@
   align-items: center;
   justify-content: center;
   padding: 40px 20px;
-  background-color: #050D09 !important;
+  background-color: #050d09 !important;
 }
 
 .sdc-notfound-container {
@@ -39,8 +39,12 @@
 .sdc-404-number {
   font-size: 10.5rem;
   font-weight: 400 !important; /* تخفيف الوزن ليصبح نحيفاً ومطابقاً للفيجما */
-  font-family: Inter, system-ui, -apple-system, sans-serif;
-  color: #C2E7D5;
+  font-family:
+    Inter,
+    system-ui,
+    -apple-system,
+    sans-serif;
+  color: #c2e7d5;
   margin: 0;
   line-height: 1;
   letter-spacing: -2px;
@@ -74,39 +78,77 @@
 }
 
 /* التوزيع الهادئ حول الرقم */
-.pos-top-center       { top: 0px;    left: 50%; transform: translateX(-50%); }
-.pos-top-left-1       { top: 35px;   left: 25%; }
-.pos-top-right-1      { top: 28px;   right: 25%; }
-.pos-top-right-2      { top: 40px;   right: 12%; }
+.pos-top-center {
+  top: 0px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.pos-top-left-1 {
+  top: 35px;
+  left: 25%;
+}
+.pos-top-right-1 {
+  top: 28px;
+  right: 25%;
+}
+.pos-top-right-2 {
+  top: 40px;
+  right: 12%;
+}
 
-.pos-mid-left-far     { top: 110px;  left: 10px; }
-.pos-mid-left-near    { top: 75px;   left: 100px; }
-.pos-mid-right        { top: 115px;  right: 15px; }
+.pos-mid-left-far {
+  top: 110px;
+  left: 10px;
+}
+.pos-mid-left-near {
+  top: 75px;
+  left: 100px;
+}
+.pos-mid-right {
+  top: 115px;
+  right: 15px;
+}
 
-.pos-bottom-right-far { bottom: 50px;  right: 25px; }
-.pos-bottom-right-near{ bottom: 15px;  right: 110px; }
-.pos-bottom-center    { bottom: -5px;  left: 50%; transform: translateX(-50%); }
+.pos-bottom-right-far {
+  bottom: 50px;
+  right: 25px;
+}
+.pos-bottom-right-near {
+  bottom: 15px;
+  right: 110px;
+}
+.pos-bottom-center {
+  bottom: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+}
 
-.pos-bottom-left-1    { bottom: 40px;  left: 35px; }
-.pos-bottom-left-2    { bottom: 10px;  left: 130px; }
+.pos-bottom-left-1 {
+  bottom: 40px;
+  left: 35px;
+}
+.pos-bottom-left-2 {
+  bottom: 10px;
+  left: 130px;
+}
 
 /* ================== النصوص والزر ================== */
 .sdc-notfound-title {
-  color: #FFFFFF;
+  color: #ffffff;
   font-size: 1.6rem;
   font-weight: 700;
   margin: 0 0 8px 0;
 }
 
 .sdc-notfound-desc {
-  color: #9CA3AF;
+  color: #9ca3af;
   font-size: 0.95rem;
   margin: 0 0 32px 0;
 }
 
 .sdc-back-home-btn {
-  background-color: #00E676;
-  color: #08090C;
+  background-color: #00e676;
+  color: #08090c;
   font-weight: 700;
   font-size: 0.95rem;
   padding: 10px 36px;
@@ -117,7 +159,7 @@
 }
 
 .sdc-back-home-btn:hover {
-  background-color: #00C853;
+  background-color: #00c853;
   transform: translateY(-2px);
   box-shadow: 0 6px 24px rgba(0, 230, 118, 0.4);
 }

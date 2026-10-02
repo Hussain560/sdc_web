@@ -1,5 +1,5 @@
 .sdc-header {
-  background-color: #0D0E12;
+  background-color: #0d0e12;
   border-bottom: 1px solid rgba(0, 230, 118, 0.15);
   width: 100%;
   position: sticky;
@@ -17,7 +17,7 @@
   flex-direction: row !important;
   align-items: center !important;
   justify-content: flex-start !important;
-gap: 28px;
+  gap: 28px;
 }
 
 .sdc-logo {
@@ -42,7 +42,7 @@ gap: 28px;
 }
 
 .sdc-nav a {
-  color: #E5E7EB;
+  color: #e5e7eb;
   text-decoration: none;
   font-size: 15px;
   font-weight: 500;
@@ -50,7 +50,7 @@ gap: 28px;
 }
 
 .sdc-nav a:hover {
-  color: #28674B;
+  color: #28674b;
 }
 
 .sdc-actions {
@@ -64,7 +64,7 @@ gap: 28px;
 .sdc-icon-btn {
   background: none;
   border: none;
-  color: #E5E7EB;
+  color: #e5e7eb;
   display: flex;
   align-items: center;
   gap: 6px;
@@ -75,7 +75,7 @@ gap: 28px;
 .sdc-btn-primary {
   background-color: transparent;
   border: 1px solid rgba(255, 255, 255, 0.3); /* حد ناعم يطابق عرض الكل */
-  color: #FFFFFF;
+  color: #ffffff;
   padding: 8px 24px;
   border-radius: 50px; /* شكل بيضاوي دافئ (Capsule) */
   font-size: 14px;
@@ -89,8 +89,8 @@ gap: 28px;
 }
 
 .sdc-btn-primary:hover {
-  border-color: #00E676;
-  color: #00E676;
+  border-color: #00e676;
+  color: #00e676;
   background-color: rgba(0, 230, 118, 0.05);
 }
 
@@ -132,7 +132,7 @@ gap: 28px;
     gap: 8px;
   }
   /* إخفاء القائمة الطويلة في الجوال الصغير جداً لترتيب المسافة */
- /* .sdc-nav {
+  /* .sdc-nav {
     display: none;
   }*/
 
@@ -162,13 +162,13 @@ gap: 28px;
 }
 
 .sdc-search-modal {
-  background: #13151B;
+  background: #13151b;
   border: 1px solid rgba(0, 230, 118, 0.3);
   border-radius: 12px;
   width: 90%;
   max-width: 600px;
   padding: 16px 20px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
 
 .sdc-search-modal form {
@@ -182,54 +182,54 @@ gap: 28px;
   background: transparent;
   border: none;
   outline: none;
-  color: #FFFFFF;
+  color: #ffffff;
   font-size: 1rem;
   direction: inherit;
 }
 
 .sdc-modal-search-icon {
-  color: #56987B;
+  color: #56987b;
 }
 
 .sdc-close-btn {
   background: none;
   border: none;
-  color: #9CA3AF;
+  color: #9ca3af;
   cursor: pointer;
   transition: color 0.2s;
 }
 
 .sdc-close-btn:hover {
-  color: #FFFFFF;
+  color: #ffffff;
 }
 /* ================== LIGHT MODE ================== */
 
 :root[data-theme='light'] .sdc-header {
   background-color: #f3f9f6;
-  border-bottom: 1px solid #D8EDE0;
+  border-bottom: 1px solid #d8ede0;
 }
 
 :root[data-theme='light'] .sdc-nav a {
-  color: #123B35;
+  color: #123b35;
 }
 
 :root[data-theme='light'] .sdc-icon-btn {
-  color: #123B35;
+  color: #123b35;
 }
 
 :root[data-theme='light'] .sdc-btn-primary {
-  color: #123B35;
-  border-color: #A9D8BC;
+  color: #123b35;
+  border-color: #a9d8bc;
   background-color: #dbede1;
 }
 
 :root[data-theme='light'] .sdc-nav a:hover,
 :root[data-theme='light'] .sdc-icon-btn:hover {
-  color: #16A765;
+  color: #16a765;
 }
 
 :root[data-theme='light'] .sdc-btn-primary:hover {
-  color: #0B8F55;
-  border-color: #16A765;
-  background-color: #D8F0E1;
+  color: #0b8f55;
+  border-color: #16a765;
+  background-color: #d8f0e1;
 }

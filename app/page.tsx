@@ -11,10 +11,10 @@ export default function Home() {
     <main style={{ backgroundColor: '#0D0E12', minHeight: '100vh' }}>
       <Header />
       <HeroSection />
-       <ArticlesSection /> 
-       <CommunitySections />
-       <MembersSection /> 
-       <Footer /> 
+      <ArticlesSection />
+      <CommunitySections />
+      <MembersSection />
+      <Footer />
     </main>
   );
 }

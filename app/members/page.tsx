@@ -16,13 +16,19 @@ const FOUNDERS = [
   {
     id: 'founder-lina',
     name: { ar: 'لينا الإسماعيل', en: 'Lina Alismail' },
-    bio: { ar: 'أسّست المجتمع السعودي للمطورين قبل أربع سنوات', en: 'Co-founded the Saudi Developers Community four years ago' },
+    bio: {
+      ar: 'أسّست المجتمع السعودي للمطورين قبل أربع سنوات',
+      en: 'Co-founded the Saudi Developers Community four years ago',
+    },
     tags: { ar: ['تأسيس', 'رؤية'], en: ['Founding', 'Vision'] },
   },
   {
     id: 'founder-mariam',
     name: { ar: 'مريم الفضلي', en: 'Mariam Alfadhli' },
-    bio: { ar: 'أسّست المجتمع السعودي للمطورين قبل أربع سنوات', en: 'Co-founded the Saudi Developers Community four years ago' },
+    bio: {
+      ar: 'أسّست المجتمع السعودي للمطورين قبل أربع سنوات',
+      en: 'Co-founded the Saudi Developers Community four years ago',
+    },
     tags: { ar: ['تأسيس', 'رؤية'], en: ['Founding', 'Vision'] },
   },
 ];
@@ -31,25 +37,61 @@ const FOUNDERS = [
 const COMMUNITY_LEADER = {
   name: { ar: 'مهند الحربي', en: 'Mohannad Alharbi' },
   role: { ar: 'قائد المجتمع', en: 'Community Leader' },
-  bio: { ar: 'قائد المجتمع الحالي، يقود الرؤية ويشرف على التنفيذ', en: 'Current community leader, leading the vision and overseeing execution' },
+  bio: {
+    ar: 'قائد المجتمع الحالي، يقود الرؤية ويشرف على التنفيذ',
+    en: 'Current community leader, leading the vision and overseeing execution',
+  },
   tags: { ar: ['قيادة', 'استراتيجية'], en: ['Leadership', 'Strategy'] },
 };
 
 const COMMUNITY_ADVISOR = {
   name: { ar: 'ألين الزهراني', en: 'Aleen Alzahrani' },
   role: { ar: 'المستشار', en: 'Advisor' },
-  bio: { ar: 'قائدة المجتمع سابقًا، واليوم مستشارة تقدم الدعم الاستراتيجي', en: 'Former community leader, now advisor providing strategic support' },
+  bio: {
+    ar: 'قائدة المجتمع سابقًا، واليوم مستشارة تقدم الدعم الاستراتيجي',
+    en: 'Former community leader, now advisor providing strategic support',
+  },
   tags: { ar: ['استشارة', 'خبرات'], en: ['Advisory', 'Expertise'] },
 };
 
 // ============================ قادة المجتمع ============================
 const TEAM_LEADS = [
-  { id: 'lead-ai', name: { ar: 'جود الشهري', en: 'Joud Alshehri' }, role: { ar: 'قائدة لجنة الذكاء الاصطناعي', en: 'Head of the AI Committee' } },
-  { id: 'lead-cyber', name: { ar: 'العنود المحلبدي', en: 'Al-Anoud Almuhalbdi' }, role: { ar: 'قائدة لجنة الأمن السيبراني', en: 'Head of the Cybersecurity Committee' } },
-  { id: 'lead-tech', name: { ar: 'ريم الشمري', en: 'Reem Alshammari' }, role: { ar: 'قائدة لجنة التقنية والتطوير', en: 'Head of the Technology & Development Committee' } },
-  { id: 'lead-tech-deputy', name: { ar: 'جواهر', en: 'Jawaher' }, role: { ar: 'نائبة قائدة لجنة التقنية والتطوير', en: 'Deputy Head of the Technology & Development Committee' } },
-  { id: 'lead-projects', name: { ar: 'رنا الحربي', en: 'Rana Alharbi' }, role: { ar: 'قائدة المشاريع', en: 'Head of Projects' } },
-  { id: 'lead-design', name: { ar: 'فداء', en: 'Fida' }, role: { ar: 'قائدة التصميم والهوية', en: 'Head of Design & Brand Identity' } },
+  {
+    id: 'lead-ai',
+    name: { ar: 'جود الشهري', en: 'Joud Alshehri' },
+    role: { ar: 'قائدة لجنة الذكاء الاصطناعي', en: 'Head of the AI Committee' },
+  },
+  {
+    id: 'lead-cyber',
+    name: { ar: 'العنود المحلبدي', en: 'Al-Anoud Almuhalbdi' },
+    role: { ar: 'قائدة لجنة الأمن السيبراني', en: 'Head of the Cybersecurity Committee' },
+  },
+  {
+    id: 'lead-tech',
+    name: { ar: 'ريم الشمري', en: 'Reem Alshammari' },
+    role: {
+      ar: 'قائدة لجنة التقنية والتطوير',
+      en: 'Head of the Technology & Development Committee',
+    },
+  },
+  {
+    id: 'lead-tech-deputy',
+    name: { ar: 'جواهر', en: 'Jawaher' },
+    role: {
+      ar: 'نائبة قائدة لجنة التقنية والتطوير',
+      en: 'Deputy Head of the Technology & Development Committee',
+    },
+  },
+  {
+    id: 'lead-projects',
+    name: { ar: 'رنا الحربي', en: 'Rana Alharbi' },
+    role: { ar: 'قائدة المشاريع', en: 'Head of Projects' },
+  },
+  {
+    id: 'lead-design',
+    name: { ar: 'فداء', en: 'Fida' },
+    role: { ar: 'قائدة التصميم والهوية', en: 'Head of Design & Brand Identity' },
+  },
 ];
 
 // عشان ما يتكرر أي شخص موجود فعليًا كعضو بالجدول ظاهر فوق بالهرم —
@@ -82,8 +124,20 @@ interface MemberCardProps {
   infoLabel?: string;
 }
 
-const EMPTY_FILTERS: SelectedFilters = { universities: [], majors: [], subMajors: [], statuses: [], tracks: [] };
-const EMPTY_FILTER_OPTIONS: FilterOptions = { universities: [], majors: [], subMajors: [], statuses: [], tracks: [] };
+const EMPTY_FILTERS: SelectedFilters = {
+  universities: [],
+  majors: [],
+  subMajors: [],
+  statuses: [],
+  tracks: [],
+};
+const EMPTY_FILTER_OPTIONS: FilterOptions = {
+  universities: [],
+  majors: [],
+  subMajors: [],
+  statuses: [],
+  tracks: [],
+};
 
 // تدرّج ثابت واحد لكل الأفاتارات (بدون تمييز حسب الاسم)
 const AVATAR_GRADIENT = 'linear-gradient(135deg, #00E676, #00B85C)';
@@ -113,7 +167,16 @@ function MemberCardSkeleton() {
 }
 
 // ============================ الكارد الموحّد لكل المستويات ============================
-function MemberCard({ name, role, bio, university, tags, activeTag, href, infoLabel }: MemberCardProps) {
+function MemberCard({
+  name,
+  role,
+  bio,
+  university,
+  tags,
+  activeTag,
+  href,
+  infoLabel,
+}: MemberCardProps) {
   return (
     <div className="sdc-member-card">
       <div className="sdc-member-card-top">
@@ -130,7 +193,14 @@ function MemberCard({ name, role, bio, university, tags, activeTag, href, infoLa
 
       {university && (
         <div className="sdc-card-university">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.8"
+          >
             <path d="M12 3 2 8l10 5 10-5-10-5Z" />
             <path d="M6 10.5V16c0 1.5 2.7 3 6 3s6-1.5 6-3v-5.5" />
           </svg>
@@ -141,7 +211,10 @@ function MemberCard({ name, role, bio, university, tags, activeTag, href, infoLa
       {tags && tags.length > 0 && (
         <div className="sdc-card-tags">
           {tags.map((tag: string, idx: number) => (
-            <span key={idx} className={`sdc-tag-pill ${tag === activeTag || (!activeTag && idx === 0) ? 'tag-green' : ''}`}>
+            <span
+              key={idx}
+              className={`sdc-tag-pill ${tag === activeTag || (!activeTag && idx === 0) ? 'tag-green' : ''}`}
+            >
               {tag}
             </span>
           ))}
@@ -151,7 +224,14 @@ function MemberCard({ name, role, bio, university, tags, activeTag, href, infoLa
       {href && (
         <Link href={href} className="sdc-card-info-btn">
           <span>{infoLabel}</span>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
             <path d="M5 12h14M13 6l6 6-6 6" />
           </svg>
         </Link>
@@ -190,8 +270,12 @@ export default function MembersPage() {
         const fullNameAr = `${m.first_name || ''} ${m.last_name || ''}`.trim();
         const fullNameEn = `${m.first_name_en || ''} ${m.last_name_en || ''}`.trim() || fullNameAr;
 
-        const tagsListAr = [m.major, m.sub_major, m.track].filter((value): value is string => Boolean(value));
-        const tagsListEn = [m.major_en, m.sub_major_en, m.track_en].filter((value): value is string => Boolean(value));
+        const tagsListAr = [m.major, m.sub_major, m.track].filter((value): value is string =>
+          Boolean(value),
+        );
+        const tagsListEn = [m.major_en, m.sub_major_en, m.track_en].filter(
+          (value): value is string => Boolean(value),
+        );
 
         return {
           id: m.id,
@@ -219,7 +303,8 @@ export default function MembersPage() {
         if (m.track) trackMap[m.track] = m.track_en || m.track;
       });
 
-      const toOptionsList = (map: Record<string, string>): Localized[] => Object.entries(map).map(([ar, en]) => ({ ar, en }));
+      const toOptionsList = (map: Record<string, string>): Localized[] =>
+        Object.entries(map).map(([ar, en]) => ({ ar, en }));
 
       setFilterOptions({
         universities: toOptionsList(universityMap),
@@ -251,7 +336,9 @@ export default function MembersPage() {
       member.university.en,
       ...member.tags.ar,
       ...member.tags.en,
-    ].join(' ').toLowerCase();
+    ]
+      .join(' ')
+      .toLowerCase();
 
     const matchesSearch = !query || searchText.includes(query);
 
@@ -281,13 +368,28 @@ export default function MembersPage() {
 
   const resetFilters = () => setSelectedFilters(EMPTY_FILTERS);
 
-  const activeFiltersCount = Object.values(selectedFilters).reduce((acc, arr) => acc + arr.length, 0);
+  const activeFiltersCount = Object.values(selectedFilters).reduce(
+    (acc, arr) => acc + arr.length,
+    0,
+  );
 
   const filterSections: { key: FilterCategory; label: string; list: Localized[] }[] = [
-    { key: 'universities', label: isEnglish ? 'University' : 'الجامعة', list: filterOptions.universities },
+    {
+      key: 'universities',
+      label: isEnglish ? 'University' : 'الجامعة',
+      list: filterOptions.universities,
+    },
     { key: 'majors', label: isEnglish ? 'Major' : 'التخصص', list: filterOptions.majors },
-    { key: 'subMajors', label: isEnglish ? 'Sub-major' : 'التخصص الدقيق', list: filterOptions.subMajors },
-    { key: 'statuses', label: isEnglish ? 'Academic Status' : 'الحالة الدراسية', list: filterOptions.statuses },
+    {
+      key: 'subMajors',
+      label: isEnglish ? 'Sub-major' : 'التخصص الدقيق',
+      list: filterOptions.subMajors,
+    },
+    {
+      key: 'statuses',
+      label: isEnglish ? 'Academic Status' : 'الحالة الدراسية',
+      list: filterOptions.statuses,
+    },
     { key: 'tracks', label: isEnglish ? 'Track' : 'المسار', list: filterOptions.tracks },
   ];
 
@@ -313,7 +415,9 @@ export default function MembersPage() {
                   <span style={{ color: '#00E676' }}>{isEnglish ? 'Members' : 'الأعضاء'}</span>
                 </nav>
                 <h1 className="sdc-members-banner-title">
-                  {isEnglish ? 'Saudi Developer Community Members (SDC)' : 'أعضاء المجتمع السعودي للمطورين (SDC)'}
+                  {isEnglish
+                    ? 'Saudi Developer Community Members (SDC)'
+                    : 'أعضاء المجتمع السعودي للمطورين (SDC)'}
                 </h1>
               </div>
             </div>
@@ -340,8 +444,18 @@ export default function MembersPage() {
                 <h2>{isEnglish ? 'Community Leader & Advisor' : 'قائد المجتمع والمستشار'}</h2>
               </div>
               <div className="sdc-spotlight-grid sdc-grid-2col">
-                <MemberCard name={t(COMMUNITY_LEADER.name)} role={t(COMMUNITY_LEADER.role)} bio={t(COMMUNITY_LEADER.bio)} tags={t(COMMUNITY_LEADER.tags)} />
-                <MemberCard name={t(COMMUNITY_ADVISOR.name)} role={t(COMMUNITY_ADVISOR.role)} bio={t(COMMUNITY_ADVISOR.bio)} tags={t(COMMUNITY_ADVISOR.tags)} />
+                <MemberCard
+                  name={t(COMMUNITY_LEADER.name)}
+                  role={t(COMMUNITY_LEADER.role)}
+                  bio={t(COMMUNITY_LEADER.bio)}
+                  tags={t(COMMUNITY_LEADER.tags)}
+                />
+                <MemberCard
+                  name={t(COMMUNITY_ADVISOR.name)}
+                  role={t(COMMUNITY_ADVISOR.role)}
+                  bio={t(COMMUNITY_ADVISOR.bio)}
+                  tags={t(COMMUNITY_ADVISOR.tags)}
+                />
               </div>
 
               {/* قادة المجتمع */}
@@ -358,21 +472,24 @@ export default function MembersPage() {
           )}
 
           {/* أعضاء المجتمع + زر التخصيص (الفلتر) */}
-          <div className="sdc-members-section-header" style={{ marginTop: showHierarchy ? '10px' : '0' }}>
+          <div
+            className="sdc-members-section-header"
+            style={{ marginTop: showHierarchy ? '10px' : '0' }}
+          >
             <div className="sdc-filter-wrap">
               <button
                 type="button"
                 onClick={() => setIsFilterOpen((open) => !open)}
                 className={`sdc-filter-toggle-btn ${isFilterOpen ? 'is-open' : ''}`}
               >
-                ⚙ {isEnglish ? 'Filters' : 'التخصيص'}{activeFiltersCount > 0 ? ` (${activeFiltersCount})` : ''}
+                ⚙ {isEnglish ? 'Filters' : 'التخصيص'}
+                {activeFiltersCount > 0 ? ` (${activeFiltersCount})` : ''}
               </button>
 
               {isFilterOpen && (
                 <>
                   <div className="sdc-filter-backdrop" onClick={() => setIsFilterOpen(false)} />
                   <div className="sdc-filter-panel" onClick={(e) => e.stopPropagation()}>
-
                     {/* رأس اللوحة */}
                     <div className="sdc-filter-header">
                       <h3 className="sdc-filter-header-title">
@@ -408,7 +525,9 @@ export default function MembersPage() {
                                   <span className="sdc-filter-section-badge">{pickedCount}</span>
                                 )}
                               </h4>
-                              <span className={`sdc-filter-chevron ${isOpen ? 'is-open' : ''}`}>▾</span>
+                              <span className={`sdc-filter-chevron ${isOpen ? 'is-open' : ''}`}>
+                                ▾
+                              </span>
                             </div>
 
                             {isOpen && (
@@ -427,7 +546,14 @@ export default function MembersPage() {
                                       className={`sdc-filter-option-row ${isPicked ? 'is-picked' : ''}`}
                                     >
                                       <span className="sdc-filter-checkbox">
-                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
+                                        <svg
+                                          viewBox="0 0 24 24"
+                                          fill="none"
+                                          stroke="currentColor"
+                                          strokeWidth="3.5"
+                                          strokeLinecap="round"
+                                          strokeLinejoin="round"
+                                        >
                                           <polyline points="20 6 9 17 4 12" />
                                         </svg>
                                       </span>
@@ -449,7 +575,11 @@ export default function MembersPage() {
                       <button type="button" onClick={resetFilters} className="sdc-filter-reset">
                         {isEnglish ? 'Reset' : 'إعادة تعيين'}
                       </button>
-                      <button type="button" onClick={() => setIsFilterOpen(false)} className="sdc-filter-apply">
+                      <button
+                        type="button"
+                        onClick={() => setIsFilterOpen(false)}
+                        className="sdc-filter-apply"
+                      >
                         {isEnglish ? 'Apply' : 'تطبيق'}
                       </button>
                     </div>
@@ -459,7 +589,9 @@ export default function MembersPage() {
             </div>
 
             <div className="sdc-header-right-info">
-              <h2 className="sdc-section-main-title">{isEnglish ? 'Community Members' : 'أعضاء المجتمع'}</h2>
+              <h2 className="sdc-section-main-title">
+                {isEnglish ? 'Community Members' : 'أعضاء المجتمع'}
+              </h2>
               <p className="sdc-section-sub-title">
                 {isEnglish
                   ? 'Meet the members of our community who share a passion for technology, collaboration, and making an impact.'
@@ -486,7 +618,9 @@ export default function MembersPage() {
               ))
             ) : (
               <p className="sdc-no-results">
-                {isEnglish ? `No results matched your search: "${searchQuery}"` : `لا توجد نتائج تطابق بحثك: "${searchQuery}"`}
+                {isEnglish
+                  ? `No results matched your search: "${searchQuery}"`
+                  : `لا توجد نتائج تطابق بحثك: "${searchQuery}"`}
               </p>
             )}
           </div>

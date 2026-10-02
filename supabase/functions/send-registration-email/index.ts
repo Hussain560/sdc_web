@@ -1,15 +1,15 @@
-import nodemailer from "npm:nodemailer@6.9.10";
+import nodemailer from 'npm:nodemailer@6.9.10';
 
-const GMAIL_USER = Deno.env.get("GMAIL_USER")!;
-const GMAIL_APP_PASSWORD = Deno.env.get("GMAIL_APP_PASSWORD")!;
+const GMAIL_USER = Deno.env.get('GMAIL_USER')!;
+const GMAIL_APP_PASSWORD = Deno.env.get('GMAIL_APP_PASSWORD')!;
 
 const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
 const transport = nodemailer.createTransport({
-  host: "smtp.gmail.com",
+  host: 'smtp.gmail.com',
   port: 465,
   secure: true,
   auth: {
@@ -19,17 +19,17 @@ const transport = nodemailer.createTransport({
 });
 
 Deno.serve(async (req) => {
-  if (req.method === "OPTIONS") {
-    return new Response("ok", { headers: corsHeaders });
+  if (req.method === 'OPTIONS') {
+    return new Response('ok', { headers: corsHeaders });
   }
 
   try {
     const { to, fullName, eventTitle } = await req.json();
 
     if (!to || !eventTitle) {
-      return new Response(JSON.stringify({ error: "بيانات ناقصة" }), {
+      return new Response(JSON.stringify({ error: 'بيانات ناقصة' }), {
         status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
 
@@ -55,7 +55,7 @@ Deno.serve(async (req) => {
                 <tr>
                   <td style="padding:32px 24px;text-align:right;">
                     <p style="margin:0 0 20px;font-size:15px;line-height:1.9;color:#333333;">
-                      أهلًا بك ${fullName || ""}،
+                      أهلًا بك ${fullName || ''}،
                     </p>
                     <p style="margin:0 0 24px;font-size:15px;line-height:1.9;color:#444444;">
                       تم استلام طلب تسجيلك في فعالية <strong>"${eventTitle}"</strong> بنجاح. سيتم مراجعة الطلب من قِبل اللجنة المختصة، وسيصلك إشعار عند اعتماد التسجيل.
@@ -86,18 +86,18 @@ Deno.serve(async (req) => {
         (error, info) => {
           if (error) reject(error);
           else resolve(info);
-        }
+        },
       );
     });
 
     return new Response(JSON.stringify({ success: true }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   } catch (error) {
     console.error(error);
     return new Response(JSON.stringify({ error: error.message }), {
       status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   }
 });

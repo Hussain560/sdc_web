@@ -28,7 +28,11 @@ export default function MembersSection() {
         <h2 className="sdc-members-title">{isEnglish ? 'Community Members' : 'اعضاء المجتمع'}</h2>
 
         <div className="sdc-avatar-group">
-          <Link href="/members" className="sdc-avatar-more" aria-label={isEnglish ? 'View more members' : 'عرض المزيد من الأعضاء'}>
+          <Link
+            href="/members"
+            className="sdc-avatar-more"
+            aria-label={isEnglish ? 'View more members' : 'عرض المزيد من الأعضاء'}
+          >
             +
           </Link>
           {Array.from({ length: memberPlaceholdersCount }).map((_, index) => (
@@ -74,10 +78,13 @@ export default function MembersSection() {
                   alt={isEnglish ? 'Platform logo' : 'شعار'}
                   className="sdc-partner-logo"
                   onError={(e) => {
-                    (e.target as HTMLImageElement).src = 'https://via.placeholder.com/28/000000/FFFFFF?text=🇸🇦';
+                    (e.target as HTMLImageElement).src =
+                      'https://via.placeholder.com/28/000000/FFFFFF?text=🇸🇦';
                   }}
                 />
-                <span className="sdc-partner-text">{isEnglish ? 'Platform Logo' : 'شعار المنصة'}</span>
+                <span className="sdc-partner-text">
+                  {isEnglish ? 'Platform Logo' : 'شعار المنصة'}
+                </span>
               </div>
             ))}
           </div>

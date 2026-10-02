@@ -13,7 +13,12 @@ import '../login/login.css';
 const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/;
 
 export default function RegisterPage() {
-  const [formData, setFormData] = useState({ fullName: '', email: '', password: '', confirmPassword: '' });
+  const [formData, setFormData] = useState({
+    fullName: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+  });
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [showSuccess, setShowSuccess] = useState(false);
@@ -45,7 +50,7 @@ export default function RegisterPage() {
       setErrorMsg(
         isEnglish
           ? 'Please enter your full name (first, middle and last name).'
-          : 'يرجى إدخال الاسم الثلاثي كاملًا (لا يقل عن ثلاث كلمات).'
+          : 'يرجى إدخال الاسم الثلاثي كاملًا (لا يقل عن ثلاث كلمات).',
       );
       return;
     }
@@ -67,7 +72,9 @@ export default function RegisterPage() {
     if (error) {
       const msg = error.message?.toLowerCase() || '';
       if (msg.includes('already registered') || msg.includes('already exists')) {
-        setErrorMsg(isEnglish ? 'This email is already registered.' : 'هذا البريد الإلكتروني مسجل مسبقًا.');
+        setErrorMsg(
+          isEnglish ? 'This email is already registered.' : 'هذا البريد الإلكتروني مسجل مسبقًا.',
+        );
       } else if (msg.includes('password')) {
         setErrorMsg(weakPasswordMsg);
       } else {
@@ -79,7 +86,9 @@ export default function RegisterPage() {
     // Supabase لأسباب أمنية لا يرجع خطأ صريح عند التسجيل ببريد مسجل ومفعّل مسبقًا،
     // بل يرجع استجابة تبدو ناجحة لكن حقل identities يكون فارغًا في هذه الحالة تحديدًا.
     if (data?.user && Array.isArray(data.user.identities) && data.user.identities.length === 0) {
-      setErrorMsg(isEnglish ? 'This email is already registered.' : 'هذا البريد الإلكتروني مسجل مسبقًا.');
+      setErrorMsg(
+        isEnglish ? 'This email is already registered.' : 'هذا البريد الإلكتروني مسجل مسبقًا.',
+      );
       return;
     }
 
@@ -118,19 +127,48 @@ export default function RegisterPage() {
           <div className="sdc-login-header">
             <h1 className="sdc-login-title">{isEnglish ? 'Create Account' : 'إنشاء حساب جديد'}</h1>
             <p className="sdc-login-subtitle">
-              {isEnglish ? 'Join the Saudi Developer Community.' : 'انضم إلى المجتمع السعودي للمطورين.'}
+              {isEnglish
+                ? 'Join the Saudi Developer Community.'
+                : 'انضم إلى المجتمع السعودي للمطورين.'}
             </p>
           </div>
 
           {errorMsg && (
-            <div style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid #ef4444', color: '#ef4444', borderRadius: '8px', padding: '10px 14px', fontSize: '14px', marginBottom: '16px', textAlign: 'center' }}>
+            <div
+              style={{
+                background: 'rgba(239,68,68,0.1)',
+                border: '1px solid #ef4444',
+                color: '#ef4444',
+                borderRadius: '8px',
+                padding: '10px 14px',
+                fontSize: '14px',
+                marginBottom: '16px',
+                textAlign: 'center',
+              }}
+            >
               {errorMsg}
             </div>
           )}
 
           {showSuccess && (
-            <div style={{ background: 'rgba(0,230,118,0.1)', border: '1px solid #00E676', borderRadius: '8px', padding: '14px 16px', marginBottom: '16px', textAlign: 'center' }}>
-              <p style={{ color: '#00E676', fontWeight: 'bold', fontSize: '15px', margin: '0 0 4px' }}>
+            <div
+              style={{
+                background: 'rgba(0,230,118,0.1)',
+                border: '1px solid #00E676',
+                borderRadius: '8px',
+                padding: '14px 16px',
+                marginBottom: '16px',
+                textAlign: 'center',
+              }}
+            >
+              <p
+                style={{
+                  color: '#00E676',
+                  fontWeight: 'bold',
+                  fontSize: '15px',
+                  margin: '0 0 4px',
+                }}
+              >
                 {isEnglish ? 'Account created successfully' : 'تم إنشاء الحساب بنجاح'}
               </p>
               <p style={{ color: '#00E676', fontSize: '13px', margin: 0, opacity: 0.9 }}>
@@ -144,27 +182,63 @@ export default function RegisterPage() {
           <form className="sdc-login-form" onSubmit={handleSubmit}>
             <div className="sdc-form-group">
               <label>{isEnglish ? 'Full Name' : 'الاسم الثلاثي'}</label>
-              <input type="text" name="fullName" placeholder={isEnglish ? 'Your full name' : 'اكتب اسمك الثلاثي'} value={formData.fullName} onChange={handleChange} required />
+              <input
+                type="text"
+                name="fullName"
+                placeholder={isEnglish ? 'Your full name' : 'اكتب اسمك الثلاثي'}
+                value={formData.fullName}
+                onChange={handleChange}
+                required
+              />
             </div>
 
             <div className="sdc-form-group">
               <label>{isEnglish ? 'Email Address' : 'البريد الإلكتروني'}</label>
-              <input type="email" name="email" placeholder="example@domain.com" value={formData.email} onChange={handleChange} required />
+              <input
+                type="email"
+                name="email"
+                placeholder="example@domain.com"
+                value={formData.email}
+                onChange={handleChange}
+                required
+              />
             </div>
 
             <div className="sdc-form-group">
               <label>{isEnglish ? 'Password' : 'كلمة المرور'}</label>
-              <input type="password" name="password" placeholder="••••••••" value={formData.password} onChange={handleChange} required />
-              <p style={{ margin: '6px 0 0', fontSize: '12px', color: '#9aa0a6', lineHeight: 1.6 }}>{passwordHint}</p>
+              <input
+                type="password"
+                name="password"
+                placeholder="••••••••"
+                value={formData.password}
+                onChange={handleChange}
+                required
+              />
+              <p style={{ margin: '6px 0 0', fontSize: '12px', color: '#9aa0a6', lineHeight: 1.6 }}>
+                {passwordHint}
+              </p>
             </div>
 
             <div className="sdc-form-group">
               <label>{isEnglish ? 'Confirm Password' : 'تأكيد كلمة المرور'}</label>
-              <input type="password" name="confirmPassword" placeholder="••••••••" value={formData.confirmPassword} onChange={handleChange} required />
+              <input
+                type="password"
+                name="confirmPassword"
+                placeholder="••••••••"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                required
+              />
             </div>
 
             <button type="submit" className="sdc-login-submit-btn" disabled={loading}>
-              {loading ? (isEnglish ? 'Creating account...' : 'جاري إنشاء الحساب...') : (isEnglish ? 'Create Account' : 'إنشاء حساب')}
+              {loading
+                ? isEnglish
+                  ? 'Creating account...'
+                  : 'جاري إنشاء الحساب...'
+                : isEnglish
+                  ? 'Create Account'
+                  : 'إنشاء حساب'}
             </button>
           </form>
 

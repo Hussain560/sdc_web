@@ -3,7 +3,10 @@ import type { LegacyEventSummary } from '../types/content';
 export const allEventsData: LegacyEventSummary[] = [
   {
     id: 1,
-    title: { ar: 'لقاء تقني: بيئات العمل التقنية وأساسيات Github', en: 'Technical Meetup: Tech Work Environments and GitHub Basics' },
+    title: {
+      ar: 'لقاء تقني: بيئات العمل التقنية وأساسيات Github',
+      en: 'Technical Meetup: Tech Work Environments and GitHub Basics',
+    },
     location: { ar: 'أونلاين', en: 'Online' },
     date: { ar: 'قريبًا سيعلن عنه', en: 'To be announced soon' },
     status: { ar: 'قريبًا', en: 'Coming Soon' },
@@ -19,7 +22,10 @@ export const allEventsData: LegacyEventSummary[] = [
   },
   {
     id: 3,
-    title: { ar: 'ورشة تحليل البيانات باستخدام Excel & Power BI', en: 'Data Analysis Workshop using Excel & Power BI' },
+    title: {
+      ar: 'ورشة تحليل البيانات باستخدام Excel & Power BI',
+      en: 'Data Analysis Workshop using Excel & Power BI',
+    },
     location: { ar: 'أونلاين', en: 'Online' },
     date: { ar: '20/9/2025', en: '20/9/2025' },
     status: { ar: 'منتهي', en: 'Ended' },
@@ -43,10 +49,13 @@ export const allEventsData: LegacyEventSummary[] = [
   },
   {
     id: 6,
-    title: { ar: 'معسكر نادي هواوي في ريادة الأعمال وصنع التطبيقات – StartApps', en: 'Huawei StartApps Entrepreneurship and App Development Camp' },
+    title: {
+      ar: 'معسكر نادي هواوي في ريادة الأعمال وصنع التطبيقات – StartApps',
+      en: 'Huawei StartApps Entrepreneurship and App Development Camp',
+    },
     location: { ar: 'أونلاين', en: 'Online' },
     date: { ar: '02/03/2023', en: '02/03/2023' },
     status: { ar: 'منتهي', en: 'Ended' },
     image: '/assets/Huwawi.png',
-  }
+  },
 ];

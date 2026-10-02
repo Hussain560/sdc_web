@@ -1,6 +1,6 @@
 /* ================== غلاف الصفحة والبنر الممتد ================== */
 .sdc-members-page-wrapper {
-  background-color: #050D09;
+  background-color: #050d09;
   min-height: 100vh;
   direction: inherit;
   display: flex;
@@ -15,7 +15,7 @@
 /* سكشن البنر يمتد بعرض الشاشة كاملاً بدون بادينج جانبي */
 .sdc-members-hero {
   width: 100%;
-  background-color: #050D09;
+  background-color: #050d09;
   padding: 0 0 30px 0;
   display: flex;
   justify-content: center;
@@ -39,7 +39,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: radial-gradient(ellipse at center, rgba(0, 230, 118, 0.12) 0%, rgba(5, 13, 9, 0.98) 80%);
+  background: radial-gradient(
+    ellipse at center,
+    rgba(0, 230, 118, 0.12) 0%,
+    rgba(5, 13, 9, 0.98) 80%
+  );
 }
 
 .sdc-members-banner-bg {
@@ -88,7 +92,7 @@
 .sdc-members-banner-title {
   font-size: 1.6rem;
   font-weight: 900;
-  color: #FFFFFF;
+  color: #ffffff;
   margin: 0;
   line-height: 1.25;
 }
@@ -114,12 +118,12 @@
 .sdc-section-main-title {
   font-size: 2rem;
   font-weight: 800;
-  color: #FFFFFF;
+  color: #ffffff;
   margin: 0;
 }
 
 .sdc-section-sub-title {
-  color: #9CA3AF;
+  color: #9ca3af;
   font-size: 0.88rem;
   margin: 0;
 }
@@ -139,8 +143,8 @@
 }
 
 .sdc-filter-toggle-btn {
-  border: 1px solid #00E676;
-  color: #00E676;
+  border: 1px solid #00e676;
+  color: #00e676;
   background: rgba(0, 230, 118, 0.08);
   padding: 10px 18px;
   border-radius: 24px;
@@ -165,8 +169,12 @@
 }
 
 @keyframes sdc-filter-fade {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 /* ================== لوحة الفلتر - Modal وسط الشاشة ================== */
@@ -189,8 +197,14 @@
 }
 
 @keyframes sdc-filter-pop {
-  from { opacity: 0; transform: translate(-50%, -48%) scale(0.97); }
-  to   { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  from {
+    opacity: 0;
+    transform: translate(-50%, -48%) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
 }
 
 /* رأس اللوحة */
@@ -208,7 +222,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  color: #FFFFFF;
+  color: #ffffff;
   font-size: 15px;
   font-weight: 700;
   margin: 0;
@@ -222,7 +236,7 @@
   height: 22px;
   padding: 0 7px;
   border-radius: 999px;
-  background: #00E676;
+  background: #00e676;
   color: #052015;
   font-size: 11px;
   font-weight: 800;
@@ -231,18 +245,20 @@
 .sdc-filter-close-icon {
   border: none;
   background: transparent;
-  color: #9CA3AF;
+  color: #9ca3af;
   font-size: 18px;
   line-height: 1;
   cursor: pointer;
   padding: 4px 8px;
   border-radius: 8px;
-  transition: background 0.15s ease, color 0.15s ease;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
 }
 
 .sdc-filter-close-icon:hover {
   background: rgba(255, 255, 255, 0.06);
-  color: #FFFFFF;
+  color: #ffffff;
 }
 
 /* جسم اللوحة */
@@ -284,7 +300,7 @@
 }
 
 .sdc-filter-section-head h4 {
-  color: #FFFFFF;
+  color: #ffffff;
   font-size: 13.5px;
   font-weight: 600;
   margin: 0;
@@ -302,13 +318,13 @@
   padding: 0 6px;
   border-radius: 999px;
   background: rgba(0, 230, 118, 0.15);
-  color: #00E676;
+  color: #00e676;
   font-size: 10.5px;
   font-weight: 700;
 }
 
 .sdc-filter-chevron {
-  color: #7FB89B;
+  color: #7fb89b;
   font-size: 12px;
   transition: transform 0.2s ease;
   display: inline-block;
@@ -355,8 +371,8 @@
 }
 
 .sdc-filter-option-row.is-picked .sdc-filter-checkbox {
-  background: #00E676;
-  border-color: #00E676;
+  background: #00e676;
+  border-color: #00e676;
 }
 
 .sdc-filter-checkbox svg {
@@ -372,14 +388,14 @@
 }
 
 .sdc-filter-option-label {
-  color: #C9E6D5;
+  color: #c9e6d5;
   font-size: 13px;
   line-height: 1.4;
   flex: 1;
 }
 
 .sdc-filter-option-row.is-picked .sdc-filter-option-label {
-  color: #FFFFFF;
+  color: #ffffff;
   font-weight: 600;
 }
 
@@ -404,7 +420,7 @@
 .sdc-filter-reset {
   border: 1px solid #3a443c;
   background: transparent;
-  color: #C9E6D5;
+  color: #c9e6d5;
   font-size: 13px;
   padding: 8px 14px;
   border-radius: 10px;
@@ -413,13 +429,13 @@
 }
 
 .sdc-filter-reset:hover {
-  border-color: #56987B;
-  color: #FFFFFF;
+  border-color: #56987b;
+  color: #ffffff;
 }
 
 .sdc-filter-apply {
   border: none;
-  background: #00E676;
+  background: #00e676;
   color: #052015;
   font-weight: 700;
   font-size: 13px;
@@ -430,7 +446,7 @@
 }
 
 .sdc-filter-apply:hover {
-  background: #00C766;
+  background: #00c766;
 }
 
 /* الجوال - تصغير بسيط بس تبقى في النص */
@@ -444,19 +460,15 @@
 /* ================== LIGHT MODE - MEMBERS ================== */
 
 :root[data-theme='light'] .sdc-members-page-wrapper {
-  background-color: #F4FAF6;
+  background-color: #f4faf6;
 }
 
 :root[data-theme='light'] .sdc-members-hero {
-  background-color: #F4FAF6;
+  background-color: #f4faf6;
 }
 
 :root[data-theme='light'] .sdc-members-banner-box {
-  background: radial-gradient(
-    ellipse at center,
-    rgba(169, 216, 188, 0.55) 0%,
-    #EAF6EE 80%
-  );
+  background: radial-gradient(ellipse at center, rgba(169, 216, 188, 0.55) 0%, #eaf6ee 80%);
 }
 
 :root[data-theme='light'] .sdc-members-banner-bg {
@@ -473,22 +485,22 @@
 }
 
 :root[data-theme='light'] .sdc-members-banner-title {
-  color: #123B35;
+  color: #123b35;
 }
 
 :root[data-theme='light'] .sdc-section-main-title {
-  color: #123B35;
+  color: #123b35;
 }
 
 :root[data-theme='light'] .sdc-section-sub-title {
-  color: #52766C;
+  color: #52766c;
 }
 
 /* زر التخصيص - وضع فاتح */
 :root[data-theme='light'] .sdc-filter-toggle-btn {
   background: rgba(11, 143, 85, 0.08);
-  border-color: #0B8F55;
-  color: #0B8F55;
+  border-color: #0b8f55;
+  color: #0b8f55;
 }
 
 :root[data-theme='light'] .sdc-filter-toggle-btn:hover,
@@ -501,31 +513,31 @@
 }
 
 :root[data-theme='light'] .sdc-filter-panel {
-  background: #FFFFFF;
-  border-color: #CBE7D4;
+  background: #ffffff;
+  border-color: #cbe7d4;
   box-shadow: 0 20px 60px rgba(18, 59, 53, 0.25);
 }
 
 :root[data-theme='light'] .sdc-filter-header {
-  background: #FFFFFF;
-  border-bottom-color: #E5F1E9;
+  background: #ffffff;
+  border-bottom-color: #e5f1e9;
 }
 
 :root[data-theme='light'] .sdc-filter-header-title {
-  color: #123B35;
+  color: #123b35;
 }
 
 :root[data-theme='light'] .sdc-filter-close-icon {
-  color: #6B8A80;
+  color: #6b8a80;
 }
 
 :root[data-theme='light'] .sdc-filter-close-icon:hover {
   background: rgba(11, 143, 85, 0.08);
-  color: #0B8F55;
+  color: #0b8f55;
 }
 
 :root[data-theme='light'] .sdc-filter-section {
-  border-bottom-color: #E5F1E9;
+  border-bottom-color: #e5f1e9;
 }
 
 :root[data-theme='light'] .sdc-filter-section-head:hover {
@@ -533,16 +545,16 @@
 }
 
 :root[data-theme='light'] .sdc-filter-section-head h4 {
-  color: #123B35;
+  color: #123b35;
 }
 
 :root[data-theme='light'] .sdc-filter-section-badge {
   background: rgba(11, 143, 85, 0.12);
-  color: #0B8F55;
+  color: #0b8f55;
 }
 
 :root[data-theme='light'] .sdc-filter-chevron {
-  color: #0B8F55;
+  color: #0b8f55;
 }
 
 :root[data-theme='light'] .sdc-filter-option-row:hover {
@@ -550,50 +562,50 @@
 }
 
 :root[data-theme='light'] .sdc-filter-checkbox {
-  border-color: #CBE7D4;
+  border-color: #cbe7d4;
 }
 
 :root[data-theme='light'] .sdc-filter-option-row.is-picked .sdc-filter-checkbox {
-  background: #0B8F55;
-  border-color: #0B8F55;
+  background: #0b8f55;
+  border-color: #0b8f55;
 }
 
 :root[data-theme='light'] .sdc-filter-checkbox svg {
-  color: #FFFFFF;
+  color: #ffffff;
 }
 
 :root[data-theme='light'] .sdc-filter-option-label {
-  color: #3A5750;
+  color: #3a5750;
 }
 
 :root[data-theme='light'] .sdc-filter-option-row.is-picked .sdc-filter-option-label {
-  color: #0B8F55;
+  color: #0b8f55;
 }
 
 :root[data-theme='light'] .sdc-filter-empty {
-  color: #8AA39C;
+  color: #8aa39c;
 }
 
 :root[data-theme='light'] .sdc-filter-footer {
-  background: #FFFFFF;
-  border-top-color: #E5F1E9;
+  background: #ffffff;
+  border-top-color: #e5f1e9;
 }
 
 :root[data-theme='light'] .sdc-filter-reset {
-  border-color: #CBE7D4;
-  color: #52766C;
+  border-color: #cbe7d4;
+  color: #52766c;
 }
 
 :root[data-theme='light'] .sdc-filter-reset:hover {
-  border-color: #72C99A;
-  color: #123B35;
+  border-color: #72c99a;
+  color: #123b35;
 }
 
 :root[data-theme='light'] .sdc-filter-apply {
-  background: #0B8F55;
-  color: #FFFFFF;
+  background: #0b8f55;
+  color: #ffffff;
 }
 
 :root[data-theme='light'] .sdc-filter-apply:hover {
-  background: #0A7A49;
+  background: #0a7a49;
 }

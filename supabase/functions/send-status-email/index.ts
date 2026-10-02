@@ -1,43 +1,43 @@
-import nodemailer from "npm:nodemailer@6.9.10";
+import nodemailer from 'npm:nodemailer@6.9.10';
 
-const GMAIL_USER = Deno.env.get("GMAIL_USER")!;
-const GMAIL_APP_PASSWORD = Deno.env.get("GMAIL_APP_PASSWORD")!;
+const GMAIL_USER = Deno.env.get('GMAIL_USER')!;
+const GMAIL_APP_PASSWORD = Deno.env.get('GMAIL_APP_PASSWORD')!;
 
 const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
 const transport = nodemailer.createTransport({
-  host: "smtp.gmail.com",
+  host: 'smtp.gmail.com',
   port: 465,
   secure: true,
   auth: { user: GMAIL_USER, pass: GMAIL_APP_PASSWORD },
 });
 
-const LOGO_URL = "https://zsftsxppzmebulflyhrq.supabase.co/storage/v1/object/public/assets/cds.jpg";
+const LOGO_URL = 'https://zsftsxppzmebulflyhrq.supabase.co/storage/v1/object/public/assets/cds.jpg';
 
 Deno.serve(async (req) => {
-  if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
+  if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
 
   try {
     const { to, fullName, eventTitle, status } = await req.json();
 
     if (!to || !eventTitle || !status) {
-      return new Response(JSON.stringify({ error: "بيانات ناقصة" }), {
+      return new Response(JSON.stringify({ error: 'بيانات ناقصة' }), {
         status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
 
-    const isAccepted = status === "accepted";
-    const greetingName = fullName ? fullName : "";
+    const isAccepted = status === 'accepted';
+    const greetingName = fullName ? fullName : '';
 
     const subject = isAccepted
       ? `أهلًا بك في فعالية ${eventTitle} - المجتمع السعودي للمطورين`
       : `بخصوص تسجيلك في فعالية ${eventTitle} - المجتمع السعودي للمطورين`;
 
-    const messageTitle = isAccepted ? "أهلًا بك 🎉" : "تحديث بخصوص التسجيل";
+    const messageTitle = isAccepted ? 'أهلًا بك 🎉' : 'تحديث بخصوص التسجيل';
 
     const messageBody = isAccepted
       ? `يسرّنا ويسعدنا الترحيب بك بكل حفاوة في فعالية <strong>"${eventTitle}"</strong> ضمن فعاليات المجتمع السعودي للمطورين. تم قبول تسجيلك بنجاح، ونحن سعيدون جدًا بانضمامك إلينا وتواجدك معنا في هذا الحدث المميز</p>
@@ -96,18 +96,18 @@ Deno.serve(async (req) => {
         (error, info) => {
           if (error) reject(error);
           else resolve(info);
-        }
+        },
       );
     });
 
     return new Response(JSON.stringify({ success: true }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   } catch (error) {
     console.error(error);
     return new Response(JSON.stringify({ error: error.message }), {
       status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   }
 });

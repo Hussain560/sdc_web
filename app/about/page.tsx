@@ -21,17 +21,25 @@ export default function AboutPage() {
             <nav className="sdc-about-breadcrumb">
               <Link href="/">{isEnglish ? 'Home' : 'الرئيسية'}</Link>
               <span className="sdc-about-bc-sep">&gt;</span>
-              <span style={{ color: '#00E676' }}>{isEnglish ? 'About the Community' : 'عن المجتمع'}</span>
+              <span style={{ color: '#00E676' }}>
+                {isEnglish ? 'About the Community' : 'عن المجتمع'}
+              </span>
             </nav>
             <h1 className="sdc-about-main-title">
-              {isEnglish ? 'About the Saudi Developer Community (SDC)' : 'عن المجتمع السعودي للمطورين (SDC)'}
+              {isEnglish
+                ? 'About the Saudi Developer Community (SDC)'
+                : 'عن المجتمع السعودي للمطورين (SDC)'}
             </h1>
           </div>
         </section>
 
         <section className="sdc-about-container">
           <div className="sdc-about-intro-box">
-            <h2 className="sdc-intro-title">{isEnglish ? 'What is the Saudi Developer Community?' : 'ما هو المجتمع السعودي للمطورين'}</h2>
+            <h2 className="sdc-intro-title">
+              {isEnglish
+                ? 'What is the Saudi Developer Community?'
+                : 'ما هو المجتمع السعودي للمطورين'}
+            </h2>
             <p className="sdc-intro-text">
               {isEnglish
                 ? 'The Saudi community is a non-profit tech community that empowers developers and technology enthusiasts to gain practical experience, build real projects, share knowledge in AI and modern technologies, organize workshops and regular meetups, launch open-source projects, host inspiring speakers, and contribute to enriching Arabic technical content with high-quality material.'

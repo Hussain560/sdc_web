@@ -43,10 +43,11 @@ export default function CommitteePage() {
         return;
       }
 
-      const [{ data: regs, error: regsError }, { data: mems, error: memsError }] = await Promise.all([
-        supabase.from('event_registrations').select('*').order('created_at', { ascending: true }),
-        supabase.from('members').select('first_name, last_name'),
-      ]);
+      const [{ data: regs, error: regsError }, { data: mems, error: memsError }] =
+        await Promise.all([
+          supabase.from('event_registrations').select('*').order('created_at', { ascending: true }),
+          supabase.from('members').select('first_name, last_name'),
+        ]);
 
       if (!regsError && regs) setRegistrations(regs);
       if (!memsError && mems) setMembers(mems);
@@ -59,7 +60,9 @@ export default function CommitteePage() {
   const isMemberName = (fullName: string | null) => {
     const typed = normalizeName(fullName);
     if (!typed) return false;
-    return members.some((m) => normalizeName(`${m.first_name || ''} ${m.last_name || ''}`) === typed);
+    return members.some(
+      (m) => normalizeName(`${m.first_name || ''} ${m.last_name || ''}`) === typed,
+    );
   };
 
   const handleStatusChange = async (regId: number, newStatus: RegistrationStatus) => {
@@ -71,7 +74,7 @@ export default function CommitteePage() {
 
     if (!error) {
       setRegistrations((prev) =>
-        prev.map((r) => (r.id === regId ? { ...r, status: newStatus } : r))
+        prev.map((r) => (r.id === regId ? { ...r, status: newStatus } : r)),
       );
 
       const reg = registrations.find((r) => r.id === regId);
@@ -80,31 +83,38 @@ export default function CommitteePage() {
         const eventTitle = eventInfo ? eventInfo.title.ar : `فعالية #${reg.event_id}`;
 
         // إرسال إيميل القبول/الرفض بدون ما نوقف الواجهة بانتظاره
-        supabase.functions.invoke('send-status-email', {
-          body: {
-            to: reg.email,
-            fullName: reg.full_name,
-            eventTitle,
-            status: newStatus,
-          },
-        }).catch((err) => console.error('status email error:', err));
+        supabase.functions
+          .invoke('send-status-email', {
+            body: {
+              to: reg.email,
+              fullName: reg.full_name,
+              eventTitle,
+              status: newStatus,
+            },
+          })
+          .catch((err) => console.error('status email error:', err));
       }
     }
     setActionId(null);
   };
 
-  const registrationsByEvent = registrations.reduce((acc, reg) => {
-    const key = reg.event_id;
-    if (!acc[key]) acc[key] = [];
-    acc[key].push(reg);
-    return acc;
-  }, {} as Record<number, Registration[]>);
+  const registrationsByEvent = registrations.reduce(
+    (acc, reg) => {
+      const key = reg.event_id;
+      if (!acc[key]) acc[key] = [];
+      acc[key].push(reg);
+      return acc;
+    },
+    {} as Record<number, Registration[]>,
+  );
 
   if (loading || (isLoggedIn && loadingData)) {
     return (
       <div style={{ backgroundColor: '#0D0E12', minHeight: '100vh' }}>
         <Header />
-        <div style={{ color: '#fff', textAlign: 'center', padding: '80px 20px' }}>جاري التحميل...</div>
+        <div style={{ color: '#fff', textAlign: 'center', padding: '80px 20px' }}>
+          جاري التحميل...
+        </div>
       </div>
     );
   }
@@ -147,13 +157,16 @@ export default function CommitteePage() {
 
           return (
             <div key={eventId} style={{ marginBottom: '40px' }}>
-              <h2 style={{
-                color: '#00E676',
-                borderBottom: '1px solid #2a2d33',
-                paddingBottom: '10px',
-                marginBottom: '16px',
-              }}>
-                {eventTitle} <span style={{ color: '#888', fontSize: '14px' }}>({regs.length} مسجل)</span>
+              <h2
+                style={{
+                  color: '#00E676',
+                  borderBottom: '1px solid #2a2d33',
+                  paddingBottom: '10px',
+                  marginBottom: '16px',
+                }}
+              >
+                {eventTitle}{' '}
+                <span style={{ color: '#888', fontSize: '14px' }}>({regs.length} مسجل)</span>
               </h2>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
@@ -177,14 +190,16 @@ export default function CommitteePage() {
                       <div>
                         <div style={{ fontWeight: 'bold' }}>
                           {reg.full_name || 'بدون اسم'}{' '}
-                          <span style={{
-                            fontSize: '12px',
-                            padding: '2px 8px',
-                            borderRadius: '20px',
-                            marginRight: '6px',
-                            background: member ? 'rgba(0,230,118,0.15)' : 'rgba(255,193,7,0.15)',
-                            color: member ? '#00E676' : '#FFC107',
-                          }}>
+                          <span
+                            style={{
+                              fontSize: '12px',
+                              padding: '2px 8px',
+                              borderRadius: '20px',
+                              marginRight: '6px',
+                              background: member ? 'rgba(0,230,118,0.15)' : 'rgba(255,193,7,0.15)',
+                              color: member ? '#00E676' : '#FFC107',
+                            }}
+                          >
                             {member ? 'عضو' : 'زائر'}
                           </span>
                         </div>
@@ -192,13 +207,22 @@ export default function CommitteePage() {
                       </div>
 
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <span style={{
-                          fontSize: '13px',
-                          color:
-                            reg.status === 'accepted' ? '#00E676' :
-                            reg.status === 'rejected' ? '#ef4444' : '#888',
-                        }}>
-                          {reg.status === 'accepted' ? 'مقبول' : reg.status === 'rejected' ? 'مرفوض' : 'قيد الانتظار'}
+                        <span
+                          style={{
+                            fontSize: '13px',
+                            color:
+                              reg.status === 'accepted'
+                                ? '#00E676'
+                                : reg.status === 'rejected'
+                                  ? '#ef4444'
+                                  : '#888',
+                          }}
+                        >
+                          {reg.status === 'accepted'
+                            ? 'مقبول'
+                            : reg.status === 'rejected'
+                              ? 'مرفوض'
+                              : 'قيد الانتظار'}
                         </span>
 
                         <button

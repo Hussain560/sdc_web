@@ -27,9 +27,12 @@ const articlesDatabase: Record<string, ArticleRecord> = {
     author: { ar: 'لجنة الذكاء الاصطناعي', en: 'AI Committee' },
     date: { ar: '15 أغسطس 2024', en: 'August 15, 2024' },
     readTime: { ar: '3 دقائق', en: '3 min' },
-    tags: { ar: ['ذكاء اصطناعي', 'هندسة الأوامر', 'Prompt Engineering'], en: ['AI', 'Prompt Engineering', 'LLM'] },
+    tags: {
+      ar: ['ذكاء اصطناعي', 'هندسة الأوامر', 'Prompt Engineering'],
+      en: ['AI', 'Prompt Engineering', 'LLM'],
+    },
     content: {
-  ar: `هندسة الأوامر (Prompt Engineering) هي عملية تصميم وتحسين الأوامر التي يتم إدخالها إلى نماذج الذكاء الاصطناعي، بهدف توجيهها للحصول على نتائج أكثر دقة وملاءمة للسياق من خلال اختيار الكلمات وصياغة الطلب بطريقة مدروسة.
+      ar: `هندسة الأوامر (Prompt Engineering) هي عملية تصميم وتحسين الأوامر التي يتم إدخالها إلى نماذج الذكاء الاصطناعي، بهدف توجيهها للحصول على نتائج أكثر دقة وملاءمة للسياق من خلال اختيار الكلمات وصياغة الطلب بطريقة مدروسة.
 
 تُستخدم هندسة الأوامر في العديد من المجالات، منها معالجة اللغة الطبيعية مثل تلخيص النصوص والترجمة، وروبوتات المحادثة والمساعدات الذكية، وأنظمة التوصية، وتوليد المحتوى، وتحليل البيانات، وأنظمة الإجابة عن الأسئلة.
 
@@ -41,7 +44,7 @@ const articlesDatabase: Record<string, ArticleRecord> = {
 
 وللتوسع في المجال، يوفر المجتمع ملفًا يضم مجموعة من المصادر التعليمية حول هندسة الأوامر، تشمل مقالات ومدونات ودورات تعليمية.`,
 
-  en: `Prompt Engineering is the process of designing and improving prompts entered into AI models to guide them toward more accurate and context-appropriate results through careful wording and clear instructions.
+      en: `Prompt Engineering is the process of designing and improving prompts entered into AI models to guide them toward more accurate and context-appropriate results through careful wording and clear instructions.
 
 It is used in many areas, including natural language processing tasks such as text summarization and translation, chatbots and intelligent assistants, recommendation systems, content generation, data analysis, and question-answering systems.
 
@@ -51,24 +54,28 @@ An effective prompt can include several elements, such as a clearly defined task
 
 In general, the clearer and more detailed the request is, the more accurate and useful the resulting response can be.
 
-For further learning, the community provides a collection of educational resources about Prompt Engineering, including articles, blogs, and courses.`
-},
+For further learning, the community provides a collection of educational resources about Prompt Engineering, including articles, blogs, and courses.`,
+    },
 
-sourceLink: 'https://drive.google.com/file/d/1zBwwEHcTvdgtgIAybbD2TYTAPYbqsN00/view?usp=drivesdk',
+    sourceLink:
+      'https://drive.google.com/file/d/1zBwwEHcTvdgtgIAybbD2TYTAPYbqsN00/view?usp=drivesdk',
 
-sourceLabel: {
-  ar: 'مصادر تعلم هندسة الأوامر',
-  en: 'Prompt Engineering Learning Resources'
-}
+    sourceLabel: {
+      ar: 'مصادر تعلم هندسة الأوامر',
+      en: 'Prompt Engineering Learning Resources',
+    },
   },
   '2': {
     title: { ar: 'تقنية Voice2Face', en: 'Voice2Face Technology' },
-    author: { ar: 'الين الزهراني – مريم النعيم – غلا العتيبي', en: 'Alin Al-Zahrani – Maryam Al-Neaim – Ghala Alotibi' },
+    author: {
+      ar: 'الين الزهراني – مريم النعيم – غلا العتيبي',
+      en: 'Alin Al-Zahrani – Maryam Al-Neaim – Ghala Alotibi',
+    },
     date: { ar: '25 نوفمبر 2024', en: 'November 25, 2024' },
     readTime: { ar: '3 دقائق', en: '3 min' },
     tags: { ar: ['ذكاء اصطناعي', 'Python', 'تعلم'], en: ['AI', 'Python', 'Learning'] },
     content: {
-  ar: `تقنية Voice2Face هي إحدى تقنيات الذكاء الاصطناعي التوليدي التي تهدف إلى إنشاء صورة تقريبية لملامح الوجه بالاعتماد على الصوت فقط.
+      ar: `تقنية Voice2Face هي إحدى تقنيات الذكاء الاصطناعي التوليدي التي تهدف إلى إنشاء صورة تقريبية لملامح الوجه بالاعتماد على الصوت فقط.
 
 تعتمد التقنية على نماذج وشبكات عصبية عميقة يتم تدريبها باستخدام بيانات تربط بين صور الوجوه والمقاطع الصوتية، حتى تتعلم العلاقات بين خصائص الصوت وبعض السمات المرئية للوجه. وعند إدخال صوت جديد، يحاول النموذج إنشاء وجه تقريبي استنادًا إلى الأنماط التي تعلمها.
 
@@ -80,7 +87,7 @@ sourceLabel: {
 
 لذلك تقدم Voice2Face مثالًا مثيرًا على تطور الذكاء الاصطناعي وقدرته على اكتشاف العلاقات بين الصوت والصورة، مع أهمية الانتباه إلى الاستخدام المسؤول والجوانب المتعلقة بالخصوصية والثقة الرقمية.`,
 
-  en: `Voice2Face is a generative AI technology that aims to create an approximate facial representation using only a person's voice.
+      en: `Voice2Face is a generative AI technology that aims to create an approximate facial representation using only a person's voice.
 
 The technology relies on deep neural networks trained on data that pairs facial images with voice recordings. Through this training, the model learns relationships between vocal characteristics and certain visual facial features. When a new voice is provided, it attempts to generate an approximate face based on the patterns it has learned.
 
@@ -90,8 +97,8 @@ Similar technologies have also been explored for developing digital characters a
 
 However, Voice2Face also raises important challenges related to privacy, deepfakes, and trust in digital content. Technologies capable of generating faces and voices can make distinguishing authentic content from synthetic content more difficult.
 
-Voice2Face therefore provides an interesting example of how AI can discover relationships between audio and visual information, while highlighting the importance of responsible use, privacy, and digital trust.`
-},
+Voice2Face therefore provides an interesting example of how AI can discover relationships between audio and visual information, while highlighting the importance of responsible use, privacy, and digital trust.`,
+    },
   },
   '3': {
     title: { ar: 'أنظمة التوصية (Recommendation Systems)', en: 'Recommendation Systems' },
@@ -99,8 +106,8 @@ Voice2Face therefore provides an interesting example of how AI can discover rela
     date: { ar: '12 سبتمبر 2025', en: 'September 12, 2025' },
     readTime: { ar: '3 دقائق', en: '3 min' },
     tags: { ar: ['انظمة', 'تعلم', 'ذكاء اصطناعي'], en: ['Systems', 'Learning', 'AI'] },
-   content: {
-  ar: `أنظمة التوصية (Recommendation Systems) هي أنظمة تعتمد على الذكاء الاصطناعي وتعلم الآلة وتحليل البيانات بهدف تصفية المحتوى الرقمي وتخصيصه لكل مستخدم.
+    content: {
+      ar: `أنظمة التوصية (Recommendation Systems) هي أنظمة تعتمد على الذكاء الاصطناعي وتعلم الآلة وتحليل البيانات بهدف تصفية المحتوى الرقمي وتخصيصه لكل مستخدم.
 
 تعتمد هذه الأنظمة على تحليل السلوك الرقمي، مثل عمليات البحث والمشاهدة والمشتريات والتفاعل مع المحتوى، ثم تربط هذه البيانات بالاهتمامات والأنماط لتوقع ما قد يفضله المستخدم لاحقًا.
 
@@ -116,7 +123,7 @@ Voice2Face therefore provides an interesting example of how AI can discover rela
 
 ومع ذلك، من المهم معرفة أن الأجهزة لا "تقرأ أفكارنا"، بل تقوم الأنظمة بتحليل الإشارات الناتجة عن سلوكنا الرقمي وتحويلها إلى أنماط تساعدها في تحديد ما قد يهمنا، ويبقى القرار النهائي للمستخدم.`,
 
-  en: `Recommendation Systems use artificial intelligence, machine learning, and data analysis to filter and personalize digital content for each user.
+      en: `Recommendation Systems use artificial intelligence, machine learning, and data analysis to filter and personalize digital content for each user.
 
 These systems analyze digital behavior such as searches, views, purchases, and interactions, then connect these signals to patterns and interests in order to predict what the user may prefer next.
 
@@ -130,8 +137,8 @@ Online stores such as Amazon provide a familiar example, where users may receive
 
 These systems make it easier to navigate large amounts of content and products while creating a more personalized user experience.
 
-However, these systems do not literally read our thoughts. They analyze signals produced by our digital behavior and transform them into patterns that help predict what may interest us, while the final choice remains with the user.`
-},
+However, these systems do not literally read our thoughts. They analyze signals produced by our digital behavior and transform them into patterns that help predict what may interest us, while the final choice remains with the user.`,
+    },
   },
   '4': {
     title: { ar: 'التطبيقات الصينية والإنجليزية', en: 'Chinese and English Applications' },
@@ -140,7 +147,7 @@ However, these systems do not literally read our thoughts. They analyze signals 
     readTime: { ar: '4 دقائق', en: '4 min' },
     tags: { ar: ['تقنية', 'Language', 'تعلم'], en: ['Technology', 'Language', 'Learning'] },
     content: {
-  ar: `تختلف واجهات التطبيقات الصينية والإنجليزية في العديد من التفاصيل، ويعود جزء كبير من هذه الاختلافات إلى الثقافة وعادات المستخدمين وتوقعاتهم من تجربة التطبيق.
+      ar: `تختلف واجهات التطبيقات الصينية والإنجليزية في العديد من التفاصيل، ويعود جزء كبير من هذه الاختلافات إلى الثقافة وعادات المستخدمين وتوقعاتهم من تجربة التطبيق.
 
 من أبرز الاختلافات المساحات البيضاء؛ إذ قد تبدو بعض التطبيقات الصينية مزدحمة للمستخدم الغربي بسبب اختلاف استخدام المساحات وأحجام النصوص وارتفاع الأسطر. وفي المقابل، تميل هذه التطبيقات إلى وضع قدر أكبر من الوظائف والنصوص والمعلومات والصور في المساحة نفسها.
 
@@ -156,7 +163,7 @@ However, these systems do not literally read our thoughts. They analyze signals 
 
 هذه الاختلافات توضح أن تصميم واجهات وتجربة المستخدم لا يعتمد على الجانب الجمالي فقط، بل يتأثر أيضًا بثقافة المستخدم وعاداته وتوقعاته.`,
 
-  en: `Chinese and English-language applications can differ in many interface details, with much of this variation influenced by culture, user habits, and expectations.
+      en: `Chinese and English-language applications can differ in many interface details, with much of this variation influenced by culture, user habits, and expectations.
 
 One noticeable difference is the use of white space. Some Chinese applications may appear visually dense to Western users because of different approaches to spacing, text size, and line height. They may also place more functionality, text, information, and images within the same screen space.
 
@@ -170,17 +177,20 @@ Their interfaces may also use multiple warm and vivid colors to draw attention.
 
 Animals can appear as culturally meaningful symbols as well. Certain animals carry specific meanings in Chinese culture, such as associations with longevity or wealth, which can influence branding and interface design.
 
-These differences demonstrate that UI and UX design are shaped not only by visual aesthetics but also by culture, habits, and user expectations.`
-},
+These differences demonstrate that UI and UX design are shaped not only by visual aesthetics but also by culture, habits, and user expectations.`,
+    },
   },
   '5': {
-    title: { ar: 'الذكاء الاصطناعي في الألعاب والتعلّم المعزّز', en: 'AI in Games and Reinforcement Learning' },
+    title: {
+      ar: 'الذكاء الاصطناعي في الألعاب والتعلّم المعزّز',
+      en: 'AI in Games and Reinforcement Learning',
+    },
     author: { ar: 'لجنة الذكاء الاصطناعي', en: 'AI Committee' },
     date: { ar: '17 اكتوبر 2025', en: 'October 17, 2025' },
     readTime: { ar: '3 دقائق', en: '3 min' },
     tags: { ar: ['ذكاء اصطناعي', 'NLP', 'لغة طبيعية'], en: ['AI', 'NLP', 'Natural Language'] },
     content: {
-  ar: `كيف يستطيع الذكاء الاصطناعي التفوق في الألعاب واتخاذ قرارات ذكية؟ إحدى التقنيات الأساسية وراء ذلك هي التعلم المعزز (Reinforcement Learning).
+      ar: `كيف يستطيع الذكاء الاصطناعي التفوق في الألعاب واتخاذ قرارات ذكية؟ إحدى التقنيات الأساسية وراء ذلك هي التعلم المعزز (Reinforcement Learning).
 
 في هذا النوع من التعلم يوجد وكيل ذكي (Agent) يتفاعل مع بيئة معينة (Environment). يراقب الوكيل الحالة (State)، ثم يختار فعلًا معينًا (Action)، ويحصل بعد ذلك على مكافأة أو عقوبة (Reward) بناءً على نتيجة قراره.
 
@@ -196,7 +206,7 @@ These differences demonstrate that UI and UX design are shaped not only by visua
 
 ويستطيع الذكاء الاصطناعي التفوق في بعض الألعاب لأنه قادر على خوض عدد هائل من التجارب بسرعة، وتذكر الاستراتيجيات والنتائج، والاستمرار في التعلم والتكرار دون توقف، مما يمنحه قدرة كبيرة على تحسين أدائه.`,
 
-  en: `How can artificial intelligence become highly capable at games and make intelligent decisions? One of the key techniques behind this is Reinforcement Learning.
+      en: `How can artificial intelligence become highly capable at games and make intelligent decisions? One of the key techniques behind this is Reinforcement Learning.
 
 In reinforcement learning, an intelligent Agent interacts with an Environment. The agent observes the current State, chooses an Action, and then receives a Reward or penalty based on the outcome of its decision.
 
@@ -210,17 +220,20 @@ Deep Reinforcement Learning combines reinforcement learning with deep learning t
 
 Its applications extend beyond games to self-driving cars learning road navigation, prediction and control systems in economics and energy, and robots learning how to move.
 
-AI can become extremely capable in some games because it can perform huge numbers of experiments quickly, remember strategies and outcomes, and continuously learn through repetition.`
-},
+AI can become extremely capable in some games because it can perform huge numbers of experiments quickly, remember strategies and outcomes, and continuously learn through repetition.`,
+    },
   },
   '6': {
-    title: { ar: 'تطبيقات الذكاء الاصطناعي في تحليل المشاعر', en: 'AI Applications in Sentiment Analysis' },
+    title: {
+      ar: 'تطبيقات الذكاء الاصطناعي في تحليل المشاعر',
+      en: 'AI Applications in Sentiment Analysis',
+    },
     author: { ar: 'لجنة الذكاء الاصطناعي', en: 'AI Committee' },
     date: { ar: '26 سبتمبر 2025', en: 'September 26, 2025' },
     readTime: { ar: '4 دقائق', en: '4 min' },
     tags: { ar: ['ذكاء اصطناعي', 'أخلاقيات', 'AI '], en: ['AI', 'Ethics', 'AI'] },
     content: {
-  ar: `أصبح الذكاء الاصطناعي جزءًا من حياتنا اليومية، ومن المجالات التي تتطور باستمرار قدرته على تحليل المشاعر البشرية والتفاعل معها بصورة أكثر ملاءمة.
+      ar: `أصبح الذكاء الاصطناعي جزءًا من حياتنا اليومية، ومن المجالات التي تتطور باستمرار قدرته على تحليل المشاعر البشرية والتفاعل معها بصورة أكثر ملاءمة.
 
 تحليل المشاعر هو قدرة الأنظمة على التعرف على مؤشرات مرتبطة بالمشاعر البشرية باستخدام تقنيات مختلفة، مثل تحليل النصوص والتعرف على تعبيرات الوجه وتحليل نبرة الصوت، بهدف تحسين التفاعل وفهم المستخدم بصورة أفضل.
 
@@ -240,7 +253,7 @@ AI can become extremely capable in some games because it can perform huge number
 
 ورغم أن هذا المجال لا يزال في مراحل تطور مستمرة، فإن تطبيقاته تظهر إمكانات واعدة في العديد من المجالات. ويبقى السؤال: إلى أي مدى يمكن للآلة أن تفهم مشاعر الإنسان فعلًا؟`,
 
-  en: `Artificial intelligence has become part of everyday life, and one continuously developing area is its ability to analyze indicators associated with human emotions and respond more appropriately.
+      en: `Artificial intelligence has become part of everyday life, and one continuously developing area is its ability to analyze indicators associated with human emotions and respond more appropriately.
 
 Sentiment and emotion analysis refers to the ability of systems to identify emotional indicators using techniques such as text analysis, facial-expression recognition, and voice-tone analysis in order to improve interaction and better understand users.
 
@@ -258,9 +271,9 @@ In education, intelligent systems can analyze signals such as facial expressions
 
 Social media contains enormous amounts of likes, comments, images, and videos. AI can analyze these interactions to identify patterns in audience sentiment, understand which content users prefer, and estimate general reactions.
 
-Although this field is still developing, its applications show promising possibilities across many areas. The broader question remains: to what extent can a machine truly understand human emotions?`
-},
-  }
+Although this field is still developing, its applications show promising possibilities across many areas. The broader question remains: to what extent can a machine truly understand human emotions?`,
+    },
+  },
 };
 
 export default function ArticleDetailPage() {
@@ -292,9 +305,15 @@ export default function ArticleDetailPage() {
         <div className="sdc-article-container">
           <header className="sdc-article-header">
             <div className="sdc-article-meta-row">
-              <span><User size={14} /> {article.author[isEnglish ? 'en' : 'ar']}</span>
-              <span><Calendar size={14} /> {article.date[isEnglish ? 'en' : 'ar']}</span>
-              <span><Clock size={14} /> {article.readTime[isEnglish ? 'en' : 'ar']}</span>
+              <span>
+                <User size={14} /> {article.author[isEnglish ? 'en' : 'ar']}
+              </span>
+              <span>
+                <Calendar size={14} /> {article.date[isEnglish ? 'en' : 'ar']}
+              </span>
+              <span>
+                <Clock size={14} /> {article.readTime[isEnglish ? 'en' : 'ar']}
+              </span>
             </div>
 
             <div className="sdc-article-tags-row">
@@ -307,22 +326,20 @@ export default function ArticleDetailPage() {
           </header>
 
           <div className="sdc-article-content-card">
-  <p className="sdc-article-text">
-    {article.content[isEnglish ? 'en' : 'ar']}
-  </p>
+            <p className="sdc-article-text">{article.content[isEnglish ? 'en' : 'ar']}</p>
 
-  {article.sourceLink && (
-    <a
-      href={article.sourceLink}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="sdc-article-source-link"
-    >
-      {article.sourceLabel?.[isEnglish ? 'en' : 'ar']}
-    </a>
-  )}
-</div>
-</div>
+            {article.sourceLink && (
+              <a
+                href={article.sourceLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="sdc-article-source-link"
+              >
+                {article.sourceLabel?.[isEnglish ? 'en' : 'ar']}
+              </a>
+            )}
+          </div>
+        </div>
       </main>
 
       <Footer />

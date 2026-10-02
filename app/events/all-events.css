@@ -1,6 +1,6 @@
 /* ================== الصفحة العامة لجميع الفعاليات ================== */
 .sdc-all-events-wrapper {
-  background-color: #050D09;
+  background-color: #050d09;
   min-height: 100vh;
   direction: inherit;
   display: flex;
@@ -26,12 +26,14 @@
   height: 164px; /* الارتفاع الثابت المطلوبة */
   min-height: 164px;
   max-height: 164px;
-  background-color: #050D09;
-  background-image: 
-    linear-gradient(90deg, rgba(122, 175, 152, 0.22) 0%, rgba(5, 20, 15, 0.85) 55%, #050D09 100%),
+  background-color: #050d09;
+  background-image:
+    linear-gradient(90deg, rgba(122, 175, 152, 0.22) 0%, rgba(5, 20, 15, 0.85) 55%, #050d09 100%),
     url('/assets/Service(1).png');
   background-repeat: no-repeat, repeat-x;
-  background-position: center left, center right;
+  background-position:
+    center left,
+    center right;
   background-size: cover, cover;
   display: flex;
   justify-content: center;
@@ -53,7 +55,7 @@
 .sdc-events-hero-title {
   font-size: 1.6rem; /* حجم الخط المحدد */
   font-weight: 800;
-  color: #FFFFFF;
+  color: #ffffff;
   margin: 0;
 }
 .sdc-events-hero-container {
@@ -72,32 +74,32 @@
   align-items: center;
   gap: 8px;
   font-size: 0.9rem;
-  color: #9CA3AF;
+  color: #9ca3af;
 }
 
 .sdc-events-breadcrumb a {
-  color: #9CA3AF;
+  color: #9ca3af;
   text-decoration: none;
   transition: color 0.2s ease;
 }
 
 .sdc-events-breadcrumb a:hover {
-  color: #00E676 !important;
+  color: #00e676 !important;
 }
 
 .sdc-events-bc-sep {
-  color: #6B7280;
+  color: #6b7280;
 }
 
 .sdc-events-hero-title {
   font-size: 2rem;
   font-weight: 800;
-  color: #FFFFFF;
+  color: #ffffff;
   margin: 0;
 }
 
 .sdc-events-hero-subtitle {
-  color: #9CA3AF;
+  color: #9ca3af;
   font-size: 0.95rem;
   margin: 0;
   max-width: 700px;
@@ -125,14 +127,14 @@
 
 /* كرت الفعالية */
 .sdc-event-full-card {
-  background-color: #0D0E12;
+  background-color: #0d0e12;
   border-radius: 20px;
   padding: 20px;
   display: flex;
   flex-direction: column;
   gap: 16px;
   border: 1px solid rgba(0, 230, 118, 0.3);
-  border-top: 2.5px solid #00E676;
+  border-top: 2.5px solid #00e676;
   transition: all 0.3s ease;
   position: relative;
 }
@@ -168,14 +170,14 @@
 }
 
 .sdc-card-status-badge.available {
-  background-color: #E6F4F1;
+  background-color: #e6f4f1;
   color: #067847;
 }
 
 .sdc-card-status-badge.coming-soon {
   background-color: rgba(255, 171, 0, 0.2);
-  color: #FFAB00;
-  border: 1px solid #FFAB00;
+  color: #ffab00;
+  border: 1px solid #ffab00;
   -webkit-backdrop-filter: blur(4px);
   backdrop-filter: blur(4px);
 }
@@ -188,7 +190,7 @@
 }
 
 .sdc-card-event-title {
-  color: #FFFFFF;
+  color: #ffffff;
   font-size: 1.15rem;
   font-weight: 700;
   margin: 0;
@@ -198,7 +200,7 @@
 .sdc-card-event-meta {
   display: flex;
   gap: 16px;
-  color: #9CA3AF;
+  color: #9ca3af;
   font-size: 0.85rem;
   flex-wrap: wrap;
 }
@@ -219,7 +221,7 @@
 .sdc-card-btn-register {
   flex: 1;
   background-color: #067847;
-  color: #FFFFFF;
+  color: #ffffff;
   border: none;
   padding: 8px 16px;
   border-radius: 50px;
@@ -230,13 +232,13 @@
 }
 
 .sdc-card-btn-register:hover {
-  background-color: #ABEFC6;
+  background-color: #abefc6;
   color: #000000;
 }
 
 .sdc-card-btn-register.registered {
-  background-color: #10B981 !important;
-  color: #FFFFFF !important;
+  background-color: #10b981 !important;
+  color: #ffffff !important;
   cursor: default;
 }
 
@@ -244,7 +246,7 @@
   flex: 1;
   background: transparent;
   border: 1.5px solid rgba(255, 255, 255, 0.4);
-  color: #FFFFFF;
+  color: #ffffff;
   padding: 8px 16px;
   border-radius: 50px;
   font-size: 0.88rem;
@@ -258,12 +260,12 @@
 }
 
 .sdc-card-btn-more:hover {
-  border-color: #00E676;
-  color: #00E676;
+  border-color: #00e676;
+  color: #00e676;
 }
 
 .sdc-no-results {
-  color: #9CA3AF;
+  color: #9ca3af;
   text-align: center;
   padding: 40px;
   font-size: 1.1rem;
@@ -295,47 +297,47 @@
 /* ================== LIGHT MODE - ALL EVENTS ================== */
 
 :root[data-theme='light'] .sdc-all-events-wrapper {
-  background-color: #F4FAF6;
+  background-color: #f4faf6;
 }
 
 :root[data-theme='light'] .sdc-events-hero-banner {
-  background-color: #EAF6EE;
+  background-color: #eaf6ee;
   background-image:
     linear-gradient(
       90deg,
       rgba(169, 216, 188, 0.55) 0%,
       rgba(229, 245, 234, 0.88) 55%,
-      #F4FAF6 100%
+      #f4faf6 100%
     ),
     url('/assets/Service(1).png');
 }
 
 :root[data-theme='light'] .sdc-events-hero-title {
-  color: #123B35;
+  color: #123b35;
 }
 
 :root[data-theme='light'] .sdc-events-hero-subtitle {
-  color: #52766C;
+  color: #52766c;
 }
 
 :root[data-theme='light'] .sdc-events-breadcrumb,
 :root[data-theme='light'] .sdc-events-breadcrumb a {
-  color: #52766C;
+  color: #52766c;
 }
 
 :root[data-theme='light'] .sdc-events-bc-sep {
-  color: #8AA39C;
+  color: #8aa39c;
 }
 
 :root[data-theme='light'] .sdc-events-breadcrumb a:hover {
-  color: #0B8F55 !important;
+  color: #0b8f55 !important;
 }
 
 /* الكروت */
 :root[data-theme='light'] .sdc-event-full-card {
-  background-color: #FFFFFF;
-  border-color: #CBE7D4;
-  border-top-color: #72C99A;
+  background-color: #ffffff;
+  border-color: #cbe7d4;
+  border-top-color: #72c99a;
 }
 
 :root[data-theme='light'] .sdc-event-full-card:hover {
@@ -343,35 +345,35 @@
 }
 
 :root[data-theme='light'] .sdc-card-event-title {
-  color: #123B35;
+  color: #123b35;
 }
 
 :root[data-theme='light'] .sdc-card-event-meta {
-  color: #52766C;
+  color: #52766c;
 }
 
 /* الأزرار */
 :root[data-theme='light'] .sdc-card-btn-register {
-  background-color: #72C99A;
-  color: #0D3329;
+  background-color: #72c99a;
+  color: #0d3329;
 }
 
 :root[data-theme='light'] .sdc-card-btn-register:hover {
-  background-color: #5DB987;
-  color: #FFFFFF;
+  background-color: #5db987;
+  color: #ffffff;
 }
 
 :root[data-theme='light'] .sdc-card-btn-more {
-  background-color: #FFFFFF;
-  border-color: #A9D8BC;
-  color: #123B35;
+  background-color: #ffffff;
+  border-color: #a9d8bc;
+  color: #123b35;
 }
 
 :root[data-theme='light'] .sdc-card-btn-more:hover {
-  border-color: #16A765;
-  color: #0B8F55;
+  border-color: #16a765;
+  color: #0b8f55;
 }
 
 :root[data-theme='light'] .sdc-no-results {
-  color: #52766C;
+  color: #52766c;
 }

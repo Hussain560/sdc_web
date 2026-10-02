@@ -1,5 +1,5 @@
 .sdc-all-members-wrapper {
-  background-color: #050D09;
+  background-color: #050d09;
   min-height: 100vh;
   direction: inherit;
   display: flex;
@@ -23,12 +23,14 @@
   margin-right: calc(-50vw + 50%);
   margin-left: calc(-50vw + 50%);
   min-height: 164px;
-  background-color: #050D09;
+  background-color: #050d09;
   background-image:
-    linear-gradient(90deg, rgba(122, 175, 152, 0.22) 0%, rgba(5, 20, 15, 0.85) 55%, #050D09 100%),
+    linear-gradient(90deg, rgba(122, 175, 152, 0.22) 0%, rgba(5, 20, 15, 0.85) 55%, #050d09 100%),
     url('/assets/Service(1).png');
   background-repeat: no-repeat, repeat-x;
-  background-position: center left, center right;
+  background-position:
+    center left,
+    center right;
   background-size: cover, cover;
   display: flex;
   justify-content: center;
@@ -53,21 +55,21 @@
   align-items: center;
   gap: 8px;
   font-size: 0.9rem;
-  color: #9CA3AF;
+  color: #9ca3af;
 }
 
 .sdc-members-breadcrumb a {
-  color: #9CA3AF;
+  color: #9ca3af;
   text-decoration: none;
   transition: color 0.2s ease;
 }
 
 .sdc-members-breadcrumb a:hover {
-  color: #00E676 !important;
+  color: #00e676 !important;
 }
 
 .sdc-members-bc-sep {
-  color: #6B7280;
+  color: #6b7280;
 }
 
 .sdc-members-hero-titlerow {
@@ -80,14 +82,14 @@
 .sdc-members-hero-title {
   font-size: 1.6rem;
   font-weight: 800;
-  color: #FFFFFF;
+  color: #ffffff;
   margin: 0;
 }
 
 .sdc-members-count-badge {
   font-size: 0.8rem;
   font-weight: 700;
-  color: #00E676;
+  color: #00e676;
   background: rgba(0, 230, 118, 0.1);
   border: 1px solid rgba(0, 230, 118, 0.35);
   padding: 4px 12px;
@@ -119,7 +121,7 @@
 }
 
 .sdc-section-heading h2 {
-  color: #FFFFFF;
+  color: #ffffff;
   font-size: 1.15rem;
   font-weight: 700;
   margin: 0;
@@ -128,7 +130,7 @@
 .sdc-section-heading-bar {
   width: 46px;
   height: 3px;
-  background: #00E676;
+  background: #00e676;
   border-radius: 2px;
 }
 
@@ -162,7 +164,7 @@
 /* ================= الكارد الموحّد ================= */
 .sdc-member-card {
   position: relative;
-  background: linear-gradient(180deg, #0D1512 0%, #0A0F0C 100%);
+  background: linear-gradient(180deg, #0d1512 0%, #0a0f0c 100%);
   border-radius: 18px;
   padding: 22px 20px;
   display: flex;
@@ -170,7 +172,10 @@
   gap: 12px;
   box-sizing: border-box;
   border: 1px solid rgba(0, 230, 118, 0.14);
-  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    border-color 0.25s ease;
   overflow: hidden;
 }
 
@@ -181,7 +186,7 @@
   left: 0;
   right: 0;
   height: 3px;
-  background: linear-gradient(90deg, #00E676, transparent 85%);
+  background: linear-gradient(90deg, #00e676, transparent 85%);
   opacity: 0.9;
 }
 
@@ -210,7 +215,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #04150E;
+  color: #04150e;
   font-size: 1.15rem;
   font-weight: 800;
   box-shadow: 0 4px 14px rgba(0, 230, 118, 0.25);
@@ -224,7 +229,7 @@
 }
 
 .sdc-card-name {
-  color: #FFFFFF;
+  color: #ffffff;
   font-size: 1.05rem;
   font-weight: 700;
   margin: 0;
@@ -234,7 +239,7 @@
 }
 
 .sdc-card-role {
-  color: #56987B;
+  color: #56987b;
   font-size: 0.82rem;
   margin: 0;
   white-space: nowrap;
@@ -243,7 +248,7 @@
 }
 
 .sdc-card-bio {
-  color: #8FA79B;
+  color: #8fa79b;
   font-size: 0.82rem;
   line-height: 1.6;
   margin: 0;
@@ -253,7 +258,7 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  color: #8FA79B;
+  color: #8fa79b;
   font-size: 0.8rem;
   padding-top: 2px;
   border-top: 1px dashed rgba(255, 255, 255, 0.08);
@@ -261,7 +266,7 @@
 
 .sdc-card-university svg {
   flex-shrink: 0;
-  color: #00E676;
+  color: #00e676;
 }
 
 .sdc-card-tags {
@@ -281,7 +286,7 @@
   border-radius: 20px;
   border: 1px solid rgba(255, 255, 255, 0.14);
   background: rgba(255, 255, 255, 0.03);
-  color: #C9D3CE;
+  color: #c9d3ce;
   white-space: normal;
   overflow-wrap: anywhere;
   text-align: center;
@@ -289,8 +294,8 @@
 
 .sdc-tag-pill.tag-green {
   background-color: rgba(0, 230, 118, 0.12);
-  border-color: #00E676;
-  color: #00E676;
+  border-color: #00e676;
+  color: #00e676;
   font-weight: 600;
 }
 
@@ -299,7 +304,7 @@
   width: 100%;
   background: transparent;
   border: 1.5px solid rgba(255, 255, 255, 0.16);
-  color: #FFFFFF;
+  color: #ffffff;
   padding: 10px 14px;
   border-radius: 12px;
   font-size: 0.82rem;
@@ -315,14 +320,14 @@
 }
 
 .sdc-card-info-btn:hover {
-  border-color: #00E676;
-  color: #00E676;
+  border-color: #00e676;
+  color: #00e676;
   background-color: rgba(0, 230, 118, 0.06);
   gap: 10px;
 }
 
 .sdc-no-results {
-  color: #9CA3AF;
+  color: #9ca3af;
   text-align: center;
   padding: 40px;
   font-size: 1.05rem;
@@ -335,7 +340,12 @@
 }
 
 .sdc-skel {
-  background: linear-gradient(90deg, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.1) 37%, rgba(255,255,255,0.05) 63%);
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.05) 25%,
+    rgba(255, 255, 255, 0.1) 37%,
+    rgba(255, 255, 255, 0.05) 63%
+  );
   background-size: 400% 100%;
   animation: sdc-skel-shimmer 1.4s ease infinite;
   border-radius: 8px;
@@ -369,8 +379,12 @@
 }
 
 @keyframes sdc-skel-shimmer {
-  0% { background-position: 100% 0; }
-  100% { background-position: -100% 0; }
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: -100% 0;
+  }
 }
 
 /* ================= تجاوب الشاشات والجوال ================= */
@@ -393,104 +407,109 @@
 /* ================== LIGHT MODE ================== */
 
 :root[data-theme='light'] .sdc-all-members-wrapper {
-  background-color: #F4FAF6;
+  background-color: #f4faf6;
 }
 
 :root[data-theme='light'] .sdc-members-hero-banner {
-  background-color: #EAF6EE;
+  background-color: #eaf6ee;
   background-image:
     linear-gradient(
       90deg,
       rgba(169, 216, 188, 0.55) 0%,
       rgba(229, 245, 234, 0.88) 55%,
-      #F4FAF6 100%
+      #f4faf6 100%
     ),
     url('/assets/Service(1).png');
 }
 
 :root[data-theme='light'] .sdc-members-hero-title {
-  color: #123B35;
+  color: #123b35;
 }
 
 :root[data-theme='light'] .sdc-members-count-badge {
   background: rgba(11, 143, 85, 0.1);
   border-color: rgba(11, 143, 85, 0.35);
-  color: #0B8F55;
+  color: #0b8f55;
 }
 
 :root[data-theme='light'] .sdc-members-breadcrumb,
 :root[data-theme='light'] .sdc-members-breadcrumb a {
-  color: #52766C;
+  color: #52766c;
 }
 
 :root[data-theme='light'] .sdc-members-bc-sep {
-  color: #8AA39C;
+  color: #8aa39c;
 }
 
 :root[data-theme='light'] .sdc-members-breadcrumb a:hover {
-  color: #0B8F55 !important;
+  color: #0b8f55 !important;
 }
 
 :root[data-theme='light'] .sdc-section-heading h2 {
-  color: #123B35;
+  color: #123b35;
 }
 
 :root[data-theme='light'] .sdc-member-card {
-  background: linear-gradient(180deg, #FFFFFF 0%, #F7FCF9 100%);
-  border-color: #CBE7D4;
+  background: linear-gradient(180deg, #ffffff 0%, #f7fcf9 100%);
+  border-color: #cbe7d4;
 }
 
 :root[data-theme='light'] .sdc-member-card:hover {
-  border-color: #16A765;
+  border-color: #16a765;
   box-shadow: 0 14px 30px rgba(22, 167, 101, 0.14);
 }
 
 :root[data-theme='light'] .sdc-card-name {
-  color: #123B35;
+  color: #123b35;
 }
 
 :root[data-theme='light'] .sdc-card-role {
-  color: #168A5B;
+  color: #168a5b;
 }
 
 :root[data-theme='light'] .sdc-card-bio {
-  color: #5C7A70;
+  color: #5c7a70;
 }
 
 :root[data-theme='light'] .sdc-card-university {
-  color: #5C7A70;
+  color: #5c7a70;
   border-top-color: rgba(18, 59, 53, 0.1);
 }
 
 :root[data-theme='light'] .sdc-tag-pill {
-  background-color: #F4FAF6;
-  border-color: #CBE7D4;
-  color: #52766C;
+  background-color: #f4faf6;
+  border-color: #cbe7d4;
+  color: #52766c;
 }
 
 :root[data-theme='light'] .sdc-tag-pill.tag-green {
-  background-color: #E5F5EA;
-  border-color: #72C99A;
-  color: #0D3329;
+  background-color: #e5f5ea;
+  border-color: #72c99a;
+  color: #0d3329;
 }
 
 :root[data-theme='light'] .sdc-card-info-btn {
-  background-color: #FFFFFF;
-  border-color: #A9D8BC;
-  color: #123B35;
+  background-color: #ffffff;
+  border-color: #a9d8bc;
+  color: #123b35;
 }
 
 :root[data-theme='light'] .sdc-card-info-btn:hover {
-  background-color: #E5F5EA;
-  border-color: #16A765;
-  color: #0B8F55;
+  background-color: #e5f5ea;
+  border-color: #16a765;
+  color: #0b8f55;
 }
 
 :root[data-theme='light'] .sdc-no-results {
-  color: #52766C;
+  color: #52766c;
 }
 
 :root[data-theme='light'] .sdc-skel {
-  background: linear-gradient(90deg, rgba(0,0,0,0.05) 25%, rgba(0,0,0,0.1) 37%, rgba(0,0,0,0.05) 63%);
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.05) 25%,
+    rgba(0, 0, 0, 0.1) 37%,
+    rgba(0, 0, 0, 0.05) 63%
+  );
   background-size: 400% 100%;
 }

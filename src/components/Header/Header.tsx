@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState,useEffect  } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { Search, User, Globe, X, LogOut, Sun, Moon } from 'lucide-react';
@@ -26,13 +26,13 @@ export default function Header({ onSearch }: HeaderProps) {
   const { isLoggedIn, user, logout } = useAuth();
   /* لحذف نتائج البحث عند الانتقال الى صفحة أخرى*/
   useEffect(() => {
-  if (searchQuery) {
-    setSearchQuery('');
-    if (onSearch) onSearch('');
-  }
-  // Intentionally runs only on navigation: clears the page-scoped search when the route changes.
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-}, [pathname]);
+    if (searchQuery) {
+      setSearchQuery('');
+      if (onSearch) onSearch('');
+    }
+    // Intentionally runs only on navigation: clears the page-scoped search when the route changes.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -41,30 +41,26 @@ export default function Header({ onSearch }: HeaderProps) {
   };
 
   const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  const query = searchQuery.trim();
+    const query = searchQuery.trim();
 
-  if (!query) return;
+    if (!query) return;
 
-  if (
-    query === 'فعاليات' ||
-    query === 'الفعاليات' ||
-    query.toLowerCase() === 'events'
-  ) {
-    router.push('/events');
+    if (query === 'فعاليات' || query === 'الفعاليات' || query.toLowerCase() === 'events') {
+      router.push('/events');
+      setIsSearchOpen(false);
+      return;
+    }
+
+    if (onSearch) {
+      onSearch(query);
+    } else {
+      router.push('/search?query=' + encodeURIComponent(query));
+    }
+
     setIsSearchOpen(false);
-    return;
-  }
-
-  if (onSearch) {
-    onSearch(query);
-  } else {
-    router.push('/search?query=' + encodeURIComponent(query));
-  }
-
-  setIsSearchOpen(false);
-};
+  };
   const handleLoginClick = () => {
     router.push('/login');
   };
@@ -81,13 +77,12 @@ export default function Header({ onSearch }: HeaderProps) {
     <>
       <header className="sdc-header">
         <div className="sdc-header-container">
-
           <div className="sdc-logo">
             <Link href="/">
               <img
-  src={isDarkMode ? "/assets/Full whiteLogo 1.png" : "/assets/navbar.png"}
-  alt="Logo"
-/>
+                src={isDarkMode ? '/assets/Full whiteLogo 1.png' : '/assets/navbar.png'}
+                alt="Logo"
+              />
             </Link>
           </div>
 
@@ -111,10 +106,9 @@ export default function Header({ onSearch }: HeaderProps) {
           </nav>
 
           <div className="sdc-actions">
-
-          <button className="sdc-icon-btn" onClick={toggleTheme}>
-          {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
-          </button>
+            <button className="sdc-icon-btn" onClick={toggleTheme}>
+              {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
+            </button>
             <button className="sdc-icon-btn" onClick={() => setIsSearchOpen(true)}>
               <Search size={18} />
               <span>{t('search')}</span>
@@ -142,9 +136,7 @@ export default function Header({ onSearch }: HeaderProps) {
                 <span>{t('login')}</span>
               </button>
             )}
-
           </div>
-
         </div>
       </header>
 

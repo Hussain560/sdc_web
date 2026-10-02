@@ -1,5 +1,5 @@
 .sdc-events-articles-sec {
-  background-color: #08090C;
+  background-color: #08090c;
   padding: 60px 24px;
   direction: inherit;
   display: flex;
@@ -25,14 +25,14 @@
 .sdc-section-title {
   font-size: 2rem;
   font-weight: 800;
-  color: #FFFFFF;
+  color: #ffffff;
   margin: 0;
 }
 
 .sdc-view-all-btn {
   background: rgba(255, 255, 255, 0.03); /* خلفية داكنة خفيفة جداً */
   border: 1px solid rgba(255, 255, 255, 0.25); /* إطار رمادي ناعم ودقيق */
-  color: #FFFFFF;
+  color: #ffffff;
   padding: 8px 30px; /* مسافة أفقية أوسع لمطابقة أبعاد الصورة */
   border-radius: 9999px; /* انحناء دائري كامل بأسلوب Capsule */
   font-size: 0.95rem;
@@ -46,8 +46,8 @@
 }
 
 .sdc-view-all-btn:hover {
-  border-color: #00E676;
-  color: #00E676;
+  border-color: #00e676;
+  color: #00e676;
   background-color: rgba(0, 230, 118, 0.08);
 }
 
@@ -63,7 +63,7 @@
 }
 
 .sdc-event-card {
-  background-color: #0D0E12;
+  background-color: #0d0e12;
   border: 1.5px solid rgba(171, 239, 198, 0.3);
   border-radius: 20px;
   padding: 16px;
@@ -75,7 +75,7 @@
 }
 
 .sdc-event-card:hover {
-  border-color: #ABEFC6;
+  border-color: #abefc6;
   box-shadow: 0 4px 20px rgba(171, 239, 198, 0.15);
 }
 
@@ -110,15 +110,15 @@
 
 /* حالة: متاح التسجيل (أخضر) */
 .sdc-badge-status.available {
-  background-color: #E6F4F1;
+  background-color: #e6f4f1;
   color: #067847;
 }
 
 /* حالة: قريباً (أصفر / برتقالي) */
 .sdc-badge-status.coming-soon {
   background-color: rgba(255, 171, 0, 0.2);
-  color: #FFAB00;
-  border: 1px solid #FFAB00;
+  color: #ffab00;
+  border: 1px solid #ffab00;
   -webkit-backdrop-filter: blur(4px);
   backdrop-filter: blur(4px);
 }
@@ -141,7 +141,7 @@
 }
 
 .sdc-tag {
-  background-color: #FFFFFF;
+  background-color: #ffffff;
   font-size: 0.75rem;
   font-weight: 800;
   padding: 3px 12px;
@@ -150,11 +150,11 @@
 }
 
 .sdc-tag.tag-students {
-  color: #1F2937;
+  color: #1f2937;
 }
 
 .sdc-tag.tag-tech {
-  color: #2563EB;
+  color: #2563eb;
 }
 
 .sdc-tag.tag-competitions {
@@ -162,7 +162,7 @@
 }
 
 .sdc-event-title {
-  color: #FFFFFF;
+  color: #ffffff;
   font-size: 1.05rem;
   font-weight: 700;
   margin: 0;
@@ -173,7 +173,7 @@
   display: flex;
   align-items: center;
   gap: 14px;
-  color: #E5E7EB;
+  color: #e5e7eb;
   font-size: 0.8rem;
   flex-wrap: wrap;
 }
@@ -185,7 +185,7 @@
 }
 
 .sdc-icon-green {
-  color: #ABEFC6;
+  color: #abefc6;
 }
 
 .sdc-event-actions {
@@ -197,7 +197,7 @@
 
 .sdc-btn-register {
   background-color: #067847;
-  color: #FFFFFF;
+  color: #ffffff;
   border: none;
   padding: 6px 22px;
   border-radius: 50px;
@@ -208,14 +208,14 @@
 }
 
 .sdc-btn-register:hover {
-  background-color: #ABEFC6;
+  background-color: #abefc6;
   color: #000000;
 }
 
 .sdc-btn-more {
   background: transparent;
   border: 1px solid rgba(255, 255, 255, 0.4);
-  color: #FFFFFF;
+  color: #ffffff;
   padding: 6px 22px;
   border-radius: 50px;
   font-size: 0.85rem;
@@ -228,8 +228,8 @@
 }
 
 .sdc-btn-more:hover {
-  border-color: #ABEFC6;
-  color: #ABEFC6;
+  border-color: #abefc6;
+  color: #abefc6;
 }
 
 .sdc-articles-column {
@@ -244,11 +244,11 @@
 }
 
 .sdc-article-item {
-  background-color: #0D0E12;
+  background-color: #0d0e12;
   border-top: 1px solid rgba(171, 239, 198, 0.2);
   border-left: 1px solid rgba(171, 239, 198, 0.2);
-  border-right: 2.5px solid #ABEFC6;
-  border-bottom: 2.5px solid #ABEFC6;
+  border-right: 2.5px solid #abefc6;
+  border-bottom: 2.5px solid #abefc6;
   border-radius: 20px;
   padding: 16px 28px;
   display: flex;
@@ -256,7 +256,7 @@
   align-items: center;
   cursor: pointer;
   transition: all 0.25s ease;
-  box-shadow: 2px 4px 12px rgba(171, 239, 198, 0.15); 
+  box-shadow: 2px 4px 12px rgba(171, 239, 198, 0.15);
 }
 
 .sdc-article-item:hover {
@@ -265,7 +265,7 @@
 }
 
 .sdc-article-title {
-  color: #FFFFFF;
+  color: #ffffff;
   font-size: 0.95rem;
   font-weight: 700;
   margin: 0;
@@ -322,8 +322,8 @@
 
 /* زر التسجيل بعد التأكيد */
 .sdc-btn-register.registered {
-  background-color: #10B981 !important;
-  color: #FFFFFF !important;
+  background-color: #10b981 !important;
+  color: #ffffff !important;
   cursor: default;
 }
 
@@ -344,7 +344,7 @@
 }
 
 .sdc-modal-card {
-  background-color: #0D1117;
+  background-color: #0d1117;
   border: 1px solid rgba(0, 230, 118, 0.3);
   border-radius: 16px;
   width: 90%;
@@ -352,7 +352,7 @@
   padding: 24px;
   position: relative;
   direction: inherit;
-  color: #FFFFFF;
+  color: #ffffff;
 }
 
 .sdc-modal-close {
@@ -361,7 +361,7 @@
   left: 16px;
   background: none;
   border: none;
-  color: #9CA3AF;
+  color: #9ca3af;
   cursor: pointer;
 }
 
@@ -371,7 +371,7 @@
 }
 
 .sdc-modal-icon {
-  color: #00E676;
+  color: #00e676;
   margin-bottom: 8px;
 }
 
@@ -381,7 +381,7 @@
 }
 
 .sdc-modal-event-name {
-  color: #00E676;
+  color: #00e676;
   font-weight: 700;
   text-align: center;
   font-size: 0.95rem;
@@ -393,7 +393,7 @@
   padding: 12px 16px;
   border-radius: 8px;
   font-size: 0.88rem;
-  color: #D1D5DB;
+  color: #d1d5db;
 }
 
 .sdc-modal-user-info ul {
@@ -414,8 +414,8 @@
 
 .sdc-btn-confirm {
   flex: 1;
-  background-color: #00E676;
-  color: #08090C;
+  background-color: #00e676;
+  color: #08090c;
   border: none;
   padding: 10px;
   border-radius: 8px;
@@ -426,7 +426,7 @@
 .sdc-btn-cancel {
   flex: 1;
   background-color: transparent;
-  color: #FFFFFF;
+  color: #ffffff;
   border: 1px solid rgba(255, 255, 255, 0.2);
   padding: 10px;
   border-radius: 8px;
@@ -435,59 +435,59 @@
 /* ================== LIGHT MODE - EVENTS & THREADS ================== */
 
 :root[data-theme='light'] .sdc-events-articles-sec {
-  background-color: #F4FAF6;
+  background-color: #f4faf6;
 }
 
 :root[data-theme='light'] .sdc-section-title {
-  color: #123B35;
+  color: #123b35;
 }
 
 :root[data-theme='light'] .sdc-view-all-btn {
-  background-color: #FFFFFF;
-  border-color: #A9D8BC;
-  color: #123B35;
+  background-color: #ffffff;
+  border-color: #a9d8bc;
+  color: #123b35;
 }
 
 :root[data-theme='light'] .sdc-view-all-btn:hover {
-  border-color: #16A765;
-  color: #0B8F55;
-  background-color: #E5F5EA;
+  border-color: #16a765;
+  color: #0b8f55;
+  background-color: #e5f5ea;
 }
 
 :root[data-theme='light'] .sdc-event-card {
-  background-color: #FFFFFF;
-  border-color: #CBE7D4;
+  background-color: #ffffff;
+  border-color: #cbe7d4;
 }
 
 :root[data-theme='light'] .sdc-event-card:hover {
-  border-color: #72C99A;
+  border-color: #72c99a;
   box-shadow: 0 4px 18px rgba(22, 167, 101, 0.12);
 }
 
 :root[data-theme='light'] .sdc-event-title {
-  color: #123B35;
+  color: #123b35;
 }
 
 :root[data-theme='light'] .sdc-event-meta {
-  color: #52766C;
+  color: #52766c;
 }
 
 :root[data-theme='light'] .sdc-btn-more {
-  border-color: #A9D8BC;
-  color: #123B35;
+  border-color: #a9d8bc;
+  color: #123b35;
 }
 
 :root[data-theme='light'] .sdc-btn-more:hover {
-  border-color: #16A765;
-  color: #0B8F55;
+  border-color: #16a765;
+  color: #0b8f55;
 }
 
 :root[data-theme='light'] .sdc-article-item {
-  background-color: #FFFFFF;
-  border-top-color: #D8EDE0;
-  border-left-color: #D8EDE0;
-  border-right-color: #A9D8BC;
-  border-bottom-color: #A9D8BC;
+  background-color: #ffffff;
+  border-top-color: #d8ede0;
+  border-left-color: #d8ede0;
+  border-right-color: #a9d8bc;
+  border-bottom-color: #a9d8bc;
   box-shadow: 2px 4px 12px rgba(22, 167, 101, 0.08);
 }
 
@@ -496,32 +496,32 @@
 }
 
 :root[data-theme='light'] .sdc-article-title {
-  color: #123B35;
+  color: #123b35;
 }
 
 /* Light Mode للنافذة المنبثقة وقت التسجيل */
 :root[data-theme='light'] .sdc-modal-card {
-  background-color: #FFFFFF;
-  color: #123B35;
-  border-color: #A9D8BC;
+  background-color: #ffffff;
+  color: #123b35;
+  border-color: #a9d8bc;
 }
 
 :root[data-theme='light'] .sdc-modal-user-info {
-  background-color: #F4FAF6;
-  color: #52766C;
+  background-color: #f4faf6;
+  color: #52766c;
 }
 
 :root[data-theme='light'] .sdc-btn-cancel {
-  color: #123B35;
-  border-color: #A9D8BC;
+  color: #123b35;
+  border-color: #a9d8bc;
 }
 /* زر تسجيل الفعالية في اللايت مود */
 :root[data-theme='light'] .sdc-btn-register {
-  background-color: #72C99A !important;
-  color: #0D3329 !important;
+  background-color: #72c99a !important;
+  color: #0d3329 !important;
 }
 
 :root[data-theme='light'] .sdc-btn-register:hover {
-  background-color: #5DB987 !important;
-  color: #FFFFFF !important;
+  background-color: #5db987 !important;
+  color: #ffffff !important;
 }

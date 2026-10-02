@@ -17,8 +17,16 @@ const articles = [
   { id: 2, ar: 'تقنية Voice2Face', en: 'Voice2Face Technology' },
   { id: 3, ar: 'أنظمة التوصية (Recommendation Systems)', en: 'Recommendation Systems' },
   { id: 4, ar: 'التطبيقات الصينية والإنجليزية', en: 'Chinese and English Applications' },
-  { id: 5, ar: 'الذكاء الاصطناعي في الألعاب والتعلّم المعزّز', en: 'AI in Gaming and Reinforcement Learning' },
-  { id: 6, ar: 'تطبيقات الذكاء الاصطناعي في تحليل المشاعر', en: 'AI Applications in Sentiment Analysis' }
+  {
+    id: 5,
+    ar: 'الذكاء الاصطناعي في الألعاب والتعلّم المعزّز',
+    en: 'AI in Gaming and Reinforcement Learning',
+  },
+  {
+    id: 6,
+    ar: 'تطبيقات الذكاء الاصطناعي في تحليل المشاعر',
+    en: 'AI Applications in Sentiment Analysis',
+  },
 ];
 
 // بس أول 3 فعاليات من نفس المصدر المشترك، عشان ما نكرر البيانات
@@ -95,7 +103,7 @@ export default function ArticlesSection() {
       setRegisterError(
         isEnglish
           ? 'Something went wrong. Please try again.'
-          : 'حدث خطأ أثناء التسجيل. حاولي مرة أخرى.'
+          : 'حدث خطأ أثناء التسجيل. حاولي مرة أخرى.',
       );
       return;
     }
@@ -104,23 +112,28 @@ export default function ArticlesSection() {
     setSelectedEvent(null);
 
     // إرسال إيميل "استلمنا تسجيلك" بدون ما نوقف الواجهة بانتظاره
-    supabase.functions.invoke('send-registration-email', {
-      body: {
-        to: user.email,
-        fullName: user.user_metadata?.full_name || '',
-        eventTitle: selectedEvent.title.ar,
-      },
-    }).catch((err) => console.error('email error:', err));
+    supabase.functions
+      .invoke('send-registration-email', {
+        body: {
+          to: user.email,
+          fullName: user.user_metadata?.full_name || '',
+          eventTitle: selectedEvent.title.ar,
+        },
+      })
+      .catch((err) => console.error('email error:', err));
   };
 
   const filteredEvents = events.filter((e) => {
     const title = e.title[isEnglish ? 'en' : 'ar'];
     const location = e.location[isEnglish ? 'en' : 'ar'];
-    return title.toLowerCase().includes((searchQuery || '').toLowerCase()) || location.toLowerCase().includes((searchQuery || '').toLowerCase());
+    return (
+      title.toLowerCase().includes((searchQuery || '').toLowerCase()) ||
+      location.toLowerCase().includes((searchQuery || '').toLowerCase())
+    );
   });
 
   const filteredArticles = articles.filter((a) =>
-    (a[isEnglish ? 'en' : 'ar']).toLowerCase().includes((searchQuery || '').toLowerCase())
+    a[isEnglish ? 'en' : 'ar'].toLowerCase().includes((searchQuery || '').toLowerCase()),
   );
 
   return (
@@ -141,7 +154,9 @@ export default function ArticlesSection() {
               return (
                 <div key={event.id} className="sdc-event-card">
                   <div className="sdc-event-image-wrapper">
-                    <span className={`sdc-badge-status ${eventStatus === 'Coming Soon' || eventStatus === 'قريبًا' ? 'coming-soon' : 'available'}`}>
+                    <span
+                      className={`sdc-badge-status ${eventStatus === 'Coming Soon' || eventStatus === 'قريبًا' ? 'coming-soon' : 'available'}`}
+                    >
                       {eventStatus}
                     </span>
                     <img src={event.image} alt={eventTitle} className="sdc-event-image" />
@@ -149,16 +164,24 @@ export default function ArticlesSection() {
 
                   <div className="sdc-event-details">
                     <div className="sdc-event-tags">
-                      <span className="sdc-tag tag-competitions">{isEnglish ? 'Competitions' : 'مسابقات'}</span>
+                      <span className="sdc-tag tag-competitions">
+                        {isEnglish ? 'Competitions' : 'مسابقات'}
+                      </span>
                       <span className="sdc-tag tag-tech">{isEnglish ? 'Technology' : 'تقنية'}</span>
-                      <span className="sdc-tag tag-students">{isEnglish ? 'Students' : 'طلاب'}</span>
+                      <span className="sdc-tag tag-students">
+                        {isEnglish ? 'Students' : 'طلاب'}
+                      </span>
                     </div>
 
                     <h3 className="sdc-event-title">{eventTitle}</h3>
 
                     <div className="sdc-event-meta">
-                      <span><MapPin size={13} className="sdc-icon-green" /> {eventLocation}</span>
-                      <span><Calendar size={13} className="sdc-icon-green" /> {eventDate}</span>
+                      <span>
+                        <MapPin size={13} className="sdc-icon-green" /> {eventLocation}
+                      </span>
+                      <span>
+                        <Calendar size={13} className="sdc-icon-green" /> {eventDate}
+                      </span>
                     </div>
 
                     <div className="sdc-event-actions">
@@ -221,24 +244,36 @@ export default function ArticlesSection() {
               <p className="sdc-modal-event-name">{selectedEvent.title[isEnglish ? 'en' : 'ar']}</p>
 
               <div className="sdc-modal-user-info">
-                <span>{isEnglish ? 'You will be registered with the following information:' : 'سيتم التسجيل بالبيانات التالية:'}</span>
+                <span>
+                  {isEnglish
+                    ? 'You will be registered with the following information:'
+                    : 'سيتم التسجيل بالبيانات التالية:'}
+                </span>
                 <ul>
-                  <li><strong>{isEnglish ? 'Name' : 'الاسم'}:</strong> {user?.user_metadata?.full_name || (isEnglish ? 'Visitor' : 'زائر')}</li>
-                  <li><strong>{isEnglish ? 'Email' : 'البريد'}:</strong> {user?.email || (isEnglish ? 'No email provided' : 'لا يوجد بريد')}</li>
+                  <li>
+                    <strong>{isEnglish ? 'Name' : 'الاسم'}:</strong>{' '}
+                    {user?.user_metadata?.full_name || (isEnglish ? 'Visitor' : 'زائر')}
+                  </li>
+                  <li>
+                    <strong>{isEnglish ? 'Email' : 'البريد'}:</strong>{' '}
+                    {user?.email || (isEnglish ? 'No email provided' : 'لا يوجد بريد')}
+                  </li>
                 </ul>
               </div>
 
               {registerError && (
-                <div style={{
-                  background: 'rgba(239,68,68,0.1)',
-                  border: '1px solid #ef4444',
-                  color: '#ef4444',
-                  borderRadius: '8px',
-                  padding: '10px 14px',
-                  fontSize: '14px',
-                  marginTop: '12px',
-                  textAlign: 'center',
-                }}>
+                <div
+                  style={{
+                    background: 'rgba(239,68,68,0.1)',
+                    border: '1px solid #ef4444',
+                    color: '#ef4444',
+                    borderRadius: '8px',
+                    padding: '10px 14px',
+                    fontSize: '14px',
+                    marginTop: '12px',
+                    textAlign: 'center',
+                  }}
+                >
                   {registerError}
                 </div>
               )}
@@ -247,10 +282,18 @@ export default function ArticlesSection() {
             <div className="sdc-modal-footer">
               <button className="sdc-btn-confirm" onClick={confirmRegistration} disabled={sending}>
                 {sending
-                  ? (isEnglish ? 'Sending...' : 'جاري الإرسال...')
-                  : (isEnglish ? 'Confirm Registration' : 'تأكيد التسجيل')}
+                  ? isEnglish
+                    ? 'Sending...'
+                    : 'جاري الإرسال...'
+                  : isEnglish
+                    ? 'Confirm Registration'
+                    : 'تأكيد التسجيل'}
               </button>
-              <button className="sdc-btn-cancel" onClick={() => setSelectedEvent(null)} disabled={sending}>
+              <button
+                className="sdc-btn-cancel"
+                onClick={() => setSelectedEvent(null)}
+                disabled={sending}
+              >
                 {isEnglish ? 'Cancel' : 'إلغاء'}
               </button>
             </div>

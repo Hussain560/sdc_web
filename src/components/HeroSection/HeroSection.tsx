@@ -17,11 +17,8 @@ export default function HeroSection() {
   return (
     <section className="sdc-hero-section">
       <div className="sdc-hero-wrapper">
-
         <div className="sdc-hero-content-free">
-
           <div className="sdc-hero-text-content">
-
             <h1 className="sdc-hero-title">
               {isEnglish ? 'Saudi Developer' : 'المجتمع السعودي'} <br />
               {isEnglish ? 'Community' : 'للمطورين'}
@@ -36,27 +33,16 @@ export default function HeroSection() {
             <Link href="/about" className="sdc-btn-primary-hero">
               {isEnglish ? 'Community Vision' : 'رؤية المجتمع'}
             </Link>
-
           </div>
 
           <div className="sdc-hero-image-wrapper">
             <img
-              src={
-                isDarkMode
-                  ? '/assets/hero-logo.png'
-                  : '/assets/light-mode.png'
-              }
-              alt={
-                isEnglish
-                  ? 'Saudi Developer Community logo'
-                  : 'شعار المجتمع السعودي للمطورين'
-              }
+              src={isDarkMode ? '/assets/hero-logo.png' : '/assets/light-mode.png'}
+              alt={isEnglish ? 'Saudi Developer Community logo' : 'شعار المجتمع السعودي للمطورين'}
               className="sdc-hero-image"
             />
           </div>
-
         </div>
-
       </div>
     </section>
   );

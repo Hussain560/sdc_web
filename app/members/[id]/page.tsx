@@ -53,10 +53,15 @@ export default function MemberDetailsPage() {
       }
 
       const fullNameAr = `${data.first_name || ''} ${data.last_name || ''}`.trim();
-      const fullNameEn = `${data.first_name_en || ''} ${data.last_name_en || ''}`.trim() || fullNameAr;
+      const fullNameEn =
+        `${data.first_name_en || ''} ${data.last_name_en || ''}`.trim() || fullNameAr;
 
-      const tagsListAr = [data.major, data.sub_major, data.track].filter((value): value is string => Boolean(value));
-      const tagsListEn = [data.major_en, data.sub_major_en, data.track_en].filter((value): value is string => Boolean(value));
+      const tagsListAr = [data.major, data.sub_major, data.track].filter((value): value is string =>
+        Boolean(value),
+      );
+      const tagsListEn = [data.major_en, data.sub_major_en, data.track_en].filter(
+        (value): value is string => Boolean(value),
+      );
 
       setMember({
         id: data.id,
@@ -167,7 +172,9 @@ export default function MemberDetailsPage() {
           <div className="sdc-details-content-container">
             <div className="sdc-details-section-header">
               <div className="sdc-header-right-info">
-                <h2 className="sdc-section-main-title">{isEnglish ? 'Community Members' : 'أعضاء المجتمع'}</h2>
+                <h2 className="sdc-section-main-title">
+                  {isEnglish ? 'Community Members' : 'أعضاء المجتمع'}
+                </h2>
                 <p className="sdc-section-sub-title">
                   {isEnglish
                     ? 'Meet the members of our community who share a passion for technology, collaboration, and making an impact.'
@@ -184,7 +191,14 @@ export default function MemberDetailsPage() {
               <div className="sdc-card-top-header">
                 <div className="sdc-profile-meta-right">
                   <div className="sdc-avatar-circle">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                    >
                       <circle cx="12" cy="8" r="4" />
                       <path d="M20 21a8 8 0 0 0-16 0" />
                     </svg>
@@ -197,7 +211,10 @@ export default function MemberDetailsPage() {
 
                     <div className="sdc-detail-tags">
                       {memberTags.map((tag: string, idx: number) => (
-                        <span key={idx} className={`sdc-tag-item ${tag === activeTag ? 'tag-active' : ''}`}>
+                        <span
+                          key={idx}
+                          className={`sdc-tag-item ${tag === activeTag ? 'tag-active' : ''}`}
+                        >
                           {tag}
                         </span>
                       ))}
@@ -208,7 +225,11 @@ export default function MemberDetailsPage() {
                 <div className="sdc-academic-info-center">
                   <div className="sdc-info-block">
                     <span className="sdc-info-label-group">
-                      <img src="/assets/graduation-hat-02.png" alt={isEnglish ? 'graduation cap' : 'قبعة التخرج'} className="sdc-info-icon" />
+                      <img
+                        src="/assets/graduation-hat-02.png"
+                        alt={isEnglish ? 'graduation cap' : 'قبعة التخرج'}
+                        className="sdc-info-icon"
+                      />
                       <strong>{isEnglish ? 'Academic Status' : 'الحالة الدراسية'}</strong>
                     </span>
                     <span className="sdc-info-sub">{memberStatus}</span>
@@ -216,7 +237,15 @@ export default function MemberDetailsPage() {
 
                   <div className="sdc-info-block">
                     <span className="sdc-info-label-group">
-                      <svg className="sdc-info-icon-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7AAF98" strokeWidth="1.5">
+                      <svg
+                        className="sdc-info-icon-svg"
+                        width="22"
+                        height="22"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="#7AAF98"
+                        strokeWidth="1.5"
+                      >
                         <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
                         <circle cx="12" cy="10" r="3"></circle>
                       </svg>
@@ -233,21 +262,79 @@ export default function MemberDetailsPage() {
               </div>
 
               <div className="sdc-social-icons-row">
-                <a href={member.socials.portfolio} target="_blank" rel="noopener noreferrer" className="sdc-social-icon-link" title={isEnglish ? 'Portfolio' : 'الموقع الشخصي'}>
-                  <img src="/assets/briefcase-01.png" alt={isEnglish ? 'Portfolio' : 'حقيبة'} className="sdc-social-img-icon" />
+                <a
+                  href={member.socials.portfolio}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="sdc-social-icon-link"
+                  title={isEnglish ? 'Portfolio' : 'الموقع الشخصي'}
+                >
+                  <img
+                    src="/assets/briefcase-01.png"
+                    alt={isEnglish ? 'Portfolio' : 'حقيبة'}
+                    className="sdc-social-img-icon"
+                  />
                 </a>
-                <a href={member.socials.x} target="_blank" rel="noopener noreferrer" className="sdc-social-icon-link" title="X">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M4 4l11.733 16h4.267l-11.733 -16z"/><path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772"/></svg>
+                <a
+                  href={member.socials.x}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="sdc-social-icon-link"
+                  title="X"
+                >
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                  >
+                    <path d="M4 4l11.733 16h4.267l-11.733 -16z" />
+                    <path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772" />
+                  </svg>
                 </a>
-                <a href={member.socials.linkedin} target="_blank" rel="noopener noreferrer" className="sdc-social-icon-link" title="LinkedIn">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+                <a
+                  href={member.socials.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="sdc-social-icon-link"
+                  title="LinkedIn"
+                >
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                  >
+                    <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+                    <rect x="2" y="9" width="4" height="12"></rect>
+                    <circle cx="4" cy="4" r="2"></circle>
+                  </svg>
                 </a>
-                <a href={member.socials.github} target="_blank" rel="noopener noreferrer" className="sdc-social-icon-link" title="GitHub">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+                <a
+                  href={member.socials.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="sdc-social-icon-link"
+                  title="GitHub"
+                >
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                  >
+                    <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+                  </svg>
                 </a>
               </div>
 
-             {/* <button className="sdc-contact-me-btn" onClick={() => setIsContactOpen(true)}>
+              {/* <button className="sdc-contact-me-btn" onClick={() => setIsContactOpen(true)}>
                 {isEnglish ? 'Contact Me' : 'تواصل معي'}
               </button> */}
             </div>
@@ -258,13 +345,28 @@ export default function MemberDetailsPage() {
       {isContactOpen && (
         <div className="sdc-modal-overlay" onClick={() => setIsContactOpen(false)}>
           <div className="sdc-modal-content" onClick={(e) => e.stopPropagation()}>
-            <button className="sdc-modal-close" onClick={() => setIsContactOpen(false)}>✕</button>
+            <button className="sdc-modal-close" onClick={() => setIsContactOpen(false)}>
+              ✕
+            </button>
             <h3>{isEnglish ? `Contact ${memberName}` : `التواصل مع ${memberName}`}</h3>
-            <p>{isEnglish ? 'You can send a direct message to the member here:' : 'يمكنك إرسال رسالة مباشرة للعضو من هنا:'}</p>
+            <p>
+              {isEnglish
+                ? 'You can send a direct message to the member here:'
+                : 'يمكنك إرسال رسالة مباشرة للعضو من هنا:'}
+            </p>
 
             {sentSuccess ? (
-              <div style={{ color: '#00E676', textAlign: 'center', padding: '20px 0', fontWeight: 'bold' }}>
-                {isEnglish ? 'Your message has been sent successfully! ✓' : 'تم إرسال رسالتك بنجاح! ✓'}
+              <div
+                style={{
+                  color: '#00E676',
+                  textAlign: 'center',
+                  padding: '20px 0',
+                  fontWeight: 'bold',
+                }}
+              >
+                {isEnglish
+                  ? 'Your message has been sent successfully! ✓'
+                  : 'تم إرسال رسالتك بنجاح! ✓'}
               </div>
             ) : (
               <form className="sdc-contact-form" onSubmit={handleContactSubmit}>
@@ -296,7 +398,13 @@ export default function MemberDetailsPage() {
                   className="sdc-modal-input"
                 ></textarea>
                 <button type="submit" className="sdc-modal-submit-btn" disabled={sending}>
-                  {sending ? (isEnglish ? 'Sending...' : 'جاري الإرسال...') : (isEnglish ? 'Send Message' : 'إرسال الرسالة')}
+                  {sending
+                    ? isEnglish
+                      ? 'Sending...'
+                      : 'جاري الإرسال...'
+                    : isEnglish
+                      ? 'Send Message'
+                      : 'إرسال الرسالة'}
                 </button>
               </form>
             )}

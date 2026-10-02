@@ -3,7 +3,18 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { User, MapPin, Calendar, Clock, Trophy, ExternalLink, Phone, Mail, CheckCircle, X } from 'lucide-react';
+import {
+  User,
+  MapPin,
+  Calendar,
+  Clock,
+  Trophy,
+  ExternalLink,
+  Phone,
+  Mail,
+  CheckCircle,
+  X,
+} from 'lucide-react';
 import Header from '../../../src/components/Header/Header';
 import Footer from '../../../src/components/Footer/Footer';
 import { useAuth } from '../../../src/context/AuthContext';
@@ -31,10 +42,12 @@ interface EventRecord {
   benefits: Localized<string[]>;
 }
 
-
 const eventsDatabase: Record<string, EventRecord> = {
   '1': {
-    title: { ar: 'لقاء تقني: بيئات العمل التقنية وأساسيات Github', en: 'Technical Meetup: Tech Work Environments and GitHub Basics' },
+    title: {
+      ar: 'لقاء تقني: بيئات العمل التقنية وأساسيات Github',
+      en: 'Technical Meetup: Tech Work Environments and GitHub Basics',
+    },
     location: { ar: 'أونلاين', en: 'Online' },
     mapUrl: '#',
     date: { ar: 'قريبًا سيعلن عنه', en: 'To be announced soon' },
@@ -44,19 +57,39 @@ const eventsDatabase: Record<string, EventRecord> = {
     email: 'sdcommunity.sa@gmail.com',
     status: { ar: 'قريبًا', en: 'Coming Soon' },
     faq: {
-      ar: ['لا توجد شهادة حضور لهذه الفعالية.', 'في حال القبول، سيتم إرسال رسالة القبول عبر البريد الإلكتروني.'],
-      en: ['There is no attendance certificate for this event.', 'If accepted, an approval email will be sent to your email.']
+      ar: [
+        'لا توجد شهادة حضور لهذه الفعالية.',
+        'في حال القبول، سيتم إرسال رسالة القبول عبر البريد الإلكتروني.',
+      ],
+      en: [
+        'There is no attendance certificate for this event.',
+        'If accepted, an approval email will be sent to your email.',
+      ],
     },
     responsibilities: {
-      ar: ['الحضور والالتزام بوقت اللقاء.', 'المشاركة الفعالة أثناء النقاش.', 'الاستفادة من المحتوى وطرح الأسئلة عند الحاجة.'],
-      en: ['Attend and respect the meeting time.', 'Participate actively during the discussion.', 'Use the content and ask questions when needed.']
+      ar: [
+        'الحضور والالتزام بوقت اللقاء.',
+        'المشاركة الفعالة أثناء النقاش.',
+        'الاستفادة من المحتوى وطرح الأسئلة عند الحاجة.',
+      ],
+      en: [
+        'Attend and respect the meeting time.',
+        'Participate actively during the discussion.',
+        'Use the content and ask questions when needed.',
+      ],
     },
     requirements: { ar: ['لا يوجد.'], en: ['None.'] },
     deliverables: {
-      ar: ['التعرف على أبرز الفروقات التقنية بين بيئات العمل في الشركات والبنوك.', 'التعرف على أساسيات GitHub وكيفية إنشاء حساب واستخدامه بشكل أولي.'],
-      en: ['Understand the main technical differences between work environments in companies and banks.', 'Learn the basics of GitHub and how to create an account and use it initially.']
+      ar: [
+        'التعرف على أبرز الفروقات التقنية بين بيئات العمل في الشركات والبنوك.',
+        'التعرف على أساسيات GitHub وكيفية إنشاء حساب واستخدامه بشكل أولي.',
+      ],
+      en: [
+        'Understand the main technical differences between work environments in companies and banks.',
+        'Learn the basics of GitHub and how to create an account and use it initially.',
+      ],
     },
-    benefits: { ar: ['لا يوجد.'], en: ['None.'] }
+    benefits: { ar: ['لا يوجد.'], en: ['None.'] },
   },
   '2': {
     title: { ar: 'ورشة Google AI Studio', en: 'Google AI Studio Workshop' },
@@ -69,22 +102,45 @@ const eventsDatabase: Record<string, EventRecord> = {
     email: 'sdcommunity.sa@gmail.com',
     status: { ar: 'منتهي', en: 'Ended' },
     faq: {
-      ar: ['تتوفر شهادة حضور بعد حضور الورشة.', 'في حال القبول، سيتم إرسال رسالة القبول عبر البريد الإلكتروني.'],
-      en: ['An attendance certificate is available after attending the workshop.', 'If accepted, an approval email will be sent to your email.']
+      ar: [
+        'تتوفر شهادة حضور بعد حضور الورشة.',
+        'في حال القبول، سيتم إرسال رسالة القبول عبر البريد الإلكتروني.',
+      ],
+      en: [
+        'An attendance certificate is available after attending the workshop.',
+        'If accepted, an approval email will be sent to your email.',
+      ],
     },
     responsibilities: {
-      ar: ['الحضور والالتزام بوقت الورشة.', 'المشاركة الفعالة أثناء التطبيق العملي.', 'متابعة الشرح وتجربة الأدوات المقدمة خلال الورشة.'],
-      en: ['Attend and respect the workshop time.', 'Participate actively in hands-on practice.', 'Follow the explanation and experiment with the tools presented.']
+      ar: [
+        'الحضور والالتزام بوقت الورشة.',
+        'المشاركة الفعالة أثناء التطبيق العملي.',
+        'متابعة الشرح وتجربة الأدوات المقدمة خلال الورشة.',
+      ],
+      en: [
+        'Attend and respect the workshop time.',
+        'Participate actively in hands-on practice.',
+        'Follow the explanation and experiment with the tools presented.',
+      ],
     },
     requirements: { ar: ['لا يوجد.'], en: ['None.'] },
     deliverables: {
-      ar: ['التعرف على Google AI Studio وأهم استخداماته.', 'اكتساب أساسيات التعامل مع أدوات الذكاء الاصطناعي وتطبيقها بشكل مبسط.'],
-      en: ['Learn about Google AI Studio and its main use cases.', 'Gain the basics of working with AI tools and applying them simply.']
+      ar: [
+        'التعرف على Google AI Studio وأهم استخداماته.',
+        'اكتساب أساسيات التعامل مع أدوات الذكاء الاصطناعي وتطبيقها بشكل مبسط.',
+      ],
+      en: [
+        'Learn about Google AI Studio and its main use cases.',
+        'Gain the basics of working with AI tools and applying them simply.',
+      ],
     },
-    benefits: { ar: ['لا يوجد.'], en: ['None.'] }
+    benefits: { ar: ['لا يوجد.'], en: ['None.'] },
   },
   '3': {
-    title: { ar: 'ورشة تحليل البيانات باستخدام Excel & Power BI', en: 'Data Analysis Workshop using Excel & Power BI' },
+    title: {
+      ar: 'ورشة تحليل البيانات باستخدام Excel & Power BI',
+      en: 'Data Analysis Workshop using Excel & Power BI',
+    },
     location: { ar: 'أونلاين', en: 'Online' },
     mapUrl: '#',
     date: { ar: '20/9/2025', en: '20/9/2025' },
@@ -94,19 +150,39 @@ const eventsDatabase: Record<string, EventRecord> = {
     email: 'sdcommunity.sa@gmail.com',
     status: { ar: 'منتهي', en: 'Ended' },
     faq: {
-      ar: ['تتوفر شهادة حضور بعد حضور الورشة.', 'في حال القبول، سيتم إرسال رسالة القبول عبر البريد الإلكتروني.'],
-      en: ['An attendance certificate is available after attending the workshop.', 'If accepted, an approval email will be sent to your email.']
+      ar: [
+        'تتوفر شهادة حضور بعد حضور الورشة.',
+        'في حال القبول، سيتم إرسال رسالة القبول عبر البريد الإلكتروني.',
+      ],
+      en: [
+        'An attendance certificate is available after attending the workshop.',
+        'If accepted, an approval email will be sent to your email.',
+      ],
     },
     responsibilities: {
-      ar: ['الحضور والالتزام بوقت الورشة.', 'المشاركة الفعالة أثناء التطبيق العملي.', 'متابعة خطوات تحليل البيانات وتجربة الأدوات المقدمة.'],
-      en: ['Attend and respect the workshop time.', 'Participate actively in hands-on activities.', 'Follow the data analysis steps and try the tools provided.']
+      ar: [
+        'الحضور والالتزام بوقت الورشة.',
+        'المشاركة الفعالة أثناء التطبيق العملي.',
+        'متابعة خطوات تحليل البيانات وتجربة الأدوات المقدمة.',
+      ],
+      en: [
+        'Attend and respect the workshop time.',
+        'Participate actively in hands-on activities.',
+        'Follow the data analysis steps and try the tools provided.',
+      ],
     },
     requirements: { ar: ['لا يوجد.'], en: ['None.'] },
     deliverables: {
-      ar: ['التعرف على أساسيات تحليل البيانات باستخدام Excel وPower BI.', 'التعرف على كيفية تنظيم البيانات وعرضها في تقارير ولوحات معلومات بشكل مبسط.'],
-      en: ['Learn the basics of data analysis using Excel and Power BI.', 'Learn how to organize and present data in reports and dashboards simply.']
+      ar: [
+        'التعرف على أساسيات تحليل البيانات باستخدام Excel وPower BI.',
+        'التعرف على كيفية تنظيم البيانات وعرضها في تقارير ولوحات معلومات بشكل مبسط.',
+      ],
+      en: [
+        'Learn the basics of data analysis using Excel and Power BI.',
+        'Learn how to organize and present data in reports and dashboards simply.',
+      ],
     },
-    benefits: { ar: ['لا يوجد.'], en: ['None.'] }
+    benefits: { ar: ['لا يوجد.'], en: ['None.'] },
   },
   '4': {
     title: { ar: 'معسكر أساسيات الأمن السيبراني', en: 'Cybersecurity Fundamentals Camp' },
@@ -119,19 +195,39 @@ const eventsDatabase: Record<string, EventRecord> = {
     email: 'sdcommunity.sa@gmail.com',
     status: { ar: 'منتهي', en: 'Ended' },
     faq: {
-      ar: ['تتوفر شهادة حضور بعد حضور المعسكر.', 'في حال القبول، سيتم إرسال رسالة القبول عبر البريد الإلكتروني.'],
-      en: ['An attendance certificate is available after attending the camp.', 'If accepted, an approval email will be sent to your email.']
+      ar: [
+        'تتوفر شهادة حضور بعد حضور المعسكر.',
+        'في حال القبول، سيتم إرسال رسالة القبول عبر البريد الإلكتروني.',
+      ],
+      en: [
+        'An attendance certificate is available after attending the camp.',
+        'If accepted, an approval email will be sent to your email.',
+      ],
     },
     responsibilities: {
-      ar: ['الحضور والالتزام بوقت المعسكر.', 'المشاركة الفعالة أثناء الشرح والتطبيق.', 'متابعة الأنشطة والاستفادة من المحتوى المقدم.'],
-      en: ['Attend and respect the camp schedule.', 'Participate actively during lectures and practical activities.', 'Follow the activities and benefit from the provided content.']
+      ar: [
+        'الحضور والالتزام بوقت المعسكر.',
+        'المشاركة الفعالة أثناء الشرح والتطبيق.',
+        'متابعة الأنشطة والاستفادة من المحتوى المقدم.',
+      ],
+      en: [
+        'Attend and respect the camp schedule.',
+        'Participate actively during lectures and practical activities.',
+        'Follow the activities and benefit from the provided content.',
+      ],
     },
     requirements: { ar: ['لا يوجد.'], en: ['None.'] },
     deliverables: {
-      ar: ['التعرف على المفاهيم الأساسية في الأمن السيبراني.', 'اكتساب معرفة مبسطة بأهم الممارسات والأساليب المستخدمة لحماية الأنظمة والبيانات.'],
-      en: ['Understand the basic concepts of cybersecurity.', 'Gain practical knowledge of common practices and methods used to protect systems and data.']
+      ar: [
+        'التعرف على المفاهيم الأساسية في الأمن السيبراني.',
+        'اكتساب معرفة مبسطة بأهم الممارسات والأساليب المستخدمة لحماية الأنظمة والبيانات.',
+      ],
+      en: [
+        'Understand the basic concepts of cybersecurity.',
+        'Gain practical knowledge of common practices and methods used to protect systems and data.',
+      ],
     },
-    benefits: { ar: ['لا يوجد.'], en: ['None.'] }
+    benefits: { ar: ['لا يوجد.'], en: ['None.'] },
   },
   '5': {
     title: { ar: 'معسكر أساسيات حل التقاط العلم CTF', en: 'CTF Fundamentals Camp' },
@@ -144,22 +240,45 @@ const eventsDatabase: Record<string, EventRecord> = {
     email: 'sdcommunity.sa@gmail.com',
     status: { ar: 'منتهي', en: 'Ended' },
     faq: {
-      ar: ['تتوفر شهادة حضور بعد حضور المعسكر.', 'في حال القبول، سيتم إرسال رسالة القبول عبر البريد الإلكتروني.'],
-      en: ['An attendance certificate is available after attending the camp.', 'If accepted, an approval email will be sent to your email.']
+      ar: [
+        'تتوفر شهادة حضور بعد حضور المعسكر.',
+        'في حال القبول، سيتم إرسال رسالة القبول عبر البريد الإلكتروني.',
+      ],
+      en: [
+        'An attendance certificate is available after attending the camp.',
+        'If accepted, an approval email will be sent to your email.',
+      ],
     },
     responsibilities: {
-      ar: ['الحضور والالتزام بوقت المعسكر.', 'المشاركة الفعالة أثناء التمارين والتحديات.', 'متابعة الشرح وتجربة المهارات المقدمة خلال المعسكر.'],
-      en: ['Attend and respect the camp schedule.', 'Participate actively in exercises and challenges.', 'Follow the explanation and practice the skills introduced.']
+      ar: [
+        'الحضور والالتزام بوقت المعسكر.',
+        'المشاركة الفعالة أثناء التمارين والتحديات.',
+        'متابعة الشرح وتجربة المهارات المقدمة خلال المعسكر.',
+      ],
+      en: [
+        'Attend and respect the camp schedule.',
+        'Participate actively in exercises and challenges.',
+        'Follow the explanation and practice the skills introduced.',
+      ],
     },
     requirements: { ar: ['لا يوجد.'], en: ['None.'] },
     deliverables: {
-      ar: ['التعرف على أساسيات تحديات CTF وطريقة التعامل معها.', 'اكتساب معرفة مبسطة بأساليب تحليل وحل التحديات التقنية.'],
-      en: ['Learn the basics of CTF challenges and how to approach them.', 'Gain practical knowledge of analyzing and solving technical challenges.']
+      ar: [
+        'التعرف على أساسيات تحديات CTF وطريقة التعامل معها.',
+        'اكتساب معرفة مبسطة بأساليب تحليل وحل التحديات التقنية.',
+      ],
+      en: [
+        'Learn the basics of CTF challenges and how to approach them.',
+        'Gain practical knowledge of analyzing and solving technical challenges.',
+      ],
     },
-    benefits: { ar: ['لا يوجد.'], en: ['None.'] }
+    benefits: { ar: ['لا يوجد.'], en: ['None.'] },
   },
   '6': {
-    title: { ar: 'معسكر نادي هواوي في ريادة الأعمال وصنع التطبيقات – StartApps', en: 'Huawei StartApps Entrepreneurship and App Development Camp' },
+    title: {
+      ar: 'معسكر نادي هواوي في ريادة الأعمال وصنع التطبيقات – StartApps',
+      en: 'Huawei StartApps Entrepreneurship and App Development Camp',
+    },
     location: { ar: 'أونلاين', en: 'Online' },
     mapUrl: '#',
     date: { ar: '02/03/2023', en: '02/03/2023' },
@@ -169,20 +288,40 @@ const eventsDatabase: Record<string, EventRecord> = {
     email: 'sdcommunity.sa@gmail.com',
     status: { ar: 'منتهي', en: 'Ended' },
     faq: {
-      ar: ['تتوفر شهادة حضور بعد حضور المعسكر.', 'في حال القبول، سيتم إرسال رسالة القبول عبر البريد الإلكتروني.'],
-      en: ['An attendance certificate is available after attending the camp.', 'If accepted, an approval email will be sent to your email.']
+      ar: [
+        'تتوفر شهادة حضور بعد حضور المعسكر.',
+        'في حال القبول، سيتم إرسال رسالة القبول عبر البريد الإلكتروني.',
+      ],
+      en: [
+        'An attendance certificate is available after attending the camp.',
+        'If accepted, an approval email will be sent to your email.',
+      ],
     },
     responsibilities: {
-      ar: ['الحضور والالتزام بوقت المعسكر.', 'المشاركة الفعالة أثناء الأنشطة والتطبيقات.', 'متابعة المحتوى والاستفادة من المهارات المقدمة.'],
-      en: ['Attend and respect the camp schedule.', 'Participate actively in activities and practical exercises.', 'Follow the content and apply the skills introduced.']
+      ar: [
+        'الحضور والالتزام بوقت المعسكر.',
+        'المشاركة الفعالة أثناء الأنشطة والتطبيقات.',
+        'متابعة المحتوى والاستفادة من المهارات المقدمة.',
+      ],
+      en: [
+        'Attend and respect the camp schedule.',
+        'Participate actively in activities and practical exercises.',
+        'Follow the content and apply the skills introduced.',
+      ],
     },
     requirements: { ar: ['لا يوجد.'], en: ['None.'] },
     deliverables: {
-      ar: ['التعرف على أساسيات ريادة الأعمال وتطوير الأفكار.', 'التعرف على المراحل الأساسية لتحويل الفكرة إلى تطبيق أو مشروع بشكل مبسط.'],
-      en: ['Learn the basics of entrepreneurship and idea development.', 'Understand the main stages of transforming an idea into an app or project in a simple way.']
+      ar: [
+        'التعرف على أساسيات ريادة الأعمال وتطوير الأفكار.',
+        'التعرف على المراحل الأساسية لتحويل الفكرة إلى تطبيق أو مشروع بشكل مبسط.',
+      ],
+      en: [
+        'Learn the basics of entrepreneurship and idea development.',
+        'Understand the main stages of transforming an idea into an app or project in a simple way.',
+      ],
     },
-    benefits: { ar: ['لا يوجد.'], en: ['None.'] }
-  }
+    benefits: { ar: ['لا يوجد.'], en: ['None.'] },
+  },
 };
 
 export default function EventDetailPage() {
@@ -259,7 +398,7 @@ export default function EventDetailPage() {
       setRegisterError(
         isEnglish
           ? 'Something went wrong. Please try again.'
-          : 'حدث خطأ أثناء التسجيل. حاول مرة أخرى.'
+          : 'حدث خطأ أثناء التسجيل. حاول مرة أخرى.',
       );
       return;
     }
@@ -268,13 +407,15 @@ export default function EventDetailPage() {
     setShowModal(false);
 
     // إرسال إيميل "استلمنا تسجيلك" بدون ما نوقف الواجهة بانتظاره
-    supabase.functions.invoke('send-registration-email', {
-      body: {
-        to: user.email,
-        fullName: user.user_metadata?.full_name || '',
-        eventTitle: event.title.ar,
-      },
-    }).catch((err) => console.error('email error:', err));
+    supabase.functions
+      .invoke('send-registration-email', {
+        body: {
+          to: user.email,
+          fullName: user.user_metadata?.full_name || '',
+          eventTitle: event.title.ar,
+        },
+      })
+      .catch((err) => console.error('email error:', err));
   };
 
   const eventTitle = event.title[isEnglish ? 'en' : 'ar'];
@@ -320,7 +461,11 @@ export default function EventDetailPage() {
 
         <div className="sdc-event-body-container">
           <div className="sdc-about-community-block">
-            <h2 className="sdc-about-title">{isEnglish ? 'What is the Saudi Developer Community?' : 'ما هو المجتمع السعودي للمطورين'}</h2>
+            <h2 className="sdc-about-title">
+              {isEnglish
+                ? 'What is the Saudi Developer Community?'
+                : 'ما هو المجتمع السعودي للمطورين'}
+            </h2>
             <p className="sdc-about-desc">
               {isEnglish
                 ? 'The Saudi community is a non-profit tech community that empowers developers and technology enthusiasts to gain practical experience, build real projects, share knowledge in AI and modern technologies, organize workshops and regular meetups, launch open-source projects, host inspiring speakers, and enrich Arabic technical content with high-quality material.'
@@ -336,7 +481,9 @@ export default function EventDetailPage() {
                   <h3>{isEnglish ? 'Tasks and Responsibilities' : 'المهام والمسؤوليات:'}</h3>
                 </div>
                 <ul className="sdc-card-list">
-                  {responsibilities.map((item: string, idx: number) => <li key={idx}>{item}</li>)}
+                  {responsibilities.map((item: string, idx: number) => (
+                    <li key={idx}>{item}</li>
+                  ))}
                 </ul>
               </div>
 
@@ -346,7 +493,9 @@ export default function EventDetailPage() {
                   <h3>{isEnglish ? 'Requirements and Criteria' : 'الشروط والمعايير'}</h3>
                 </div>
                 <ul className="sdc-card-list">
-                  {requirements.map((item: string, idx: number) => <li key={idx}>{item}</li>)}
+                  {requirements.map((item: string, idx: number) => (
+                    <li key={idx}>{item}</li>
+                  ))}
                 </ul>
               </div>
 
@@ -356,7 +505,9 @@ export default function EventDetailPage() {
                   <h3>{isEnglish ? 'Deliverables' : 'المخرجات :'}</h3>
                 </div>
                 <ul className="sdc-card-list">
-                  {deliverables.map((item: string, idx: number) => <li key={idx}>{item}</li>)}
+                  {deliverables.map((item: string, idx: number) => (
+                    <li key={idx}>{item}</li>
+                  ))}
                 </ul>
               </div>
 
@@ -366,7 +517,9 @@ export default function EventDetailPage() {
                   <h3>{isEnglish ? 'Opportunities and Benefits' : 'الفرص والمزايا :'}</h3>
                 </div>
                 <ul className="sdc-card-list">
-                  {benefits.map((item: string, idx: number) => <li key={idx}>{item}</li>)}
+                  {benefits.map((item: string, idx: number) => (
+                    <li key={idx}>{item}</li>
+                  ))}
                 </ul>
               </div>
             </div>
@@ -386,7 +539,12 @@ export default function EventDetailPage() {
                     <MapPin size={18} className="sdc-sb-icon-style" />
                     <h4>{isEnglish ? 'Location' : 'الموقع'}</h4>
                   </div>
-                  <a href={event.mapUrl} target="_blank" rel="noopener noreferrer" className="sdc-sb-val sdc-link-val">
+                  <a
+                    href={event.mapUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="sdc-sb-val sdc-link-val"
+                  >
                     <ExternalLink size={14} className="sdc-ext-icon" />
                     <span>{eventLocation}</span>
                   </a>
@@ -419,7 +577,11 @@ export default function EventDetailPage() {
                 <hr className="sdc-sb-divider" />
                 <div className="sdc-sidebar-item">
                   <h4>{isEnglish ? 'FAQ' : 'الأسئلة الشائعة'}</h4>
-                  {faqItems.map((item: string, index: number) => <p key={index} className="sdc-sb-val">{item}</p>)}
+                  {faqItems.map((item: string, index: number) => (
+                    <p key={index} className="sdc-sb-val">
+                      {item}
+                    </p>
+                  ))}
                 </div>
 
                 <div className="sdc-sidebar-item">
@@ -448,27 +610,46 @@ export default function EventDetailPage() {
                 <div className="sdc-sidebar-socials">
                   <h4>{isEnglish ? 'Social Accounts' : 'حسابات التواصل الإجتماعي'}</h4>
                   <div className="sdc-social-icons">
-                    <a href="https://x.com/SDC_Saudi?s=20" target="_blank" rel="noopener noreferrer" className="sdc-soc-box" title="X (Twitter)">
+                    <a
+                      href="https://x.com/SDC_Saudi?s=20"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="sdc-soc-box"
+                      title="X (Twitter)"
+                    >
                       <span className="sdc-x-icon">𝕏</span>
                     </a>
-                    <a href="https://www.linkedin.com/company/sdc-%D8%A7%D9%84%D9%85%D8%AC%D8%AA%D9%85%D8%B9-%D8%A7%D9%84%D8%B3%D8%B9%D9%88%D8%AF%D9%8A-%D9%84%D9%84%D9%85%D8%B7%D9%88%D8%B1%D9%8A%D9%86/" target="_blank" rel="noopener noreferrer" className="sdc-soc-box" title="LinkedIn">
+                    <a
+                      href="https://www.linkedin.com/company/sdc-%D8%A7%D9%84%D9%85%D8%AC%D8%AA%D9%85%D8%B9-%D8%A7%D9%84%D8%B3%D8%B9%D9%88%D8%AF%D9%8A-%D9%84%D9%84%D9%85%D8%B7%D9%88%D8%B1%D9%8A%D9%86/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="sdc-soc-box"
+                      title="LinkedIn"
+                    >
                       <span style={{ fontWeight: 'bold', fontSize: '0.9rem' }}>in</span>
                     </a>
-                    <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="sdc-soc-box" aria-label="Instagram" title="Instagram">
+                    <a
+                      href="https://instagram.com"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="sdc-soc-box"
+                      aria-label="Instagram"
+                      title="Instagram"
+                    >
                       <svg
-                       width="18"
-                       height="18"
-                       viewBox="0 0 24 24"
-                       fill="none"
-                       stroke="currentColor"
-                       strokeWidth="2"
-                       strokeLinecap="round"
-                       strokeLinejoin="round"
-                       >
-                       <rect x="2" y="2" width="20" height="20" rx="5"></rect>
-                       <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-                       <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
-                       </svg>
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <rect x="2" y="2" width="20" height="20" rx="5"></rect>
+                        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                        <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                      </svg>
                     </a>
                   </div>
                 </div>
@@ -493,14 +674,35 @@ export default function EventDetailPage() {
             <div className="sdc-modal-body">
               <p className="sdc-modal-event-name">{eventTitle}</p>
               <div className="sdc-modal-user-info">
-                <span>{isEnglish ? 'You will be registered with the following information:' : 'سيتم التسجيل بالبيانات التالية:'}</span>
+                <span>
+                  {isEnglish
+                    ? 'You will be registered with the following information:'
+                    : 'سيتم التسجيل بالبيانات التالية:'}
+                </span>
                 <ul>
-                  <li><strong>{isEnglish ? 'Name' : 'الاسم'}:</strong> {user?.user_metadata?.full_name || (isEnglish ? 'Visitor' : 'زائر')}</li>
-                  <li><strong>{isEnglish ? 'Email' : 'البريد'}:</strong> {user?.email || (isEnglish ? 'No email provided' : 'لا يوجد بريد')}</li>
+                  <li>
+                    <strong>{isEnglish ? 'Name' : 'الاسم'}:</strong>{' '}
+                    {user?.user_metadata?.full_name || (isEnglish ? 'Visitor' : 'زائر')}
+                  </li>
+                  <li>
+                    <strong>{isEnglish ? 'Email' : 'البريد'}:</strong>{' '}
+                    {user?.email || (isEnglish ? 'No email provided' : 'لا يوجد بريد')}
+                  </li>
                 </ul>
               </div>
               {registerError && (
-                <div style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid #ef4444', color: '#ef4444', borderRadius: '8px', padding: '10px 14px', fontSize: '14px', marginTop: '12px', textAlign: 'center' }}>
+                <div
+                  style={{
+                    background: 'rgba(239,68,68,0.1)',
+                    border: '1px solid #ef4444',
+                    color: '#ef4444',
+                    borderRadius: '8px',
+                    padding: '10px 14px',
+                    fontSize: '14px',
+                    marginTop: '12px',
+                    textAlign: 'center',
+                  }}
+                >
                   {registerError}
                 </div>
               )}
@@ -508,9 +710,19 @@ export default function EventDetailPage() {
 
             <div className="sdc-modal-footer">
               <button className="sdc-btn-confirm" onClick={confirmRegistration} disabled={sending}>
-                {sending ? (isEnglish ? 'Sending...' : 'جاري الإرسال...') : (isEnglish ? 'Confirm Registration' : 'تأكيد التسجيل')}
+                {sending
+                  ? isEnglish
+                    ? 'Sending...'
+                    : 'جاري الإرسال...'
+                  : isEnglish
+                    ? 'Confirm Registration'
+                    : 'تأكيد التسجيل'}
               </button>
-              <button className="sdc-btn-cancel" onClick={() => setShowModal(false)} disabled={sending}>
+              <button
+                className="sdc-btn-cancel"
+                onClick={() => setShowModal(false)}
+                disabled={sending}
+              >
                 {isEnglish ? 'Cancel' : 'إلغاء'}
               </button>
             </div>

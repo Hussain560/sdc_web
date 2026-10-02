@@ -25,17 +25,16 @@ export default function ForgotPasswordPage() {
     setShowSuccess(false);
     setLoading(true);
 
-    const { data: checkData, error: checkError } = await supabase.functions.invoke('check-email-exists', {
-      body: { email },
-    });
+    const { data: checkData, error: checkError } = await supabase.functions.invoke(
+      'check-email-exists',
+      {
+        body: { email },
+      },
+    );
 
     if (checkError || !checkData?.exists) {
       setLoading(false);
-      setErrorMsg(
-        isEnglish
-          ? 'This email is not registered.'
-          : 'هذا البريد الإلكتروني غير مسجل.'
-      );
+      setErrorMsg(isEnglish ? 'This email is not registered.' : 'هذا البريد الإلكتروني غير مسجل.');
       return;
     }
 
@@ -47,7 +46,7 @@ export default function ForgotPasswordPage() {
       setErrorMsg(
         isEnglish
           ? 'Something went wrong. Please try again.'
-          : 'حدث خطأ أثناء إرسال الطلب، يرجى المحاولة مرة أخرى.'
+          : 'حدث خطأ أثناء إرسال الطلب، يرجى المحاولة مرة أخرى.',
       );
       return;
     }
@@ -81,7 +80,9 @@ export default function ForgotPasswordPage() {
 
         <div className="sdc-login-card">
           <div className="sdc-login-header">
-            <h1 className="sdc-login-title">{isEnglish ? 'Forgot Password' : 'استرجاع كلمة المرور'}</h1>
+            <h1 className="sdc-login-title">
+              {isEnglish ? 'Forgot Password' : 'استرجاع كلمة المرور'}
+            </h1>
             <p className="sdc-login-subtitle">
               {isEnglish
                 ? 'Enter the email linked to the account, and a reset link will be sent.'
@@ -90,14 +91,41 @@ export default function ForgotPasswordPage() {
           </div>
 
           {errorMsg && (
-            <div style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid #ef4444', color: '#ef4444', borderRadius: '8px', padding: '10px 14px', fontSize: '14px', marginBottom: '16px', textAlign: 'center' }}>
+            <div
+              style={{
+                background: 'rgba(239,68,68,0.1)',
+                border: '1px solid #ef4444',
+                color: '#ef4444',
+                borderRadius: '8px',
+                padding: '10px 14px',
+                fontSize: '14px',
+                marginBottom: '16px',
+                textAlign: 'center',
+              }}
+            >
               {errorMsg}
             </div>
           )}
 
           {showSuccess && (
-            <div style={{ background: 'rgba(0,230,118,0.1)', border: '1px solid #00E676', borderRadius: '8px', padding: '14px 16px', marginBottom: '16px', textAlign: 'center' }}>
-              <p style={{ color: '#00E676', fontWeight: 'bold', fontSize: '15px', margin: '0 0 4px' }}>
+            <div
+              style={{
+                background: 'rgba(0,230,118,0.1)',
+                border: '1px solid #00E676',
+                borderRadius: '8px',
+                padding: '14px 16px',
+                marginBottom: '16px',
+                textAlign: 'center',
+              }}
+            >
+              <p
+                style={{
+                  color: '#00E676',
+                  fontWeight: 'bold',
+                  fontSize: '15px',
+                  margin: '0 0 4px',
+                }}
+              >
                 {isEnglish ? 'Link sent successfully' : 'تم إرسال الرابط بنجاح'}
               </p>
               <p style={{ color: '#00E676', fontSize: '13px', margin: 0, opacity: 0.9 }}>
@@ -117,13 +145,22 @@ export default function ForgotPasswordPage() {
                   name="email"
                   placeholder="example@domain.com"
                   value={email}
-                  onChange={(e) => { setEmail(e.target.value); setErrorMsg(''); }}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    setErrorMsg('');
+                  }}
                   required
                 />
               </div>
 
               <button type="submit" className="sdc-login-submit-btn" disabled={loading}>
-                {loading ? (isEnglish ? 'Sending...' : 'جاري الإرسال...') : (isEnglish ? 'Send Reset Link' : 'إرسال رابط الاسترجاع')}
+                {loading
+                  ? isEnglish
+                    ? 'Sending...'
+                    : 'جاري الإرسال...'
+                  : isEnglish
+                    ? 'Send Reset Link'
+                    : 'إرسال رابط الاسترجاع'}
               </button>
             </form>
           )}

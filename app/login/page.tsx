@@ -39,13 +39,13 @@ export default function LoginPage() {
         setErrorMsg(
           isEnglish
             ? 'Please confirm your email first. Check your inbox for the confirmation link.'
-            : 'يرجى تأكيد بريدك الإلكتروني أولًا. تحقق من صندوق الوارد للرابط المرسل إليك.'
+            : 'يرجى تأكيد بريدك الإلكتروني أولًا. تحقق من صندوق الوارد للرابط المرسل إليك.',
         );
       } else {
         setErrorMsg(
           isEnglish
             ? 'Incorrect email or password. Please try again.'
-            : 'البريد الإلكتروني أو كلمة المرور غير صحيحة. حاول مرة أخرى.'
+            : 'البريد الإلكتروني أو كلمة المرور غير صحيحة. حاول مرة أخرى.',
         );
       }
       return;
@@ -81,20 +81,26 @@ export default function LoginPage() {
         <div className="sdc-login-card">
           <div className="sdc-login-header">
             <h1 className="sdc-login-title">{isEnglish ? 'Login' : 'تسجيل الدخول'}</h1>
-            <p className="sdc-login-subtitle">{isEnglish ? 'Welcome back! Enter your details to access your account.' : 'مرحباً بعودتك! أدخل بياناتك للوصول إلى حسابك'}</p>
+            <p className="sdc-login-subtitle">
+              {isEnglish
+                ? 'Welcome back! Enter your details to access your account.'
+                : 'مرحباً بعودتك! أدخل بياناتك للوصول إلى حسابك'}
+            </p>
           </div>
 
           {errorMsg && (
-            <div style={{
-              background: 'rgba(239,68,68,0.1)',
-              border: '1px solid #ef4444',
-              color: '#ef4444',
-              borderRadius: '8px',
-              padding: '10px 14px',
-              fontSize: '14px',
-              marginBottom: '16px',
-              textAlign: 'center',
-            }}>
+            <div
+              style={{
+                background: 'rgba(239,68,68,0.1)',
+                border: '1px solid #ef4444',
+                color: '#ef4444',
+                borderRadius: '8px',
+                padding: '10px 14px',
+                fontSize: '14px',
+                marginBottom: '16px',
+                textAlign: 'center',
+              }}
+            >
               {errorMsg}
             </div>
           )}
@@ -124,14 +130,26 @@ export default function LoginPage() {
               />
             </div>
 
-            <div style={{ textAlign: isEnglish ? 'left' : 'right', marginTop: '-8px', marginBottom: '4px' }}>
+            <div
+              style={{
+                textAlign: isEnglish ? 'left' : 'right',
+                marginTop: '-8px',
+                marginBottom: '4px',
+              }}
+            >
               <Link href="/forgot-password" className="sdc-login-link" style={{ fontSize: '13px' }}>
                 {isEnglish ? 'Forgot your password?' : 'نسيت كلمة المرور؟'}
               </Link>
             </div>
 
             <button type="submit" className="sdc-login-submit-btn" disabled={loading}>
-              {loading ? (isEnglish ? 'Verifying...' : 'جاري التحقق...') : (isEnglish ? 'Login' : 'تسجيل الدخول')}
+              {loading
+                ? isEnglish
+                  ? 'Verifying...'
+                  : 'جاري التحقق...'
+                : isEnglish
+                  ? 'Login'
+                  : 'تسجيل الدخول'}
             </button>
           </form>
 

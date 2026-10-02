@@ -20,14 +20,16 @@ export default function CommunitySections() {
   return (
     <section className="sdc-community-sec">
       <div className="sdc-community-container">
-        <h2 className="sdc-community-title">{isEnglish ? 'Community Sections' : 'أقسام المجتمع'}</h2>
+        <h2 className="sdc-community-title">
+          {isEnglish ? 'Community Sections' : 'أقسام المجتمع'}
+        </h2>
 
         <div className="sdc-community-grid">
           {categories.map((item) => (
             <div key={item.id} className={`sdc-category-card ${item.borderClass}`}>
-              <img 
-                src="/assets/Featured icon.png" 
-                alt={item[isEnglish ? 'en' : 'ar']} 
+              <img
+                src="/assets/Featured icon.png"
+                alt={item[isEnglish ? 'en' : 'ar']}
                 className="sdc-category-icon-img"
               />
               <h3 className="sdc-category-name">{item[isEnglish ? 'en' : 'ar']}</h3>

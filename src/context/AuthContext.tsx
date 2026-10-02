@@ -32,7 +32,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setUser(session?.user ?? null);
       setIsLoggedIn(!!session?.user);
     });
-    return () => { listener?.subscription?.unsubscribe(); };
+    return () => {
+      listener?.subscription?.unsubscribe();
+    };
   }, []);
 
   const login = (email: string, password: string) =>
@@ -40,10 +42,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signup = (email: string, password: string, fullName: string) =>
     supabase.auth.signUp({
-      email, password, options: { data: { full_name: fullName } },
+      email,
+      password,
+      options: { data: { full_name: fullName } },
     });
 
-  const logout = async () => { await supabase.auth.signOut(); };
+  const logout = async () => {
+    await supabase.auth.signOut();
+  };
 
   const resetPasswordForEmail = (email: string) =>
     supabase.auth.resetPasswordForEmail(email, {
@@ -54,7 +60,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     supabase.auth.updateUser({ password: newPassword });
 
   return (
-    <AuthContext.Provider value={{ user, isLoggedIn, loading, login, signup, logout, resetPasswordForEmail, updatePassword }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        isLoggedIn,
+        loading,
+        login,
+        signup,
+        logout,
+        resetPasswordForEmail,
+        updatePassword,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

@@ -14,12 +14,63 @@ import type { LegacyEventSummary } from '../../src/types/content';
 import './all-events.css';
 
 const allEventsData: LegacyEventSummary[] = [
-  { id: 1, title: { ar: 'لقاء تقني: بيئات العمل التقنية وأساسيات Github', en: 'Technical Meetup: Tech Work Environments and GitHub Basics' }, location: { ar: 'أونلاين', en: 'Online' }, date: { ar: 'قريبًا سيعلن عنه', en: 'To be announced soon' }, status: { ar: 'قريبًا', en: 'Coming Soon' }, image: '/assets/event-card.png' },
-  { id: 2, title: { ar: 'ورشة Google AI Studio', en: 'Google AI Studio Workshop' }, location: { ar: 'أونلاين', en: 'Online' }, date: { ar: '5/8/2026', en: '5/8/2026' }, status: { ar: 'منتهي', en: 'Ended' }, image: '/assets/Picture1.png' },
-  { id: 3, title: { ar: 'ورشة تحليل البيانات باستخدام Excel & Power BI', en: 'Data Analysis Workshop using Excel & Power BI' }, location: { ar: 'أونلاين', en: 'Online' }, date: { ar: '20/9/2025', en: '20/9/2025' }, status: { ar: 'منتهي', en: 'Ended' }, image: '/assets/power bi.png' },
-  { id: 4, title: { ar: 'معسكر أساسيات الأمن السيبراني', en: 'Cybersecurity Fundamentals Camp' }, location: { ar: 'أونلاين', en: 'Online' }, date: { ar: '15–19 سبتمبر 2024', en: 'September 15–19, 2024' }, status: { ar: 'منتهي', en: 'Ended' }, image: '/assets/Cyber.png' },
-  { id: 5, title: { ar: 'معسكر أساسيات حل التقاط العلم (CTF)', en: 'CTF Fundamentals Camp' }, location: { ar: 'أونلاين', en: 'Online' }, date: { ar: '27/10/2024 to 1/11/2024', en: '10/27/2024 to 11/1/2024' }, status: { ar: 'منتهي', en: 'Ended' }, image: '/assets/CTF.png' },
-  { id: 6, title: { ar: 'معسكر نادي هواوي في ريادة الأعمال وصنع التطبيقات – StartApps', en: 'Huawei StartApps Entrepreneurship and App Development Camp' }, location: { ar: 'أونلاين', en: 'Online' }, date: { ar: '02/03/2023', en: '02/03/2023' }, status: { ar: 'منتهي', en: 'Ended' }, image: '/assets/Huwawi.png' }
+  {
+    id: 1,
+    title: {
+      ar: 'لقاء تقني: بيئات العمل التقنية وأساسيات Github',
+      en: 'Technical Meetup: Tech Work Environments and GitHub Basics',
+    },
+    location: { ar: 'أونلاين', en: 'Online' },
+    date: { ar: 'قريبًا سيعلن عنه', en: 'To be announced soon' },
+    status: { ar: 'قريبًا', en: 'Coming Soon' },
+    image: '/assets/event-card.png',
+  },
+  {
+    id: 2,
+    title: { ar: 'ورشة Google AI Studio', en: 'Google AI Studio Workshop' },
+    location: { ar: 'أونلاين', en: 'Online' },
+    date: { ar: '5/8/2026', en: '5/8/2026' },
+    status: { ar: 'منتهي', en: 'Ended' },
+    image: '/assets/Picture1.png',
+  },
+  {
+    id: 3,
+    title: {
+      ar: 'ورشة تحليل البيانات باستخدام Excel & Power BI',
+      en: 'Data Analysis Workshop using Excel & Power BI',
+    },
+    location: { ar: 'أونلاين', en: 'Online' },
+    date: { ar: '20/9/2025', en: '20/9/2025' },
+    status: { ar: 'منتهي', en: 'Ended' },
+    image: '/assets/power bi.png',
+  },
+  {
+    id: 4,
+    title: { ar: 'معسكر أساسيات الأمن السيبراني', en: 'Cybersecurity Fundamentals Camp' },
+    location: { ar: 'أونلاين', en: 'Online' },
+    date: { ar: '15–19 سبتمبر 2024', en: 'September 15–19, 2024' },
+    status: { ar: 'منتهي', en: 'Ended' },
+    image: '/assets/Cyber.png',
+  },
+  {
+    id: 5,
+    title: { ar: 'معسكر أساسيات حل التقاط العلم (CTF)', en: 'CTF Fundamentals Camp' },
+    location: { ar: 'أونلاين', en: 'Online' },
+    date: { ar: '27/10/2024 to 1/11/2024', en: '10/27/2024 to 11/1/2024' },
+    status: { ar: 'منتهي', en: 'Ended' },
+    image: '/assets/CTF.png',
+  },
+  {
+    id: 6,
+    title: {
+      ar: 'معسكر نادي هواوي في ريادة الأعمال وصنع التطبيقات – StartApps',
+      en: 'Huawei StartApps Entrepreneurship and App Development Camp',
+    },
+    location: { ar: 'أونلاين', en: 'Online' },
+    date: { ar: '02/03/2023', en: '02/03/2023' },
+    status: { ar: 'منتهي', en: 'Ended' },
+    image: '/assets/Huwawi.png',
+  },
 ];
 
 export default function AllEventsPage() {
@@ -82,26 +133,35 @@ export default function AllEventsPage() {
     });
     setSending(false);
     if (error) {
-      setRegisterError(isEnglish ? 'Something went wrong. Please try again.' : 'حدث خطأ أثناء التسجيل. حاولي مرة أخرى.');
+      setRegisterError(
+        isEnglish
+          ? 'Something went wrong. Please try again.'
+          : 'حدث خطأ أثناء التسجيل. حاولي مرة أخرى.',
+      );
       return;
     }
     setRegisteredEvents((prev) => [...prev, selectedEvent.id]);
     setSelectedEvent(null);
 
     // إرسال إيميل "استلمنا تسجيلك" بدون ما نوقف الواجهة بانتظاره
-    supabase.functions.invoke('send-registration-email', {
-      body: {
-        to: user.email,
-        fullName: user.user_metadata?.full_name || '',
-        eventTitle: selectedEvent.title.ar,
-      },
-    }).catch((err) => console.error('email error:', err));
+    supabase.functions
+      .invoke('send-registration-email', {
+        body: {
+          to: user.email,
+          fullName: user.user_metadata?.full_name || '',
+          eventTitle: selectedEvent.title.ar,
+        },
+      })
+      .catch((err) => console.error('email error:', err));
   };
 
   const filteredEvents = allEventsData.filter((e) => {
     const title = e.title[isEnglish ? 'en' : 'ar'];
     const location = e.location[isEnglish ? 'en' : 'ar'];
-    return title.toLowerCase().includes((searchQuery || '').toLowerCase()) || location.toLowerCase().includes((searchQuery || '').toLowerCase());
+    return (
+      title.toLowerCase().includes((searchQuery || '').toLowerCase()) ||
+      location.toLowerCase().includes((searchQuery || '').toLowerCase())
+    );
   });
 
   return (
@@ -115,9 +175,13 @@ export default function AllEventsPage() {
               <span className="sdc-events-bc-sep">&gt;</span>
               <span style={{ color: '#00E676' }}>{isEnglish ? 'Events' : 'الفعاليات'}</span>
             </nav>
-            <h1 className="sdc-events-hero-title">{isEnglish ? 'Community Events' : 'فعاليات المجتمع'}</h1>
+            <h1 className="sdc-events-hero-title">
+              {isEnglish ? 'Community Events' : 'فعاليات المجتمع'}
+            </h1>
             <p className="sdc-events-hero-subtitle">
-              {isEnglish ? 'Discover upcoming community events and participate in workshops, hackathons, and technology meetups.' : 'اكتشف فعاليات المجتمع القادمة، وشارك في ورش العمل، الهاكاثونات، والملتقيات التقنية.'}
+              {isEnglish
+                ? 'Discover upcoming community events and participate in workshops, hackathons, and technology meetups.'
+                : 'اكتشف فعاليات المجتمع القادمة، وشارك في ورش العمل، الهاكاثونات، والملتقيات التقنية.'}
             </p>
           </div>
         </section>
@@ -134,7 +198,9 @@ export default function AllEventsPage() {
                 return (
                   <div key={event.id} className="sdc-event-full-card">
                     <div className="sdc-card-img-wrapper">
-                      <span className={`sdc-card-status-badge ${eventStatus === 'Coming Soon' || eventStatus === 'قريبًا' ? 'coming-soon' : 'available'}`}>
+                      <span
+                        className={`sdc-card-status-badge ${eventStatus === 'Coming Soon' || eventStatus === 'قريبًا' ? 'coming-soon' : 'available'}`}
+                      >
                         {eventStatus}
                       </span>
                       <img src={event.image} alt={eventTitle} className="sdc-card-img" />
@@ -142,8 +208,12 @@ export default function AllEventsPage() {
                     <div className="sdc-card-content">
                       <h3 className="sdc-card-event-title">{eventTitle}</h3>
                       <div className="sdc-card-event-meta">
-                        <span><MapPin size={14} style={{ color: '#00E676' }} /> {eventLocation}</span>
-                        <span><Calendar size={14} style={{ color: '#00E676' }} /> {eventDate}</span>
+                        <span>
+                          <MapPin size={14} style={{ color: '#00E676' }} /> {eventLocation}
+                        </span>
+                        <span>
+                          <Calendar size={14} style={{ color: '#00E676' }} /> {eventDate}
+                        </span>
                       </div>
                       <div className="sdc-card-actions">
                         <button
@@ -183,23 +253,54 @@ export default function AllEventsPage() {
             <div className="sdc-modal-body">
               <p className="sdc-modal-event-name">{selectedEvent.title[isEnglish ? 'en' : 'ar']}</p>
               <div className="sdc-modal-user-info">
-                <span>{isEnglish ? 'You will be registered with the following information:' : 'سيتم التسجيل بالبيانات التالية:'}</span>
+                <span>
+                  {isEnglish
+                    ? 'You will be registered with the following information:'
+                    : 'سيتم التسجيل بالبيانات التالية:'}
+                </span>
                 <ul>
-                  <li><strong>{isEnglish ? 'Name' : 'الاسم'}:</strong> {user?.user_metadata?.full_name || (isEnglish ? 'Visitor' : 'زائر')}</li>
-                  <li><strong>{isEnglish ? 'Email' : 'البريد'}:</strong> {user?.email || (isEnglish ? 'No email provided' : 'لا يوجد بريد')}</li>
+                  <li>
+                    <strong>{isEnglish ? 'Name' : 'الاسم'}:</strong>{' '}
+                    {user?.user_metadata?.full_name || (isEnglish ? 'Visitor' : 'زائر')}
+                  </li>
+                  <li>
+                    <strong>{isEnglish ? 'Email' : 'البريد'}:</strong>{' '}
+                    {user?.email || (isEnglish ? 'No email provided' : 'لا يوجد بريد')}
+                  </li>
                 </ul>
               </div>
               {registerError && (
-                <div style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid #ef4444', color: '#ef4444', borderRadius: '8px', padding: '10px 14px', fontSize: '14px', marginTop: '12px', textAlign: 'center' }}>
+                <div
+                  style={{
+                    background: 'rgba(239,68,68,0.1)',
+                    border: '1px solid #ef4444',
+                    color: '#ef4444',
+                    borderRadius: '8px',
+                    padding: '10px 14px',
+                    fontSize: '14px',
+                    marginTop: '12px',
+                    textAlign: 'center',
+                  }}
+                >
                   {registerError}
                 </div>
               )}
             </div>
             <div className="sdc-modal-footer">
               <button className="sdc-btn-confirm" onClick={confirmRegistration} disabled={sending}>
-                {sending ? (isEnglish ? 'Sending...' : 'جاري الإرسال...') : (isEnglish ? 'Confirm Registration' : 'تأكيد التسجيل')}
+                {sending
+                  ? isEnglish
+                    ? 'Sending...'
+                    : 'جاري الإرسال...'
+                  : isEnglish
+                    ? 'Confirm Registration'
+                    : 'تأكيد التسجيل'}
               </button>
-              <button className="sdc-btn-cancel" onClick={() => setSelectedEvent(null)} disabled={sending}>
+              <button
+                className="sdc-btn-cancel"
+                onClick={() => setSelectedEvent(null)}
+                disabled={sending}
+              >
                 {isEnglish ? 'Cancel' : 'إلغاء'}
               </button>
             </div>
