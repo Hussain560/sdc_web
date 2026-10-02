@@ -6,3 +6,4 @@ export { Dialog, type DialogProps } from './Dialog';
 export { Field, type FieldProps } from './Field';
 export { Skeleton } from './Skeleton';
 export { cn } from './cn';
+export { Select, type SelectProps } from './Select';

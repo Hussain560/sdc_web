@@ -67,8 +67,10 @@ The single source of truth for **positions** (who is founder, leader, committee 
 | `role_key` | text | no | FK → `roles(key)` | P (if public position) | Role |
 | `committee_id` | uuid | yes | FK → `committees(id)` RESTRICT | P | Required iff `roles.scope = 'committee'` (trigger check) |
 | `display_title_ar`, `display_title_en` | text | yes | ≤ 100 | P | Optional public title override (e.g., "Head of Projects") |
+| `public_bio_ar`, `public_bio_en` | text | yes | ≤ 300 | P | Short text on the public leadership card (public roles only) |
+| `public_tags_ar`, `public_tags_en` | text[] | yes | ≤ 3 items | P | Tags on the public leadership card |
 | `starts_at` | timestamptz | no | now() | P | Term start |
-| `ends_at` | timestamptz | yes | CHECK `ends_at > starts_at` | P | Term end; null = open-ended |
+| `ends_at` | timestamptz | yes | CHECK `ends_at >= starts_at` | P | Term end; null = open-ended. Equal dates = an empty term (a scheduled assignment that was cancelled) |
 | `assigned_by` | uuid | yes | FK → `profiles` | I | — |
 | `ended_by`, `end_reason` | uuid, text | yes | — | I | — |
 | `created_at`, `updated_at` | timestamptz | no | now() | I | — |
@@ -77,7 +79,8 @@ Constraints:
 
 - `exclude using gist (role_key with =, tstzrange(starts_at, ends_at) with &&) where (role_key = 'community_leader')` — one leader at a time.
 - `exclude using gist (committee_id with =, tstzrange(starts_at, ends_at) with &&) where (role_key = 'committee_head')` — one head per committee at a time.
-- Trigger: committee-scoped roles require an **active member** (BR-ORG-004).
+- Constraint: the same user cannot hold the same role in the same scope in overlapping terms (`role_assignments_no_duplicate`).
+- Trigger: committee-scoped roles require an **active member** (BR-ORG-004) — a placeholder until Sprint 08 links members to accounts.
 - Trigger: every insert/update/delete writes `audit_logs` (security-relevant).
 
 Indexes: `(user_id)`, `(committee_id)`, `(role_key)`, partial `(user_id) where ends_at is null`.
@@ -91,6 +94,8 @@ Active assignment definition: `starts_at <= now() and (ends_at is null or ends_a
 | `private.has_permission(p_permission text, p_committee uuid default null)` | boolean | True if the current user (`auth.uid()`) has an active assignment of a role granting `p_permission`, where the role is global **or** its committee equals `p_committee` |
 | `private.has_permission_any_scope(p_permission text)` | boolean | True if granted in any scope (for listing pages) |
 | `private.committees_with_permission(p_permission text)` | setof uuid | Committee ids where the user holds the permission (for RLS `committee_id in (...)`); returns all committees if granted globally |
-| `private.is_active_member(p_user uuid default auth.uid())` | boolean | Active member record exists |
+| `private.is_active_member(p_user uuid default auth.uid())` | boolean | Active member record exists (returns true until Sprint 08) |
+| `private.is_system_admin()` | boolean | Caller holds an active `system_admin` assignment |
+| `private.authorize_role_change(role, committee, target)` | void | Shared guard of `assign_role` / `end_role_assignment` (authorization, anti-escalation, self-assignment) |
 
 All are `stable`, `security definer`, `set search_path = ''`, owned by a role that can read the access tables, and **not** exposed via the Data API (schema `private` not in exposed schemas). Details: [RLS model](../rls-security-model.md).

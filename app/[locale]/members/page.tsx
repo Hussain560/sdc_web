@@ -11,88 +11,53 @@ import type { Localized } from '@/types/content';
 import './members.css';
 import './all/all-members.css';
 
-// ============================ مؤسِّستا المجتمع ============================
-const FOUNDERS = [
-  {
-    id: 'founder-lina',
-    name: { ar: 'لينا الإسماعيل', en: 'Lina Alismail' },
-    bio: {
-      ar: 'أسّست المجتمع السعودي للمطورين قبل أربع سنوات',
-      en: 'Co-founded the Saudi Developers Community four years ago',
-    },
-    tags: { ar: ['تأسيس', 'رؤية'], en: ['Founding', 'Vision'] },
-  },
-  {
-    id: 'founder-mariam',
-    name: { ar: 'مريم الفضلي', en: 'Mariam Alfadhli' },
-    bio: {
-      ar: 'أسّست المجتمع السعودي للمطورين قبل أربع سنوات',
-      en: 'Co-founded the Saudi Developers Community four years ago',
-    },
-    tags: { ar: ['تأسيس', 'رؤية'], en: ['Founding', 'Vision'] },
-  },
-];
+// The leadership sections (founders, leader, advisor, committee leads) come from the database view
+// `current_positions` — active assignments of public roles (docs/11-modules/committees §7, rule CM-7).
+interface LeadershipCard {
+  id: string;
+  roleKey: string;
+  name: Localized;
+  role: Localized;
+  bio: Localized;
+  tags: Localized<string[]>;
+  roleOrder: number;
+  committeeOrder: number;
+}
 
-// ==================== قائد المجتمع والمستشار ====================
-const COMMUNITY_LEADER = {
-  name: { ar: 'مهند الحربي', en: 'Mohannad Alharbi' },
-  role: { ar: 'قائد المجتمع', en: 'Community Leader' },
-  bio: {
-    ar: 'قائد المجتمع الحالي، يقود الرؤية ويشرف على التنفيذ',
-    en: 'Current community leader, leading the vision and overseeing execution',
-  },
-  tags: { ar: ['قيادة', 'استراتيجية'], en: ['Leadership', 'Strategy'] },
-};
+interface PositionRow {
+  assignment_id: string;
+  role_order: number | null;
+  committee_order: number | null;
+  role_key: string | null;
+  role_name_ar: string | null;
+  role_name_en: string | null;
+  display_title_ar: string | null;
+  display_title_en: string | null;
+  public_bio_ar: string | null;
+  public_bio_en: string | null;
+  public_tags_ar: string[] | null;
+  public_tags_en: string[] | null;
+  committee_name_ar: string | null;
+  committee_name_en: string | null;
+  person_name_ar: string | null;
+  person_name_en: string | null;
+}
 
-const COMMUNITY_ADVISOR = {
-  name: { ar: 'ألين الزهراني', en: 'Aleen Alzahrani' },
-  role: { ar: 'المستشار', en: 'Advisor' },
-  bio: {
-    ar: 'قائدة المجتمع سابقًا، واليوم مستشارة تقدم الدعم الاستراتيجي',
-    en: 'Former community leader, now advisor providing strategic support',
-  },
-  tags: { ar: ['استشارة', 'خبرات'], en: ['Advisory', 'Expertise'] },
-};
-
-// ============================ قادة المجتمع ============================
-const TEAM_LEADS = [
-  {
-    id: 'lead-ai',
-    name: { ar: 'جود الشهري', en: 'Joud Alshehri' },
-    role: { ar: 'قائدة لجنة الذكاء الاصطناعي', en: 'Head of the AI Committee' },
-  },
-  {
-    id: 'lead-cyber',
-    name: { ar: 'العنود المحلبدي', en: 'Al-Anoud Almuhalbdi' },
-    role: { ar: 'قائدة لجنة الأمن السيبراني', en: 'Head of the Cybersecurity Committee' },
-  },
-  {
-    id: 'lead-tech',
-    name: { ar: 'ريم الشمري', en: 'Reem Alshammari' },
-    role: {
-      ar: 'قائدة لجنة التقنية والتطوير',
-      en: 'Head of the Technology & Development Committee',
-    },
-  },
-  {
-    id: 'lead-tech-deputy',
-    name: { ar: 'جواهر', en: 'Jawaher' },
-    role: {
-      ar: 'نائبة قائدة لجنة التقنية والتطوير',
-      en: 'Deputy Head of the Technology & Development Committee',
-    },
-  },
-  {
-    id: 'lead-projects',
-    name: { ar: 'رنا الحربي', en: 'Rana Alharbi' },
-    role: { ar: 'قائدة المشاريع', en: 'Head of Projects' },
-  },
-  {
-    id: 'lead-design',
-    name: { ar: 'فداء', en: 'Fida' },
-    role: { ar: 'قائدة التصميم والهوية', en: 'Head of Design & Brand Identity' },
-  },
-];
+function toLeadershipCard(r: PositionRow): LeadershipCard {
+  const ar = r.display_title_ar || [r.role_name_ar, r.committee_name_ar].filter(Boolean).join(' ');
+  const en =
+    r.display_title_en || [r.role_name_en, r.committee_name_en].filter(Boolean).join(' ') || ar;
+  return {
+    id: r.assignment_id,
+    roleKey: r.role_key ?? '',
+    roleOrder: r.role_order ?? 0,
+    committeeOrder: r.committee_order ?? 0,
+    name: { ar: r.person_name_ar ?? '', en: r.person_name_en ?? r.person_name_ar ?? '' },
+    role: { ar, en },
+    bio: { ar: r.public_bio_ar ?? '', en: r.public_bio_en ?? r.public_bio_ar ?? '' },
+    tags: { ar: r.public_tags_ar ?? [], en: r.public_tags_en ?? r.public_tags_ar ?? [] },
+  };
+}
 
 // عشان ما يتكرر أي شخص موجود فعليًا كعضو بالجدول ظاهر فوق بالهرم —
 // حط رقم الـ id تبعه من Supabase هنا فيتم استثناؤه من قائمة "الأعضاء" تلقائيًا
@@ -246,6 +211,7 @@ export default function MembersPage() {
   const isEnglish = lang === 'en';
   const t = <T,>(obj: Localized<T>): T => obj[isEnglish ? 'en' : 'ar'];
 
+  const [leadership, setLeadership] = useState<LeadershipCard[] | null>(null);
   const [membersData, setMembersData] = useState<DirectoryMember[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -253,6 +219,19 @@ export default function MembersPage() {
   const [selectedFilters, setSelectedFilters] = useState<SelectedFilters>(EMPTY_FILTERS);
   const [filterOptions, setFilterOptions] = useState<FilterOptions>(EMPTY_FILTER_OPTIONS);
   const [openSections, setOpenSections] = useState<Partial<Record<FilterCategory, boolean>>>({});
+
+  useEffect(() => {
+    async function fetchLeadership() {
+      const { data, error } = await supabase
+        .from('current_positions')
+        .select('*')
+        .order('role_order')
+        .order('committee_order');
+      if (error) console.error('Error fetching leadership:', error);
+      setLeadership((data ?? []).map((r) => toLeadershipCard(r as PositionRow)));
+    }
+    fetchLeadership();
+  }, []);
 
   useEffect(() => {
     async function fetchMembers() {
@@ -394,6 +373,13 @@ export default function MembersPage() {
   ];
 
   const showHierarchy = !searchQuery.trim() && activeFiltersCount === 0;
+  const byRole = (...keys: string[]) => (leadership ?? []).filter((p) => keys.includes(p.roleKey));
+  const founders = byRole('founder');
+  const leaderAndAdvisor = byRole('community_leader', 'advisor');
+  // A committee's head and deputy sit together, committees in their display order.
+  const teamLeads = byRole('committee_head', 'committee_deputy').sort(
+    (a, b) => a.committeeOrder - b.committeeOrder || a.roleOrder - b.roleOrder,
+  );
 
   return (
     <div className="sdc-members-page-wrapper">
@@ -427,47 +413,75 @@ export default function MembersPage() {
         <div className="sdc-all-members-container">
           {showHierarchy && (
             <>
-              {/* مؤسِّستا المجتمع */}
-              <div className="sdc-section-heading">
-                <span className="sdc-section-heading-bar" />
-                <h2>{isEnglish ? 'Community Founders' : 'مؤسِّستا المجتمع'}</h2>
-              </div>
-              <div className="sdc-spotlight-grid sdc-grid-2col">
-                {FOUNDERS.map((f) => (
-                  <MemberCard key={f.id} name={t(f.name)} bio={t(f.bio)} tags={t(f.tags)} />
-                ))}
-              </div>
+              {leadership === null ? (
+                <>
+                  <div className="sdc-spotlight-grid sdc-grid-2col" style={{ marginTop: 24 }}>
+                    {Array.from({ length: 2 }).map((_, idx) => (
+                      <MemberCardSkeleton key={idx} />
+                    ))}
+                  </div>
+                  <div className="sdc-all-members-grid" style={{ marginTop: 24 }}>
+                    {Array.from({ length: 4 }).map((_, idx) => (
+                      <MemberCardSkeleton key={idx} />
+                    ))}
+                  </div>
+                </>
+              ) : (
+                <>
+                  {founders.length > 0 && (
+                    <>
+                      {/* مؤسِّستا المجتمع */}
+                      <div className="sdc-section-heading">
+                        <span className="sdc-section-heading-bar" />
+                        <h2>{isEnglish ? 'Community Founders' : 'مؤسِّستا المجتمع'}</h2>
+                      </div>
+                      <div className="sdc-spotlight-grid sdc-grid-2col">
+                        {founders.map((f) => (
+                          <MemberCard key={f.id} name={t(f.name)} bio={t(f.bio)} tags={t(f.tags)} />
+                        ))}
+                      </div>
+                    </>
+                  )}
 
-              {/* قائد المجتمع والمستشار */}
-              <div className="sdc-section-heading">
-                <span className="sdc-section-heading-bar" />
-                <h2>{isEnglish ? 'Community Leader & Advisor' : 'قائد المجتمع والمستشار'}</h2>
-              </div>
-              <div className="sdc-spotlight-grid sdc-grid-2col">
-                <MemberCard
-                  name={t(COMMUNITY_LEADER.name)}
-                  role={t(COMMUNITY_LEADER.role)}
-                  bio={t(COMMUNITY_LEADER.bio)}
-                  tags={t(COMMUNITY_LEADER.tags)}
-                />
-                <MemberCard
-                  name={t(COMMUNITY_ADVISOR.name)}
-                  role={t(COMMUNITY_ADVISOR.role)}
-                  bio={t(COMMUNITY_ADVISOR.bio)}
-                  tags={t(COMMUNITY_ADVISOR.tags)}
-                />
-              </div>
+                  {leaderAndAdvisor.length > 0 && (
+                    <>
+                      {/* قائد المجتمع والمستشار */}
+                      <div className="sdc-section-heading">
+                        <span className="sdc-section-heading-bar" />
+                        <h2>
+                          {isEnglish ? 'Community Leader & Advisor' : 'قائد المجتمع والمستشار'}
+                        </h2>
+                      </div>
+                      <div className="sdc-spotlight-grid sdc-grid-2col">
+                        {leaderAndAdvisor.map((p) => (
+                          <MemberCard
+                            key={p.id}
+                            name={t(p.name)}
+                            role={t(p.role)}
+                            bio={t(p.bio)}
+                            tags={t(p.tags)}
+                          />
+                        ))}
+                      </div>
+                    </>
+                  )}
 
-              {/* قادة المجتمع */}
-              <div className="sdc-section-heading">
-                <span className="sdc-section-heading-bar" />
-                <h2>{isEnglish ? 'Community Leads' : 'قادة المجتمع'}</h2>
-              </div>
-              <div className="sdc-all-members-grid">
-                {TEAM_LEADS.map((lead) => (
-                  <MemberCard key={lead.id} name={t(lead.name)} role={t(lead.role)} />
-                ))}
-              </div>
+                  {teamLeads.length > 0 && (
+                    <>
+                      {/* قادة المجتمع */}
+                      <div className="sdc-section-heading">
+                        <span className="sdc-section-heading-bar" />
+                        <h2>{isEnglish ? 'Community Leads' : 'قادة المجتمع'}</h2>
+                      </div>
+                      <div className="sdc-all-members-grid">
+                        {teamLeads.map((lead) => (
+                          <MemberCard key={lead.id} name={t(lead.name)} role={t(lead.role)} />
+                        ))}
+                      </div>
+                    </>
+                  )}
+                </>
+              )}
             </>
           )}
 

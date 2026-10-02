@@ -30,6 +30,14 @@ One page that answers *"what do we do next, and who does it?"*. Details live in 
 - Locale in the URL: Arabic unprefixed, English under `/en`, `lang`/`dir` rendered on the server.
 - Dashboard UI primitives (Button, Badge, Card, Field, Alert, Skeleton, Dialog).
 
+## 2a. Done on 2026-10-02 (Sprints 03–04, local)
+
+- Server-side sign-up, sign-in, reset, profile, security (cookie sessions, enumeration-safe, same-site redirects), bilingual e-mail templates, `profiles`.
+- Roles, 30 permissions, time-bound assignments, committees, audit log, `assign_role` / `end_role_assignment` / `handover_head` with every guard in SQL.
+- Dashboard shell with a permission-filtered sidebar, roles screen, users list, `/account/roles`.
+- Hardcoded `COMMITTEE_EMAILS` and the hardcoded leadership arrays are gone; `/members` leadership comes from the database.
+- 647 pgTAP assertions, 69 unit tests, 38 auth/RBAC E2E tests, 120 visual/smoke tests.
+
 ## 2b. Next engineering work (no outside dependency)
 
 | Story | What |
@@ -38,7 +46,8 @@ One page that answers *"what do we do next, and who does it?"*. Details live in 
 | UI-006 | Accessible names for the header icon buttons |
 | UI-007 | Chrome strings into `messages/{ar,en}.json` |
 | ENG-011 | Stub Google Fonts in e2e so screenshots do not need the network |
-| Sprint 03 | Authentication and profiles (server clients, `/auth/callback`, account pages) can start now |
+| Sprint 05 | Events: wizard, lifecycle, KFUCS data model (migrations first), builds on the shell and permissions |
+| UI-005 / UI-007 | `next/font` and chrome strings into `messages/` (still pending from Sprint 01–02) |
 
 ## 3. Later (Sprints 03–13)
 

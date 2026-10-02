@@ -1,14 +1,11 @@
-import Footer from '@/components/Footer/Footer';
-import Header from '@/components/Header/Header';
+import { DashboardShell } from '@/components/layout/DashboardShell/DashboardShell';
+import { getAccess } from '@/modules/access/queries';
 
-// Frame for signed-in pages. Sprint 03 uses the public chrome; Sprint 04 replaces it with the
-// permission-driven dashboard shell (docs/10-design-system/INTERNAL-SCREENS/01-shell-layout.md).
-export default function InternalLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="flex min-h-dvh flex-col bg-canvas text-text">
-      <Header />
-      <main className="mx-auto w-full max-w-3xl flex-1 px-6 py-10">{children}</main>
-      <Footer />
-    </div>
-  );
+// Frame for every signed-in screen (/dashboard/** and /account/**): sidebar + private header + content.
+// Computed on the server per request, so the sidebar is never skeletoned. Pages still call requireUser() and
+// check their own permission; if there is no session the page redirects, so the layout just passes through.
+export default async function InternalLayout({ children }: { children: React.ReactNode }) {
+  const access = await getAccess();
+  if (!access) return <>{children}</>;
+  return <DashboardShell access={access}>{children}</DashboardShell>;
 }

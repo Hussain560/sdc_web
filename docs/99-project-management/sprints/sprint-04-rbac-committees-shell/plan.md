@@ -12,7 +12,7 @@
 | **Target version**  | `v0.3.0` (M2 exit) |
 | **Capacity**        | ~30 SP — planned 44 SP after adding stories; ADM-001 and AUTH-009 are explicit stretch; re-forecast after Sprint 03 |
 | **Team**            | Tech lead + volunteer developers (assigned at sprint planning) |
-| **Status**          | 🔄 In progress — started 2026-10-02 (builds on Sprint 03's cookie session) |
+| **Status**          | ✅ Local scope complete 2026-10-02 — remaining: Q-003/Q-004/Q-014/Q-039 confirmation, staging deploy, demo |
 
 ## Read First (reference pack)
 
@@ -34,19 +34,19 @@ Authorization comes from the database: roles, permissions and time-bound role as
 
 | Story ID | Title | Priority | Points | Assignee | Status |
 | -------- | ----- | -------- | ------ | -------- | ------ |
-| ACC-001 | Roles, permissions, role_permissions, role_assignments + `has_permission` + RLS + seeds ⛔ Q-003 | P0 | 8 | — | ⬜ |
-| CMT-001 | Committees table + seed ⛔ Q-004 | P0 | 3 | — | ⬜ |
-| ACC-003 | Dashboard shell with permission-filtered navigation (L-frame, skeletons) | P0 | 5 | — | ⬜ |
-| ACC-002 | System admin assigns/ends roles with terms; anti-escalation and last-admin guards | P0 | 5 | — | ⬜ |
-| ACC-004 | Bootstrap admins; map the current reviewer to a role ⛔ Q-039 | P0 | 2 | — | ⬜ |
-| CMT-002 | Leadership sections on `/members` from `current_positions` ⛔ Q-014 | P0 | 5 | — | ⬜ |
-| ACC-005 | `audit_logs` table (append-only, no UPDATE/DELETE grants) + audit triggers on role assignments, committees (BR-GOV-001/002) | P0 | 3 | — | ⬜ |
-| ACC-006 | `/account/roles` — my positions and terms (read-only) | P1 | 2 | — | ⬜ |
-| SEC-001 | **Local** RLS lockdown of the legacy tables (`members` write, `event_registrations` read/update) via `has_permission`; the Sprint 01 todo pgTAP tests become hard assertions | P0 | 3 | — | ⬜ (applies locally; production waits for the deferred Supabase check) |
-| ADM-001 | Users list and 360° view (account + positions) at `/dashboard/admin/users` | P1 | 5 | — | ⬜ Stretch |
-| AUTH-009 | Account deletion request (audited; admins notified) — moved from Sprint 03 | P2 | 2 | — | ⬜ Stretch |
-| CMT-003 | `handover_head()` (end + assign in one transaction) and head appointment through the roles screen | P1 | 3 | — | ⬜ |
-| TEST-002 | Persona E2E: six seeded personas log in; each sees exactly their sidebar; a head of committee A gets 404 on committee B | P0 | 3 | — | ⬜ |
+| ACC-001 | Roles, permissions, role_permissions, role_assignments + `has_permission` + RLS + seeds ⛔ Q-003 | P0 | 8 | — | ✅ Done 2026-10-02 (recommended defaults; 647 pgTAP assertions incl. the 570-case matrix) |
+| CMT-001 | Committees table + seed ⛔ Q-004 | P0 | 3 | — | ✅ Done 2026-10-02 (five committees, A-006) |
+| ACC-003 | Dashboard shell with permission-filtered navigation (L-frame, skeletons) | P0 | 5 | — | ✅ Done 2026-10-02 (server-rendered sidebar, drawer, header, 403 view, skeletons; built items only) |
+| ACC-002 | System admin assigns/ends roles with terms; anti-escalation and last-admin guards | P0 | 5 | — | ✅ Done 2026-10-02 (`/dashboard/admin/roles`: current, history, matrix; assign and end dialogs) |
+| ACC-004 | Bootstrap admins; map the current reviewer to a role ⛔ Q-039 | P0 | 2 | — | 🔄 `private.bootstrap_system_admin(email)` + `committeeEmails.ts` deleted + local personas; the real first admins wait for Q-039 |
+| CMT-002 | Leadership sections on `/members` from `current_positions` ⛔ Q-014 | P0 | 5 | — | ✅ Done 2026-10-02 (visual baselines unchanged; real leadership must be entered per environment, see gaps) |
+| ACC-005 | `audit_logs` table (append-only, no UPDATE/DELETE grants) + audit triggers on role assignments, committees (BR-GOV-001/002) | P0 | 3 | — | ✅ Done 2026-10-02 |
+| ACC-006 | `/account/roles` — my positions and terms (read-only) | P1 | 2 | — | ✅ Done 2026-10-02 |
+| SEC-001 | **Local** RLS lockdown of the legacy tables (`members` write, `event_registrations` read/update) via `has_permission`; the Sprint 01 todo pgTAP tests become hard assertions | P0 | 3 | — | ✅ Done locally 2026-10-02 (`20261122000100_…`); production still waits for the deferred Supabase check |
+| ADM-001 | Users list and 360° view (account + positions) at `/dashboard/admin/users` | P1 | 5 | — | 🔄 List with search and positions done; the 360° drawer (membership, registrations, last sign-in) waits for those modules |
+| AUTH-009 | Account deletion request (audited; admins notified) — moved from Sprint 03 | P2 | 2 | — | ⏭ Moved to Sprint 11 (needs Q-031 retention answer and the audit viewer) |
+| CMT-003 | `handover_head()` (end + assign in one transaction) and head appointment through the roles screen | P1 | 3 | — | ✅ Done 2026-10-02 (conflict in the assign dialog offers “Hand over to this person”) |
+| TEST-002 | Persona E2E: six seeded personas log in; each sees exactly their sidebar; a head of committee A gets 404 on committee B | P0 | 3 | — | ✅ Done 2026-10-02 (17 RBAC E2E tests; cross-committee isolation is proven in pgTAP because committee-scoped screens arrive in Sprints 05–06) |
 
 ## Technical Tasks
 
@@ -94,12 +94,12 @@ Every story also follows the [standard vertical-slice tasks](../../work-breakdow
 
 ## Acceptance Criteria
 
-- [ ] `grep -r COMMITTEE_EMAILS src app` returns nothing.
-- [ ] pgTAP: the full role × permission matrix passes; the Sprint 01 todo tests are now hard assertions and green.
-- [ ] `audit_logs` has no UPDATE/DELETE grants; every role change writes a row.
-- [ ] Each seeded role sees exactly the sidebar in the role → view matrix.
-- [ ] A head of committee A cannot act on committee B (UI hidden, server 403, RLS deny).
-- [ ] Ending a term removes access at the end time without a deploy.
+- [x] `grep -r COMMITTEE_EMAILS src app` returns nothing.
+- [x] pgTAP: the full role × permission matrix passes; the Sprint 01 todo tests are now hard assertions and green.
+- [x] `audit_logs` has no UPDATE/DELETE grants (and an immutability trigger); every role change writes a row.
+- [x] Each seeded role sees exactly the sidebar in the role → view matrix (unit test + persona E2E).
+- [x] A head of committee A cannot act on committee B (RLS and `assign_role` deny, pgTAP; the committee-scoped screens that expose this in the UI arrive in Sprints 05–06).
+- [x] Ending a term removes access at the end time without a deploy (E2E: end date passes → next request lands in `/account`).
 - [ ] CI green, including the public-page visual check; all stories meet the [Definition of Done](../../definition-of-done.md)
 - [ ] Deployed to staging; demo script executed
 
@@ -130,7 +130,23 @@ Every story also follows the [standard vertical-slice tasks](../../work-breakdow
 ### Completed
 | Item | Details |
 | ---- | ------- |
+| Migrations | `20261122000000_committees_and_access_control.sql` (committees, roles, 30 permissions, matrix, `role_assignments` with exclusion constraints, `has_permission*`, RLS) and `20261122000100_audit_assignments_lockdown.sql` (audit log, `assign_role` / `end_role_assignment` / `handover_head`, `current_positions`, legacy lockdown, bootstrap function) |
+| Guards (all in SQL) | scope required/forbidden, anti-escalation, self-assignment, one leader / one head per committee, duplicate holder, last admin, reason required, valid dates, inactive committee |
+| pgTAP | 647 assertions: `01` critical findings (hard now), `03` the generated 570-case role × permission matrix, `04` guards, RLS, audit immutability, time-bound effect, public view |
+| App | `getAccess()` per request, `can()` helpers, one typed nav list filtered per user, `DashboardShell` (sidebar, mobile drawer, header with theme/language/user menu), 403 view, skeleton `loading.tsx`, roles screen (current / history / read-only matrix), users list, `/account/roles`, overview |
+| Legacy | `/committee` is gated by `registrations.review` from the database; `committeeEmails.ts` deleted; header shows a Dashboard link only to people with a position |
+| Public site | `/members` leadership sections read `current_positions`; the visual baselines are unchanged (mocked rows reproduce the old hardcoded content) |
+| Tests | 69 unit tests, 38 auth/RBAC E2E tests (real local stack), 647 pgTAP assertions, 120 visual/smoke tests |
+| Tooling | `npm run db:personas` (six fictional local personas), `npm run db:gen-rbac-test` (regenerates the matrix test from `tests/fixtures/rbac-matrix.mjs`) |
 
 ### Known Gaps
 | Gap | Notes / follow-up |
 | --- | ----------------- |
+| Real leadership data | `/members` now shows whoever holds public positions in the database. Each environment (staging, production) needs the real people as accounts with assignments, bios and tags — a launch task (Sprint 13) and part of Q-039/Q-014. Local development uses the personas script |
+| BR-ORG-004 (committee roles need an active member) | `private.is_active_member()` is a documented placeholder returning true until members are linked to accounts (Sprint 08 replaces its body; `NOT_ACTIVE_MEMBER` is already wired) |
+| Shell staleness | The shell is a layout, so it is computed on first load and after hard navigation or a Server Action; a permission change mid-session shows on the next full load. Pages and the database always re-check |
+| Committee switcher, queue badges, environment ribbon | Specified in the blueprints; arrive with the committee-scoped screens (Sprints 05–06) |
+| Audit viewer | Audit rows are written and protected; the screen is Sprint 11 |
+| Admin MFA | Still proposed (Sprint 11–12) |
+| Production | Nothing here has touched the production Supabase project; the lockdown migration waits for the deferred inspection (FND-003) |
+| `ErrorCode` strings | Messages exist in Arabic and English for every code this sprint raises; the shared catalogue will move to `messages/` with UI-007 |

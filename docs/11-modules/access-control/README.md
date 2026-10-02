@@ -20,6 +20,8 @@ This module decides **who may do what, where and until when**: roles, permission
 | Dashboard shell, sidebar config, 403 page | Public header (→ [public site](../public-site/README.md)) |
 | Anti-escalation and last-admin guards | Event-scoped grants (presenters) — deferred |
 
+> **Implementation status (2026-10-02):** Sprint 04 is complete locally — see the [sprint plan](../../99-project-management/sprints/sprint-04-rbac-committees-shell/plan.md#implementation-status-updated-at-sprint-end). Differences from this first design: `end_role_assignment` also raises `REASON_REQUIRED`, `ALREADY_ENDED`, `SELF_ASSIGNMENT`; `assign_role` also raises `ALREADY_ASSIGNED`, `COMMITTEE_INACTIVE`; there are 30 permission keys.
+
 ## 2. Current state (CURRENT / PROBLEM)
 
 - `src/data/committeeEmails.ts` holds a hardcoded list. The header link and `/committee` page are shown when the signed-in e-mail is in it ([audit](../../01-project/current-system-audit.md)).
@@ -190,6 +192,9 @@ erDiagram
 | `HEAD_ALREADY_ACTIVE` | Second active head | للجنة رئيس حالي — أنهِ فترته أولًا / This committee already has an active head — end that term first |
 | `NOT_ACTIVE_MEMBER` | Committee role for a non-member | يجب أن يكون الشخص عضوًا فعّالًا / The person must be an active member |
 | `LAST_ADMIN` | Ending the last system admin | لا يمكن إزالة آخر مسؤول نظام / The last system admin can't be removed |
+| `SELF_ASSIGNMENT` | Changing your own positions (system admin excepted) | لا يمكنك تعديل مناصبك بنفسك / You can't change your own positions |
+| `ALREADY_ASSIGNED` | Same person, same role, overlapping term | هذا الشخص يشغل هذا المنصب بالفعل / This person already holds this role for the same period |
+| `REASON_REQUIRED` | Ending without a reason | يرجى كتابة السبب / Please provide a reason |
 
 ## 13. Edge cases
 

@@ -35,3 +35,4 @@
 | D-010 | Canonical repository `sdc-saudi/SDC_website` |
 | D-011 | English URLs live under `/en`, Arabic keeps unprefixed URLs (ADR-010 accepted); this supersedes the `/ar` wording in the first sprint drafts |
 | D-012 | Local checks (`npm run check`, `npm run e2e`, `npm run db:test`) are the quality gate until GitHub Actions can run |
+| D-013 | Real leadership (founders, leader, advisor, heads) is data entered per environment through the roles screen; the public site shows only what the database holds. Local development uses `npm run db:personas` |

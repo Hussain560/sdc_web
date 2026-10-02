@@ -1,5 +1,6 @@
 import { test as base, expect, type Page } from '@playwright/test';
 import { members } from '../fixtures/members';
+import { positions } from '../fixtures/positions';
 
 type Lang = 'ar' | 'en';
 
@@ -18,6 +19,13 @@ async function mockSupabase(page: Page) {
       body: JSON.stringify(body),
     });
   });
+  await page.route('**/rest/v1/current_positions*', (route) =>
+    route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(positions),
+    }),
+  );
   await page.route('**/rest/v1/event_registrations*', (route) =>
     route.fulfill({ status: 200, contentType: 'application/json', body: '[]' }),
   );

@@ -24,6 +24,7 @@ const sb = localSupabase();
 Object.assign(process.env, {
   SB_API_URL: sb.API_URL,
   SB_SERVICE_ROLE_KEY: sb.SERVICE_ROLE_KEY,
+  SB_DB_URL: sb.DB_URL,
   SB_MAILPIT_URL: sb.MAILPIT_URL ?? sb.INBUCKET_URL,
 });
 

@@ -27,6 +27,8 @@ The rules behind roles live in [access control](../access-control/README.md); th
 | Reference data: universities, majors, tracks, tags | — |
 | Site settings: social links, contact e-mail, footer text, certificate settings | — |
 
+> **Implementation status (2026-10-02):** Sprint 04 delivered: users list (search + positions) and the roles screen (current, history, read-only permission matrix). The audit viewer, e-mail log, reference data and settings remain Sprint 11.
+
 ## 2. Current state (CURRENT / PROBLEM)
 
 None. Every data fix or permission change today needs someone with database access or a code deploy (`committeeEmails.ts`).

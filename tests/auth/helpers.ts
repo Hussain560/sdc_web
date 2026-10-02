@@ -93,3 +93,14 @@ export async function gotoReady(page: Page, url: string) {
     return !form || Object.keys(form).some((k) => k.startsWith('__reactProps$'));
   });
 }
+
+/** Signs in through the UI and waits until the app has left /login (the Server Action finished). */
+export async function signInAndWait(
+  page: Page,
+  email: string,
+  password = PASSWORD,
+  path = '/login',
+) {
+  await signInViaUi(page, email, password, path);
+  await page.waitForURL((u) => !/\/login/.test(u.pathname), { timeout: 30_000 });
+}

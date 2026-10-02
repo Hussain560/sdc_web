@@ -8,7 +8,6 @@ import { useSearch } from '../../context/SearchContext';
 import { useLanguage } from '../../context/LanguageContext';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
-import { COMMITTEE_EMAILS } from '../../data/committeeEmails';
 import './Header.css';
 
 interface HeaderProps {
@@ -23,7 +22,7 @@ export default function Header({ onSearch }: HeaderProps) {
 
   const { searchQuery, setSearchQuery } = useSearch();
   const { lang, toggleLanguage, t } = useLanguage();
-  const { isLoggedIn, user, logout } = useAuth();
+  const { isLoggedIn, user, logout, hasPosition } = useAuth();
   /* لحذف نتائج البحث عند الانتقال الى صفحة أخرى*/
   useEffect(() => {
     if (searchQuery) {
@@ -72,7 +71,6 @@ export default function Header({ onSearch }: HeaderProps) {
   };
 
   const displayName = user?.user_metadata?.full_name || user?.email || '';
-  const isCommittee = isLoggedIn && COMMITTEE_EMAILS.includes(user?.email ?? '');
 
   return (
     <>
@@ -98,9 +96,9 @@ export default function Header({ onSearch }: HeaderProps) {
               <li className={pathname === '/members' ? 'active-link' : ''}>
                 <Link href="/members">{t('members')}</Link>
               </li>
-              {isCommittee && (
-                <li className={pathname === '/committee' ? 'active-link' : ''}>
-                  <Link href="/committee">لوحة اللجنة</Link>
+              {hasPosition && (
+                <li className={pathname.startsWith('/dashboard') ? 'active-link' : ''}>
+                  <Link href="/dashboard">{lang === 'en' ? 'Dashboard' : 'لوحة التحكم'}</Link>
                 </li>
               )}
             </ul>

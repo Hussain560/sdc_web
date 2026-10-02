@@ -22,6 +22,8 @@ This module represents SDC's **committees** and **who holds which position for w
 | Public leadership view (`current_positions`) and `/committees/[slug]` pages | Committee reports (→ [reports](../reports/README.md)) |
 | Term handover (end the current term, appoint the next) | Elections and voting (not planned) |
 
+> **Implementation status (2026-10-02):** Sprint 04 delivered: the committees table and seed, `current_positions`, `handover_head()`, and the leadership sections on `/members`. The committee management screens and public committee pages remain Sprint 10.
+
 ## 2. Current state (CURRENT / PROBLEM)
 
 - There is no committee entity.

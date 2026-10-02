@@ -41,7 +41,9 @@ npm run check          # prettier --check + eslint + tsc + unit tests (what the 
 npm run test           # Vitest (jsdom)
 npm run e2e            # Playwright: smoke + visual regression of every public page (mocked Supabase)
 npm run e2e:update     # regenerate visual baselines — ONLY for an approved redesign (D-009)
-npm run db:test        # pgTAP via `supabase test db`
+npm run db:test        # pgTAP via `supabase test db` (647 assertions)
+npm run e2e:auth       # auth + RBAC end-to-end against the real local Auth, database and Mailpit
+npm run db:personas    # six fictional demo accounts (dev.<role>@example.test, password printed) — local only
 npm run db:types       # regenerate src/lib/supabase/database.types.ts after schema changes
 ```
 

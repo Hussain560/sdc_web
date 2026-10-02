@@ -71,19 +71,19 @@ Story ids: `<EPIC>-<nnn>`. Sprint assignment: see each [sprint plan](./sprints/R
 ### EP-AUTH / EP-ACC / EP-CMT — Identity & access (Phase 2)
 | ID | Story | P |
 | -- | ----- | - |
-| AUTH-001 | As a visitor, I can sign up with server-validated name/password and receive a branded confirmation email | P0 |
-| AUTH-002 | As a user, I sign in and return to the page I came from | P0 |
-| AUTH-003 | As a user, I can reset my password without revealing whether an email exists | P0 |
-| AUTH-004 | As a user, I can edit my name and language preference | P1 |
-| AUTH-005 | Profiles table + sign-up trigger + backfill for existing users | P0 |
-| ACC-001 | Roles, permissions, role_permissions, role_assignments + `has_permission` + RLS + seeds ⛔ Q-003 | P0 |
-| ACC-002 | As a system admin, I can assign and end roles with terms; anti-escalation and last-admin guards | P0 |
-| ACC-003 | Dashboard shell with permission-filtered navigation | P0 |
-| ACC-004 | Bootstrap admins and map the current reviewer to a role ⛔ Q-039 | P0 |
-| CMT-001 | Committees table + seed ⛔ Q-004 | P0 |
-| CMT-002 | Public leadership view generated from active public positions ⛔ Q-014 | P0 |
-| NOT-001 | Auth emails through provider custom SMTP; bilingual templates ⛔ Q-010, Q-017 | P0 |
-| SEC-006 | Delete the `check-email-exists` Edge Function (e-mail existence oracle) | P0 |
+| AUTH-001 | As a visitor, I can sign up with server-validated name/password and receive a branded confirmation email | P0 — ✅ Done (Sprint 03) |
+| AUTH-002 | As a user, I sign in and return to the page I came from | P0 — ✅ Done (Sprint 03) |
+| AUTH-003 | As a user, I can reset my password without revealing whether an email exists | P0 — ✅ Done (Sprint 03) |
+| AUTH-004 | As a user, I can edit my name and language preference | P1 — ✅ Done (Sprint 03) |
+| AUTH-005 | Profiles table + sign-up trigger + backfill for existing users | P0 — ✅ Done (Sprint 03) |
+| ACC-001 | Roles, permissions, role_permissions, role_assignments + `has_permission` + RLS + seeds ⛔ Q-003 | P0 — ✅ Done (Sprint 04) |
+| ACC-002 | As a system admin, I can assign and end roles with terms; anti-escalation and last-admin guards | P0 — ✅ Done (Sprint 04) |
+| ACC-003 | Dashboard shell with permission-filtered navigation | P0 — ✅ Done (Sprint 04) |
+| ACC-004 | Bootstrap admins and map the current reviewer to a role ⛔ Q-039 | P0 — 🔄 Bootstrap function + personas done; real admins ⛔ Q-039 |
+| CMT-001 | Committees table + seed ⛔ Q-004 | P0 — ✅ Done (Sprint 04) |
+| CMT-002 | Public leadership view generated from active public positions ⛔ Q-014 | P0 — ✅ Done (Sprint 04) |
+| NOT-001 | Auth emails through provider custom SMTP; bilingual templates ⛔ Q-010, Q-017 | P0 — 🔄 Templates + Mailpit done; provider SMTP ⛔ Q-010/Q-017 |
+| SEC-006 | Delete the `check-email-exists` Edge Function (e-mail existence oracle) | P0 — ✅ Done (Sprint 03) |
 
 ### EP-EVT / EP-REG / EP-NOT — Events (Phase 3A)
 | ID | Story | P |

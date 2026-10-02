@@ -25,6 +25,10 @@ export type ErrorCode =
   | 'SELF_ASSIGNMENT'
   | 'INVALID_DATE'
   | 'SLUG_TAKEN'
+  | 'ALREADY_ASSIGNED'
+  | 'ALREADY_ENDED'
+  | 'REASON_REQUIRED'
+  | 'COMMITTEE_INACTIVE'
   | 'INTERNAL';
 
 export type Result<T = void> =
