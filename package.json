@@ -20,7 +20,8 @@
     "check": "npm run format:check && npm run lint && npm run typecheck && npm run test",
     "e2e:auth": "playwright test -c playwright.auth.config.ts",
     "db:personas": "node scripts/dev-personas.mjs",
-    "db:gen-rbac-test": "node scripts/gen-rbac-matrix-test.mjs"
+    "db:gen-rbac-test": "node scripts/gen-rbac-matrix-test.mjs",
+    "dev:local": "node scripts/dev-local.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",

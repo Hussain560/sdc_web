@@ -1,6 +1,9 @@
 import { render, screen } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { Alert, Button, Field } from '@/components/ui';
+
+// The ui barrel also exports <Pagination>, which uses the locale-aware router.
+vi.mock('@/i18n/navigation', () => ({ Link: 'a' }));
 
 describe('ui primitives', () => {
   it('Button with a disabledReason is disabled and explains why', () => {

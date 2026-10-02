@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext } from 'react';
+import React, { createContext, useContext, useTransition } from 'react';
 import { usePathname, useRouter } from '@/i18n/navigation';
 
 const translations = {
@@ -148,6 +148,8 @@ export type TranslationKey = keyof typeof translations.ar;
 interface LanguageContextValue {
   lang: Lang;
   toggleLanguage: () => void;
+  /** True from the click until the other language has finished loading (use to show feedback and block double clicks). */
+  isSwitching: boolean;
   t: (key: string) => string;
 }
 
@@ -166,14 +168,18 @@ export function LanguageProvider({
   // ADR-010: the language is the URL locale (rendered on the server with lang/dir).
   // Toggling navigates to the same page in the other locale.
   const lang = locale;
+  const [isSwitching, startTransition] = useTransition();
   const toggleLanguage = () => {
-    router.replace(pathname, { locale: lang === 'ar' ? 'en' : 'ar' });
+    if (isSwitching) return;
+    startTransition(() => {
+      router.replace(pathname, { locale: lang === 'ar' ? 'en' : 'ar' });
+    });
   };
 
   const t = (key: string): string => (translations[lang] as Record<string, string>)[key] || key;
 
   return (
-    <LanguageContext.Provider value={{ lang, toggleLanguage, t }}>
+    <LanguageContext.Provider value={{ lang, toggleLanguage, isSwitching, t }}>
       {children}
     </LanguageContext.Provider>
   );

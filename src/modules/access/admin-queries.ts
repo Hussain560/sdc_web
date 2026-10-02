@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server';
+import type { PageRequest } from '@/lib/pagination';
 import type { Localized, PermissionKey, RoleKey } from './types';
 
 export type AssignmentRow = {
@@ -81,22 +82,27 @@ export async function listPermissionLabels(): Promise<
   );
 }
 
-export async function listAssignments(filters: {
-  tab: 'current' | 'history';
-  roleKey?: string;
-  committeeId?: string;
-  q?: string;
-}): Promise<AssignmentRow[]> {
+export async function listAssignments(
+  filters: {
+    tab: 'current' | 'history';
+    roleKey?: string;
+    committeeId?: string;
+    q?: string;
+  },
+  page: Pick<PageRequest, 'from' | 'to'>,
+): Promise<{ rows: AssignmentRow[]; total: number }> {
   const supabase = await createClient();
   const nowIso = new Date().toISOString();
+  const term = filters.q?.trim().replace(/[%,()]/g, ' ');
 
   let query = supabase
     .from('role_assignments')
     .select(
-      'id, user_id, role_key, committee_id, display_title_ar, display_title_en, starts_at, ends_at, end_reason, roles(name_ar, name_en, scope, display_order), committees(name_ar, name_en), profiles!role_assignments_user_id_fkey(full_name_ar, full_name_en, email)',
+      `id, user_id, role_key, committee_id, display_title_ar, display_title_en, starts_at, ends_at, end_reason, roles(name_ar, name_en, scope, display_order), committees(name_ar, name_en), profiles!role_assignments_user_id_fkey${term ? '!inner' : ''}(full_name_ar, full_name_en, email)`,
+      { count: 'exact' },
     )
     .order('starts_at', { ascending: false })
-    .limit(200);
+    .order('id');
 
   // "Current" = active or scheduled (not yet ended); "History" = ended terms (append-only record).
   query =
@@ -105,52 +111,58 @@ export async function listAssignments(filters: {
       : query.not('ends_at', 'is', null).lte('ends_at', nowIso);
   if (filters.roleKey) query = query.eq('role_key', filters.roleKey);
   if (filters.committeeId) query = query.eq('committee_id', filters.committeeId);
-
-  const { data } = await query;
-  const q = filters.q?.trim().toLowerCase();
-
-  return (data ?? [])
-    .map((r): AssignmentRow => ({
-      id: r.id,
-      userId: r.user_id,
-      userName: r.profiles?.full_name_ar ?? '—',
-      userEmail: r.profiles?.email ?? '',
-      roleKey: r.role_key as RoleKey,
-      roleName: { ar: r.roles?.name_ar ?? r.role_key, en: r.roles?.name_en ?? r.role_key },
-      roleScope: r.roles?.scope === 'committee' ? 'committee' : 'global',
-      committeeId: r.committee_id,
-      committeeName: r.committees
-        ? { ar: r.committees.name_ar, en: r.committees.name_en ?? r.committees.name_ar }
-        : null,
-      title:
-        r.display_title_ar || r.display_title_en
-          ? { ar: r.display_title_ar ?? '', en: r.display_title_en ?? r.display_title_ar ?? '' }
-          : null,
-      startsAt: r.starts_at,
-      endsAt: r.ends_at,
-      endReason: r.end_reason,
-      state: stateOf(r.starts_at, r.ends_at),
-    }))
-    .filter(
-      (r) => !q || r.userName.toLowerCase().includes(q) || r.userEmail.toLowerCase().includes(q),
+  if (term) {
+    query = query.or(
+      `full_name_ar.ilike.%${term}%,full_name_en.ilike.%${term}%,email.ilike.%${term}%`,
+      {
+        referencedTable: 'profiles',
+      },
     );
+  }
+
+  const { data, count } = await query.range(page.from, page.to);
+
+  const rows = (data ?? []).map((r): AssignmentRow => ({
+    id: r.id,
+    userId: r.user_id,
+    userName: r.profiles?.full_name_ar ?? '—',
+    userEmail: r.profiles?.email ?? '',
+    roleKey: r.role_key as RoleKey,
+    roleName: { ar: r.roles?.name_ar ?? r.role_key, en: r.roles?.name_en ?? r.role_key },
+    roleScope: r.roles?.scope === 'committee' ? 'committee' : 'global',
+    committeeId: r.committee_id,
+    committeeName: r.committees
+      ? { ar: r.committees.name_ar, en: r.committees.name_en ?? r.committees.name_ar }
+      : null,
+    title:
+      r.display_title_ar || r.display_title_en
+        ? { ar: r.display_title_ar ?? '', en: r.display_title_en ?? r.display_title_ar ?? '' }
+        : null,
+    startsAt: r.starts_at,
+    endsAt: r.ends_at,
+    endReason: r.end_reason,
+    state: stateOf(r.starts_at, r.ends_at),
+  }));
+  return { rows, total: count ?? rows.length };
 }
 
 /** Users page: profiles matching the search, with their active positions. */
-export async function listUsers(q: string) {
+export async function listUsers(q: string, page: Pick<PageRequest, 'from' | 'to'>) {
   const supabase = await createClient();
   let query = supabase
     .from('profiles')
-    .select('id, full_name_ar, full_name_en, email, preferred_locale, created_at')
+    .select('id, full_name_ar, full_name_en, email, preferred_locale, created_at', {
+      count: 'exact',
+    })
     .order('created_at', { ascending: false })
-    .limit(50);
+    .order('id');
   const term = q.trim().replace(/[%,()]/g, ' ');
   if (term) {
     query = query.or(
       `full_name_ar.ilike.%${term}%,full_name_en.ilike.%${term}%,email.ilike.%${term}%`,
     );
   }
-  const { data: users } = await query;
+  const { data: users, count } = await query.range(page.from, page.to);
   const ids = (users ?? []).map((u) => u.id);
   const nowIso = new Date().toISOString();
 
@@ -163,7 +175,7 @@ export async function listUsers(q: string) {
         .or(`ends_at.is.null,ends_at.gt.${nowIso}`)
     : { data: [] };
 
-  return (users ?? []).map((u) => ({
+  const rows = (users ?? []).map((u) => ({
     id: u.id,
     name: u.full_name_ar,
     nameEn: u.full_name_en,
@@ -180,4 +192,5 @@ export async function listUsers(q: string) {
         } as Localized,
       })),
   }));
+  return { rows, total: count ?? rows.length };
 }

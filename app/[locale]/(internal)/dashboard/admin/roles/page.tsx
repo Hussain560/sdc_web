@@ -1,10 +1,11 @@
-import { Badge } from '@/components/ui';
+import { Badge, Pagination } from '@/components/ui';
 import { Forbidden } from '@/components/layout/Forbidden';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { Link } from '@/i18n/navigation';
 import { can } from '@/lib/auth/permissions';
 import { requireUser } from '@/lib/auth/session';
 import { formatDate } from '@/lib/format';
+import { pageMeta, parsePage } from '@/lib/pagination';
 import {
   listAssignments,
   listCommittees,
@@ -17,7 +18,14 @@ import { EndAssignmentDialog } from '@/modules/access/components/EndAssignmentDi
 import { getAccess } from '@/modules/access/queries';
 import { PROTECTED_GLOBAL_ROLES } from '@/modules/access/types';
 
-type Search = { tab?: string; role?: string; committee?: string; q?: string };
+type Search = {
+  tab?: string;
+  role?: string;
+  committee?: string;
+  q?: string;
+  page?: string;
+  size?: string;
+};
 
 const stateTone = { active: 'accent', scheduled: 'warning', ended: 'neutral' } as const;
 const stateLabel = {
@@ -51,10 +59,15 @@ export default async function RolesPage({
     listPermissionLabels(),
   ]);
   const grantable = roles.filter((r) => isAdmin || !PROTECTED_GLOBAL_ROLES.includes(r.key));
-  const rows: AssignmentRow[] =
+  const request = parsePage(sp);
+  const { rows, total }: { rows: AssignmentRow[]; total: number } =
     tab === 'matrix'
-      ? []
-      : await listAssignments({ tab, roleKey: sp.role, committeeId: sp.committee, q: sp.q });
+      ? { rows: [], total: 0 }
+      : await listAssignments(
+          { tab, roleKey: sp.role, committeeId: sp.committee, q: sp.q },
+          request,
+        );
+  const meta = pageMeta(total, request);
 
   const activeAdmins = rows.filter(
     (r) => r.roleKey === 'system_admin' && r.state === 'active',
@@ -246,6 +259,7 @@ export default async function RolesPage({
               </table>
             </div>
           )}
+          <Pagination meta={meta} searchParams={sp} lang={lang} />
         </>
       )}
     </>

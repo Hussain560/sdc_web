@@ -87,13 +87,12 @@ describe('can() — truth table against the documented matrix', () => {
 
 describe('sidebar per persona (role → view matrix)', () => {
   it('plain user: only the account group, no dashboard', () => {
-    expect(sidebarOf('plain_user')).toEqual({
-      account: ['my-roles', 'my-profile', 'my-security'],
-    });
+    // Profile, positions and security live in the user menu, not the sidebar.
+    expect(sidebarOf('plain_user')).toEqual({ general: ['account-home'] });
     expect(hasDashboardAccess(persona('plain_user'))).toBe(false);
   });
 
-  it('committee member: overview + account, no admin or management items', () => {
+  it('committee member: overview only, no admin or management items', () => {
     const nav = sidebarOf('committee_member');
     expect(nav.general).toEqual(['overview']);
     expect(nav.admin).toBeUndefined();
@@ -117,7 +116,7 @@ describe('sidebar per persona (role → view matrix)', () => {
 
   it('system admin: sees every item that is built', () => {
     const keys = Object.values(sidebarOf('system_admin')).flat();
-    const built = DASHBOARD_NAV.flatMap((g) => g.items).filter((i) => i.ready);
+    const built = DASHBOARD_NAV.flatMap((g) => g.items).filter((i) => i.ready && !i.noPosition);
     expect(keys.sort()).toEqual(built.map((i) => i.key).sort());
   });
 

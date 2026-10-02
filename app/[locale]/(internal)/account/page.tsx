@@ -1,6 +1,7 @@
-import { Card } from '@/components/ui';
-import { Link } from '@/i18n/navigation';
+import { Badge, Card } from '@/components/ui';
 import { requireUser } from '@/lib/auth/session';
+import { formatDate } from '@/lib/format';
+import { getAccess } from '@/modules/access/queries';
 import { getMyProfile } from '@/modules/account/queries';
 
 export default async function AccountOverviewPage({
@@ -9,9 +10,11 @@ export default async function AccountOverviewPage({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
-  const ar = locale === 'ar';
+  const lang = locale === 'en' ? 'en' : 'ar';
+  const ar = lang === 'ar';
   const user = await requireUser('/account');
-  const profile = await getMyProfile(user.id);
+  const [profile, access] = await Promise.all([getMyProfile(user.id), getAccess()]);
+  const positions = access?.positions ?? [];
 
   return (
     <div className="flex flex-col gap-6">
@@ -24,22 +27,42 @@ export default async function AccountOverviewPage({
         </p>
       </div>
 
-      <Card className="flex flex-col gap-2">
-        <h2 className="text-lg font-bold">{ar ? 'حسابك' : 'Your account'}</h2>
-        <p className="text-muted">
-          {ar
-            ? 'هذا حساب على المنصة وليس عضوية. للانضمام إلى المجتمع قدّم طلبك عند فتح باب التسجيل.'
-            : 'This is an account on the platform, not membership. To join the community, apply when intake is open.'}
-        </p>
-        <div className="mt-2 flex gap-4 text-sm">
-          <Link href="/account/profile" className="text-accent underline">
-            {ar ? 'تعديل ملفي' : 'Edit my profile'}
-          </Link>
-          <Link href="/account/security" className="text-accent underline">
-            {ar ? 'الأمان' : 'Security'}
-          </Link>
-        </div>
-      </Card>
+      {positions.length > 0 ? (
+        // People who hold a position are part of the community: no "this is not membership" message.
+        <Card className="flex flex-col gap-3">
+          <h2 className="text-lg font-bold">
+            {ar ? 'أنت جزء من قيادة المجتمع' : 'You are part of the community leadership'}
+          </h2>
+          <ul className="flex flex-col gap-2">
+            {positions.map((p) => (
+              <li
+                key={p.assignmentId}
+                className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-line px-3 py-2"
+              >
+                <span className="flex items-center gap-2">
+                  <Badge tone="accent">{p.title?.[lang] ?? p.roleName[lang]}</Badge>
+                  <span className="text-muted">
+                    {p.committeeName?.[lang] ?? (ar ? 'عام' : 'Global')}
+                  </span>
+                </span>
+                <span className="text-xs tabular-nums text-muted">
+                  {formatDate(p.startsAt, lang)} →{' '}
+                  {p.endsAt ? formatDate(p.endsAt, lang) : ar ? 'مفتوح' : 'open'}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </Card>
+      ) : (
+        <Card className="flex flex-col gap-2">
+          <h2 className="text-lg font-bold">{ar ? 'حسابك' : 'Your account'}</h2>
+          <p className="text-muted">
+            {ar
+              ? 'هذا حساب على المنصة وليس عضوية. للانضمام إلى المجتمع قدّم طلبك عند فتح باب التسجيل.'
+              : 'This is an account on the platform, not membership. To join the community, apply when intake is open.'}
+          </p>
+        </Card>
+      )}
     </div>
   );
 }

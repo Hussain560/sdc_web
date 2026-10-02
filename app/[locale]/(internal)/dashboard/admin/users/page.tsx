@@ -1,9 +1,10 @@
-import { Badge } from '@/components/ui';
+import { Badge, Pagination } from '@/components/ui';
 import { Forbidden } from '@/components/layout/Forbidden';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { can } from '@/lib/auth/permissions';
 import { requireUser } from '@/lib/auth/session';
 import { formatDate } from '@/lib/format';
+import { pageMeta, parsePage } from '@/lib/pagination';
 import { listUsers } from '@/modules/access/admin-queries';
 import { getAccess } from '@/modules/access/queries';
 
@@ -12,7 +13,7 @@ export default async function UsersPage({
   searchParams,
 }: {
   params: Promise<{ locale: string }>;
-  searchParams: Promise<{ q?: string }>;
+  searchParams: Promise<{ q?: string; page?: string; size?: string }>;
 }) {
   const { locale } = await params;
   const lang = locale === 'en' ? 'en' : 'ar';
@@ -21,8 +22,11 @@ export default async function UsersPage({
   const access = await getAccess();
   if (!access || !can(access, 'users.view')) return <Forbidden />;
 
-  const { q = '' } = await searchParams;
-  const users = await listUsers(q);
+  const sp = await searchParams;
+  const q = sp.q ?? '';
+  const request = parsePage(sp);
+  const { rows: users, total } = await listUsers(q, request);
+  const meta = pageMeta(total, request);
 
   return (
     <>
@@ -100,6 +104,7 @@ export default async function UsersPage({
           </table>
         </div>
       )}
+      <Pagination meta={meta} searchParams={sp} lang={lang} />
     </>
   );
 }

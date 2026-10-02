@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from '@/i18n/navigation';
 import { usePathname, useRouter } from '@/i18n/navigation';
-import { Search, User, Globe, X, LogOut, Sun, Moon } from 'lucide-react';
+import { Search, User, Globe, X, LogOut, Sun, Moon, LoaderCircle } from 'lucide-react';
 import { useSearch } from '../../context/SearchContext';
 import { useLanguage } from '../../context/LanguageContext';
 import { useAuth } from '../../context/AuthContext';
@@ -21,7 +21,7 @@ export default function Header({ onSearch }: HeaderProps) {
   const router = useRouter();
 
   const { searchQuery, setSearchQuery } = useSearch();
-  const { lang, toggleLanguage, t } = useLanguage();
+  const { lang, toggleLanguage, isSwitching, t } = useLanguage();
   const { isLoggedIn, user, logout, hasPosition } = useAuth();
   /* لحذف نتائج البحث عند الانتقال الى صفحة أخرى*/
   useEffect(() => {
@@ -113,8 +113,18 @@ export default function Header({ onSearch }: HeaderProps) {
               <span>{t('search')}</span>
             </button>
 
-            <button className="sdc-icon-btn" onClick={toggleLanguage}>
-              <Globe size={18} />
+            <button
+              className="sdc-icon-btn"
+              onClick={toggleLanguage}
+              disabled={isSwitching}
+              aria-busy={isSwitching}
+              style={isSwitching ? { opacity: 0.6, cursor: 'progress' } : undefined}
+            >
+              {isSwitching ? (
+                <LoaderCircle size={18} className="animate-spin" />
+              ) : (
+                <Globe size={18} />
+              )}
               <span>{lang === 'ar' ? 'English' : 'العربية'}</span>
             </button>
 

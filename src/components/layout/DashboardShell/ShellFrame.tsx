@@ -24,6 +24,7 @@ import {
   Users,
   X,
   Languages,
+  LoaderCircle,
   type LucideIcon,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -52,6 +53,12 @@ const ICONS: Record<NavIcon, LucideIcon> = {
   settings: Settings,
   badge: BadgeCheck,
 };
+
+const ACCOUNT_LINKS = [
+  { href: '/account/profile', icon: UserRound, label: { ar: 'ملفي الشخصي', en: 'My profile' } },
+  { href: '/account/roles', icon: BadgeCheck, label: { ar: 'مناصبي', en: 'My positions' } },
+  { href: '/account/security', icon: ShieldCheck, label: { ar: 'الأمان', en: 'Security' } },
+] as const;
 
 export type ShellUser = {
   name: string;
@@ -170,7 +177,7 @@ export function ShellFrame({
 }) {
   const pathname = usePathname();
   const router = useRouter();
-  const { lang, toggleLanguage } = useLanguage();
+  const { lang, toggleLanguage, isSwitching } = useLanguage();
   const { isDarkMode, toggleTheme } = useTheme();
   const [drawer, setDrawer] = useState(false);
   const [menu, setMenu] = useState(false);
@@ -178,8 +185,13 @@ export function ShellFrame({
 
   const items = flatten(nav);
   const active = activeKey(items, pathname);
+  const accountTitle = pathname.startsWith('/account')
+    ? (ACCOUNT_LINKS.find((l) => l.href === pathname)?.label[lang] ?? (ar ? 'حسابي' : 'My account'))
+    : null;
   const title =
-    items.find((i) => i.key === active)?.label[lang] ?? (ar ? 'لوحة التحكم' : 'Dashboard');
+    accountTitle ??
+    items.find((i) => i.key === active)?.label[lang] ??
+    (ar ? 'لوحة التحكم' : 'Dashboard');
 
   // Close overlays on navigation and with Escape.
   useEffect(() => {
@@ -255,9 +267,18 @@ export function ShellFrame({
           <button
             type="button"
             onClick={toggleLanguage}
-            className="flex items-center gap-1.5 rounded-full px-3 py-2 text-sm text-muted hover:text-text"
+            disabled={isSwitching}
+            aria-busy={isSwitching}
+            className={cn(
+              'flex items-center gap-1.5 rounded-full px-3 py-2 text-sm text-muted hover:text-text',
+              'disabled:cursor-progress disabled:opacity-60',
+            )}
           >
-            <Languages size={18} aria-hidden="true" />
+            {isSwitching ? (
+              <LoaderCircle size={18} className="animate-spin" aria-hidden="true" />
+            ) : (
+              <Languages size={18} aria-hidden="true" />
+            )}
             <span>{ar ? 'English' : 'العربية'}</span>
           </button>
           <button
@@ -269,7 +290,16 @@ export function ShellFrame({
             {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
           </button>
 
-          <div className="relative">
+          {menu && (
+            <button
+              type="button"
+              aria-hidden="true"
+              tabIndex={-1}
+              className="fixed inset-0 z-10 cursor-default"
+              onClick={() => setMenu(false)}
+            />
+          )}
+          <div className="relative z-20">
             <button
               type="button"
               aria-haspopup="menu"
@@ -297,14 +327,23 @@ export function ShellFrame({
                 >
                   {user.email}
                 </p>
-                <Link
-                  role="menuitem"
-                  href="/account/profile"
-                  onClick={() => setMenu(false)}
-                  className="block rounded-xl px-3 py-2 text-sm hover:bg-surface-raised"
-                >
-                  {ar ? 'ملفي الشخصي' : 'My profile'}
-                </Link>
+                {ACCOUNT_LINKS.map((l) => (
+                  <Link
+                    key={l.href}
+                    role="menuitem"
+                    href={l.href}
+                    onClick={() => setMenu(false)}
+                    aria-current={pathname === l.href ? 'page' : undefined}
+                    className={cn(
+                      'flex items-center gap-2 rounded-xl px-3 py-2 text-sm hover:bg-surface-raised',
+                      pathname === l.href && 'bg-surface-raised text-accent',
+                    )}
+                  >
+                    <l.icon size={16} aria-hidden="true" />
+                    {l.label[lang]}
+                  </Link>
+                ))}
+                <div role="separator" className="my-1 border-t border-line" />
                 <Link
                   role="menuitem"
                   href="/"

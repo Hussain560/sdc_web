@@ -2,6 +2,7 @@
 @import 'tailwindcss';
 @import '../src/styles/primitives.css';
 @import '../src/styles/tokens.css';
+@import '../src/styles/ui.css';
 
 :root {
   --background: var(--c-050d09);

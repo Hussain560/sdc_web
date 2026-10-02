@@ -6,7 +6,7 @@ import type { AccessContext, Localized, PermissionKey } from '@/modules/access/t
  * One list filtered by permissions — never one hardcoded menu per role.
  * Items whose screens are not built yet carry `ready: false` and are filtered out, so the menu never links to a 404.
  */
-export type NavGroupKey = 'general' | 'account' | 'committee' | 'management' | 'admin';
+export type NavGroupKey = 'general' | 'committee' | 'management' | 'admin';
 
 export type NavIcon =
   | 'dashboard'
@@ -39,6 +39,8 @@ type NavItemDef = {
   ready: boolean;
   /** Only for users holding at least one active position (plain users have no dashboard). */
   needsPosition?: boolean;
+  /** Only for users with no active position. */
+  noPosition?: boolean;
   /** Committee-scoped items append `?committee=<id>`. */
   scoped?: boolean;
   children?: NavItemDef[];
@@ -59,45 +61,13 @@ export const DASHBOARD_NAV: NavGroupDef[] = [
         needsPosition: true,
         ready: true,
       },
-    ],
-  },
-  {
-    key: 'account',
-    label: { ar: 'حسابي', en: 'My account' },
-    items: [
+      // A plain user has no dashboard; their home is the account area (profile, security and positions live in the user menu).
       {
-        key: 'my-registrations',
-        label: { ar: 'تسجيلاتي في الفعاليات', en: 'My registrations' },
-        href: '/account/registrations',
-        icon: 'ticket',
-        ready: false,
-      },
-      {
-        key: 'my-membership',
-        label: { ar: 'عضويتي', en: 'My membership' },
-        href: '/account/membership',
-        icon: 'card',
-        ready: false,
-      },
-      {
-        key: 'my-roles',
-        label: { ar: 'مناصبي', en: 'My positions' },
-        href: '/account/roles',
-        icon: 'badge',
-        ready: true,
-      },
-      {
-        key: 'my-profile',
-        label: { ar: 'ملفي الشخصي', en: 'My profile' },
-        href: '/account/profile',
+        key: 'account-home',
+        label: { ar: 'حسابي', en: 'My account' },
+        href: '/account',
         icon: 'user',
-        ready: true,
-      },
-      {
-        key: 'my-security',
-        label: { ar: 'الأمان', en: 'Security' },
-        href: '/account/security',
-        icon: 'shield',
+        noPosition: true,
         ready: true,
       },
     ],
@@ -302,6 +272,7 @@ export function visibleNav(access: AccessContext, committeeId?: string): Visible
   const filter = (item: NavItemDef): VisibleNavItem | null => {
     if (!item.ready) return null;
     if (item.needsPosition && access.positions.length === 0) return null;
+    if (item.noPosition && access.positions.length > 0) return null;
     const ok =
       allowed(access, item.requires) || (item.orRequires ?? []).some((r) => allowed(access, r));
     if (!ok) return null;

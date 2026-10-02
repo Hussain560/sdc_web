@@ -38,7 +38,7 @@ const sidebarLinks = async (page: Page) =>
     .evaluateAll((els) => els.map((e) => e.getAttribute('href')));
 
 const tag = Math.random().toString(36).slice(2, 7);
-const account = ['/en/account/roles', '/en/account/profile', '/en/account/security'];
+// Account pages (profile, positions, security) live in the user menu, not the sidebar.
 
 const cases: Array<{
   name: string;
@@ -47,48 +47,38 @@ const cases: Array<{
   start: string;
   expected: Array<string | null>;
 }> = [
-  { name: 'plain user', role: null, start: '/en/account', expected: [...account] },
+  { name: 'plain user', role: null, start: '/en/account', expected: ['/en/account'] },
   {
     name: 'committee member',
     role: 'committee_member',
     committeeSlug: 'ai',
     start: '/en/dashboard',
-    expected: ['/en/dashboard', ...account],
+    expected: ['/en/dashboard'],
   },
   {
     name: 'committee head',
     role: 'committee_head',
     committeeSlug: 'cybersecurity',
     start: '/en/dashboard',
-    expected: ['/en/dashboard', ...account],
+    expected: ['/en/dashboard'],
   },
   {
     name: 'founder',
     role: 'founder',
     start: '/en/dashboard',
-    expected: ['/en/dashboard', ...account, '/en/dashboard/admin/roles'],
+    expected: ['/en/dashboard', '/en/dashboard/admin/roles'],
   },
   {
     name: 'community leader',
     role: 'community_leader',
     start: '/en/dashboard',
-    expected: [
-      '/en/dashboard',
-      ...account,
-      '/en/dashboard/admin/users',
-      '/en/dashboard/admin/roles',
-    ],
+    expected: ['/en/dashboard', '/en/dashboard/admin/users', '/en/dashboard/admin/roles'],
   },
   {
     name: 'system admin',
     role: 'system_admin',
     start: '/en/dashboard',
-    expected: [
-      '/en/dashboard',
-      ...account,
-      '/en/dashboard/admin/users',
-      '/en/dashboard/admin/roles',
-    ],
+    expected: ['/en/dashboard', '/en/dashboard/admin/users', '/en/dashboard/admin/roles'],
   },
 ];
 
