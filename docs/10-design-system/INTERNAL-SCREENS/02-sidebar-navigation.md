@@ -1,5 +1,7 @@
 # Internal Shell — Sidebar Navigation (Permission-Driven)
 
+> **Update 2026-10-02 (owner request):** the personal pages — *My profile*, *My positions* and *Security* — live in the **profile menu** (the avatar dropdown in the private header), not in the sidebar. The sidebar shows *Overview* (people with a position) or *My account* (plain users), then the Committee / Management / Administration groups. Items whose screens are not built yet are hidden until their sprint, so the menu never links to a 404. A system admin holds all 30 permissions and therefore sees every built Management and Administration item.
+
 Groups and items of the internal sidebar, each bound to a permission key from the [permission catalog](../../06-security/permission-catalog.md). Unlike KFUCS (one hardcoded item list per role — the drift its audit F-53 warned about), SDC builds the sidebar from **one item list filtered by the user's permissions**.
 
 ---

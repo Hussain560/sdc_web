@@ -167,7 +167,7 @@ erDiagram
 | - | ---- | ----------- | ------ |
 | EV-1 | Step schemas: Arabic title 3–200; type in the set; committee where the user can create | Zod + DB | FR-EVT-001 |
 | EV-2 | Range: `end_date ≥ start_date`; specific dates ≥ 1 and unique; same day: `end_time > start_time` | Zod `superRefine` + DB CHECK | KFUCS step 2 |
-| EV-3 | `registration_end_at` must be after the start of the first day; it **may** be after the event starts (reopen) | Zod + function | KFUCS 2026-09-16 |
+| EV-3 | `registration_end_at` only has to be after `registration_start_at` (when set). It may be before the event (normal) or **after it starts** (reopen); there is no upper bound | Zod | KFUCS 2026-09-16 |
 | EV-4 | Publish guards: start date, location (in person / hybrid), group link, ≥ 1 Arabic goal | `transition_event()` (not CHECK constraints) | ADR-012 |
 | EV-5 | Status changes only through `transition_event()` and the transition table | DB | BR-EVT-002 |
 | EV-6 | The phase is derived; never stored | View | BR-EVT-004 |

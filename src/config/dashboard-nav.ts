@@ -83,7 +83,7 @@ export const DASHBOARD_NAV: NavGroupDef[] = [
         icon: 'events',
         scoped: true,
         requires: { permission: 'events.view_drafts', scope: 'committee' },
-        ready: false,
+        ready: true,
       },
       {
         key: 'committee-registrations',
@@ -133,7 +133,7 @@ export const DASHBOARD_NAV: NavGroupDef[] = [
         href: '/dashboard/events',
         icon: 'events',
         requires: { permission: 'events.view_drafts', scope: 'global' },
-        ready: false,
+        ready: true,
       },
       {
         key: 'membership-cycles',

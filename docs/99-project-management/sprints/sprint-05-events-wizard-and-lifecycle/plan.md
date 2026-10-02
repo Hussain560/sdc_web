@@ -12,7 +12,7 @@
 | **Target version**  | contributes to `v0.4.0` |
 | **Capacity**        | ~30 SP — planned 49 SP after adding stories; EVT-013 and EVT-014 are stretch; re-forecast after the first week |
 | **Team**            | Tech lead + volunteer developers (assigned at sprint planning) |
-| **Status**          | 🔄 In progress — started 2026-10-02 |
+| **Status**          | ✅ Local scope complete 2026-10-02 — remaining: Q-005/Q-040 confirmation, staging deploy, demo |
 
 ## Read First (reference pack)
 
@@ -36,21 +36,21 @@ Committees create events in the **4-step KFUCS wizard** (Identity → Logistics 
 
 | Story ID | Title | Priority | Points | Assignee | Status |
 | -------- | ----- | -------- | ------ | -------- | ------ |
-| EVT-006 | Events schema: `events`, `event_private_details`, `event_dates`, `event_presenters` + RLS + pgTAP | P0 | 8 | — | ⬜ |
-| EVT-001 | 4-step creation wizard with Zod step schemas, preview card, `localStorage` draft | P0 | 8 | — | ⬜ |
-| EVT-002 | Submit → approve / request changes; approver fast-track ⛔ Q-005 | P0 | 5 | — | ⬜ |
-| EVT-004 | Cancel a published event (reason; registrant e-mails arrive in Sprint 06) | P0 | 3 | — | ⬜ |
-| UI-004 | Primitives batch 2: Stepper, Tabs, Table, Drawer, EmptyState, StatCard | P0 | 5 | — | ⬜ |
-| EVT-007 | Dashboard events list: status tabs with counts, filters (search, committee, type, period), pagination | P0 | 5 | — | ⬜ |
-| EVT-008 | Event detail: facts rail, private details, lifecycle timeline, action dialogs (request changes, cancel), history tab | P0 | 5 | — | ⬜ |
-| EVT-009 | Cover image upload to Storage (JPEG/PNG/WebP ≤ 2 MB, validated server-side) | P1 | 3 | — | ⬜ |
-| EVT-010 | Presenters in the wizard: member search or guest (name, title, link), role, order, ≤ 10 | P1 | 3 | — | ⬜ |
-| EVT-011 | Derived timing phase: SQL view + TypeScript mirror, one shared truth table in pgTAP and unit tests | P0 | 3 | — | ⬜ |
-| EVT-012 | Optimistic concurrency on save (`STALE_DATA`) and the wizard's refresh-safe draft with discard | P1 | 2 | — | ⬜ |
-| EVT-013 | Markdown description editor with sanitized preview (ar/en) | P2 | 2 | — | ⬜ |
-| EVT-014 | Edit a published event; significant changes (dates, mode, place) require a confirm dialog | P1 | 3 | — | ⬜ |
-| EVT-015 | Sidebar items for events (committee and management) become available; list/detail respect scope | P0 | 1 | — | ⬜ |
-| TEST-003 | pgTAP for events (transition matrix by role, publish guards, visibility, private details, slug lock) and wizard E2E | P0 | 5 | — | ⬜ |
+| EVT-006 | Events schema: `events`, `event_private_details`, `event_dates`, `event_presenters` + RLS + pgTAP | P0 | 8 | — | ✅ Done 2026-10-02 (96 pgTAP assertions) |
+| EVT-001 | 4-step creation wizard with Zod step schemas, preview card, `localStorage` draft | P0 | 8 | — | ✅ Done 2026-10-02 |
+| EVT-002 | Submit → approve / request changes; approver fast-track ⛔ Q-005 | P0 | 5 | — | ✅ Done 2026-10-02 |
+| EVT-004 | Cancel a published event (reason; registrant e-mails arrive in Sprint 06) | P0 | 3 | — | ✅ Done 2026-10-02 (e-mails to registrants arrive in Sprint 06) |
+| UI-004 | Primitives batch 2: Stepper, Tabs, Table, Drawer, EmptyState, StatCard | P0 | 5 | — | ✅ Done 2026-10-02 (Stepper, Tabs, Textarea, Switch, Chips, EmptyState, StatCard, Pagination) |
+| EVT-007 | Dashboard events list: status tabs with counts, filters (search, committee, type, period), pagination | P0 | 5 | — | ✅ Done 2026-10-02 |
+| EVT-008 | Event detail: facts rail, private details, lifecycle timeline, action dialogs (request changes, cancel), history tab | P0 | 5 | — | ✅ Done 2026-10-02 |
+| EVT-009 | Cover image upload to Storage (JPEG/PNG/WebP ≤ 2 MB, validated server-side) | P1 | 3 | — | ✅ Done 2026-10-02 (stored as uploaded; WebP conversion deferred) |
+| EVT-010 | Presenters in the wizard: member search or guest (name, title, link), role, order, ≤ 10 | P1 | 3 | — | ✅ Done 2026-10-02 |
+| EVT-011 | Derived timing phase: SQL view + TypeScript mirror, one shared truth table in pgTAP and unit tests | P0 | 3 | — | ✅ Done 2026-10-02 (shared truth table in SQL and TypeScript) |
+| EVT-012 | Optimistic concurrency on save (`STALE_DATA`) and the wizard's refresh-safe draft with discard | P1 | 2 | — | ✅ Done 2026-10-02 |
+| EVT-013 | Markdown description editor with sanitized preview (ar/en) | P2 | 2 | — | ✅ Done 2026-10-02 |
+| EVT-014 | Edit a published event; significant changes (dates, mode, place) require a confirm dialog | P1 | 3 | — | ✅ Done 2026-10-02 (confirm dialog; the e-mails land with EVT-016) |
+| EVT-015 | Sidebar items for events (committee and management) become available; list/detail respect scope | P0 | 1 | — | ✅ Done 2026-10-02 |
+| TEST-003 | pgTAP for events (transition matrix by role, publish guards, visibility, private details, slug lock) and wizard E2E | P0 | 5 | — | ✅ Done 2026-10-02 (96 pgTAP, 46 unit, 9 E2E) |
 
 ## Technical Tasks
 
@@ -100,10 +100,10 @@ Every story also follows the [standard vertical-slice tasks](../../work-breakdow
 
 ## Acceptance Criteria
 
-- [ ] A committee member can only save drafts; the head submits; the leader approves; every other combination is denied (UI + server + RLS).
-- [ ] Refreshing on step 3 restores the wizard state.
-- [ ] Specific dates create one `event_dates` row each; removing a date is reflected.
-- [ ] Publishing without a group link fails with a localized message.
+- [x] A committee member can only save drafts; the head submits; the leader approves; every other combination is denied (UI + server + RLS).
+- [x] Refreshing on step 3 restores the wizard state.
+- [x] Specific dates create one `event_dates` row each; removing a date is reflected.
+- [x] Publishing without a group link fails with a localized message.
 - [ ] CI green, including the public-page visual check; all stories meet the [Definition of Done](../../definition-of-done.md)
 - [ ] Deployed to staging; demo script executed
 
@@ -136,7 +136,18 @@ Every story also follows the [standard vertical-slice tasks](../../work-breakdow
 ### Completed
 | Item | Details |
 | ---- | ------- |
+| Migrations | `20261206000000_events.sql` (generated from `scripts/gen-events-migration.py`) and `20261206000100_event_helpers.sql`: events, private details, dates, presenters, phase view, status counts, `save_event`, `transition_event`, `delete_event_draft`, `event_history`, presenter helpers, `public-media` bucket |
+| pgTAP | `05_events.sql`: 96 assertions (phase truth table, role matrix across lifecycle, visibility, private links, slug lock, dates, presenters, history, fast-track) |
+| Wizard | 4 steps with per-step Zod schemas (ported KFUCS rules, Arabic-first), live preview card, refresh-safe local draft with discard, save draft on every step, stale-data protection, permission-dependent final buttons, confirm dialog for significant changes of a published event |
+| Screens | Events list (status tabs with counts, search/committee/type/period filters, pagination, review-note line), event detail (lifecycle timeline, facts, private details, completeness checklist, history tab), request-changes / cancel / delete dialogs |
+| Tests | 46 unit (schemas, mapping, phase), 9 E2E (create → submit → request changes → resubmit → approve → cancel, validation focus, refresh restore, member limits, fast-track, scope 404, pagination, founder read-only) |
 
 ### Known Gaps
 | Gap | Notes / follow-up |
 | --- | ----------------- |
+| Cover images are stored as uploaded | EV-11 asks for WebP 1600×900; conversion needs an image pipeline (backlog) |
+| `registration_end_at` rule wording | The docs said "after the start of the first day"; the mock-ups and KFUCS behaviour mean *not required to be before the start* — implemented as: after the opening time only. EV-3 corrected |
+| Accepted counts and seats left | `public_events.accepted_count` is 0 until registrations move to the new table (Sprint 06) |
+| Event e-mails (`event.cancelled`, `event.changed`) | Sprint 06 (EVT-016) |
+| Attendance-finalized guard on *Complete* | Sprint 10 |
+| Public pages still read the hardcoded events | Sprint 06 (PUB-002) |

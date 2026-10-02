@@ -389,11 +389,21 @@ isOneToOne: false
               "action": string,"actor_name": string,"occurred_at": string,"summary": Json
             }[]
                            },
+"event_presenters_for":
+{ Args: { "p_event": string }; Returns: {
+              "id": string,"link": string,"name_ar": string,"name_en": string,"photo_path": string,"profile_id": string,"role": string,"sort_order": number,"title_ar": string,"title_en": string
+            }[]
+                           },
 "handover_head":
 { Args: { "p_at"?: string,"p_committee": string,"p_new_head": string }; Returns: string
                            },
 "save_event":
 { Args: { "p": Json,"p_event_id": string,"p_expected_updated_at"?: string }; Returns: Json
+                           },
+"search_presenter_candidates":
+{ Args: { "p_query": string }; Returns: {
+              "full_name_ar": string,"full_name_en": string,"id": string
+            }[]
                            },
 "transition_event":
 { Args: { "p_action": string,"p_id": string,"p_note"?: string }; Returns: string

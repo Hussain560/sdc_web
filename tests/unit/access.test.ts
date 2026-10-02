@@ -92,19 +92,22 @@ describe('sidebar per persona (role → view matrix)', () => {
     expect(hasDashboardAccess(persona('plain_user'))).toBe(false);
   });
 
-  it('committee member: overview only, no admin or management items', () => {
+  it('committee member: overview + committee events, no admin or management items', () => {
     const nav = sidebarOf('committee_member');
     expect(nav.general).toEqual(['overview']);
+    expect(nav.committee).toEqual(['committee-events']);
     expect(nav.admin).toBeUndefined();
     expect(nav.management).toBeUndefined();
   });
 
-  it('committee head: no administration items', () => {
+  it('committee head: committee events, no administration items', () => {
     expect(sidebarOf('committee_head').admin).toBeUndefined();
+    expect(sidebarOf('committee_head').committee).toEqual(['committee-events']);
   });
 
-  it('founder: read-only roles screen, no users list', () => {
+  it('founder: read-only roles screen and the events pipeline, no users list', () => {
     expect(sidebarOf('founder').admin).toEqual(['admin-roles']);
+    expect(sidebarOf('founder').management).toEqual(['all-events']);
   });
 
   it('community leader: users and roles, not the audit log', () => {
@@ -114,9 +117,11 @@ describe('sidebar per persona (role → view matrix)', () => {
     expect(admin).not.toContain('admin-audit');
   });
 
-  it('system admin: sees every item that is built', () => {
+  it('system admin: sees every built item (global holders use Management items, not the committee group)', () => {
     const keys = Object.values(sidebarOf('system_admin')).flat();
-    const built = DASHBOARD_NAV.flatMap((g) => g.items).filter((i) => i.ready && !i.noPosition);
+    const built = DASHBOARD_NAV.filter((g) => g.key !== 'committee')
+      .flatMap((g) => g.items)
+      .filter((i) => i.ready && !i.noPosition);
     expect(keys.sort()).toEqual(built.map((i) => i.key).sort());
   });
 

@@ -29,6 +29,17 @@ export type ErrorCode =
   | 'ALREADY_ENDED'
   | 'REASON_REQUIRED'
   | 'COMMITTEE_INACTIVE'
+  | 'PUBLISH_GUARD'
+  | 'INCOMPLETE'
+  | 'NOTE_TOO_SHORT'
+  | 'NOT_EDITABLE'
+  | 'NOT_DELETABLE'
+  | 'STALE_DATA'
+  | 'SLUG_LOCKED'
+  | 'EVENT_NOT_ENDED'
+  | 'INVALID_TRANSITION'
+  | 'FILE_TOO_LARGE'
+  | 'FILE_TYPE'
   | 'INTERNAL';
 
 export type Result<T = void> =

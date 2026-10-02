@@ -35,7 +35,9 @@ async function remove(...people: Persona[]) {
 const sidebarLinks = async (page: Page) =>
   page
     .locator('nav[aria-label="Internal navigation"] a')
-    .evaluateAll((els) => els.map((e) => e.getAttribute('href')));
+    .evaluateAll((els) =>
+      els.map((e) => e.getAttribute('href')?.replace(/\?committee=[0-9a-f-]+$/, '')),
+    );
 
 const tag = Math.random().toString(36).slice(2, 7);
 // Account pages (profile, positions, security) live in the user menu, not the sidebar.
@@ -53,32 +55,42 @@ const cases: Array<{
     role: 'committee_member',
     committeeSlug: 'ai',
     start: '/en/dashboard',
-    expected: ['/en/dashboard'],
+    expected: ['/en/dashboard', '/en/dashboard/events'],
   },
   {
     name: 'committee head',
     role: 'committee_head',
     committeeSlug: 'cybersecurity',
     start: '/en/dashboard',
-    expected: ['/en/dashboard'],
+    expected: ['/en/dashboard', '/en/dashboard/events'],
   },
   {
     name: 'founder',
     role: 'founder',
     start: '/en/dashboard',
-    expected: ['/en/dashboard', '/en/dashboard/admin/roles'],
+    expected: ['/en/dashboard', '/en/dashboard/events', '/en/dashboard/admin/roles'],
   },
   {
     name: 'community leader',
     role: 'community_leader',
     start: '/en/dashboard',
-    expected: ['/en/dashboard', '/en/dashboard/admin/users', '/en/dashboard/admin/roles'],
+    expected: [
+      '/en/dashboard',
+      '/en/dashboard/events',
+      '/en/dashboard/admin/users',
+      '/en/dashboard/admin/roles',
+    ],
   },
   {
     name: 'system admin',
     role: 'system_admin',
     start: '/en/dashboard',
-    expected: ['/en/dashboard', '/en/dashboard/admin/users', '/en/dashboard/admin/roles'],
+    expected: [
+      '/en/dashboard',
+      '/en/dashboard/events',
+      '/en/dashboard/admin/users',
+      '/en/dashboard/admin/roles',
+    ],
   },
 ];
 
