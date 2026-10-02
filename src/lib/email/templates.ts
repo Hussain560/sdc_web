@@ -9,7 +9,11 @@ export type TemplateKey =
   | 'registration.cancelled_by_organizer'
   | 'event.cancelled'
   | 'event.changed'
-  | 'membership.application_received';
+  | 'membership.application_received'
+  | 'membership.application_accepted'
+  | 'membership.application_rejected'
+  | 'membership.application_waitlisted'
+  | 'member.claim_invite';
 
 export type TemplateData = {
   name: string;
@@ -17,6 +21,8 @@ export type TemplateData = {
   eventUrl?: string;
   registrationsUrl?: string;
   membershipUrl?: string;
+  /** member.claim_invite: the one-time link (7 days). */
+  claimUrl?: string;
   when?: string;
   where?: string;
   /** Only ever set for registration.confirmed (NO-6). */
@@ -124,6 +130,58 @@ function copy(key: TemplateKey, lang: Lang, d: TemplateData): Copy {
             : 'The team reviews applications once the window closes and you will get the decision by e-mail. You can follow your status in your account.',
         ],
         action: { label: ar ? 'طلبي' : 'My application', url: d.membershipUrl },
+      };
+    case 'membership.application_accepted':
+      return {
+        subject: ar
+          ? 'مرحبًا بك عضوًا في المجتمع السعودي للمطورين'
+          : 'Welcome to the Saudi Developer Community',
+        lead: ar
+          ? `يسرّنا إبلاغك بقبول طلب عضويتك في «${t}».`
+          : `We are delighted to tell you that your membership application (“${t}”) was accepted.`,
+        body: [
+          ar
+            ? 'يمكنك الآن إكمال ملفك الشخصي واختيار ما إذا كنت ترغب في الظهور في دليل الأعضاء.'
+            : 'You can now complete your profile and choose whether to appear in the member directory.',
+        ],
+        action: { label: ar ? 'ملف العضوية' : 'My member profile', url: d.membershipUrl },
+      };
+    case 'membership.application_rejected':
+      return {
+        subject: ar ? 'بخصوص طلب عضويتك' : 'About your membership application',
+        lead: ar
+          ? `نشكرك على اهتمامك بالانضمام إلينا (${t}). لم نتمكن من قبول طلبك في هذه الدورة.`
+          : `Thank you for your interest in joining us (${t}). We were not able to accept your application in this cycle.`,
+        body: [
+          ar
+            ? 'يسعدنا استقبال طلبك مجددًا في الدورات القادمة، ويمكنك حضور فعالياتنا دون عضوية.'
+            : 'You are welcome to apply again in a future cycle, and you can attend our events without membership.',
+        ],
+        action: { label: ar ? 'تصفّح الفعاليات' : 'Browse events', url: d.eventUrl },
+      };
+    case 'membership.application_waitlisted':
+      return {
+        subject: ar ? 'طلب عضويتك على قائمة الانتظار' : 'Your membership application is waitlisted',
+        lead: ar
+          ? `أُضيف طلبك في «${t}» إلى قائمة الانتظار.`
+          : `Your application (“${t}”) has been placed on the waiting list.`,
+        body: [
+          ar ? 'سنراسلك إذا توفّر مقعد.' : 'We will get in touch if a place becomes available.',
+        ],
+        action: { label: ar ? 'طلبي' : 'My application', url: d.membershipUrl },
+      };
+    case 'member.claim_invite':
+      return {
+        subject: ar ? 'استعد ملفك في المجتمع السعودي للمطورين' : 'Claim your SDC member profile',
+        lead: ar
+          ? 'لديك ملف عضو قديم في المجتمع السعودي للمطورين. اربطه بحسابك بنقرة واحدة.'
+          : 'You have an existing member profile in the Saudi Developer Community. Link it to your account in one step.',
+        body: [
+          ar
+            ? 'سجّل الدخول (أو أنشئ حسابًا) بهذا البريد الإلكتروني نفسه ثم أكّد أن الملف لك. الرابط صالح لمدة 7 أيام ويُستخدم مرة واحدة.'
+            : 'Sign in (or create an account) with this same e-mail address, then confirm the profile is yours. The link is valid for 7 days and works once.',
+        ],
+        action: { label: ar ? 'المطالبة بملفي' : 'Claim my profile', url: d.claimUrl },
       };
     case 'event.cancelled':
       return {

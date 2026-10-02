@@ -18,6 +18,9 @@ const MEMBERSHIP_CODES = [
   'INVALID_TRANSITION',
   'NOT_EDITABLE',
   'VALIDATION_FAILED',
+  'SELF_DECISION',
+  'CAPACITY_REACHED',
+  'ALREADY_CLAIMED',
 ] as const satisfies readonly ErrorCode[];
 
 const messages: Partial<Record<ErrorCode, Record<Lang, string>>> = {
@@ -55,6 +58,12 @@ const messages: Partial<Record<ErrorCode, Record<Lang, string>>> = {
   NOT_EDITABLE: {
     ar: 'لا يمكن تعديل الطلب أو الدورة الآن.',
     en: "This can't be changed now.",
+  },
+  SELF_DECISION: { ar: 'لا يمكنك البت في طلبك.', en: "You can't decide your own application." },
+  CAPACITY_REACHED: { ar: 'اكتمل العدد المحدد للقبول.', en: 'The acceptance limit is reached.' },
+  ALREADY_CLAIMED: {
+    ar: 'مراجع آخر يعمل على هذا الطلب.',
+    en: 'Another reviewer is working on this application.',
   },
   VALIDATION_FAILED: {
     ar: 'يرجى مراجعة الحقول المحددة.',

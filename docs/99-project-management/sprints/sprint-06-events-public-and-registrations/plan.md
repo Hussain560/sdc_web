@@ -147,9 +147,9 @@ Every story also follows the [standard vertical-slice tasks](../../work-breakdow
 ### Known Gaps
 | Gap | Notes / follow-up |
 | --- | ----------------- |
-| Members-only audience | `register_for_event` enforces `MEMBERS_ONLY`, but `private.is_active_member()` is a stub returning true until Sprint 08 |
+| Members-only audience | ✅ Real since Sprint 08: `is_active_member()` reads `members` (pgTAP `08`) |
 | Event 1 phase | It has no date, so it shows *Coming soon* and registration stays closed until organisers set a date (documented behaviour change) |
 | Hosted e-mail | `EMAIL_TRANSPORT=smtp` is implemented but untested against a real provider; credentials come with the staging deploy |
-| Export audit | CSV export is permission-checked but not yet written to `audit_logs` |
+| Export audit | ✅ Sprint 08: `record_export()` writes the row count to `audit_logs` |
 | Legacy table | `event_registrations_legacy` is dropped in the hardening sprint after reconciliation sign-off |
 | Registrations tabs | `/account/registrations` is one list with status chips; the upcoming/past/cancelled tabs from the story are backlog |

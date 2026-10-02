@@ -1,6 +1,6 @@
 -- Synthetic local data (Sprint 02 · DB-003). Fictional people only — never copy production rows here.
 -- Applied by `supabase db reset`.
-insert into public.members (
+insert into public.members_legacy (
   first_name, last_name, first_name_en, last_name_en,
   major, major_en, sub_major, sub_major_en,
   status, status_en, university, university_en,
@@ -22,3 +22,6 @@ from (values
   ('خالد الزهراني', 'khalid@example.test', 'accepted')
 ) as v(name, email, status)
 join public.events e on e.legacy_id = 1;
+
+-- The legacy-shaped rows above become members exactly like production rows do (idempotent).
+select private.import_legacy_members();

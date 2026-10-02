@@ -12,7 +12,7 @@
 | **Target version**  | `v0.5.0` (M4 exit) |
 | **Capacity**        | ~28 SP — planned 26 SP |
 | **Team**            | Tech lead + volunteer developers (assigned at sprint planning) |
-| **Status**          | ⬜ Planned — dates indicative; re-forecast after Sprint 02 velocity |
+| **Status**          | ✅ Local scope complete 2026-10-03 — remaining: Q-007/Q-012/Q-013/Q-026/Q-030/Q-038 confirmation, staging deploy, demo |
 
 ## Sprint Objective
 
@@ -22,10 +22,10 @@ Reviewers decide applications in bulk and decisions are e-mailed; accepted appli
 
 | Story ID | Title | Priority | Points | Assignee | Status |
 | -------- | ----- | -------- | ------ | -------- | ------ |
-| MBR-004 | Review and decide applications (bulk); decision e-mails ⛔ Q-013 | P0 | 8 | — | ⬜ |
-| MEM-002 | Directory and profile from `member_directory` with filters ⛔ Q-007 | P0 | 5 | — | ⬜ |
-| MEM-003 | Members edit their profile and directory visibility ⛔ Q-030 | P0 | 5 | — | ⬜ |
-| MEM-004 | Legacy member import + claim flow ⛔ Q-026, Q-038 | P0 | 8 | — | ⬜ |
+| MBR-004 | Review and decide applications (bulk); decision e-mails ⛔ Q-013 | P0 | 8 | — | ✅ Done 2026-10-03 (claim/release, bulk accept/reject/waitlist with per-row results, member create or reactivate, decision e-mails, CSV export with audit) |
+| MEM-002 | Directory and profile from `member_directory` with filters ⛔ Q-007 | P0 | 5 | — | ✅ Done 2026-10-03 (directory and profile read the `member_directory` view; markup and CSS unchanged; old numeric URLs resolve through `legacy_id`) |
+| MEM-003 | Members edit their profile and directory visibility ⛔ Q-030 | P0 | 5 | — | ✅ Done 2026-10-03 (`/account/member-profile`, visibility switch, leave the community) |
+| MEM-004 | Legacy member import + claim flow ⛔ Q-026, Q-038 | P0 | 8 | — | ✅ Done 2026-10-03 (idempotent import with dry-run report, claim invites, one-time hashed tokens, `/claim/[token]`) |
 
 ## Technical Tasks
 
@@ -43,9 +43,9 @@ Every story also follows the [standard vertical-slice tasks](../../work-breakdow
 
 ## Acceptance Criteria
 
-- [ ] Anon `select * from members` is denied (pgTAP).
-- [ ] The directory shows only opted-in active members; visual check unchanged.
-- [ ] An accepted application creates exactly one member row (idempotent).
+- [x] Anon `select * from members` is denied (pgTAP).
+- [x] The directory shows only opted-in active members; visual check unchanged.
+- [x] An accepted application creates exactly one member row (idempotent).
 - [ ] CI green, including the public-page visual check; all stories meet the [Definition of Done](../../definition-of-done.md)
 - [ ] Deployed to staging; demo script executed
 
@@ -74,7 +74,21 @@ Every story also follows the [standard vertical-slice tasks](../../work-breakdow
 ### Completed
 | Item | Details |
 | ---- | ------- |
+| Migrations | `20270117000000_members_v2.sql`: legacy table renamed to `members_legacy` (no grants), new `members` (suspension needs a reason, https links), idempotent `private.import_legacy_members()` + `legacy_import_preview()` dry-run, `member_directory` view (active + visible, public columns, compatibility aliases for the unchanged UI), RLS (own / `members.view` / `members.manage`), `member_claim_tokens` (hashed, 7 days, single use), `update_my_member_profile`, `set_member_status` (ends committee roles), `create_member_claim_token`, `preview_member_claim`, `claim_legacy_member`, `claim_membership_application`, `decide_membership_applications`, view `membership_review_queue`; real `is_active_member()` / `applicant_is_member()`; `20270117000100_export_audit.sql` (`record_export`) |
+| pgTAP | `08_members_and_review.sql` (60 assertions): import idempotency, directory privacy, self-decision, capacity under bulk decisions, one member per person, applicant view without the note, self-service limits, status changes and role ending, claim token rules (hashed, mismatch, expiry, single use), members-only events, audit and export audit |
+| Module | `src/modules/members/` (schemas, queries, actions, messages, components), `src/modules/membership/review-{queries,actions}.ts`, notifications `membership.application_accepted/rejected/waitlisted` and `member.claim_invite` (token hashed in the idempotency key) |
+| Screens | `/dashboard/membership/applications` (+ detail), `/dashboard/members`, `/account/member-profile`, `/claim/[token]`; public `/members` and `/members/[id]` now read `member_directory` |
+| Navigation | sidebar items *Applications* and *Members* are live; every item of the documented tree except articles, committees, reports and audit/e-mail/settings is built |
+| Tests | 10 unit tests, 3 new E2E (bulk accept → mails → member → profile and visibility; self-decision refused; claim flow with the wrong and the right account), RBAC sidebar expectations updated, public directory visual baselines unchanged |
 
 ### Known Gaps
 | Gap | Notes / follow-up |
 | --- | ----------------- |
+| Committee roles require an active member | `assign_role` now enforces the documented rule for real; E2E personas and the dev persona script create member rows; assigning a position to a non-member returns `NOT_ACTIVE_MEMBER` |
+| Directory filters in the URL and "load more" | The public directory still filters in the browser (as before); URL filters and cursor paging are backlog (the view is ready) |
+| Social icons without links | The profile page still renders placeholder `#` icons (ME-3 UI part) — a visual change that needs sign-off, deferred |
+| Moderated profile edits (Q-030) | Not implemented; edits go live immediately |
+| Duplicate-merge of legacy members | The dry-run report lists duplicate names; merging is a manual SQL task before invites are sent |
+| Sub-major data | Sub-majors come from legacy values only; reference-data admin can add more |
+| Membership expiry / renewal (Q-012) | Intentionally absent |
+| E-mail log screen | `email_logs` rows exist and are RLS-scoped; the admin screen is Sprint 09 |

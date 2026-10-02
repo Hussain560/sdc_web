@@ -6,12 +6,15 @@ type Lang = 'ar' | 'en';
 
 /** Mocks every Supabase call the public pages make, so runs are deterministic. */
 async function mockSupabase(page: Page) {
-  await page.route('**/rest/v1/members*', async (route) => {
+  await page.route('**/rest/v1/member_directory*', async (route) => {
     const url = new URL(route.request().url());
     const idFilter = url.searchParams.get('id');
+    const legacyFilter = url.searchParams.get('legacy_id');
     const single = route.request().headers()['accept']?.includes('vnd.pgrst.object');
     let rows = members;
     if (idFilter?.startsWith('eq.')) rows = members.filter((m) => `eq.${m.id}` === idFilter);
+    if (legacyFilter?.startsWith('eq.'))
+      rows = members.filter((m) => `eq.${m.legacy_id}` === legacyFilter);
     const body = single ? (rows[0] ?? null) : rows;
     await route.fulfill({
       status: single && !rows[0] ? 406 : 200,

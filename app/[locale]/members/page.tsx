@@ -60,7 +60,7 @@ function toLeadershipCard(r: PositionRow): LeadershipCard {
 }
 
 // عشان ما يتكرر أي شخص موجود فعليًا كعضو بالجدول ظاهر فوق بالهرم —
-// حط رقم الـ id تبعه من Supabase هنا فيتم استثناؤه من قائمة "الأعضاء" تلقائيًا
+// حط رقم الـ legacy_id تبعه هنا فيتم استثناؤه من قائمة "الأعضاء" تلقائيًا
 const MEMBER_IDS_SHOWN_ABOVE: readonly number[] = [10, 15, 3]; // مهند الحربي، ريم الشمري، جواهر
 
 type FilterCategory = 'universities' | 'majors' | 'subMajors' | 'statuses' | 'tracks';
@@ -68,7 +68,7 @@ type SelectedFilters = Record<FilterCategory, string[]>;
 type FilterOptions = Record<FilterCategory, Localized[]>;
 
 interface DirectoryMember {
-  id: number;
+  id: string;
   name: Localized;
   role: Localized;
   subMajor: Localized;
@@ -235,7 +235,7 @@ export default function MembersPage() {
 
   useEffect(() => {
     async function fetchMembers() {
-      const { data, error } = await supabase.from('members').select('*');
+      const { data, error } = await supabase.from('member_directory').select('*');
 
       if (error) {
         console.error('Error fetching members:', error);
@@ -243,7 +243,7 @@ export default function MembersPage() {
         return;
       }
 
-      const rows = (data || []).filter((m) => !MEMBER_IDS_SHOWN_ABOVE.includes(m.id));
+      const rows = (data || []).filter((m) => !MEMBER_IDS_SHOWN_ABOVE.includes(m.legacy_id ?? -1));
 
       const formatted = rows.map((m) => {
         const fullNameAr = `${m.first_name || ''} ${m.last_name || ''}`.trim();
@@ -257,7 +257,7 @@ export default function MembersPage() {
         );
 
         return {
-          id: m.id,
+          id: m.id ?? '',
           name: { ar: fullNameAr, en: fullNameEn },
           role: { ar: m.major || '', en: m.major_en || m.major || '' },
           subMajor: { ar: m.sub_major || '', en: m.sub_major_en || m.sub_major || '' },

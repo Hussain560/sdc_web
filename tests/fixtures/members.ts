@@ -25,7 +25,9 @@ const names = [
 
 export const members = names.map(([fa, la, fe, le], i) => ({
   ...base,
-  id: 100 + i,
+  // The directory view exposes a uuid (new links) and the old numeric id (legacy URLs).
+  id: `00000000-0000-4000-8000-00000000010${i}`,
+  legacy_id: 100 + i,
   first_name: fa,
   last_name: la,
   first_name_en: fe,

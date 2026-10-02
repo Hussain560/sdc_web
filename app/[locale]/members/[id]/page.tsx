@@ -11,7 +11,7 @@ import type { Localized } from '@/types/content';
 import './details.css';
 
 interface MemberDetails {
-  id: number;
+  id: string;
   name: Localized;
   role: Localized;
   university: Localized;
@@ -39,11 +39,12 @@ export default function MemberDetailsPage() {
 
   useEffect(() => {
     async function fetchMember() {
-      const { data, error } = await supabase
-        .from('members')
-        .select('*')
-        .eq('id', parseInt(String(memberId), 10))
-        .single();
+      // New links use the uuid; old numeric links resolve through legacy_id while the member is visible (ME-7).
+      const raw = String(memberId);
+      const query = supabase.from('member_directory').select('*');
+      const { data, error } = await (
+        /^\d+$/.test(raw) ? query.eq('legacy_id', parseInt(raw, 10)) : query.eq('id', raw)
+      ).maybeSingle();
 
       if (error || !data) {
         console.error('Error fetching member:', error);
@@ -64,7 +65,7 @@ export default function MemberDetailsPage() {
       );
 
       setMember({
-        id: data.id,
+        id: data.id ?? '',
         name: { ar: fullNameAr, en: fullNameEn },
         role: { ar: data.major || '', en: data.major_en || data.major || '' },
         university: { ar: data.university || '', en: data.university_en || data.university || '' },

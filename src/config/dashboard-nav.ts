@@ -157,7 +157,7 @@ export const DASHBOARD_NAV: NavGroupDef[] = [
         href: '/dashboard/membership/applications',
         icon: 'clipboard',
         requires: { permission: 'membership.review', scope: 'any' },
-        ready: false,
+        ready: true,
       },
       {
         key: 'members',
@@ -165,7 +165,7 @@ export const DASHBOARD_NAV: NavGroupDef[] = [
         href: '/dashboard/members',
         icon: 'users',
         requires: { permission: 'members.view', scope: 'any' },
-        ready: false,
+        ready: true,
       },
       {
         key: 'committees',

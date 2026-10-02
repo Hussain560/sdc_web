@@ -86,8 +86,8 @@ Every story also follows the [standard vertical-slice tasks](../../work-breakdow
 ### Known Gaps
 | Gap | Notes / follow-up |
 | --- | ----------------- |
-| Review and decisions | Sprint 08 (claim, bulk decide, member creation, decision e-mails, export) |
-| Already-a-member check | `private.applicant_is_member()` returns false until the members table exists (Sprint 08) |
+| Review and decisions | ✅ Delivered in Sprint 08 |
+| Already-a-member check | ✅ Real since Sprint 08 (`applicant_is_member()` reads `members`) |
 | Privacy notice | The consent text and version (`CONSENT_VERSION`) are placeholders until Q-031 is answered |
 | Phone and preferred committee | Optional, per Q-011/Q-013 defaults |
 | Merge duplicates and "needs mapping" list | Reference-data merge and the reviewers' mapping of typed "other" answers come with the review screen (Sprint 08) |

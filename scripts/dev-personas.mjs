@@ -79,6 +79,14 @@ for (const p of personas) {
       [id, p.role, p.committee ?? null],
     );
   }
+  if (p.role) {
+    // Committee roles require an active member (is_active_member is real since Sprint 08).
+    await db.query(
+      `insert into public.members (user_id, joined_via, first_name_ar, is_directory_visible)
+       values ($1, 'manual', $2, false) on conflict (user_id) do nothing`,
+      [id, p.name],
+    );
+  }
   console.log(`${p.role ?? 'plain user'}`.padEnd(18), p.email);
 }
 

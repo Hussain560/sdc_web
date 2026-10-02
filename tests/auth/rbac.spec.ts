@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-import { grant, onlyAdmins, removeAssignments } from './db';
+import { grant, onlyAdmins, removeAssignments, sql } from './db';
 import {
   createConfirmedUser,
   deleteUser,
@@ -14,7 +14,12 @@ type Persona = { id: string; email: string };
 
 async function persona(
   role: string | null,
-  opts: { committeeSlug?: string; fullName?: string; grantOpts?: Parameters<typeof grant>[2] } = {},
+  opts: {
+    committeeSlug?: string;
+    fullName?: string;
+    member?: boolean;
+    grantOpts?: Parameters<typeof grant>[2];
+  } = {},
 ): Promise<Persona> {
   const email = uniqueEmail(role ?? 'plain');
   const id = await createConfirmedUser(email, {
@@ -22,12 +27,20 @@ async function persona(
     locale: 'en',
   });
   if (role) await grant(id, role, { committeeSlug: opts.committeeSlug, ...opts.grantOpts });
+  // Committee roles need an active member (is_active_member is real since Sprint 08).
+  if (opts.member) {
+    await sql(
+      `insert into public.members (user_id, joined_via, first_name_ar) values ($1, 'manual', $2) on conflict (user_id) do nothing`,
+      [id, opts.fullName ?? 'عضو'],
+    );
+  }
   return { id, email };
 }
 
 async function remove(...people: Persona[]) {
   for (const p of people) {
     await removeAssignments(p.id);
+    await sql(`delete from public.members where user_id = $1`, [p.id]);
     await deleteUser(p.id);
   }
 }
@@ -68,7 +81,12 @@ const cases: Array<{
     name: 'founder',
     role: 'founder',
     start: '/en/dashboard',
-    expected: ['/en/dashboard', '/en/dashboard/events', '/en/dashboard/admin/roles'],
+    expected: [
+      '/en/dashboard',
+      '/en/dashboard/events',
+      '/en/dashboard/members',
+      '/en/dashboard/admin/roles',
+    ],
   },
   {
     name: 'community leader',
@@ -79,6 +97,8 @@ const cases: Array<{
       '/en/dashboard/events',
       '/en/dashboard/registrations',
       '/en/dashboard/membership/cycles',
+      '/en/dashboard/membership/applications',
+      '/en/dashboard/members',
       '/en/dashboard/admin/users',
       '/en/dashboard/admin/roles',
       '/en/dashboard/admin/reference-data',
@@ -93,6 +113,8 @@ const cases: Array<{
       '/en/dashboard/events',
       '/en/dashboard/registrations',
       '/en/dashboard/membership/cycles',
+      '/en/dashboard/membership/applications',
+      '/en/dashboard/members',
       '/en/dashboard/admin/users',
       '/en/dashboard/admin/roles',
       '/en/dashboard/admin/reference-data',
@@ -163,7 +185,10 @@ test.describe('assigning and ending positions', () => {
       committeeSlug: 'projects',
       fullName: `Outgoing Head ${tag}`,
     });
-    const candidate = await persona(null, { fullName: `Incoming Candidate ${tag}` });
+    const candidate = await persona(null, {
+      fullName: `Incoming Candidate ${tag}`,
+      member: true,
+    });
     try {
       await signInAndWait(page, leader.email, undefined, '/en/login');
       await gotoReady(page, '/en/dashboard/admin/roles');
@@ -353,16 +378,16 @@ test.describe('public leadership comes from the database', () => {
       await signInAndWait(page, plain.email, undefined, '/en/login');
       await gotoReady(page, '/en/dashboard/registrations');
       // A plain user is sent to the account area; nothing of the review queue renders.
-      await expect(page.getByRole('heading', { name: 'Registrations', exact: true })).toHaveCount(
-        0,
-      );
+      await expect(
+        page.getByRole('heading', { name: 'Registrations', exact: true, level: 1 }),
+      ).toHaveCount(0);
 
       const ctx = await browser.newContext({ baseURL: 'http://127.0.0.1:3300' });
       const other = await ctx.newPage();
       await signInAndWait(other, reviewer.email, undefined, '/en/login');
       await gotoReady(other, '/en/dashboard/registrations');
       await expect(
-        other.getByRole('heading', { name: 'Registrations', exact: true }),
+        other.getByRole('heading', { name: 'Registrations', exact: true, level: 1 }),
       ).toBeVisible();
       await ctx.close();
     } finally {

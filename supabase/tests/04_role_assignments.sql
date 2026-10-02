@@ -21,6 +21,10 @@ insert into auth.users (id, aud, role, email, raw_user_meta_data) values
   ('00000000-0000-0000-0000-00000000b008', 'authenticated', 'authenticated', 'member1@example.test','{"full_name":"Member Person One"}'),
   ('00000000-0000-0000-0000-00000000b009', 'authenticated', 'authenticated', 'sched@example.test',  '{"full_name":"Scheduled Person"}');
 
+-- Committee roles require an active member (is_active_member is real since Sprint 08): the fixtures are members.
+insert into public.members (user_id, joined_via, first_name_ar)
+select id, 'manual', 'عضو' from public.profiles where id::text like '00000000-0000-0000-0000-00000000b%';
+
 insert into public.role_assignments (user_id, role_key, committee_id, display_title_ar, public_bio_en, public_tags_en) values
   ('00000000-0000-0000-0000-00000000b001', 'system_admin', null, null, null, null),
   ('00000000-0000-0000-0000-00000000b002', 'community_leader', null, 'قائد المجتمع', 'Runs the community', array['Leadership']);
