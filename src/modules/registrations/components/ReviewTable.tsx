@@ -1,7 +1,8 @@
 'use client';
 
+import { Check, Clock, Send, X } from 'lucide-react';
 import { useMemo, useState, useTransition } from 'react';
-import { Alert, Badge, Button, Dialog, Textarea } from '@/components/ui';
+import { Badge, Button, Dialog, Textarea, useToast, Avatar, IconAction } from '@/components/ui';
 import { useLanguage } from '@/context/LanguageContext';
 import { useRouter } from '@/i18n/navigation';
 import { formatRelative } from '@/lib/format';
@@ -27,10 +28,7 @@ export function ReviewTable({ rows }: { rows: ReviewRow[] }) {
   const router = useRouter();
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [busy, startTransition] = useTransition();
-  const [report, setReport] = useState<{
-    tone: 'success' | 'warning' | 'danger';
-    text: string;
-  } | null>(null);
+  const toast = useToast();
   const [cancelId, setCancelId] = useState<string | null>(null);
   const [reason, setReason] = useState('');
   const [cancelError, setCancelError] = useState('');
@@ -50,28 +48,23 @@ export function ReviewTable({ rows }: { rows: ReviewRow[] }) {
     const okCount = results.filter((r) => r.ok).length;
     const failed = results.filter((r) => !r.ok);
     if (failed.length === 0) {
-      setReport({
-        tone: 'success',
-        text: ar ? `تم تنفيذ القرار على ${okCount}.` : `Decision applied to ${okCount}.`,
-      });
+      toast.success(ar ? `تم تنفيذ القرار على ${okCount}.` : `Decision applied to ${okCount}.`);
       return;
     }
     const first = failed[0]!;
     const why = first.code ? registrationMessage(first.code, lang) : '';
-    setReport({
-      tone: 'warning',
-      text: ar
+    toast.warning(
+      ar
         ? `نجح ${okCount} وتعذّر ${failed.length}. ${why}`
         : `${okCount} succeeded, ${failed.length} could not be changed. ${why}`,
-    });
+    );
   };
 
   const decide = (ids: string[], decision: Decision) => {
-    setReport(null);
     startTransition(async () => {
       const r = await decideRegistrations({ ids, decision }, { lang });
       if (!r.ok) {
-        setReport({ tone: 'danger', text: r.message });
+        toast.error(r.message);
         return;
       }
       summarize(r.data);
@@ -81,14 +74,10 @@ export function ReviewTable({ rows }: { rows: ReviewRow[] }) {
   };
 
   const resend = (id: string) => {
-    setReport(null);
     startTransition(async () => {
       const r = await resendRegistrationMail(id, { lang });
-      setReport(
-        r.ok
-          ? { tone: 'success', text: ar ? 'تمت جدولة إعادة الإرسال.' : 'Resend scheduled.' }
-          : { tone: 'danger', text: r.message },
-      );
+      if (r.ok) toast.success(ar ? 'تمت جدولة إعادة الإرسال.' : 'Resend scheduled.');
+      else toast.error(r.message);
       router.refresh();
     });
   };
@@ -104,22 +93,17 @@ export function ReviewTable({ rows }: { rows: ReviewRow[] }) {
       }
       setCancelId(null);
       setReason('');
-      setReport({
-        tone: 'success',
-        text: ar
-          ? 'أُلغي التسجيل وأُبلغ المسجّل.'
-          : 'Registration cancelled and the person notified.',
-      });
+      toast.success(
+        ar ? 'أُلغي التسجيل وأُبلغ المسجّل.' : 'Registration cancelled and the person notified.',
+      );
       router.refresh();
     });
   };
 
-  const th = 'px-4 py-3 text-start font-medium';
+  const th = 'px-4 py-2.5 text-start text-xs font-medium';
 
   return (
     <div className="flex flex-col gap-3">
-      {report && <Alert tone={report.tone}>{report.text}</Alert>}
-
       <div className="flex flex-wrap items-center gap-2" aria-live="polite">
         <span className="text-sm text-muted">
           {selected.size > 0
@@ -152,9 +136,9 @@ export function ReviewTable({ rows }: { rows: ReviewRow[] }) {
         </Button>
       </div>
 
-      <div className="overflow-x-auto rounded-2xl border border-line bg-surface">
+      <div className="overflow-x-auto rounded-xl border border-line bg-surface">
         <table className="w-full min-w-[880px] text-sm">
-          <thead className="border-b border-line text-xs text-muted">
+          <thead className="border-b border-line bg-surface-raised text-muted">
             <tr>
               <th scope="col" className="w-10 px-4 py-3">
                 <input
@@ -193,7 +177,10 @@ export function ReviewTable({ rows }: { rows: ReviewRow[] }) {
               const canCancel =
                 r.status === 'pending' || r.status === 'accepted' || r.status === 'waitlisted';
               return (
-                <tr key={r.id} className="border-b border-line align-top last:border-0">
+                <tr
+                  key={r.id}
+                  className="border-b border-line align-middle transition-colors last:border-0 hover:bg-surface-raised"
+                >
                   <td className="px-4 py-3">
                     <input
                       type="checkbox"
@@ -204,10 +191,19 @@ export function ReviewTable({ rows }: { rows: ReviewRow[] }) {
                     />
                   </td>
                   <td className="px-4 py-3">
-                    <p className="font-medium">{r.fullName}</p>
-                    <p className="text-xs text-muted" dir="ltr">
-                      {r.email}
-                    </p>
+                    <div className="flex items-center gap-3">
+                      <Avatar name={r.fullName} />
+                      <div className="min-w-0">
+                        <p className="truncate font-medium">{r.fullName}</p>
+                        <p
+                          className="truncate text-xs text-muted"
+                          dir="ltr"
+                          style={{ textAlign: 'start' }}
+                        >
+                          {r.email}
+                        </p>
+                      </div>
+                    </div>
                   </td>
                   <td className="px-4 py-3">
                     {ar ? r.eventTitleAr : r.eventTitleEn || r.eventTitleAr}
@@ -233,49 +229,50 @@ export function ReviewTable({ rows }: { rows: ReviewRow[] }) {
                         disabled={busy}
                         onClick={() => resend(r.id)}
                       >
+                        <Send size={11} aria-hidden="true" className="me-1 inline" />
                         {ar ? 'إعادة الإرسال' : 'Resend'}
                       </button>
                     )}
                   </td>
                   <td className="px-4 py-3">
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex items-center justify-end gap-1">
                       {(r.status === 'pending' ||
                         r.status === 'waitlisted' ||
                         r.status === 'rejected') && (
-                        <Button
-                          className="min-h-8 px-3 text-xs"
+                        <IconAction
+                          label={ar ? 'قبول' : 'Accept'}
+                          tone="accent"
                           disabled={busy}
                           onClick={() => decide([r.id], 'accept')}
                         >
-                          {ar ? 'قبول' : 'Accept'}
-                        </Button>
+                          <Check size={16} aria-hidden="true" />
+                        </IconAction>
                       )}
                       {r.status === 'pending' && (
-                        <Button
-                          variant="secondary"
-                          className="min-h-8 px-3 text-xs"
+                        <IconAction
+                          label={ar ? 'قائمة الانتظار' : 'Waitlist'}
                           disabled={busy}
                           onClick={() => decide([r.id], 'waitlist')}
                         >
-                          {ar ? 'انتظار' : 'Waitlist'}
-                        </Button>
+                          <Clock size={16} aria-hidden="true" />
+                        </IconAction>
                       )}
                       {(r.status === 'pending' ||
                         r.status === 'waitlisted' ||
                         r.status === 'accepted') && (
-                        <Button
-                          variant="ghost"
-                          className="min-h-8 px-3 text-xs"
+                        <IconAction
+                          label={ar ? 'رفض' : 'Reject'}
+                          tone="danger"
                           disabled={busy}
                           onClick={() => decide([r.id], 'reject')}
                         >
-                          {ar ? 'رفض' : 'Reject'}
-                        </Button>
+                          <X size={16} aria-hidden="true" />
+                        </IconAction>
                       )}
                       {canCancel && (
-                        <Button
-                          variant="ghost"
-                          className="min-h-8 px-3 text-xs"
+                        <button
+                          type="button"
+                          className="ms-1 rounded-lg px-2 py-1.5 text-xs text-muted hover:bg-canvas hover:text-text disabled:opacity-50"
                           disabled={busy}
                           onClick={() => {
                             setCancelId(r.id);
@@ -283,7 +280,7 @@ export function ReviewTable({ rows }: { rows: ReviewRow[] }) {
                           }}
                         >
                           {ar ? 'إلغاء التسجيل' : 'Cancel'}
-                        </Button>
+                        </button>
                       )}
                     </div>
                   </td>

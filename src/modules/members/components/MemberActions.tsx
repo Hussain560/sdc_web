@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useTransition } from 'react';
-import { Alert, Button, Dialog, Field, Textarea } from '@/components/ui';
+import { Button, Dialog, Field, Textarea, useToast } from '@/components/ui';
 import { useLanguage } from '@/context/LanguageContext';
 import { useRouter } from '@/i18n/navigation';
 import { sendClaimInvite, setMemberStatus } from '../actions';
@@ -29,34 +29,44 @@ export function MemberActions({
   const [dialog, setDialog] = useState<Pending>(null);
   const [reason, setReason] = useState('');
   const [email, setEmail] = useState(claimEmail ?? '');
-  const [error, setError] = useState('');
-  const [done, setDone] = useState('');
+  const toast = useToast();
   const [busy, startTransition] = useTransition();
 
   if (!canManage) return null;
 
   const close = () => {
     setDialog(null);
-    setError('');
     setReason('');
   };
 
   const submit = () => {
-    setError('');
     startTransition(async () => {
       if (dialog === 'invite') {
         const r = await sendClaimInvite({ memberId: id, email }, { lang });
         if (!r.ok) {
-          setError(r.message);
+          toast.error(r.message);
           return;
         }
-        setDone(ar ? 'أُرسلت الدعوة.' : 'Invite sent.');
+        toast.success(ar ? 'أُرسلت الدعوة.' : 'Invite sent.');
       } else if (dialog) {
         const r = await setMemberStatus({ id, status: dialog as MemberStatus, reason }, { lang });
         if (!r.ok) {
-          setError(r.message);
+          toast.error(r.message);
           return;
         }
+        toast.success(
+          dialog === 'suspended'
+            ? ar
+              ? 'أُوقفت العضوية.'
+              : 'Membership suspended.'
+            : dialog === 'active'
+              ? ar
+                ? 'أُعيد تفعيل العضو.'
+                : 'Member reinstated.'
+              : ar
+                ? 'أُلغي تفعيل العضو.'
+                : 'Member deactivated.',
+        );
       }
       close();
       router.refresh();
@@ -73,7 +83,6 @@ export function MemberActions({
 
   return (
     <div className="flex flex-wrap items-center gap-2">
-      {done && <span className="text-xs text-accent">{done}</span>}
       {status === 'active' && (
         <>
           <Button variant="ghost" className={small} onClick={() => setDialog('suspended')}>
@@ -136,7 +145,6 @@ export function MemberActions({
                 : "The member's committee roles end and they are hidden from the directory."}
             </p>
           )}
-          {error && <Alert tone="danger">{error}</Alert>}
           <div className="flex justify-end gap-2">
             <Button variant="ghost" onClick={close} disabled={busy}>
               {ar ? 'تراجع' : 'Back'}

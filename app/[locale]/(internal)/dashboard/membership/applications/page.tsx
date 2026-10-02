@@ -1,5 +1,5 @@
 import { Inbox } from 'lucide-react';
-import { EmptyState, Pagination, Tabs, type TabItem } from '@/components/ui';
+import { EmptyState, ExportButton, Pagination, Tabs, type TabItem } from '@/components/ui';
 import { Forbidden } from '@/components/layout/Forbidden';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { Link } from '@/i18n/navigation';
@@ -82,12 +82,7 @@ export default async function ApplicationsPage({
         }
         action={
           canExport ? (
-            <a
-              href={exportHref}
-              className="inline-flex min-h-10 items-center rounded-full border border-line-accent px-5 text-sm font-semibold text-accent hover:bg-surface-raised"
-            >
-              {ar ? 'تصدير CSV' : 'Export CSV'}
-            </a>
+            <ExportButton href={exportHref} filename="membership-applications.csv" />
           ) : undefined
         }
       />
@@ -104,23 +99,23 @@ export default async function ApplicationsPage({
         label={ar ? 'حالة الطلب' : 'Application status'}
       />
 
-      <form method="get" className="mb-4 flex flex-wrap items-end gap-3">
+      <form method="get" className="mb-4 flex flex-wrap items-center gap-x-4 gap-y-2">
         {status && <input type="hidden" name="status" value={status} />}
-        <label className="flex flex-col gap-1 text-xs text-muted">
+        <label className="flex items-center gap-2 text-xs text-muted">
           {ar ? 'بحث' : 'Search'}
           <input
             name="q"
             defaultValue={sp.q ?? ''}
             placeholder={ar ? 'الاسم أو البريد…' : 'Name or e-mail…'}
-            className="min-h-10 w-56 rounded-xl border border-line bg-surface-raised px-3 text-sm text-text"
+            className="h-9 w-56 rounded-lg border border-line bg-surface px-3 text-sm text-text placeholder:text-muted focus-visible:outline-2 focus-visible:outline-accent"
           />
         </label>
-        <label className="flex flex-col gap-1 text-xs text-muted">
+        <label className="flex items-center gap-2 text-xs text-muted">
           {ar ? 'الدورة' : 'Cycle'}
           <select
             name="cycle"
             defaultValue={sp.cycle ?? ''}
-            className="min-h-10 max-w-64 rounded-xl border border-line bg-surface-raised px-3 text-sm text-text"
+            className="h-9 max-w-64 rounded-lg border border-line bg-surface px-3 text-sm text-text placeholder:text-muted focus-visible:outline-2 focus-visible:outline-accent"
           >
             <option value="">{ar ? 'الكل' : 'All'}</option>
             {cycles.map((c) => (
@@ -132,14 +127,14 @@ export default async function ApplicationsPage({
         </label>
         <button
           type="submit"
-          className="min-h-10 rounded-full border border-line-accent px-5 text-sm font-semibold text-accent"
+          className="inline-flex h-9 items-center rounded-full border border-line-accent px-4 text-sm font-semibold text-accent hover:bg-surface-raised focus-visible:outline-2 focus-visible:outline-accent"
         >
           {ar ? 'تطبيق' : 'Apply'}
         </button>
         {(sp.q || sp.cycle) && (
           <Link
             href={status ? `?status=${status}` : '?'}
-            className="min-h-10 self-center text-sm text-muted underline"
+            className="inline-flex h-9 items-center text-sm text-muted hover:text-text"
           >
             {ar ? 'مسح التصفية' : 'Reset filters'}
           </Link>

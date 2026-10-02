@@ -128,7 +128,6 @@ test.describe('sidebar per persona (role → view matrix)', () => {
       const p = await persona(c.role, { committeeSlug: c.committeeSlug });
       try {
         await signInAndWait(page, p.email, undefined, '/en/login');
-        await expectHeaderName(page, /./);
         await gotoReady(page, c.start);
         await expect(page.locator('nav[aria-label="Internal navigation"]')).toBeVisible();
         expect(await sidebarLinks(page)).toEqual(c.expected);
@@ -149,7 +148,6 @@ test.describe('route protection', () => {
     const p = await persona(null);
     try {
       await signInAndWait(page, p.email, undefined, '/en/login');
-      await expectHeaderName(page, /./);
       await gotoReady(page, '/en/dashboard');
       await expect(page).toHaveURL(/\/en\/account$/);
     } finally {

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useTransition } from 'react';
-import { Alert, Button, Field, Select, Textarea } from '@/components/ui';
+import { Alert, Button, Field, Select, Textarea, useToast } from '@/components/ui';
 import { useLanguage } from '@/context/LanguageContext';
 import { useRouter } from '@/i18n/navigation';
 import { saveCycle, transitionCycle } from '../actions';
@@ -50,7 +50,7 @@ export function CycleForm({
   const router = useRouter();
   const [v, setV] = useState<CycleFormValues>(initial ?? empty());
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [formError, setFormError] = useState('');
+  const toast = useToast();
   const [pending, startTransition] = useTransition();
 
   const set = <K extends keyof CycleFormValues>(k: K, value: CycleFormValues[K]) => {
@@ -85,19 +85,21 @@ export function CycleForm({
   const save = (then: 'stay' | 'publish' | 'open_now') => {
     const found = validateCycle(v, lang);
     setErrors(found);
-    setFormError('');
-    if (Object.keys(found).length > 0) return;
+    if (Object.keys(found).length > 0) {
+      toast.error(ar ? 'يرجى مراجعة الحقول المحددة.' : 'Please review the highlighted fields.');
+      return;
+    }
     startTransition(async () => {
       const r = await saveCycle({ id, values: v }, { lang });
       if (!r.ok) {
-        setFormError(r.message);
+        toast.error(r.message);
         if (r.fieldErrors) setErrors(r.fieldErrors);
         return;
       }
       if (then !== 'stay') {
         const t = await transitionCycle({ id: r.data.id, action: then }, { lang });
         if (!t.ok) {
-          setFormError(t.message);
+          toast.error(t.message);
           if (t.code === 'CYCLE_OVERLAP' || t.code === 'INVALID_DATES')
             setErrors({ closesAt: t.message });
           // The draft was saved; stay on the edit page so nothing is lost.
@@ -105,6 +107,19 @@ export function CycleForm({
           return;
         }
       }
+      toast.success(
+        then === 'stay'
+          ? ar
+            ? 'تم حفظ المسودة.'
+            : 'Draft saved.'
+          : then === 'publish'
+            ? ar
+              ? 'نُشر الجدول.'
+              : 'Cycle published.'
+            : ar
+              ? 'فُتح باب التقديم.'
+              : 'Applications are open.',
+      );
       router.push('/dashboard/membership/cycles');
     });
   };
@@ -344,8 +359,6 @@ export function CycleForm({
           </div>
         )}
       </section>
-
-      {formError && <Alert tone="danger">{formError}</Alert>}
 
       <div className="flex flex-wrap gap-3">
         <Button type="submit" variant="secondary" loading={pending}>

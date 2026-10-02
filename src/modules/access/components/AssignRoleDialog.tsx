@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, useTransition } from 'react';
 import { useRouter } from '@/i18n/navigation';
-import { Alert, Button, Dialog, Field, Select } from '@/components/ui';
+import { Alert, Button, Dialog, Field, Select, useToast } from '@/components/ui';
 import { useLanguage } from '@/context/LanguageContext';
 import { assignRole, handoverHead, searchUsers } from '../actions';
 import type { CommitteeOption, RoleOption } from '../admin-queries';
@@ -47,6 +47,7 @@ export function AssignRoleDialog({
   const [user, setUser] = useState<Picked | null>(null);
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<Picked[]>([]);
+  const toast = useToast();
   const [error, setError] = useState<{ code: string; message: string } | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
@@ -82,10 +83,14 @@ export function AssignRoleDialog({
     startTransition(async () => {
       const result = await assignRole(payload(), { lang });
       if (!result.ok) {
-        setError({ code: result.code, message: result.message });
+        // The head conflict keeps an inline panel instead: it carries the "hand over" action.
+        if (result.code === 'HEAD_ALREADY_ACTIVE')
+          setError({ code: result.code, message: result.message });
+        else toast.error(result.message);
         setFieldErrors(result.fieldErrors ?? {});
         return;
       }
+      toast.success(ar ? 'تم تعيين المنصب.' : 'Position assigned.');
       setOpen(false);
       reset();
       router.refresh();
@@ -104,9 +109,10 @@ export function AssignRoleDialog({
         { lang },
       );
       if (!result.ok) {
-        setError({ code: result.code, message: result.message });
+        toast.error(result.message);
         return;
       }
+      toast.success(ar ? 'تم تسليم القيادة.' : 'Leadership handed over.');
       setOpen(false);
       reset();
       router.refresh();

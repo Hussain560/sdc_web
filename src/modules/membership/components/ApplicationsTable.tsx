@@ -1,7 +1,8 @@
 'use client';
 
+import { Check, UserCheck, UserMinus, X } from 'lucide-react';
 import { useState, useTransition } from 'react';
-import { Alert, Badge, Button, Dialog, Textarea } from '@/components/ui';
+import { Badge, Button, Dialog, Textarea, useToast, Avatar, IconAction } from '@/components/ui';
 import { useLanguage } from '@/context/LanguageContext';
 import { Link, useRouter } from '@/i18n/navigation';
 import { formatRelative } from '@/lib/format';
@@ -32,10 +33,7 @@ export function ApplicationsTable({
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [pending, setPending] = useState<{ ids: string[]; decision: Decision } | null>(null);
   const [note, setNote] = useState('');
-  const [report, setReport] = useState<{
-    tone: 'success' | 'warning' | 'danger';
-    text: string;
-  } | null>(null);
+  const toast = useToast();
   const [busy, startTransition] = useTransition();
 
   const open = (r: ReviewApplication) =>
@@ -54,19 +52,15 @@ export function ApplicationsTable({
     const okCount = results.filter((r) => r.ok).length;
     const failed = results.filter((r) => !r.ok);
     if (failed.length === 0) {
-      setReport({
-        tone: 'success',
-        text: ar ? `تم تنفيذ القرار على ${okCount}.` : `Decision applied to ${okCount}.`,
-      });
+      toast.success(ar ? `تم تنفيذ القرار على ${okCount}.` : `Decision applied to ${okCount}.`);
       return;
     }
     const why = failed[0]!.code ? membershipMessage(failed[0]!.code, lang) : '';
-    setReport({
-      tone: 'warning',
-      text: ar
+    toast.warning(
+      ar
         ? `نجح ${okCount} وتعذّر ${failed.length}. ${why}`
         : `${okCount} succeeded, ${failed.length} skipped. ${why}`,
-    });
+    );
   };
 
   const run = () => {
@@ -79,7 +73,7 @@ export function ApplicationsTable({
       setPending(null);
       setNote('');
       if (!r.ok) {
-        setReport({ tone: 'danger', text: r.message });
+        toast.error(r.message);
         return;
       }
       summarize(r.data);
@@ -89,16 +83,24 @@ export function ApplicationsTable({
   };
 
   const claim = (id: string, release: boolean) => {
-    setReport(null);
     startTransition(async () => {
       const r = await claimApplication({ id, release }, { lang });
-      if (!r.ok) setReport({ tone: 'danger', text: r.message });
+      if (!r.ok) toast.error(r.message);
+      else
+        toast.success(
+          release
+            ? ar
+              ? 'أُفلت الطلب.'
+              : 'Application released.'
+            : ar
+              ? 'استلمت الطلب للمراجعة.'
+              : 'Application claimed.',
+        );
       router.refresh();
     });
   };
 
   const ask = (ids: string[], decision: Decision) => {
-    setReport(null);
     setPending({ ids, decision });
   };
 
@@ -107,11 +109,10 @@ export function ApplicationsTable({
     reject: ar ? 'رفض الطلبات' : 'Reject applications',
     waitlist: ar ? 'نقل إلى قائمة الانتظار' : 'Move to the waiting list',
   };
-  const th = 'px-4 py-3 text-start font-medium';
+  const th = 'px-4 py-2.5 text-start text-xs font-medium';
 
   return (
     <div className="flex flex-col gap-3">
-      {report && <Alert tone={report.tone}>{report.text}</Alert>}
       <div className="flex flex-wrap items-center gap-2" aria-live="polite">
         <span className="text-sm text-muted">
           {selected.size > 0
@@ -141,9 +142,9 @@ export function ApplicationsTable({
         </Button>
       </div>
 
-      <div className="overflow-x-auto rounded-2xl border border-line bg-surface">
+      <div className="overflow-x-auto rounded-xl border border-line bg-surface">
         <table className="w-full min-w-[900px] text-sm">
-          <thead className="border-b border-line text-xs text-muted">
+          <thead className="border-b border-line bg-surface-raised text-xs text-muted">
             <tr>
               <th scope="col" className="w-10 px-4 py-3">
                 <input
@@ -179,7 +180,10 @@ export function ApplicationsTable({
               const claimedByOther = r.status === 'under_review' && !mine;
               const own = false;
               return (
-                <tr key={r.id} className="border-b border-line align-top last:border-0">
+                <tr
+                  key={r.id}
+                  className="border-b border-line align-middle transition-colors last:border-0 hover:bg-surface-raised"
+                >
                   <td className="px-4 py-3">
                     <input
                       type="checkbox"
@@ -192,15 +196,24 @@ export function ApplicationsTable({
                     />
                   </td>
                   <td className="px-4 py-3">
-                    <Link
-                      href={`/dashboard/membership/applications/${r.id}`}
-                      className="font-medium hover:text-accent"
-                    >
-                      {ar ? r.fullNameAr : r.fullNameEn || r.fullNameAr}
-                    </Link>
-                    <p className="text-xs text-muted" dir="ltr">
-                      {r.email}
-                    </p>
+                    <div className="flex items-center gap-3">
+                      <Avatar name={ar ? r.fullNameAr : r.fullNameEn || r.fullNameAr} />
+                      <div className="min-w-0">
+                        <Link
+                          href={`/dashboard/membership/applications/${r.id}`}
+                          className="block truncate font-medium hover:text-accent"
+                        >
+                          {ar ? r.fullNameAr : r.fullNameEn || r.fullNameAr}
+                        </Link>
+                        <p
+                          className="truncate text-xs text-muted"
+                          dir="ltr"
+                          style={{ textAlign: 'start' }}
+                        >
+                          {r.email}
+                        </p>
+                      </div>
+                    </div>
                   </td>
                   <td className="px-4 py-3 text-muted">
                     {[
@@ -221,44 +234,43 @@ export function ApplicationsTable({
                     )}
                   </td>
                   <td className="px-4 py-3">
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex items-center justify-end gap-1">
                       {r.status === 'submitted' && (
-                        <Button
-                          variant="ghost"
-                          className="min-h-8 px-3 text-xs"
+                        <IconAction
+                          label={ar ? 'استلام' : 'Claim'}
                           disabled={busy}
                           onClick={() => claim(r.id, false)}
                         >
-                          {ar ? 'استلام' : 'Claim'}
-                        </Button>
+                          <UserCheck size={16} aria-hidden="true" />
+                        </IconAction>
                       )}
                       {r.status === 'under_review' && (mine || isAdmin) && (
-                        <Button
-                          variant="ghost"
-                          className="min-h-8 px-3 text-xs"
+                        <IconAction
+                          label={ar ? 'إفلات' : 'Release'}
                           disabled={busy}
                           onClick={() => claim(r.id, true)}
                         >
-                          {ar ? 'إفلات' : 'Release'}
-                        </Button>
+                          <UserMinus size={16} aria-hidden="true" />
+                        </IconAction>
                       )}
                       {open(r) && !own && (
                         <>
-                          <Button
-                            className="min-h-8 px-3 text-xs"
+                          <IconAction
+                            label={ar ? 'قبول' : 'Accept'}
+                            tone="accent"
                             disabled={busy || claimedByOther}
                             onClick={() => ask([r.id], 'accept')}
                           >
-                            {ar ? 'قبول' : 'Accept'}
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            className="min-h-8 px-3 text-xs"
+                            <Check size={16} aria-hidden="true" />
+                          </IconAction>
+                          <IconAction
+                            label={ar ? 'رفض' : 'Reject'}
+                            tone="danger"
                             disabled={busy || claimedByOther}
                             onClick={() => ask([r.id], 'reject')}
                           >
-                            {ar ? 'رفض' : 'Reject'}
-                          </Button>
+                            <X size={16} aria-hidden="true" />
+                          </IconAction>
                         </>
                       )}
                     </div>

@@ -1,5 +1,6 @@
 'use client';
 
+import { useToast } from '@/components/ui';
 import React, { useState } from 'react';
 import { Link, useRouter } from '@/i18n/navigation';
 import Header from '@/components/Header/Header';
@@ -13,9 +14,9 @@ export default function ResetPasswordForm({ hasSession }: { hasSession: boolean 
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const [errorMsg, setErrorMsg] = useState('');
   const [showSuccess, setShowSuccess] = useState(false);
   const { lang } = useLanguage();
+  const toast = useToast();
   const isEnglish = lang === 'en';
   const router = useRouter();
 
@@ -25,12 +26,14 @@ export default function ResetPasswordForm({ hasSession }: { hasSession: boolean 
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setErrorMsg('');
     setShowSuccess(false);
 
     const parsed = updatePasswordSchema(lang).safeParse({ password, confirmPassword });
     if (!parsed.success) {
-      setErrorMsg(Object.values(fieldErrorsOf(parsed.error))[0] ?? '');
+      toast.error(
+        Object.values(fieldErrorsOf(parsed.error))[0] ??
+          (isEnglish ? 'Please review the fields.' : 'يرجى مراجعة الحقول.'),
+      );
       return;
     }
 
@@ -40,11 +43,12 @@ export default function ResetPasswordForm({ hasSession }: { hasSession: boolean 
     setLoading(false);
 
     if (!result.ok) {
-      setErrorMsg(Object.values(result.fieldErrors ?? {})[0] ?? result.message);
+      toast.error(Object.values(result.fieldErrors ?? {})[0] ?? result.message);
       return;
     }
 
     setShowSuccess(true);
+    toast.success(isEnglish ? 'Password updated.' : 'تم تحديث كلمة المرور.');
     setTimeout(() => {
       router.replace('/login');
       router.refresh();
@@ -67,23 +71,6 @@ export default function ResetPasswordForm({ hasSession }: { hasSession: boolean 
                 : 'يرجى إدخال كلمة المرور الجديدة أدناه لإكمال عملية إعادة التعيين.'}
             </p>
           </div>
-
-          {errorMsg && (
-            <div
-              style={{
-                background: 'rgba(239,68,68,0.1)',
-                border: '1px solid #ef4444',
-                color: '#ef4444',
-                borderRadius: '8px',
-                padding: '10px 14px',
-                fontSize: '14px',
-                marginBottom: '16px',
-                textAlign: 'center',
-              }}
-            >
-              {errorMsg}
-            </div>
-          )}
 
           {showSuccess && (
             <div
@@ -123,7 +110,6 @@ export default function ResetPasswordForm({ hasSession }: { hasSession: boolean 
                   value={password}
                   onChange={(e) => {
                     setPassword(e.target.value);
-                    setErrorMsg('');
                   }}
                   required
                 />
@@ -142,7 +128,6 @@ export default function ResetPasswordForm({ hasSession }: { hasSession: boolean 
                   value={confirmPassword}
                   onChange={(e) => {
                     setConfirmPassword(e.target.value);
-                    setErrorMsg('');
                   }}
                   required
                 />

@@ -22,17 +22,21 @@ export function Tabs({
   className?: string;
 }) {
   return (
-    <nav aria-label={label} className={cn('mb-4 flex flex-wrap gap-2', className)}>
+    <nav
+      aria-label={label}
+      className={cn('mb-4 flex flex-wrap gap-x-1 border-b border-line', className)}
+    >
       {items.map((t) => (
         <Link
           key={t.key}
           href={t.href}
           aria-current={t.key === active ? 'page' : undefined}
           className={cn(
-            'inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-sm transition-colors',
+            '-mb-px inline-flex items-center gap-2 border-b-2 px-3 py-2.5 text-sm transition-colors',
+            'focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-accent',
             t.key === active
-              ? 'border-line-accent bg-surface-raised font-semibold text-accent'
-              : 'border-line text-muted hover:text-text',
+              ? 'border-accent font-semibold text-text'
+              : 'border-transparent text-muted hover:text-text',
           )}
         >
           {t.label}

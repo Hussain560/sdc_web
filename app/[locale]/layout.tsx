@@ -1,6 +1,7 @@
 import { LanguageProvider } from '@/context/LanguageContext';
 import { SearchProvider } from '@/context/SearchContext';
 import { AuthProvider } from '@/context/AuthContext';
+import { ToastProvider } from '@/components/ui/Toast';
 import { ThemeProvider } from '@/context/ThemeContext';
 import '../globals.css';
 import type { Metadata } from 'next';
@@ -76,7 +77,9 @@ export default async function RootLayout({
           <ThemeProvider>
             <LanguageProvider locale={locale}>
               <AuthProvider>
-                <SearchProvider>{children}</SearchProvider>
+                <SearchProvider>
+                  <ToastProvider>{children}</ToastProvider>
+                </SearchProvider>
               </AuthProvider>
             </LanguageProvider>
           </ThemeProvider>

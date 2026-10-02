@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useToast } from '@/components/ui';
 import { useRouter } from '@/i18n/navigation';
 import { Link } from '@/i18n/navigation';
 import { ArrowRight, ArrowLeft } from 'lucide-react';
@@ -21,31 +22,31 @@ export default function LoginForm({
 }) {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [loading, setLoading] = useState(false);
-  const [errorMsg, setErrorMsg] = useState(initialError ?? '');
   const [errorCode, setErrorCode] = useState<ErrorCode | null>(null);
-  const [notice, setNotice] = useState('');
   const { lang } = useLanguage();
+  const toast = useToast();
   const isEnglish = lang === 'en';
   const router = useRouter();
+  useEffect(() => {
+    if (initialError) toast.error(initialError);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- once, for the error carried in the URL
+  }, []);
   const { refresh } = useAuth();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-    setErrorMsg('');
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
-    setErrorMsg('');
     setErrorCode(null);
-    setNotice('');
 
     const result = await signIn(formData, { lang, redirect: redirectTo });
 
     if (!result.ok) {
       setLoading(false);
-      setErrorMsg(result.message);
+      toast.error(result.message);
       setErrorCode(result.code);
       return;
     }
@@ -57,7 +58,8 @@ export default function LoginForm({
 
   const handleResend = async () => {
     const result = await resendConfirmation({ email: formData.email }, { lang });
-    setNotice(result.ok ? result.data.notice : result.message);
+    if (result.ok) toast.success(result.data.notice);
+    else toast.error(result.message);
   };
 
   return (
@@ -94,50 +96,16 @@ export default function LoginForm({
             </p>
           </div>
 
-          {errorMsg && (
-            <div
-              style={{
-                background: 'rgba(239,68,68,0.1)',
-                border: '1px solid #ef4444',
-                color: '#ef4444',
-                borderRadius: '8px',
-                padding: '10px 14px',
-                fontSize: '14px',
-                marginBottom: '16px',
-                textAlign: 'center',
-              }}
-            >
-              {errorMsg}
-              {errorCode === 'EMAIL_NOT_CONFIRMED' && (
-                <div style={{ marginTop: '8px' }}>
-                  <button
-                    type="button"
-                    className="sdc-login-link"
-                    style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
-                    onClick={handleResend}
-                  >
-                    {isEnglish ? 'Resend confirmation email' : 'إعادة إرسال رسالة التأكيد'}
-                  </button>
-                </div>
-              )}
-            </div>
-          )}
-
-          {notice && (
-            <div
-              role="status"
-              style={{
-                background: 'rgba(0,230,118,0.1)',
-                border: '1px solid #00E676',
-                color: '#00E676',
-                borderRadius: '8px',
-                padding: '10px 14px',
-                fontSize: '14px',
-                marginBottom: '16px',
-                textAlign: 'center',
-              }}
-            >
-              {notice}
+          {errorCode === 'EMAIL_NOT_CONFIRMED' && (
+            <div style={{ marginBottom: '16px', textAlign: 'center' }}>
+              <button
+                type="button"
+                className="sdc-login-link"
+                style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
+                onClick={handleResend}
+              >
+                {isEnglish ? 'Resend confirmation email' : 'إعادة إرسال رسالة التأكيد'}
+              </button>
             </div>
           )}
 

@@ -1,7 +1,7 @@
 'use client';
 
 import { Fragment, useState, useTransition } from 'react';
-import { Alert, Badge, Button, Field } from '@/components/ui';
+import { Badge, Button, Field, useToast } from '@/components/ui';
 import { useLanguage } from '@/context/LanguageContext';
 import { useRouter } from '@/i18n/navigation';
 import { saveReference, type ReferenceTable as Table } from '../actions';
@@ -33,7 +33,7 @@ export function ReferenceTable({
   const [nameAr, setNameAr] = useState('');
   const [nameEn, setNameEn] = useState('');
   const [parentId, setParentId] = useState('');
-  const [error, setError] = useState('');
+  const toast = useToast();
   const [busy, startTransition] = useTransition();
 
   const open = (r?: ReferenceRow) => {
@@ -41,11 +41,9 @@ export function ReferenceTable({
     setNameAr(r?.nameAr ?? '');
     setNameEn(r?.nameEn ?? '');
     setParentId(r?.parentId ? String(r.parentId) : '');
-    setError('');
   };
 
   const persist = (id: number | undefined, extra: { isActive?: boolean } = {}) => {
-    setError('');
     startTransition(async () => {
       const r = await saveReference(
         {
@@ -59,9 +57,22 @@ export function ReferenceTable({
         { lang },
       );
       if (!r.ok) {
-        setError(r.message);
+        toast.error(r.message);
         return;
       }
+      toast.success(
+        extra.isActive === undefined
+          ? ar
+            ? 'تم الحفظ.'
+            : 'Saved.'
+          : extra.isActive
+            ? ar
+              ? 'تم التفعيل.'
+              : 'Activated.'
+            : ar
+              ? 'تم التعطيل.'
+              : 'Deactivated.',
+      );
       setEditId(null);
       router.refresh();
     });
@@ -119,25 +130,24 @@ export function ReferenceTable({
 
   return (
     <div className="flex flex-col gap-3">
-      {error && <Alert tone="danger">{error}</Alert>}
       <div>
         <Button variant="secondary" onClick={() => open()} disabled={editId !== null}>
           {ar ? '+ إضافة' : '+ Add'}
         </Button>
       </div>
-      <div className="overflow-x-auto rounded-2xl border border-line bg-surface">
+      <div className="overflow-x-auto rounded-xl border border-line bg-surface">
         <table className="w-full min-w-[560px] text-sm">
-          <thead className="border-b border-line text-xs text-muted">
+          <thead className="border-b border-line bg-surface-raised text-xs text-muted">
             <tr>
-              <th scope="col" className="px-4 py-3 text-start font-medium">
+              <th scope="col" className="px-4 py-2.5 text-start text-xs font-medium">
                 {ar ? 'الاسم' : 'Name'}
               </th>
               {table === 'majors' && (
-                <th scope="col" className="px-4 py-3 text-start font-medium">
+                <th scope="col" className="px-4 py-2.5 text-start text-xs font-medium">
                   {ar ? 'تخصص رئيسي' : 'Parent'}
                 </th>
               )}
-              <th scope="col" className="px-4 py-3 text-start font-medium">
+              <th scope="col" className="px-4 py-2.5 text-start text-xs font-medium">
                 {ar ? 'الحالة' : 'Status'}
               </th>
               <th scope="col" className="px-4 py-3" />
@@ -149,7 +159,10 @@ export function ReferenceTable({
               editId === r.id ? (
                 <Fragment key={r.id}>{form}</Fragment>
               ) : (
-                <tr key={r.id} className="border-b border-line last:border-0">
+                <tr
+                  key={r.id}
+                  className="border-b border-line transition-colors last:border-0 hover:bg-surface-raised"
+                >
                   <td className="px-4 py-3">
                     <p className="font-medium">{r.nameAr}</p>
                     {r.nameEn && (

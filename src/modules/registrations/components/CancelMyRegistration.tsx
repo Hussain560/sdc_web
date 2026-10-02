@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useTransition } from 'react';
-import { Alert, Button, Dialog } from '@/components/ui';
+import { Button, Dialog, useToast } from '@/components/ui';
 import { useLanguage } from '@/context/LanguageContext';
 import { useRouter } from '@/i18n/navigation';
 import { cancelMyRegistration } from '../actions';
@@ -12,17 +12,17 @@ export function CancelMyRegistration({ id, title }: { id: string; title: string 
   const ar = lang === 'ar';
   const router = useRouter();
   const [open, setOpen] = useState(false);
-  const [error, setError] = useState('');
+  const toast = useToast();
   const [busy, startTransition] = useTransition();
 
   const confirm = () => {
-    setError('');
     startTransition(async () => {
       const r = await cancelMyRegistration(id, { lang });
       if (!r.ok) {
-        setError(r.message);
+        toast.error(r.message);
         return;
       }
+      toast.success(ar ? 'أُلغي تسجيلك.' : 'Your registration was cancelled.');
       setOpen(false);
       router.refresh();
     });
@@ -44,7 +44,6 @@ export function CancelMyRegistration({ id, title }: { id: string; title: string 
               ? `هل تريد إلغاء تسجيلك في «${title}»؟ ستتمكن من التسجيل مجددًا ما دام التسجيل مفتوحًا.`
               : `Cancel your registration for “${title}”? You can register again while registration is open.`}
           </p>
-          {error && <Alert tone="danger">{error}</Alert>}
           <div className="flex justify-end gap-2">
             <Button variant="ghost" onClick={() => setOpen(false)} disabled={busy}>
               {ar ? 'تراجع' : 'Back'}

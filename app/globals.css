@@ -112,3 +112,21 @@ svg {
     line-height: 1.7 !important;
   }
 }
+
+/* Inter (self-hosted) for English text on the internal screens and toasts. Public pages keep Rubik (D-009). */
+@font-face {
+  font-family: 'Inter';
+  src: url('/assets/font/Inter/Inter-VariableFont_opsz%2Cwght.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+.sdc-inter:lang(en),
+.sdc-inter:lang(en) * {
+  font-family:
+    'Inter',
+    system-ui,
+    -apple-system,
+    sans-serif;
+}

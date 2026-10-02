@@ -6,7 +6,7 @@ import type { AccessContext, Localized, PermissionKey } from '@/modules/access/t
  * One list filtered by permissions — never one hardcoded menu per role.
  * Items whose screens are not built yet carry `ready: false` and are filtered out, so the menu never links to a 404.
  */
-export type NavGroupKey = 'general' | 'committee' | 'management' | 'admin';
+export type NavGroupKey = 'general' | 'committee' | 'management' | 'membership' | 'admin';
 
 export type NavIcon =
   | 'dashboard'
@@ -144,30 +144,6 @@ export const DASHBOARD_NAV: NavGroupDef[] = [
         ready: true,
       },
       {
-        key: 'membership-cycles',
-        label: { ar: 'دورات الاستقبال', en: 'Intake cycles' },
-        href: '/dashboard/membership/cycles',
-        icon: 'card',
-        requires: { permission: 'membership.manage_cycles', scope: 'any' },
-        ready: true,
-      },
-      {
-        key: 'membership-applications',
-        label: { ar: 'طلبات العضوية', en: 'Applications' },
-        href: '/dashboard/membership/applications',
-        icon: 'clipboard',
-        requires: { permission: 'membership.review', scope: 'any' },
-        ready: true,
-      },
-      {
-        key: 'members',
-        label: { ar: 'الأعضاء', en: 'Members' },
-        href: '/dashboard/members',
-        icon: 'users',
-        requires: { permission: 'members.view', scope: 'any' },
-        ready: true,
-      },
-      {
         key: 'committees',
         label: { ar: 'اللجان', en: 'Committees' },
         href: '/dashboard/committees',
@@ -191,6 +167,36 @@ export const DASHBOARD_NAV: NavGroupDef[] = [
         icon: 'chart',
         requires: { permission: 'reports.view_community', scope: 'any' },
         ready: false,
+      },
+    ],
+  },
+  {
+    key: 'membership',
+    label: { ar: 'العضوية', en: 'Membership' },
+    items: [
+      {
+        key: 'membership-cycles',
+        label: { ar: 'دورات الاستقبال', en: 'Intake cycles' },
+        href: '/dashboard/membership/cycles',
+        icon: 'card',
+        requires: { permission: 'membership.manage_cycles', scope: 'any' },
+        ready: true,
+      },
+      {
+        key: 'membership-applications',
+        label: { ar: 'طلبات العضوية', en: 'Applications' },
+        href: '/dashboard/membership/applications',
+        icon: 'clipboard',
+        requires: { permission: 'membership.review', scope: 'any' },
+        ready: true,
+      },
+      {
+        key: 'members',
+        label: { ar: 'الأعضاء', en: 'Members' },
+        href: '/dashboard/members',
+        icon: 'users',
+        requires: { permission: 'members.view', scope: 'any' },
+        ready: true,
       },
     ],
   },

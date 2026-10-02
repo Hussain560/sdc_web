@@ -125,24 +125,24 @@ export default async function EventsListPage({
 
       <Tabs items={tabs} active={status ?? 'all'} label={ar ? 'حالة الفعالية' : 'Event status'} />
 
-      <form method="get" className="mb-4 flex flex-wrap items-end gap-3">
+      <form method="get" className="mb-4 flex flex-wrap items-center gap-x-4 gap-y-2">
         {status && <input type="hidden" name="status" value={status} />}
-        <label className="flex flex-col gap-1 text-xs text-muted">
+        <label className="flex items-center gap-2 text-xs text-muted">
           {ar ? 'بحث' : 'Search'}
           <input
             name="q"
             defaultValue={sp.q ?? ''}
             placeholder={ar ? 'العنوان…' : 'Title…'}
-            className="min-h-10 w-56 rounded-xl border border-line bg-surface-raised px-3 text-sm text-text"
+            className="h-9 w-56 rounded-lg border border-line bg-surface px-3 text-sm text-text placeholder:text-muted focus-visible:outline-2 focus-visible:outline-accent"
           />
         </label>
         {committees.length > 1 && (
-          <label className="flex flex-col gap-1 text-xs text-muted">
+          <label className="flex items-center gap-2 text-xs text-muted">
             {ar ? 'اللجنة' : 'Committee'}
             <select
               name="committee"
               defaultValue={sp.committee ?? ''}
-              className="min-h-10 rounded-xl border border-line bg-surface-raised px-3 text-sm text-text"
+              className="h-9 rounded-lg border border-line bg-surface px-3 text-sm text-text placeholder:text-muted focus-visible:outline-2 focus-visible:outline-accent"
             >
               <option value="">{ar ? 'الكل' : 'All'}</option>
               {committees.map((c) => (
@@ -153,12 +153,12 @@ export default async function EventsListPage({
             </select>
           </label>
         )}
-        <label className="flex flex-col gap-1 text-xs text-muted">
+        <label className="flex items-center gap-2 text-xs text-muted">
           {ar ? 'النوع' : 'Type'}
           <select
             name="type"
             defaultValue={sp.type ?? ''}
-            className="min-h-10 rounded-xl border border-line bg-surface-raised px-3 text-sm text-text"
+            className="h-9 rounded-lg border border-line bg-surface px-3 text-sm text-text placeholder:text-muted focus-visible:outline-2 focus-visible:outline-accent"
           >
             <option value="">{ar ? 'الكل' : 'All'}</option>
             {EVENT_TYPES.map((t) => (
@@ -168,12 +168,12 @@ export default async function EventsListPage({
             ))}
           </select>
         </label>
-        <label className="flex flex-col gap-1 text-xs text-muted">
+        <label className="flex items-center gap-2 text-xs text-muted">
           {ar ? 'الفترة' : 'Period'}
           <select
             name="period"
             defaultValue={period}
-            className="min-h-10 rounded-xl border border-line bg-surface-raised px-3 text-sm text-text"
+            className="h-9 rounded-lg border border-line bg-surface px-3 text-sm text-text placeholder:text-muted focus-visible:outline-2 focus-visible:outline-accent"
           >
             <option value="all">{ar ? 'الكل' : 'All'}</option>
             <option value="upcoming">{ar ? 'القادمة' : 'Upcoming'}</option>
@@ -182,14 +182,14 @@ export default async function EventsListPage({
         </label>
         <button
           type="submit"
-          className="min-h-10 rounded-full border border-line-accent px-5 text-sm font-semibold text-accent"
+          className="inline-flex h-9 items-center rounded-full border border-line-accent px-4 text-sm font-semibold text-accent hover:bg-surface-raised focus-visible:outline-2 focus-visible:outline-accent"
         >
           {ar ? 'تطبيق' : 'Apply'}
         </button>
         {filtersActive && (
           <Link
             href={status ? `?status=${status}` : '?'}
-            className="min-h-10 self-center text-sm text-muted underline"
+            className="inline-flex h-9 items-center text-sm text-muted hover:text-text"
           >
             {ar ? 'مسح التصفية' : 'Reset filters'}
           </Link>
@@ -227,9 +227,9 @@ export default async function EventsListPage({
           }
         />
       ) : (
-        <div className="overflow-x-auto rounded-2xl border border-line bg-surface">
+        <div className="overflow-x-auto rounded-xl border border-line bg-surface">
           <table className="w-full min-w-[820px] text-sm">
-            <thead className="border-b border-line text-xs text-muted">
+            <thead className="border-b border-line bg-surface-raised text-xs text-muted">
               <tr>
                 {[
                   ar ? 'الفعالية' : 'Event',
@@ -238,7 +238,7 @@ export default async function EventsListPage({
                   ar ? 'الحالة' : 'Status',
                   '',
                 ].map((h, i) => (
-                  <th key={i} scope="col" className="px-4 py-3 text-start font-medium">
+                  <th key={i} scope="col" className="px-4 py-2.5 text-start text-xs font-medium">
                     {h}
                   </th>
                 ))}
@@ -250,7 +250,10 @@ export default async function EventsListPage({
                 const title = ar ? e.titleAr : e.titleEn || e.titleAr;
                 const other = ar ? e.titleEn : e.titleAr;
                 return (
-                  <tr key={e.id} className="border-b border-line align-top last:border-0">
+                  <tr
+                    key={e.id}
+                    className="border-b border-line align-middle transition-colors last:border-0 hover:bg-surface-raised"
+                  >
                     <td className="px-4 py-3">
                       <Link
                         href={`/dashboard/events/${e.id}`}

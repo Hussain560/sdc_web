@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useTransition } from 'react';
-import { Alert, Button, Dialog, Textarea } from '@/components/ui';
+import { Button, Dialog, Textarea, useToast } from '@/components/ui';
 import { useLanguage } from '@/context/LanguageContext';
 import { Link, useRouter } from '@/i18n/navigation';
 import { deleteEventDraft, transitionEvent, type TransitionAction } from '../actions';
@@ -14,6 +14,16 @@ export type EventPerms = {
   cancel: boolean;
   complete: boolean;
   delete: boolean;
+};
+
+const DONE: Record<TransitionAction, { ar: string; en: string }> = {
+  submit: { ar: 'أُرسلت الفعالية للمراجعة.', en: 'Event sent for review.' },
+  withdraw: { ar: 'تم سحب الطلب.', en: 'Request withdrawn.' },
+  approve: { ar: 'تم اعتماد الفعالية ونشرها.', en: 'Event approved and published.' },
+  request_changes: { ar: 'أُرسلت طلبات التعديل.', en: 'Change request sent.' },
+  cancel: { ar: 'أُلغيت الفعالية.', en: 'Event cancelled.' },
+  complete: { ar: 'أُغلقت الفعالية كمكتملة.', en: 'Event marked as completed.' },
+  archive: { ar: 'أُرشفت الفعالية.', en: 'Event archived.' },
 };
 
 type Pending = null | 'request_changes' | 'cancel' | 'delete';
@@ -39,17 +49,17 @@ export function EventActions({
   const router = useRouter();
   const [dialog, setDialog] = useState<Pending>(null);
   const [note, setNote] = useState('');
-  const [error, setError] = useState('');
+  const toast = useToast();
   const [busy, startTransition] = useTransition();
 
   const run = (action: TransitionAction, withNote?: string) => {
-    setError('');
     startTransition(async () => {
       const r = await transitionEvent({ id, action, note: withNote }, { lang });
       if (!r.ok) {
-        setError(r.message);
+        toast.error(r.message);
         return;
       }
+      toast.success(DONE[action][lang]);
       setDialog(null);
       setNote('');
       router.refresh();
@@ -57,13 +67,13 @@ export function EventActions({
   };
 
   const remove = () => {
-    setError('');
     startTransition(async () => {
       const r = await deleteEventDraft(id, { lang });
       if (!r.ok) {
-        setError(r.message);
+        toast.error(r.message);
         return;
       }
+      toast.success(ar ? 'حُذفت المسودة.' : 'Draft deleted.');
       router.replace('/dashboard/events');
     });
   };
@@ -183,18 +193,12 @@ export function EventActions({
   return (
     <>
       <div className="flex flex-wrap items-center gap-2">{buttons}</div>
-      {error && !dialog && (
-        <Alert tone="danger" className="mt-3">
-          {error}
-        </Alert>
-      )}
 
       <Dialog
         open={dialog !== null}
         onClose={() => {
           setDialog(null);
           setNote('');
-          setError('');
         }}
         title={title}
       >
@@ -203,7 +207,6 @@ export function EventActions({
             <p className="text-muted">
               {ar ? 'سيُحذف هذا المسودة نهائيًا.' : 'This draft will be deleted permanently.'}
             </p>
-            {error && <Alert tone="danger">{error}</Alert>}
             <div className="flex justify-end gap-3">
               <Button variant="ghost" onClick={() => setDialog(null)}>
                 {ar ? 'تراجع' : 'Back'}
@@ -244,7 +247,6 @@ export function EventActions({
               required
               onChange={(e) => setNote(e.target.value)}
             />
-            {error && <Alert tone="danger">{error}</Alert>}
             <div className="flex justify-end gap-3">
               <Button type="button" variant="ghost" onClick={() => setDialog(null)}>
                 {ar ? 'تراجع' : 'Back'}

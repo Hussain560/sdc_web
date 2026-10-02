@@ -2,7 +2,7 @@
 
 import { Lock } from 'lucide-react';
 import { useRef, useState, useTransition } from 'react';
-import { Alert, Button, Chips, Field, Select, Switch } from '@/components/ui';
+import { Button, Chips, Field, Select, Switch, useToast } from '@/components/ui';
 import { formatDateRange, formatTimeRange } from '@/lib/format';
 import type { Localized } from '@/modules/access/types';
 import { uploadEventCover } from '../../actions';
@@ -427,22 +427,22 @@ export function Step3Content({
   const ar = lang === 'ar';
   const fileRef = useRef<HTMLInputElement>(null);
   const [uploading, startUpload] = useTransition();
-  const [uploadError, setUploadError] = useState('');
+  const toast = useToast();
 
   const onFile = (file: File | undefined) => {
     if (!file) return;
-    setUploadError('');
     const form = new FormData();
     form.set('file', file);
     form.set('eventId', eventId ?? '');
     startUpload(async () => {
       const r = await uploadEventCover(form, { lang });
       if (!r.ok) {
-        setUploadError(r.message);
+        toast.error(r.message);
         return;
       }
       set({ coverImagePath: r.data.path });
       onCoverUrl(r.data.url);
+      toast.success(ar ? 'تم رفع الغلاف.' : 'Cover uploaded.');
     });
   };
 
@@ -495,7 +495,6 @@ export function Step3Content({
                 ? 'JPEG أو PNG أو WebP · 16:9 · حتى 2 ميغابايت'
                 : 'JPEG, PNG or WebP · 16:9 · up to 2 MB'}
             </p>
-            {uploadError && <Alert tone="danger">{uploadError}</Alert>}
           </div>
         </div>
       </Section>

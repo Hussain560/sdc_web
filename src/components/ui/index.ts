@@ -15,3 +15,7 @@ export { Stepper, type StepperStep } from './Stepper';
 export { Tabs, type TabItem } from './Tabs';
 export { EmptyState } from './EmptyState';
 export { StatCard } from './StatCard';
+export { ToastProvider, useToast } from './Toast';
+export { ExportButton } from './ExportButton';
+export { Avatar } from './Avatar';
+export { IconAction } from './IconAction';

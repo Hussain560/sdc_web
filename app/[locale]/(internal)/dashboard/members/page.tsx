@@ -1,5 +1,5 @@
 import { Users } from 'lucide-react';
-import { Badge, EmptyState, Pagination, Tabs, type TabItem } from '@/components/ui';
+import { Badge, EmptyState, Pagination, Tabs, type TabItem, Avatar } from '@/components/ui';
 import { Forbidden } from '@/components/layout/Forbidden';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { Link } from '@/i18n/navigation';
@@ -91,28 +91,28 @@ export default async function MembersAdminPage({
         label={ar ? 'حالة العضو' : 'Member status'}
       />
 
-      <form method="get" className="mb-4 flex flex-wrap items-end gap-3">
+      <form method="get" className="mb-4 flex flex-wrap items-center gap-x-4 gap-y-2">
         {status && <input type="hidden" name="status" value={status} />}
         {unclaimed && <input type="hidden" name="unclaimed" value="1" />}
-        <label className="flex flex-col gap-1 text-xs text-muted">
+        <label className="flex items-center gap-2 text-xs text-muted">
           {ar ? 'بحث' : 'Search'}
           <input
             name="q"
             defaultValue={sp.q ?? ''}
             placeholder={ar ? 'الاسم…' : 'Name…'}
-            className="min-h-10 w-56 rounded-xl border border-line bg-surface-raised px-3 text-sm text-text"
+            className="h-9 w-56 rounded-lg border border-line bg-surface px-3 text-sm text-text placeholder:text-muted focus-visible:outline-2 focus-visible:outline-accent"
           />
         </label>
         <button
           type="submit"
-          className="min-h-10 rounded-full border border-line-accent px-5 text-sm font-semibold text-accent"
+          className="inline-flex h-9 items-center rounded-full border border-line-accent px-4 text-sm font-semibold text-accent hover:bg-surface-raised focus-visible:outline-2 focus-visible:outline-accent"
         >
           {ar ? 'تطبيق' : 'Apply'}
         </button>
         {sp.q && (
           <Link
             href={keep({ q: undefined, status, unclaimed: unclaimed ? '1' : undefined })}
-            className="min-h-10 self-center text-sm text-muted underline"
+            className="inline-flex h-9 items-center text-sm text-muted hover:text-text"
           >
             {ar ? 'مسح البحث' : 'Clear search'}
           </Link>
@@ -125,9 +125,9 @@ export default async function MembersAdminPage({
           title={ar ? 'لا يوجد أعضاء مطابقون' : 'No matching members'}
         />
       ) : (
-        <div className="overflow-x-auto rounded-2xl border border-line bg-surface">
+        <div className="overflow-x-auto rounded-xl border border-line bg-surface">
           <table className="w-full min-w-[860px] text-sm">
-            <thead className="border-b border-line text-xs text-muted">
+            <thead className="border-b border-line bg-surface-raised text-xs text-muted">
               <tr>
                 {[
                   ar ? 'العضو' : 'Member',
@@ -137,7 +137,7 @@ export default async function MembersAdminPage({
                   ar ? 'الدليل' : 'Directory',
                   '',
                 ].map((h, i) => (
-                  <th key={i} scope="col" className="px-4 py-3 text-start font-medium">
+                  <th key={i} scope="col" className="px-4 py-2.5 text-start text-xs font-medium">
                     {h}
                   </th>
                 ))}
@@ -147,19 +147,29 @@ export default async function MembersAdminPage({
               {rows.map((m) => {
                 const st = MEMBER_STATUS_LABEL[m.status];
                 return (
-                  <tr key={m.id} className="border-b border-line align-top last:border-0">
+                  <tr
+                    key={m.id}
+                    className="border-b border-line align-middle transition-colors last:border-0 hover:bg-surface-raised"
+                  >
                     <td className="px-4 py-3">
-                      <p className="font-medium">{ar ? m.nameAr : m.nameEn || m.nameAr}</p>
-                      <p className="text-xs text-muted">
-                        {m.linked
-                          ? ar
-                            ? 'مرتبط بحساب'
-                            : 'Linked to an account'
-                          : ar
-                            ? 'بدون حساب'
-                            : 'No account yet'}
-                        {m.claimEmail && !m.linked ? ` · ${m.claimEmail}` : ''}
-                      </p>
+                      <div className="flex items-center gap-3">
+                        <Avatar name={ar ? m.nameAr : m.nameEn || m.nameAr} />
+                        <div className="min-w-0">
+                          <p className="truncate font-medium">
+                            {ar ? m.nameAr : m.nameEn || m.nameAr}
+                          </p>
+                          <p className="text-xs text-muted">
+                            {m.linked
+                              ? ar
+                                ? 'مرتبط بحساب'
+                                : 'Linked to an account'
+                              : ar
+                                ? 'بدون حساب'
+                                : 'No account yet'}
+                            {m.claimEmail && !m.linked ? ` · ${m.claimEmail}` : ''}
+                          </p>
+                        </div>
+                      </div>
                     </td>
                     <td className="px-4 py-3 text-muted">
                       {[m.university, m.track].filter(Boolean).join(' · ') || '—'}

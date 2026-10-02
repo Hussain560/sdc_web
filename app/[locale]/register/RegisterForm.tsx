@@ -1,5 +1,6 @@
 'use client';
 
+import { useToast } from '@/components/ui';
 import React, { useState } from 'react';
 import { Link } from '@/i18n/navigation';
 import { ArrowRight, ArrowLeft } from 'lucide-react';
@@ -18,10 +19,10 @@ export default function RegisterForm({ redirectTo }: { redirectTo: string }) {
     confirmPassword: '',
   });
   const [loading, setLoading] = useState(false);
-  const [errorMsg, setErrorMsg] = useState('');
   const [showSuccess, setShowSuccess] = useState(false);
   const [notice, setNotice] = useState('');
   const { lang } = useLanguage();
+  const toast = useToast();
   const isEnglish = lang === 'en';
 
   const passwordHint = isEnglish
@@ -30,18 +31,19 @@ export default function RegisterForm({ redirectTo }: { redirectTo: string }) {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-    setErrorMsg('');
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setErrorMsg('');
     setShowSuccess(false);
 
     // Same schema as the server: instant feedback only; the Server Action re-validates.
     const parsed = signUpSchema(lang).safeParse(formData);
     if (!parsed.success) {
-      setErrorMsg(Object.values(fieldErrorsOf(parsed.error))[0] ?? '');
+      toast.error(
+        Object.values(fieldErrorsOf(parsed.error))[0] ??
+          (isEnglish ? 'Please review the fields.' : 'يرجى مراجعة الحقول.'),
+      );
       return;
     }
 
@@ -50,13 +52,14 @@ export default function RegisterForm({ redirectTo }: { redirectTo: string }) {
     setLoading(false);
 
     if (!result.ok) {
-      setErrorMsg(Object.values(result.fieldErrors ?? {})[0] ?? result.message);
+      toast.error(Object.values(result.fieldErrors ?? {})[0] ?? result.message);
       return;
     }
 
     // Identical outcome whether or not the address already has an account (no enumeration).
     setNotice(result.data.notice);
     setShowSuccess(true);
+    toast.success(isEnglish ? 'Account created.' : 'أُنشئ الحساب.');
   };
 
   return (
@@ -92,23 +95,6 @@ export default function RegisterForm({ redirectTo }: { redirectTo: string }) {
                 : 'انضم إلى المجتمع السعودي للمطورين.'}
             </p>
           </div>
-
-          {errorMsg && (
-            <div
-              style={{
-                background: 'rgba(239,68,68,0.1)',
-                border: '1px solid #ef4444',
-                color: '#ef4444',
-                borderRadius: '8px',
-                padding: '10px 14px',
-                fontSize: '14px',
-                marginBottom: '16px',
-                textAlign: 'center',
-              }}
-            >
-              {errorMsg}
-            </div>
-          )}
 
           {showSuccess && (
             <div

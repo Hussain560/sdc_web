@@ -85,9 +85,9 @@ export default async function CyclesPage({ params }: { params: Promise<{ locale:
             </section>
           )}
 
-          <div className="overflow-x-auto rounded-2xl border border-line bg-surface">
+          <div className="overflow-x-auto rounded-xl border border-line bg-surface">
             <table className="w-full min-w-[720px] text-sm">
-              <thead className="border-b border-line text-xs text-muted">
+              <thead className="border-b border-line bg-surface-raised text-xs text-muted">
                 <tr>
                   {[
                     ar ? 'الدورة' : 'Cycle',
@@ -96,7 +96,7 @@ export default async function CyclesPage({ params }: { params: Promise<{ locale:
                     ar ? 'الطلبات' : 'Applications',
                     '',
                   ].map((h, i) => (
-                    <th key={i} scope="col" className="px-4 py-3 text-start font-medium">
+                    <th key={i} scope="col" className="px-4 py-2.5 text-start text-xs font-medium">
                       {h}
                     </th>
                   ))}
@@ -104,7 +104,10 @@ export default async function CyclesPage({ params }: { params: Promise<{ locale:
               </thead>
               <tbody>
                 {cycles.map((c) => (
-                  <tr key={c.id} className="border-b border-line align-top last:border-0">
+                  <tr
+                    key={c.id}
+                    className="border-b border-line align-middle transition-colors last:border-0 hover:bg-surface-raised"
+                  >
                     <td className="px-4 py-3 font-medium">{name(c)}</td>
                     <td className="px-4 py-3 tabular-nums text-muted">{range(c)}</td>
                     <td className="px-4 py-3">

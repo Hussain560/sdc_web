@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useTransition } from 'react';
-import { Alert, Button, Chips, Field, Select, Switch, Textarea } from '@/components/ui';
+import { Button, Chips, Field, Select, Switch, Textarea, useToast } from '@/components/ui';
 import { useLanguage } from '@/context/LanguageContext';
 import { Link, useRouter } from '@/i18n/navigation';
 import {
@@ -30,6 +30,7 @@ export function ProfileForm({
   };
 }) {
   const { lang } = useLanguage();
+  const toast = useToast();
   const ar = lang === 'ar';
   const router = useRouter();
   const [v, setV] = useState<ProfileValues>(initial);
@@ -44,7 +45,6 @@ export function ProfileForm({
       const { [k as string]: _d, ...rest } = e;
       return rest;
     });
-    setMessage(null);
   };
   const name = (o: ReferenceOption) => (ar ? o.nameAr : o.nameEn || o.nameAr);
   const parents = reference.majors.filter((m) => !m.parentId);
@@ -53,16 +53,15 @@ export function ProfileForm({
   const save = () => {
     const found = validateProfile(v, lang);
     setErrors(found);
-    setMessage(null);
     if (Object.keys(found).length > 0) return;
     startTransition(async () => {
       const r = await updateMyMemberProfile(v, { lang });
       if (!r.ok) {
-        setMessage({ tone: 'danger', text: r.message });
+        toast.error(r.message);
         if (r.fieldErrors) setErrors(r.fieldErrors);
         return;
       }
-      setMessage({ tone: 'success', text: ar ? 'تم حفظ ملفك.' : 'Your profile was saved.' });
+      toast.success(ar ? 'تم حفظ ملفك.' : 'Your profile was saved.');
       router.refresh();
     });
   };
@@ -71,7 +70,7 @@ export function ProfileForm({
     startTransition(async () => {
       const r = await setMemberStatus({ id: memberId, status: 'inactive' }, { lang });
       if (!r.ok) {
-        setMessage({ tone: 'danger', text: r.message });
+        toast.error(r.message);
         return;
       }
       setLeaving(false);
@@ -237,7 +236,6 @@ export function ProfileForm({
         ))}
       </section>
 
-      {message && <Alert tone={message.tone}>{message.text}</Alert>}
       <div className="flex flex-wrap items-center gap-3">
         <Button type="submit" loading={pending}>
           {ar ? 'حفظ' : 'Save'}

@@ -1,5 +1,7 @@
 # Internal Shell — Sidebar Navigation (Permission-Driven)
 
+> **Update 2026-10-03 (owner request):** the sidebar is now 240px wide with the community **logo mark + wordmark** (`/assets/sdc-logo-mark.svg`) at the top instead of the title text. Related items sit under **expandable parents with a chevron**: *Committee*, *Management*, *Membership* and *Administration* (Overview / My account stay flat). A section is open while it holds the active page; other sections follow the user's choice, persisted in `localStorage` (`sdc_sidebar_open`). Rows are 36px with a 17px icon and a soft raised background when active (no side bar); children hang off a thin guide line. The header shows a breadcrumb (section / page). Colors, fonts and radii are unchanged (D-009).
+
 > **Update 2026-10-02 (owner request):** the personal pages — *My profile*, *My positions* and *Security* — live in the **profile menu** (the avatar dropdown in the private header), not in the sidebar. The sidebar shows *Overview* (people with a position) or *My account* (plain users), then the Committee / Management / Administration groups. Items whose screens are not built yet are hidden until their sprint, so the menu never links to a 404. A system admin holds all 30 permissions and therefore sees every built Management and Administration item.
 
 Groups and items of the internal sidebar, each bound to a permission key from the [permission catalog](../../06-security/permission-catalog.md). Unlike KFUCS (one hardcoded item list per role — the drift its audit F-53 warned about), SDC builds the sidebar from **one item list filtered by the user's permissions**.
@@ -108,7 +110,7 @@ A user holding a permission **globally** sees the *Management* item and not a du
 ## 4. Layout rules
 
 - **Group labels** — 11px/700, `--color-text-secondary`, padding-inline 16px, 24px top spacing; Latin labels may be uppercase, Arabic never.
-- **Item** — 44px min height, 12px radius, icon 18px (lucide: `LayoutDashboard`, `Ticket`, `IdCard`, `UserRound`, `CalendarDays`, `ClipboardCheck`, `FileText`, `Users`, `Building2`, `BarChart3`, `ShieldCheck`, `ScrollText`, `Mail`, `ListTree`, `Settings`), label 14px/500.
+- **Item** — 36px min height (2026-10-03; was 44px), 8px radius, icon 17px (lucide: `LayoutDashboard`, `Ticket`, `IdCard`, `UserRound`, `CalendarDays`, `ClipboardCheck`, `FileText`, `Users`, `Building2`, `BarChart3`, `ShieldCheck`, `ScrollText`, `Mail`, `ListTree`, `Settings`), label 14px/500.
 - **Hover** — background `--color-accent-soft` at 50%, text `--color-text`.
 - **Active** — background `--color-accent-soft`, text and icon `--color-accent`, weight 600, and a **4×24px indicator bar** at the inline-start edge (KFUCS pattern). A child route (`/dashboard/events/[id]/registrations`) keeps the parent item active and its group expanded.
 - **Collapsible parents** (▾ Events, ▾ Membership) — chevron rotates 180°; open state persisted in `localStorage` (`sdc_sidebar_open`), with the active parent always open.

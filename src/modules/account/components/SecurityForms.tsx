@@ -1,60 +1,54 @@
 'use client';
 
 import { useState, useTransition } from 'react';
-import { Alert, Button, Card, Field } from '@/components/ui';
+import { Button, Card, Field, useToast } from '@/components/ui';
 import { useLanguage } from '@/context/LanguageContext';
 import { changeEmail, updatePassword } from '@/modules/auth/actions';
 
-type Msg = { tone: 'success' | 'danger'; text: string } | null;
-
 export function SecurityForms({ email }: { email: string }) {
   const { lang } = useLanguage();
+  const toast = useToast();
   const ar = lang === 'ar';
 
   const [pwd, setPwd] = useState({ password: '', confirmPassword: '' });
   const [pwdErrors, setPwdErrors] = useState<Record<string, string>>({});
-  const [pwdMsg, setPwdMsg] = useState<Msg>(null);
   const [pwdPending, startPwd] = useTransition();
 
   const [newEmail, setNewEmail] = useState('');
   const [emailErrors, setEmailErrors] = useState<Record<string, string>>({});
-  const [emailMsg, setEmailMsg] = useState<Msg>(null);
   const [emailPending, startEmail] = useTransition();
 
   const submitPassword = (e: React.FormEvent) => {
     e.preventDefault();
-    setPwdMsg(null);
     startPwd(async () => {
       const result = await updatePassword(pwd, { lang });
       if (!result.ok) {
         setPwdErrors(result.fieldErrors ?? {});
-        setPwdMsg({ tone: 'danger', text: result.message });
+        toast.error(result.message);
         return;
       }
       setPwdErrors({});
       setPwd({ password: '', confirmPassword: '' });
-      setPwdMsg({
-        tone: 'success',
-        text: ar
+      toast.success(
+        ar
           ? 'تم تحديث كلمة المرور وإنهاء الجلسات الأخرى'
           : 'Password updated; other sessions were signed out',
-      });
+      );
     });
   };
 
   const submitEmail = (e: React.FormEvent) => {
     e.preventDefault();
-    setEmailMsg(null);
     startEmail(async () => {
       const result = await changeEmail({ email: newEmail }, { lang });
       if (!result.ok) {
         setEmailErrors(result.fieldErrors ?? {});
-        setEmailMsg({ tone: 'danger', text: result.message });
+        toast.error(result.message);
         return;
       }
       setEmailErrors({});
       setNewEmail('');
-      setEmailMsg({ tone: 'success', text: result.data.notice });
+      toast.success(result.data.notice);
     });
   };
 
@@ -86,7 +80,6 @@ export function SecurityForms({ email }: { email: string }) {
             onChange={(e) => setPwd({ ...pwd, confirmPassword: e.target.value })}
             required
           />
-          {pwdMsg && <Alert tone={pwdMsg.tone}>{pwdMsg.text}</Alert>}
           <div>
             <Button type="submit" loading={pwdPending}>
               {ar ? 'تحديث كلمة المرور' : 'Update password'}
@@ -112,7 +105,6 @@ export function SecurityForms({ email }: { email: string }) {
             onChange={(e) => setNewEmail(e.target.value)}
             required
           />
-          {emailMsg && <Alert tone={emailMsg.tone}>{emailMsg.text}</Alert>}
           <div>
             <Button type="submit" loading={emailPending}>
               {ar ? 'إرسال رابط التأكيد' : 'Send confirmation link'}

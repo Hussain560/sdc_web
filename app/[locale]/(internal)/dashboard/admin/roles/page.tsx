@@ -124,14 +124,14 @@ export default async function RolesPage({
         <MatrixTable roles={roles} labels={labels} lang={lang} />
       ) : (
         <>
-          <form method="get" className="mb-4 flex flex-wrap items-end gap-3">
+          <form method="get" className="mb-4 flex flex-wrap items-center gap-x-4 gap-y-2">
             <input type="hidden" name="tab" value={tab} />
-            <label className="flex flex-col gap-1 text-xs text-muted">
+            <label className="flex items-center gap-2 text-xs text-muted">
               {ar ? 'الدور' : 'Role'}
               <select
                 name="role"
                 defaultValue={sp.role ?? ''}
-                className="min-h-10 rounded-xl border border-line bg-surface-raised px-3 text-sm text-text"
+                className="h-9 rounded-lg border border-line bg-surface px-3 text-sm text-text placeholder:text-muted focus-visible:outline-2 focus-visible:outline-accent"
               >
                 <option value="">{ar ? 'الكل' : 'All'}</option>
                 {roles.map((r) => (
@@ -141,12 +141,12 @@ export default async function RolesPage({
                 ))}
               </select>
             </label>
-            <label className="flex flex-col gap-1 text-xs text-muted">
+            <label className="flex items-center gap-2 text-xs text-muted">
               {ar ? 'اللجنة' : 'Committee'}
               <select
                 name="committee"
                 defaultValue={sp.committee ?? ''}
-                className="min-h-10 rounded-xl border border-line bg-surface-raised px-3 text-sm text-text"
+                className="h-9 rounded-lg border border-line bg-surface px-3 text-sm text-text placeholder:text-muted focus-visible:outline-2 focus-visible:outline-accent"
               >
                 <option value="">{ar ? 'الكل' : 'All'}</option>
                 {committees.map((c) => (
@@ -156,25 +156,25 @@ export default async function RolesPage({
                 ))}
               </select>
             </label>
-            <label className="flex flex-col gap-1 text-xs text-muted">
+            <label className="flex items-center gap-2 text-xs text-muted">
               {ar ? 'بحث' : 'Search'}
               <input
                 name="q"
                 defaultValue={sp.q ?? ''}
                 placeholder={ar ? 'الاسم أو البريد' : 'Name or e-mail'}
-                className="min-h-10 rounded-xl border border-line bg-surface-raised px-3 text-sm text-text"
+                className="h-9 rounded-lg border border-line bg-surface px-3 text-sm text-text placeholder:text-muted focus-visible:outline-2 focus-visible:outline-accent"
               />
             </label>
             <button
               type="submit"
-              className="min-h-10 rounded-full border border-line-accent px-5 text-sm font-semibold text-accent"
+              className="inline-flex h-9 items-center rounded-full border border-line-accent px-4 text-sm font-semibold text-accent hover:bg-surface-raised focus-visible:outline-2 focus-visible:outline-accent"
             >
               {ar ? 'تطبيق' : 'Apply'}
             </button>
           </form>
 
           {rows.length === 0 ? (
-            <p className="rounded-2xl border border-line bg-surface p-8 text-center text-muted">
+            <p className="rounded-xl border border-line bg-surface p-8 text-center text-muted">
               {tab === 'history'
                 ? ar
                   ? 'لا توجد فترات منتهية بعد.'
@@ -184,9 +184,9 @@ export default async function RolesPage({
                   : 'No matching positions.'}
             </p>
           ) : (
-            <div className="overflow-x-auto rounded-2xl border border-line bg-surface">
+            <div className="overflow-x-auto rounded-xl border border-line bg-surface">
               <table className="w-full min-w-[720px] text-sm">
-                <thead className="border-b border-line text-start text-xs text-muted">
+                <thead className="border-b border-line bg-surface-raised text-start text-xs text-muted">
                   <tr>
                     {[
                       ar ? 'المستخدم' : 'User',
@@ -197,7 +197,11 @@ export default async function RolesPage({
                       ar ? 'الحالة' : 'State',
                       '',
                     ].map((h, i) => (
-                      <th key={i} scope="col" className="px-4 py-3 text-start font-medium">
+                      <th
+                        key={i}
+                        scope="col"
+                        className="px-4 py-2.5 text-start text-xs font-medium"
+                      >
                         {h}
                       </th>
                     ))}
@@ -212,7 +216,10 @@ export default async function RolesPage({
                     const showEnd =
                       tab === 'current' && canAssign && r.state !== 'ended' && (!own || isAdmin);
                     return (
-                      <tr key={r.id} className="border-b border-line last:border-0">
+                      <tr
+                        key={r.id}
+                        className="border-b border-line transition-colors last:border-0 hover:bg-surface-raised"
+                      >
                         <td className="px-4 py-3">
                           <div className="font-medium">{r.userName}</div>
                           <div
@@ -286,15 +293,15 @@ function MatrixTable({
           ? 'هذه المصفوفة للقراءة فقط. تغييرها يتم عبر ترحيل قاعدة البيانات بعد موافقة قيادة المجتمع ومسؤول النظام.'
           : 'This matrix is read-only. Changing it is a database migration approved by the community leadership and a system admin.'}
       </p>
-      <div className="overflow-x-auto rounded-2xl border border-line bg-surface">
+      <div className="overflow-x-auto rounded-xl border border-line bg-surface">
         <table className="w-full min-w-[820px] text-sm">
-          <thead className="border-b border-line text-xs text-muted">
+          <thead className="border-b border-line bg-surface-raised text-xs text-muted">
             <tr>
-              <th scope="col" className="px-4 py-3 text-start font-medium">
+              <th scope="col" className="px-4 py-2.5 text-start text-xs font-medium">
                 {ar ? 'الصلاحية' : 'Permission'}
               </th>
               {roles.map((r) => (
-                <th key={r.key} scope="col" className="px-2 py-3 text-center font-medium">
+                <th key={r.key} scope="col" className="px-2 py-2.5 text-center text-xs font-medium">
                   {r.name[lang]}
                   <div className="text-[10px] font-normal">
                     {r.scope === 'committee' ? (ar ? 'لجنة' : 'committee') : ar ? 'عام' : 'global'}
@@ -305,7 +312,10 @@ function MatrixTable({
           </thead>
           <tbody>
             {keys.map((k) => (
-              <tr key={k} className="border-b border-line last:border-0">
+              <tr
+                key={k}
+                className="border-b border-line transition-colors last:border-0 hover:bg-surface-raised"
+              >
                 <th scope="row" className="px-4 py-2 text-start font-normal">
                   <div>{labels[k]![lang]}</div>
                   <code dir="ltr" className="text-[11px] text-muted">

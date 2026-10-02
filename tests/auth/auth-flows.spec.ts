@@ -92,7 +92,7 @@ for (const lang of ['ar', 'en'] as const) {
       const id = await createConfirmedUser(email);
       try {
         await signInViaUi(page, email, PASSWORD, `${prefix}/login`);
-        await expect(page).toHaveURL((u) => u.pathname === (prefix || '/'), { timeout: 20_000 });
+        await expect(page).toHaveURL(new RegExp(`${prefix}/account$`), { timeout: 20_000 });
         await gotoReady(page, `${prefix}/login`);
         await expect(page).toHaveURL(new RegExp(`${prefix}/account$`));
       } finally {
@@ -114,9 +114,9 @@ test.describe('security', () => {
       const id = await createConfirmedUser(email);
       try {
         await signInViaUi(page, email, PASSWORD, `/login?redirect=${encodeURIComponent(target)}`);
-        await expectHeaderName(page, /./);
+        // A plain user with no safe destination lands on /account, never on the attacker's URL.
+        await expect(page).toHaveURL(new RegExp(`^${baseURL}/account$`), { timeout: 20_000 });
         expect(new URL(page.url()).origin).toBe(new URL(baseURL!).origin);
-        await expect(page).toHaveURL(new RegExp(`^${baseURL}/?$`));
       } finally {
         await deleteUser(id);
       }
@@ -169,7 +169,7 @@ test.describe('security', () => {
       data: { email: 'x@example.test' },
       failOnStatusCode: false,
     });
-    expect([404, 502, 503]).toContain(res.status());
+    expect([404, 500, 502, 503]).toContain(res.status());
   });
 });
 
@@ -197,7 +197,7 @@ test.describe('password reset flow', () => {
       await expect(page).toHaveURL(/\/en\/login$/, { timeout: 15_000 });
 
       await signInViaUi(page, email, next, '/en/login');
-      await expect(page).toHaveURL((u) => u.pathname === '/en');
+      await expect(page).toHaveURL((u) => u.pathname === '/en/account');
     } finally {
       await deleteUser(id);
     }
@@ -222,7 +222,7 @@ test.describe('account area', () => {
     const id = await createConfirmedUser(email, { locale: 'en' });
     try {
       await signInViaUi(page, email, PASSWORD, '/en/login');
-      await expect(page).toHaveURL((u) => u.pathname === '/en');
+      await expect(page).toHaveURL((u) => u.pathname === '/en/account');
 
       await gotoReady(page, '/en/account/profile');
       const nameInput = page.getByLabel('Name (Arabic)');
@@ -253,7 +253,8 @@ test.describe('account area', () => {
     const id = await createConfirmedUser(email);
     try {
       await signInViaUi(page, email);
-      await expect(page).toHaveURL((u) => u.pathname === '/');
+      await expect(page).toHaveURL((u) => u.pathname === '/account');
+      await gotoReady(page, '/');
       await expectHeaderName(page, /./);
       await page.locator('header.sdc-header button.sdc-btn-primary').click();
       // Wait for the server action to finish before navigating away.

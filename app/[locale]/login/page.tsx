@@ -1,4 +1,6 @@
 import { getUser } from '@/lib/auth/session';
+import { hasDashboardAccess } from '@/lib/auth/permissions';
+import { getAccess } from '@/modules/access/queries';
 import { redirect } from '@/i18n/navigation';
 import { errorMessage, isLang } from '@/modules/auth/messages';
 import { sanitizeRedirect } from '@/modules/auth/redirect';
@@ -16,7 +18,10 @@ export default async function LoginPage({
   const redirectTo = sanitizeRedirect(redirectParam);
 
   // A signed-in visitor has nothing to do here (server-side, so there is no flash).
-  if (await getUser()) redirect({ href: redirectTo === '/' ? '/account' : redirectTo, locale });
+  if (await getUser()) {
+    const home = hasDashboardAccess(await getAccess()) ? '/dashboard' : '/account';
+    redirect({ href: redirectTo === '/' ? home : redirectTo, locale });
+  }
 
   const lang = isLang(locale) ? locale : 'ar';
   return (

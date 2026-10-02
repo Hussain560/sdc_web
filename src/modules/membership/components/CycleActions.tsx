@@ -1,11 +1,21 @@
 'use client';
 
 import { useState, useTransition } from 'react';
-import { Alert, Button, Dialog, Field } from '@/components/ui';
+import { Button, Dialog, Field, useToast } from '@/components/ui';
 import { useLanguage } from '@/context/LanguageContext';
 import { Link, useRouter } from '@/i18n/navigation';
 import { transitionCycle, type CycleAction } from '../actions';
 import type { CyclePhase } from '../types';
+
+const CYCLE_DONE: Record<CycleAction, { ar: string; en: string }> = {
+  publish: { ar: 'نُشر الجدول.', en: 'Cycle published.' },
+  unpublish: { ar: 'أُلغي نشر الجدول.', en: 'Cycle unpublished.' },
+  open_now: { ar: 'فُتح باب التقديم الآن.', en: 'Applications are open now.' },
+  extend: { ar: 'مُدّد موعد الإغلاق.', en: 'Closing date extended.' },
+  close_early: { ar: 'أُغلق باب التقديم.', en: 'Applications closed.' },
+  complete: { ar: 'اكتملت الدورة.', en: 'Cycle completed.' },
+  delete: { ar: 'حُذفت الدورة.', en: 'Cycle deleted.' },
+};
 
 type Pending = null | 'extend' | 'close_early' | 'complete' | 'delete' | 'unpublish' | 'open_now';
 
@@ -27,17 +37,17 @@ export function CycleActions({
   const router = useRouter();
   const [dialog, setDialog] = useState<Pending>(null);
   const [closesAt, setClosesAt] = useState('');
-  const [error, setError] = useState('');
+  const toast = useToast();
   const [busy, startTransition] = useTransition();
 
   const run = (action: CycleAction, extra?: { closesAt?: string }) => {
-    setError('');
     startTransition(async () => {
       const r = await transitionCycle({ id, action, ...extra }, { lang });
       if (!r.ok) {
-        setError(r.message);
+        toast.error(r.message);
         return;
       }
+      toast.success(CYCLE_DONE[action][lang]);
       setDialog(null);
       router.refresh();
     });
@@ -183,7 +193,6 @@ export function CycleActions({
           {dialog === 'delete' && (
             <p>{ar ? 'ستُحذف المسودة نهائيًا.' : 'The draft is deleted permanently.'}</p>
           )}
-          {error && <Alert tone="danger">{error}</Alert>}
           <div className="flex justify-end gap-2">
             <Button variant="ghost" onClick={() => setDialog(null)} disabled={busy}>
               {ar ? 'تراجع' : 'Back'}

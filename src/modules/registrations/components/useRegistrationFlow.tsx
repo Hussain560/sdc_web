@@ -2,6 +2,7 @@
 
 import React, { useCallback, useEffect, useState } from 'react';
 import { CheckCircle, X } from 'lucide-react';
+import { useToast } from '@/components/ui';
 import { useRouter } from '@/i18n/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
@@ -26,7 +27,7 @@ export function useRegistrationFlow() {
   const [selected, setSelected] = useState<PublicEventCard | null>(null);
   const [closed, setClosed] = useState<Closed>(null);
   const [sending, setSending] = useState(false);
-  const [error, setError] = useState('');
+  const toast = useToast();
 
   useEffect(() => {
     if (!isLoggedIn || !user) return;
@@ -55,7 +56,6 @@ export function useRegistrationFlow() {
         router.push(`/login?redirect=/events/${event.slug}`);
         return;
       }
-      setError('');
       setSelected(event);
     },
     [isLoggedIn, router],
@@ -64,13 +64,25 @@ export function useRegistrationFlow() {
   const confirm = async () => {
     if (!selected) return;
     setSending(true);
-    setError('');
     const res = await registerForEvent({ eventId: selected.id }, { lang });
     setSending(false);
     if (!res.ok) {
-      setError(res.message);
+      toast.error(res.message);
       return;
     }
+    toast.success(
+      res.data.status === 'accepted'
+        ? en
+          ? 'You are registered.'
+          : 'تم تسجيلك في الفعالية.'
+        : res.data.status === 'waitlisted'
+          ? en
+            ? 'The event is full. You are on the waiting list.'
+            : 'اكتمل العدد. أُضيفت إلى قائمة الانتظار.'
+          : en
+            ? 'Request received. You will be notified after review.'
+            : 'استلمنا طلبك وسيصلك إشعار بعد المراجعة.',
+    );
     setMine((prev) => new Set(prev).add(selected.id));
     setSelected(null);
   };
@@ -132,23 +144,6 @@ export function useRegistrationFlow() {
                   </li>
                 </ul>
               </div>
-              {error && (
-                <div
-                  role="alert"
-                  style={{
-                    background: 'rgba(239,68,68,0.1)',
-                    border: '1px solid #ef4444',
-                    color: '#ef4444',
-                    borderRadius: '8px',
-                    padding: '10px 14px',
-                    fontSize: '14px',
-                    marginTop: '12px',
-                    textAlign: 'center',
-                  }}
-                >
-                  {error}
-                </div>
-              )}
             </div>
             <div className="sdc-modal-footer">
               <button className="sdc-btn-confirm" onClick={confirm} disabled={sending}>

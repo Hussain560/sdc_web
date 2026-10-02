@@ -271,9 +271,9 @@ export default async function EventDetailPage({
           {ar ? 'لا يوجد سجل بعد.' : 'No history yet.'}
         </Card>
       ) : (
-        <div className="overflow-x-auto rounded-2xl border border-line bg-surface">
+        <div className="overflow-x-auto rounded-xl border border-line bg-surface">
           <table className="w-full min-w-[560px] text-sm">
-            <thead className="border-b border-line text-xs text-muted">
+            <thead className="border-b border-line bg-surface-raised text-xs text-muted">
               <tr>
                 {[
                   ar ? 'الوقت' : 'Time',
@@ -281,7 +281,7 @@ export default async function EventDetailPage({
                   ar ? 'بواسطة' : 'By',
                   ar ? 'ملاحظة' : 'Note',
                 ].map((h) => (
-                  <th key={h} scope="col" className="px-4 py-3 text-start font-medium">
+                  <th key={h} scope="col" className="px-4 py-2.5 text-start text-xs font-medium">
                     {h}
                   </th>
                 ))}
@@ -289,7 +289,10 @@ export default async function EventDetailPage({
             </thead>
             <tbody>
               {history.map((h, i) => (
-                <tr key={i} className="border-b border-line align-top last:border-0">
+                <tr
+                  key={i}
+                  className="border-b border-line align-middle transition-colors last:border-0 hover:bg-surface-raised"
+                >
                   <td className="px-4 py-3 tabular-nums">{formatDate(h.occurredAt, lang)}</td>
                   <td className="px-4 py-3">
                     {ACTION_LABEL[h.action]?.[lang] ?? h.action}

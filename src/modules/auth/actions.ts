@@ -106,15 +106,26 @@ export async function signIn(
   }
 
   const supabase = await createClient();
-  const { error } = await supabase.auth.signInWithPassword(parsed.data);
+  const { data: session, error } = await supabase.auth.signInWithPassword(parsed.data);
   if (error) {
     const code = codeFromAuthError(error);
     return failCode(code === 'INTERNAL' ? 'INVALID_CREDENTIALS' : code, lang);
   }
 
-  // No revalidatePath here: it would re-render /login on the server (now signed in) and bounce to /account
-  // before the client navigates to `redirectTo`. The form refreshes the router itself.
-  return ok({ redirectTo: sanitizeRedirect(ctx?.redirect) });
+  // Without an explicit destination, people with an active position land on the dashboard and
+  // everyone else on their account. Uses this client (the new session) because cookies set during
+  // this request are not readable by getAccess() yet.
+  // No revalidatePath: it would re-render /login (now signed in) and bounce before the client navigates.
+  const explicit = sanitizeRedirect(ctx?.redirect, '');
+  if (explicit && explicit !== '/') return ok({ redirectTo: explicit });
+  const now = new Date().toISOString();
+  const { count } = await supabase
+    .from('role_assignments')
+    .select('id', { count: 'exact', head: true })
+    .eq('user_id', session.user.id)
+    .lte('starts_at', now)
+    .or(`ends_at.is.null,ends_at.gt.${now}`);
+  return ok({ redirectTo: (count ?? 0) > 0 ? '/dashboard' : '/account' });
 }
 
 // ---------------------------------------------------------------- sign out

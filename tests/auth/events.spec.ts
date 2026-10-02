@@ -70,7 +70,9 @@ test.describe('wizard', () => {
       const dialog = lpage.getByRole('dialog');
       await dialog.getByLabel('Notes *').fill('short');
       await dialog.getByRole('button', { name: 'Send notes' }).click();
-      await expect(dialog.getByRole('alert')).toContainText('at least 10 characters');
+      await expect(
+        lpage.getByRole('alert').filter({ hasText: 'at least 10 characters' }),
+      ).toBeVisible();
       await dialog.getByLabel('Notes *').fill('Please add the prerequisites');
       await dialog.getByRole('button', { name: 'Send notes' }).click();
       await expect(lpage.getByRole('heading', { level: 1 })).toContainText('Changes requested');

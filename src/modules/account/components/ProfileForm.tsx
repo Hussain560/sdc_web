@@ -2,13 +2,14 @@
 
 import { useRouter } from '@/i18n/navigation';
 import { useState, useTransition } from 'react';
-import { Alert, Button, Card, Field } from '@/components/ui';
+import { Button, Card, Field, useToast } from '@/components/ui';
 import { useLanguage } from '@/context/LanguageContext';
 import { updateProfile } from '@/modules/auth/actions';
 import type { MyProfile } from '../queries';
 
 export function ProfileForm({ profile }: { profile: MyProfile }) {
   const { lang } = useLanguage();
+  const toast = useToast();
   const ar = lang === 'ar';
   const router = useRouter();
   const [pending, startTransition] = useTransition();
@@ -22,16 +23,15 @@ export function ProfileForm({ profile }: { profile: MyProfile }) {
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
-    setMessage(null);
     startTransition(async () => {
       const result = await updateProfile(values, { lang });
       if (!result.ok) {
         setErrors(result.fieldErrors ?? {});
-        setMessage({ tone: 'danger', text: result.message });
+        toast.error(result.message);
         return;
       }
       setErrors({});
-      setMessage({ tone: 'success', text: ar ? 'تم حفظ التغييرات' : 'Changes saved' });
+      toast.success(ar ? 'تم حفظ التغييرات' : 'Changes saved');
       router.refresh();
     });
   };
@@ -80,8 +80,6 @@ export function ProfileForm({ profile }: { profile: MyProfile }) {
           </div>
         </fieldset>
       </Card>
-
-      {message && <Alert tone={message.tone}>{message.text}</Alert>}
 
       <div>
         <Button type="submit" loading={pending}>

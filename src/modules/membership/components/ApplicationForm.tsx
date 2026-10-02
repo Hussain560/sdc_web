@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, useTransition } from 'react';
 import { CheckCircle2 } from 'lucide-react';
-import { Alert, Button, Chips, Field, Select, Stepper, Textarea } from '@/components/ui';
+import { Button, Chips, Field, Select, Stepper, Textarea, useToast } from '@/components/ui';
 import { useLanguage } from '@/context/LanguageContext';
 import { Link } from '@/i18n/navigation';
 import { submitApplication, updateApplication } from '../actions';
@@ -71,7 +71,7 @@ export function ApplicationForm({
   const [stepIndex, setStepIndex] = useState(0);
   const [maxReached, setMaxReached] = useState(0);
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [formError, setFormError] = useState('');
+  const toast = useToast();
   const [done, setDone] = useState(false);
   const [pending, startTransition] = useTransition();
   const restored = useRef(false);
@@ -136,14 +136,16 @@ export function ApplicationForm({
   const submit = () => {
     const found = validateApplicationStep('review', values, questions, lang);
     setErrors(found);
-    if (Object.keys(found).length > 0) return;
-    setFormError('');
+    if (Object.keys(found).length > 0) {
+      toast.error(ar ? 'يرجى مراجعة الحقول المحددة.' : 'Please review the highlighted fields.');
+      return;
+    }
     startTransition(async () => {
       const r = editing
         ? await updateApplication({ id: applicationId!, values }, { lang })
         : await submitApplication({ cycleId: cycle.id, values }, { lang });
       if (!r.ok) {
-        setFormError(r.message);
+        toast.error(r.message);
         if (r.fieldErrors) setErrors(r.fieldErrors);
         return;
       }
@@ -152,6 +154,15 @@ export function ApplicationForm({
       } catch {
         /* ignore */
       }
+      toast.success(
+        editing
+          ? ar
+            ? 'تم حفظ التعديلات على طلبك.'
+            : 'Your application was updated.'
+          : ar
+            ? 'تم إرسال طلبك.'
+            : 'Your application was submitted.',
+      );
       setDone(true);
     });
   };
@@ -506,8 +517,6 @@ export function ApplicationForm({
           </>
         )}
       </div>
-
-      {formError && <Alert tone="danger">{formError}</Alert>}
 
       <div className="flex justify-between gap-3">
         <Button

@@ -1,4 +1,4 @@
-import { Badge, Pagination } from '@/components/ui';
+import { Badge, Pagination, Avatar } from '@/components/ui';
 import { Forbidden } from '@/components/layout/Forbidden';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { can } from '@/lib/auth/permissions';
@@ -39,30 +39,30 @@ export default async function UsersPage({
         }
       />
 
-      <form method="get" className="mb-4 flex gap-3">
+      <form method="get" className="mb-4 flex flex-wrap items-center gap-2">
         <input
           name="q"
           defaultValue={q}
           aria-label={ar ? 'بحث' : 'Search'}
           placeholder={ar ? 'الاسم أو البريد…' : 'Name or e-mail…'}
-          className="min-h-10 w-full max-w-sm rounded-xl border border-line bg-surface-raised px-3 text-sm text-text"
+          className="h-9 w-full max-w-sm rounded-lg border border-line bg-surface px-3 text-sm text-text placeholder:text-muted focus-visible:outline-2 focus-visible:outline-accent"
         />
         <button
           type="submit"
-          className="min-h-10 rounded-full border border-line-accent px-5 text-sm font-semibold text-accent"
+          className="inline-flex h-9 items-center rounded-full border border-line-accent px-4 text-sm font-semibold text-accent hover:bg-surface-raised focus-visible:outline-2 focus-visible:outline-accent"
         >
           {ar ? 'بحث' : 'Search'}
         </button>
       </form>
 
       {users.length === 0 ? (
-        <p className="rounded-2xl border border-line bg-surface p-8 text-center text-muted">
+        <p className="rounded-xl border border-line bg-surface p-8 text-center text-muted">
           {ar ? 'لا يوجد مستخدمون مطابقون.' : 'No matching users.'}
         </p>
       ) : (
-        <div className="overflow-x-auto rounded-2xl border border-line bg-surface">
+        <div className="overflow-x-auto rounded-xl border border-line bg-surface">
           <table className="w-full min-w-[640px] text-sm">
-            <thead className="border-b border-line text-xs text-muted">
+            <thead className="border-b border-line bg-surface-raised text-xs text-muted">
               <tr>
                 {[
                   ar ? 'المستخدم' : 'User',
@@ -70,7 +70,7 @@ export default async function UsersPage({
                   ar ? 'اللغة' : 'Language',
                   ar ? 'أُنشئ' : 'Created',
                 ].map((h) => (
-                  <th key={h} scope="col" className="px-4 py-3 text-start font-medium">
+                  <th key={h} scope="col" className="px-4 py-2.5 text-start text-xs font-medium">
                     {h}
                   </th>
                 ))}
@@ -78,11 +78,23 @@ export default async function UsersPage({
             </thead>
             <tbody>
               {users.map((u) => (
-                <tr key={u.id} className="border-b border-line last:border-0">
+                <tr
+                  key={u.id}
+                  className="border-b border-line transition-colors last:border-0 hover:bg-surface-raised"
+                >
                   <td className="px-4 py-3">
-                    <div className="font-medium">{u.name}</div>
-                    <div dir="ltr" className="text-xs text-muted" style={{ textAlign: 'start' }}>
-                      {u.email}
+                    <div className="flex items-center gap-3">
+                      <Avatar name={u.name} />
+                      <div className="min-w-0">
+                        <div className="truncate font-medium">{u.name}</div>
+                        <div
+                          dir="ltr"
+                          className="truncate text-xs text-muted"
+                          style={{ textAlign: 'start' }}
+                        >
+                          {u.email}
+                        </div>
+                      </div>
                     </div>
                   </td>
                   <td className="px-4 py-3">

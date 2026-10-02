@@ -5,6 +5,8 @@
 | **Last Updated** | 2026-10-02 |
 | **Status**       | Draft      |
 
+> **Update 2026-10-03 (owner request):** English text on the **internal screens** (dashboard, account, toasts) now uses **Inter**, self-hosted from `public/assets/font/Inter/` (`@font-face` + the `.sdc-inter:lang(en)` rule in `app/globals.css`). Arabic stays IBM Plex Sans Arabic everywhere. **Public pages keep Rubik** until a redesign is approved (D-009). Status badges carry no leading dot.
+
 ## 1. Typefaces
 
 | Script | Typeface | Weights loaded today | Source today | Target loading |

@@ -102,12 +102,16 @@ describe('sidebar per persona (role → view matrix)', () => {
 
   it('committee head: committee events, no administration items', () => {
     expect(sidebarOf('committee_head').admin).toBeUndefined();
-    expect(sidebarOf('committee_head').committee).toEqual(['committee-events']);
+    expect(sidebarOf('committee_head').committee).toEqual([
+      'committee-events',
+      'committee-registrations',
+    ]);
   });
 
   it('founder: read-only roles screen and the events pipeline, no users list', () => {
     expect(sidebarOf('founder').admin).toEqual(['admin-roles']);
     expect(sidebarOf('founder').management).toEqual(['all-events']);
+    expect(sidebarOf('founder').membership).toEqual(['members']);
   });
 
   it('community leader: users and roles, not the audit log', () => {

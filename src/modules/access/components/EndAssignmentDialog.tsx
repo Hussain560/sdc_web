@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from 'react';
 import { useRouter } from '@/i18n/navigation';
-import { Alert, Button, Dialog, Field } from '@/components/ui';
+import { Button, Dialog, Field, useToast } from '@/components/ui';
 import { useLanguage } from '@/context/LanguageContext';
 import { endRoleAssignment } from '../actions';
 
@@ -21,18 +21,18 @@ export function EndAssignmentDialog({
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [reason, setReason] = useState('');
-  const [error, setError] = useState('');
+  const toast = useToast();
   const [pending, startTransition] = useTransition();
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
     startTransition(async () => {
       const result = await endRoleAssignment({ assignmentId, reason }, { lang });
       if (!result.ok) {
-        setError(result.message);
+        toast.error(result.message);
         return;
       }
+      toast.success(lang === 'ar' ? 'أُنهي التكليف.' : 'Assignment ended.');
       setOpen(false);
       setReason('');
       router.refresh();
@@ -58,7 +58,6 @@ export function EndAssignmentDialog({
             onChange={(e) => setReason(e.target.value)}
             required
           />
-          {error && <Alert tone="danger">{error}</Alert>}
           <div className="flex justify-end gap-3">
             <Button type="button" variant="ghost" onClick={() => setOpen(false)}>
               {ar ? 'إلغاء' : 'Cancel'}

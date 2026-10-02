@@ -3,8 +3,10 @@
 import {
   BadgeCheck,
   BarChart3,
+  Briefcase,
   Building2,
   CalendarDays,
+  ChevronRight,
   ClipboardCheck,
   ExternalLink,
   FileText,
@@ -22,6 +24,7 @@ import {
   Ticket,
   UserRound,
   Users,
+  UsersRound,
   X,
   Languages,
   LoaderCircle,
@@ -31,8 +34,8 @@ import { useEffect, useState } from 'react';
 import { Link, usePathname, useRouter } from '@/i18n/navigation';
 import { useLanguage } from '@/context/LanguageContext';
 import { useTheme } from '@/context/ThemeContext';
-import { cn } from '@/components/ui';
-import type { NavIcon, VisibleNavGroup, VisibleNavItem } from '@/config/dashboard-nav';
+import { cn, useToast } from '@/components/ui';
+import type { NavGroupKey, NavIcon, VisibleNavGroup, VisibleNavItem } from '@/config/dashboard-nav';
 import { signOut } from '@/modules/auth/actions';
 
 const ICONS: Record<NavIcon, LucideIcon> = {
@@ -53,6 +56,15 @@ const ICONS: Record<NavIcon, LucideIcon> = {
   settings: Settings,
   badge: BadgeCheck,
 };
+
+const GROUP_ICONS: Partial<Record<NavGroupKey, LucideIcon>> = {
+  committee: UsersRound,
+  management: Briefcase,
+  membership: IdCard,
+  admin: ShieldCheck,
+};
+
+const OPEN_KEY = 'sdc_sidebar_open';
 
 const ACCOUNT_LINKS = [
   { href: '/account/profile', icon: UserRound, label: { ar: 'ملفي الشخصي', en: 'My profile' } },
@@ -105,67 +117,204 @@ function NavItem({
       onClick={onNavigate}
       aria-current={active ? 'page' : undefined}
       className={cn(
-        'relative flex min-h-11 items-center gap-3 rounded-xl px-4 text-sm font-medium transition-colors',
+        'group flex min-h-9 items-center gap-2.5 rounded-lg px-3 text-[13.5px] transition-colors',
         'focus-visible:outline-2 focus-visible:outline-accent',
         active
-          ? 'bg-surface-raised font-semibold text-accent'
-          : 'text-muted hover:bg-surface-raised hover:text-text',
-        active &&
-          'before:absolute before:inset-y-2.5 before:start-0 before:w-1 before:rounded-full before:bg-accent',
+          ? 'bg-surface-raised font-semibold text-text'
+          : 'font-medium text-muted hover:bg-surface-raised hover:text-text',
       )}
     >
-      <Icon size={18} aria-hidden="true" />
-      <span>{item.label[lang]}</span>
+      <Icon
+        size={17}
+        aria-hidden="true"
+        className={cn('shrink-0', active ? 'text-accent' : 'text-muted group-hover:text-text')}
+      />
+      <span className="truncate">{item.label[lang]}</span>
     </Link>
+  );
+}
+
+/** A related set of links behind one expandable row (blueprint 02 §4). Closed content stays in the DOM but inert. */
+function NavSection({
+  group,
+  activeItem,
+  open,
+  onToggle,
+  onNavigate,
+}: {
+  group: VisibleNavGroup;
+  activeItem: string | null;
+  open: boolean;
+  onToggle: () => void;
+  onNavigate: () => void;
+}) {
+  const { lang } = useLanguage();
+  const Icon = GROUP_ICONS[group.key] ?? Briefcase;
+  const id = `nav-section-${group.key}`;
+  return (
+    <div>
+      <button
+        type="button"
+        aria-expanded={open}
+        aria-controls={id}
+        onClick={onToggle}
+        className={cn(
+          'flex min-h-9 w-full items-center gap-2.5 rounded-lg px-3 text-start text-[13.5px] font-medium text-muted transition-colors',
+          'hover:bg-surface-raised hover:text-text focus-visible:outline-2 focus-visible:outline-accent',
+          open && 'text-text',
+        )}
+      >
+        <Icon size={17} aria-hidden="true" className="shrink-0" />
+        <span className="flex-1 truncate">{group.label[lang]}</span>
+        <ChevronRight
+          size={15}
+          aria-hidden="true"
+          className={cn(
+            'shrink-0 transition-transform duration-200 motion-reduce:transition-none rtl:-scale-x-100',
+            open && 'rotate-90',
+          )}
+        />
+      </button>
+      <div
+        id={id}
+        inert={!open}
+        className={cn(
+          'grid transition-[grid-template-rows] duration-200 motion-reduce:transition-none',
+          open ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]',
+        )}
+      >
+        <ul className="ms-[18px] flex min-h-0 flex-col gap-0.5 overflow-hidden border-s border-line ps-2">
+          {group.items.map((item) => (
+            <li key={item.key} className="first:mt-1 last:mb-1">
+              <NavItem item={item} active={item.key === activeItem} onNavigate={onNavigate} />
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
   );
 }
 
 function SidebarContent({
   nav,
   activeItem,
+  user,
   onNavigate,
 }: {
   nav: VisibleNavGroup[];
   activeItem: string | null;
+  user: ShellUser;
   onNavigate: () => void;
 }) {
   const { lang } = useLanguage();
   const ar = lang === 'ar';
+  // A manual choice wins; otherwise a section is open while it holds the active page.
+  const [manual, setManual] = useState<Record<string, boolean>>({});
+  useEffect(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem(OPEN_KEY) ?? '{}') as Record<string, boolean>;
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- restore the saved choice after hydration
+      setManual(saved);
+    } catch {
+      /* private mode: keep the defaults */
+    }
+  }, []);
+
+  const toggle = (key: string, open: boolean) => {
+    const next = { ...manual, [key]: !open };
+    setManual(next);
+    try {
+      localStorage.setItem(OPEN_KEY, JSON.stringify(next));
+    } catch {
+      /* ignore */
+    }
+  };
+
+  const flat = nav.filter((g) => g.key === 'general').flatMap((g) => g.items);
+  const sections = nav.filter((g) => g.key !== 'general');
+  const home = flat[0]?.href ?? '/dashboard';
+  const initial = (user.name.trim().charAt(0) || '?').toUpperCase();
+
   return (
     <div className="flex h-full flex-col">
-      <div className="flex min-h-22 flex-col justify-center border-b border-line px-5">
-        <span className="text-[15px] font-bold">
-          {ar ? 'المجتمع السعودي للمطورين' : 'Saudi Developer Community'}
-        </span>
-        <span className="text-xs font-semibold text-accent">
-          {ar ? 'لوحة التحكم' : 'Dashboard'}
-        </span>
+      <div className="flex h-14 items-center px-4">
+        <Link
+          href={home}
+          onClick={onNavigate}
+          aria-label={ar ? 'المجتمع السعودي للمطورين' : 'Saudi Developer Community'}
+          className="flex items-center gap-2.5"
+        >
+          {/* The mark is an SVG, so it bypasses the image optimizer. */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/assets/sdc-logo-mark.svg"
+            alt=""
+            width={20}
+            height={37}
+            style={{ height: 34, width: 'auto' }}
+          />
+          <span className="flex flex-col leading-tight">
+            <span className="text-[15px] font-extrabold">
+              {ar ? 'المجتمع السعودي' : 'Saudi Developer'}
+            </span>
+            <span className="text-[13px] font-medium text-muted">
+              {ar ? 'للمطورين' : 'Community'}
+            </span>
+          </span>
+        </Link>
       </div>
       <nav
         aria-label={ar ? 'التنقل الداخلي' : 'Internal navigation'}
         className="flex-1 overflow-y-auto px-3 pb-4"
       >
-        {nav.map((group) => (
-          <div key={group.key} className="mt-6 first:mt-4">
-            <p className="px-4 pb-2 text-[11px] font-bold text-muted">{group.label[lang]}</p>
-            <ul className="flex flex-col gap-1">
-              {group.items.map((item) => (
-                <li key={item.key}>
-                  <NavItem item={item} active={item.key === activeItem} onNavigate={onNavigate} />
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
+        {flat.length > 0 && (
+          <ul className="flex flex-col gap-0.5">
+            {flat.map((item) => (
+              <li key={item.key}>
+                <NavItem item={item} active={item.key === activeItem} onNavigate={onNavigate} />
+              </li>
+            ))}
+          </ul>
+        )}
+        <div className="mt-1 flex flex-col gap-0.5">
+          {sections.map((group) => {
+            const holdsActive = group.items.some((i) => i.key === activeItem);
+            const open = holdsActive || (manual[group.key] ?? false);
+            return (
+              <NavSection
+                key={group.key}
+                group={group}
+                activeItem={activeItem}
+                open={open}
+                onToggle={() => toggle(group.key, open)}
+                onNavigate={onNavigate}
+              />
+            );
+          })}
+        </div>
       </nav>
-      <div className="border-t border-line p-3">
+      <div className="flex flex-col gap-1 border-t border-line p-3">
         <Link
           href="/"
-          className="flex min-h-11 items-center gap-3 rounded-xl px-4 text-sm font-medium text-muted hover:bg-surface-raised hover:text-text"
+          className="flex min-h-9 items-center gap-2.5 rounded-lg px-3 text-[13.5px] font-medium text-muted hover:bg-surface-raised hover:text-text"
         >
-          <ExternalLink size={18} aria-hidden="true" />
+          <ExternalLink size={17} aria-hidden="true" />
           {ar ? 'الموقع العام' : 'Public site'}
         </Link>
+        <div className="flex items-center gap-2.5 rounded-lg px-3 py-2">
+          <span
+            aria-hidden="true"
+            className="flex size-8 shrink-0 items-center justify-center rounded-full bg-accent text-sm font-bold text-on-accent"
+          >
+            {initial}
+          </span>
+          <div className="min-w-0">
+            <p className="truncate text-[13px] font-semibold">{user.name}</p>
+            <p dir="ltr" className="truncate text-xs text-muted" style={{ textAlign: 'start' }}>
+              {user.email}
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -184,6 +333,7 @@ export function ShellFrame({
   const router = useRouter();
   const { lang, toggleLanguage, isSwitching } = useLanguage();
   const { isDarkMode, toggleTheme } = useTheme();
+  const toast = useToast();
   const [drawer, setDrawer] = useState(false);
   const [menu, setMenu] = useState(false);
   const ar = lang === 'ar';
@@ -197,8 +347,10 @@ export function ShellFrame({
     accountTitle ??
     items.find((i) => i.key === active)?.label[lang] ??
     (ar ? 'لوحة التحكم' : 'Dashboard');
+  const section = nav.find((g) => g.key !== 'general' && g.items.some((i) => i.key === active))
+    ?.label[lang];
 
-  // Close overlays on navigation and with Escape.
+  // Close overlays with Escape.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -212,15 +364,16 @@ export function ShellFrame({
 
   const handleSignOut = async () => {
     await signOut();
+    toast.success(lang === 'ar' ? 'تم تسجيل الخروج.' : 'Signed out.');
     router.replace('/login');
     router.refresh();
   };
 
   return (
-    <div className="min-h-dvh bg-canvas text-text lg:grid lg:grid-cols-[272px_minmax(0,1fr)]">
+    <div className="sdc-inter min-h-dvh bg-canvas text-text lg:grid lg:grid-cols-[240px_minmax(0,1fr)]">
       {/* Desktop sidebar (first in DOM → inline-start in both directions) */}
       <aside className="sticky top-0 hidden h-dvh border-e border-line bg-surface lg:block">
-        <SidebarContent nav={nav} activeItem={active} onNavigate={() => undefined} />
+        <SidebarContent nav={nav} activeItem={active} user={user} onNavigate={() => undefined} />
       </aside>
 
       {/* Mobile drawer */}
@@ -237,7 +390,7 @@ export function ShellFrame({
             className="absolute inset-0 bg-black/70"
             onClick={() => setDrawer(false)}
           />
-          <div className="absolute inset-y-0 start-0 w-72 max-w-[85vw] border-e border-line bg-surface">
+          <div className="absolute inset-y-0 start-0 w-64 max-w-[85vw] border-e border-line bg-surface">
             <button
               type="button"
               aria-label={ar ? 'إغلاق' : 'Close'}
@@ -246,13 +399,18 @@ export function ShellFrame({
             >
               <X size={18} />
             </button>
-            <SidebarContent nav={nav} activeItem={active} onNavigate={() => setDrawer(false)} />
+            <SidebarContent
+              nav={nav}
+              activeItem={active}
+              user={user}
+              onNavigate={() => setDrawer(false)}
+            />
           </div>
         </div>
       )}
 
       <div className="min-w-0">
-        <header className="sticky top-0 z-30 flex min-h-16 items-center gap-3 border-b border-line bg-canvas/85 px-4 backdrop-blur lg:min-h-[72px] lg:px-8">
+        <header className="sticky top-0 z-30 flex min-h-14 items-center gap-2 border-b border-line bg-canvas/85 px-4 backdrop-blur lg:px-6">
           <button
             type="button"
             className="rounded-full p-2 text-muted hover:text-text lg:hidden"
@@ -261,13 +419,27 @@ export function ShellFrame({
           >
             <Menu size={20} />
           </button>
-          <span aria-hidden="true" className="hidden h-9 w-1 rounded-full bg-accent lg:block" />
-          <div className="min-w-0 flex-1">
-            <h2 className="truncate text-xl font-extrabold">{title}</h2>
-            {user.positionLabel && (
-              <p className="truncate text-xs text-muted">{user.positionLabel[lang]}</p>
-            )}
-          </div>
+          <nav aria-label={ar ? 'مسار الصفحة' : 'Breadcrumb'} className="min-w-0 flex-1">
+            <ol className="flex min-w-0 items-center gap-2 text-sm">
+              <li className="flex items-center text-muted">
+                <LayoutDashboard size={16} aria-hidden="true" />
+              </li>
+              {section && (
+                <>
+                  <li aria-hidden="true" className="hidden text-muted sm:block">
+                    /
+                  </li>
+                  <li className="hidden truncate text-muted sm:block">{section}</li>
+                </>
+              )}
+              <li aria-hidden="true" className="text-muted">
+                /
+              </li>
+              <li className="min-w-0">
+                <h2 className="truncate text-[15px] font-semibold">{title}</h2>
+              </li>
+            </ol>
+          </nav>
 
           <button
             type="button"
@@ -371,7 +543,7 @@ export function ShellFrame({
           </div>
         </header>
 
-        <main className="mx-auto w-full max-w-[1280px] px-4 pb-12 pt-6 lg:px-8">{children}</main>
+        <main className="mx-auto w-full max-w-[1280px] px-4 pb-12 pt-6 lg:px-6">{children}</main>
       </div>
     </div>
   );

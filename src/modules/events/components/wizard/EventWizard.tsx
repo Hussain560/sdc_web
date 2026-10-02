@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState, useTransition } from 'react';
-import { Alert, Button, Dialog, Stepper } from '@/components/ui';
+import { Alert, Button, Dialog, Stepper, useToast } from '@/components/ui';
 import { useLanguage } from '@/context/LanguageContext';
 import { useRouter } from '@/i18n/navigation';
 import type { Localized } from '@/modules/access/types';
@@ -65,14 +65,13 @@ export function EventWizard(props: Props) {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [warnSteps, setWarnSteps] = useState<Set<number>>(new Set());
   const [coverUrl, setCoverUrl] = useState<string | null>(props.coverUrl);
-  const [banner, setBanner] = useState<{
-    tone: 'success' | 'danger' | 'info';
-    text: string;
-  } | null>(
-    props.justSaved
-      ? { tone: 'success', text: lang === 'ar' ? 'تم حفظ المسودة' : 'Draft saved' }
-      : null,
-  );
+  const toast = useToast();
+  const invalidText =
+    lang === 'ar' ? 'يرجى مراجعة الحقول المحددة.' : 'Please review the highlighted fields.';
+  useEffect(() => {
+    if (props.justSaved) toast.success(lang === 'ar' ? 'تم حفظ المسودة' : 'Draft saved');
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- once, on arrival from the first save
+  }, []);
   const [restored, setRestored] = useState(false);
   const [confirmChange, setConfirmChange] = useState<null | 'submit' | 'approve' | 'save'>(null);
   const [pending, startTransition] = useTransition();
@@ -122,7 +121,6 @@ export function EventWizard(props: Props) {
 
   const set = (patch: Partial<EventFormValues>) => {
     setValues((v) => ({ ...v, ...patch }));
-    setBanner(null);
     // clear the errors of the fields being edited
     setErrors((e) => {
       const next = { ...e };
@@ -163,6 +161,7 @@ export function EventWizard(props: Props) {
     const r = validateStep(step, values, lang);
     if (!r.ok) {
       setErrors(r.errors);
+      toast.error(invalidText);
       setWarnSteps((w) => new Set(w).add(step));
       focusFirst(r.errors);
       return;
@@ -194,11 +193,11 @@ export function EventWizard(props: Props) {
     const check = validateDraft(values, lang);
     if (!check.ok) {
       setErrors(check.errors);
+      toast.error(invalidText);
       goTo(1);
       focusFirst(check.errors);
       return;
     }
-    setBanner(null);
     startTransition(async () => {
       const r = await saveEvent(
         { id: eventId ?? undefined, values, expectedUpdatedAt: updatedAt ?? undefined },
@@ -206,12 +205,12 @@ export function EventWizard(props: Props) {
       );
       if (!r.ok) {
         setErrors(r.fieldErrors ?? {});
-        setBanner({ tone: 'danger', text: r.message });
+        toast.error(r.message);
         return;
       }
       const wasNew = !eventId;
       applySaved(r.data);
-      setBanner({ tone: 'success', text: ar ? 'تم حفظ المسودة' : 'Draft saved' });
+      toast.success(ar ? 'تم حفظ المسودة' : 'Draft saved');
       if (wasNew) router.replace(`/dashboard/events/${r.data.id}/edit?saved=1`);
     });
   };
@@ -235,6 +234,7 @@ export function EventWizard(props: Props) {
     const all = validateAll(values, lang);
     if (!all.ok) {
       setErrors(all.errors);
+      toast.error(invalidText);
       goTo(all.step);
       setWarnSteps((w) => new Set(w).add(all.step));
       focusFirst(all.errors);
@@ -244,6 +244,7 @@ export function EventWizard(props: Props) {
       const s4 = validateStep(4, values, lang);
       if (!s4.ok) {
         setErrors(s4.errors);
+        toast.error(invalidText);
         focusFirst(s4.errors);
         return;
       }
@@ -253,7 +254,6 @@ export function EventWizard(props: Props) {
       return;
     }
     setConfirmChange(null);
-    setBanner(null);
     startTransition(async () => {
       const saved = await saveEvent(
         { id: eventId ?? undefined, values, expectedUpdatedAt: updatedAt ?? undefined },
@@ -261,12 +261,12 @@ export function EventWizard(props: Props) {
       );
       if (!saved.ok) {
         setErrors(saved.fieldErrors ?? {});
-        setBanner({ tone: 'danger', text: saved.message });
+        toast.error(saved.message);
         return;
       }
       applySaved(saved.data);
       if (action === 'save') {
-        setBanner({ tone: 'success', text: ar ? 'تم حفظ التغييرات' : 'Changes saved' });
+        toast.success(ar ? 'تم حفظ التغييرات' : 'Changes saved');
         router.push(`/dashboard/events/${saved.data.id}`);
         return;
       }
@@ -282,10 +282,19 @@ export function EventWizard(props: Props) {
           setErrors({ [field === 'group_link' ? 'groupLink' : field]: t.message });
           requestAnimationFrame(() => document.getElementById(FIELD_ID[field] ?? '')?.focus());
         }
-        setBanner({ tone: 'danger', text: t.message });
+        toast.error(t.message);
         if (!eventId) router.replace(`/dashboard/events/${saved.data.id}/edit`);
         return;
       }
+      toast.success(
+        action === 'approve'
+          ? ar
+            ? 'تم اعتماد الفعالية.'
+            : 'Event approved.'
+          : ar
+            ? 'أُرسلت الفعالية للمراجعة.'
+            : 'Event sent for review.',
+      );
       router.push(`/dashboard/events/${saved.data.id}`);
     });
   };
@@ -294,8 +303,11 @@ export function EventWizard(props: Props) {
     if (!eventId) return;
     startTransition(async () => {
       const r = await transitionEvent({ id: eventId, action: 'withdraw' }, { lang });
-      if (!r.ok) setBanner({ tone: 'danger', text: r.message });
-      else router.refresh();
+      if (!r.ok) toast.error(r.message);
+      else {
+        toast.success(ar ? 'تم سحب الطلب.' : 'Request withdrawn.');
+        router.refresh();
+      }
     });
   };
 
@@ -386,14 +398,6 @@ export function EventWizard(props: Props) {
               <li key={i}>{m}</li>
             ))}
           </ul>
-        </Alert>
-      )}
-      {banner && (
-        <Alert
-          tone={banner.tone === 'info' ? 'info' : banner.tone === 'success' ? 'success' : 'danger'}
-          className="mb-4"
-        >
-          {banner.text}
         </Alert>
       )}
 

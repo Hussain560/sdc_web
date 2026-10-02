@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
+import { useToast } from '@/components/ui';
+import React, { useEffect, useState } from 'react';
 import { Link } from '@/i18n/navigation';
 import { ArrowRight, ArrowLeft } from 'lucide-react';
 import Header from '@/components/Header/Header';
@@ -12,15 +13,18 @@ import '../login/login.css';
 export default function ForgotPasswordForm({ initialError }: { initialError?: string }) {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
-  const [errorMsg, setErrorMsg] = useState(initialError ?? '');
   const [notice, setNotice] = useState('');
   const [showSuccess, setShowSuccess] = useState(false);
   const { lang } = useLanguage();
+  const toast = useToast();
   const isEnglish = lang === 'en';
+  useEffect(() => {
+    if (initialError) toast.error(initialError);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- once, for the error carried in the URL
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setErrorMsg('');
     setShowSuccess(false);
     setLoading(true);
 
@@ -28,13 +32,14 @@ export default function ForgotPasswordForm({ initialError }: { initialError?: st
     setLoading(false);
 
     if (!result.ok) {
-      setErrorMsg(Object.values(result.fieldErrors ?? {})[0] ?? result.message);
+      toast.error(Object.values(result.fieldErrors ?? {})[0] ?? result.message);
       return;
     }
 
     // Same message whether or not the e-mail is registered (no enumeration).
     setNotice(result.data.notice);
     setShowSuccess(true);
+    toast.success(isEnglish ? 'Request received.' : 'استلمنا طلبك.');
   };
 
   return (
@@ -72,23 +77,6 @@ export default function ForgotPasswordForm({ initialError }: { initialError?: st
                 : 'يرجى إدخال البريد الإلكتروني المرتبط بالحساب، وسيتم إرسال رابط لإعادة تعيين كلمة المرور.'}
             </p>
           </div>
-
-          {errorMsg && (
-            <div
-              style={{
-                background: 'rgba(239,68,68,0.1)',
-                border: '1px solid #ef4444',
-                color: '#ef4444',
-                borderRadius: '8px',
-                padding: '10px 14px',
-                fontSize: '14px',
-                marginBottom: '16px',
-                textAlign: 'center',
-              }}
-            >
-              {errorMsg}
-            </div>
-          )}
 
           {showSuccess && (
             <div
@@ -128,7 +116,6 @@ export default function ForgotPasswordForm({ initialError }: { initialError?: st
                   value={email}
                   onChange={(e) => {
                     setEmail(e.target.value);
-                    setErrorMsg('');
                   }}
                   required
                 />

@@ -1,5 +1,5 @@
-import { ClipboardList } from 'lucide-react';
-import { EmptyState, Pagination, Tabs, type TabItem } from '@/components/ui';
+import { ClipboardList, ListFilter, Search, X } from 'lucide-react';
+import { EmptyState, ExportButton, Pagination, Tabs, type TabItem } from '@/components/ui';
 import { Forbidden } from '@/components/layout/Forbidden';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { Link } from '@/i18n/navigation';
@@ -88,14 +88,7 @@ export default async function RegistrationsPage({
             : 'Review registrations for your committees’ events and decide.'
         }
         action={
-          canExport ? (
-            <a
-              href={exportHref}
-              className="inline-flex min-h-10 items-center rounded-full border border-line-accent px-5 text-sm font-semibold text-accent hover:bg-surface-raised"
-            >
-              {ar ? 'تصدير CSV' : 'Export CSV'}
-            </a>
-          ) : undefined
+          canExport ? <ExportButton href={exportHref} filename="registrations.csv" /> : undefined
         }
       />
 
@@ -113,25 +106,30 @@ export default async function RegistrationsPage({
         label={ar ? 'حالة التسجيل' : 'Registration status'}
       />
 
-      <form method="get" className="mb-4 flex flex-wrap items-end gap-3">
+      <form method="get" className="mb-4 flex flex-wrap items-center gap-2">
         {status && <input type="hidden" name="status" value={status} />}
-        <label className="flex flex-col gap-1 text-xs text-muted">
-          {ar ? 'بحث' : 'Search'}
+        <label className="relative">
+          <span className="sr-only">{ar ? 'بحث' : 'Search'}</span>
+          <Search
+            size={16}
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-y-0 start-3 my-auto text-muted"
+          />
           <input
             name="q"
             defaultValue={sp.q ?? ''}
-            placeholder={ar ? 'الاسم أو البريد…' : 'Name or e-mail…'}
-            className="min-h-10 w-56 rounded-xl border border-line bg-surface-raised px-3 text-sm text-text"
+            placeholder={ar ? 'ابحث بالاسم أو البريد' : 'Search by name or e-mail'}
+            className="h-9 w-64 rounded-lg border border-line bg-surface ps-9 pe-3 text-sm text-text placeholder:text-muted focus-visible:outline-2 focus-visible:outline-accent"
           />
         </label>
-        <label className="flex flex-col gap-1 text-xs text-muted">
-          {ar ? 'الفعالية' : 'Event'}
+        <label>
+          <span className="sr-only">{ar ? 'الفعالية' : 'Event'}</span>
           <select
             name="event"
             defaultValue={sp.event ?? ''}
-            className="min-h-10 max-w-64 rounded-xl border border-line bg-surface-raised px-3 text-sm text-text"
+            className="h-9 max-w-64 rounded-lg border border-line bg-surface px-3 text-sm text-text focus-visible:outline-2 focus-visible:outline-accent"
           >
-            <option value="">{ar ? 'الكل' : 'All'}</option>
+            <option value="">{ar ? 'كل الفعاليات' : 'All events'}</option>
             {events.map((e) => (
               <option key={e.id} value={e.id}>
                 {ar ? e.titleAr : e.titleEn || e.titleAr}
@@ -141,15 +139,17 @@ export default async function RegistrationsPage({
         </label>
         <button
           type="submit"
-          className="min-h-10 rounded-full border border-line-accent px-5 text-sm font-semibold text-accent"
+          className="inline-flex h-9 items-center gap-2 rounded-full border border-line-accent px-4 text-sm font-semibold text-accent hover:bg-surface-raised focus-visible:outline-2 focus-visible:outline-accent"
         >
+          <ListFilter size={15} aria-hidden="true" />
           {ar ? 'تطبيق' : 'Apply'}
         </button>
         {(sp.q || sp.event) && (
           <Link
             href={status ? `?status=${status}` : '?'}
-            className="min-h-10 self-center text-sm text-muted underline"
+            className="inline-flex h-9 items-center gap-1.5 text-sm text-muted hover:text-text"
           >
+            <X size={15} aria-hidden="true" />
             {ar ? 'مسح التصفية' : 'Reset filters'}
           </Link>
         )}
