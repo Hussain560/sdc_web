@@ -4,35 +4,76 @@ import React, { useState, useEffect } from 'react';
 import { Link } from '@/i18n/navigation';
 import { useRouter } from '@/i18n/navigation';
 import { MapPin, Calendar, CheckCircle, X } from 'lucide-react';
-import { useSearch } from '../../context/SearchContext';
-import { useAuth } from '../../context/AuthContext';
-import { useLanguage } from '../../context/LanguageContext';
-import { supabase } from '../../lib/supabase';
-import { allEventsData } from '../../data/allEvents';
-import type { LegacyEventSummary } from '../../types/content';
-import './ArticlesSection.css';
+import Header from '@/components/Header/Header';
+import Footer from '@/components/Footer/Footer';
+import { useSearch } from '@/context/SearchContext';
+import { useAuth } from '@/context/AuthContext';
+import { useLanguage } from '@/context/LanguageContext';
+import { supabase } from '@/lib/supabase';
+import type { LegacyEventSummary } from '@/types/content';
+import './all-events.css';
 
-const articles = [
-  { id: 1, ar: 'هندسة الأوامر (Prompt Engineering)', en: 'Prompt Engineering' },
-  { id: 2, ar: 'تقنية Voice2Face', en: 'Voice2Face Technology' },
-  { id: 3, ar: 'أنظمة التوصية (Recommendation Systems)', en: 'Recommendation Systems' },
-  { id: 4, ar: 'التطبيقات الصينية والإنجليزية', en: 'Chinese and English Applications' },
+const allEventsData: LegacyEventSummary[] = [
+  {
+    id: 1,
+    title: {
+      ar: 'لقاء تقني: بيئات العمل التقنية وأساسيات Github',
+      en: 'Technical Meetup: Tech Work Environments and GitHub Basics',
+    },
+    location: { ar: 'أونلاين', en: 'Online' },
+    date: { ar: 'قريبًا سيعلن عنه', en: 'To be announced soon' },
+    status: { ar: 'قريبًا', en: 'Coming Soon' },
+    image: '/assets/event-card.png',
+  },
+  {
+    id: 2,
+    title: { ar: 'ورشة Google AI Studio', en: 'Google AI Studio Workshop' },
+    location: { ar: 'أونلاين', en: 'Online' },
+    date: { ar: '5/8/2026', en: '5/8/2026' },
+    status: { ar: 'منتهي', en: 'Ended' },
+    image: '/assets/Picture1.png',
+  },
+  {
+    id: 3,
+    title: {
+      ar: 'ورشة تحليل البيانات باستخدام Excel & Power BI',
+      en: 'Data Analysis Workshop using Excel & Power BI',
+    },
+    location: { ar: 'أونلاين', en: 'Online' },
+    date: { ar: '20/9/2025', en: '20/9/2025' },
+    status: { ar: 'منتهي', en: 'Ended' },
+    image: '/assets/power bi.png',
+  },
+  {
+    id: 4,
+    title: { ar: 'معسكر أساسيات الأمن السيبراني', en: 'Cybersecurity Fundamentals Camp' },
+    location: { ar: 'أونلاين', en: 'Online' },
+    date: { ar: '15–19 سبتمبر 2024', en: 'September 15–19, 2024' },
+    status: { ar: 'منتهي', en: 'Ended' },
+    image: '/assets/Cyber.png',
+  },
   {
     id: 5,
-    ar: 'الذكاء الاصطناعي في الألعاب والتعلّم المعزّز',
-    en: 'AI in Gaming and Reinforcement Learning',
+    title: { ar: 'معسكر أساسيات حل التقاط العلم (CTF)', en: 'CTF Fundamentals Camp' },
+    location: { ar: 'أونلاين', en: 'Online' },
+    date: { ar: '27/10/2024 to 1/11/2024', en: '10/27/2024 to 11/1/2024' },
+    status: { ar: 'منتهي', en: 'Ended' },
+    image: '/assets/CTF.png',
   },
   {
     id: 6,
-    ar: 'تطبيقات الذكاء الاصطناعي في تحليل المشاعر',
-    en: 'AI Applications in Sentiment Analysis',
+    title: {
+      ar: 'معسكر نادي هواوي في ريادة الأعمال وصنع التطبيقات – StartApps',
+      en: 'Huawei StartApps Entrepreneurship and App Development Camp',
+    },
+    location: { ar: 'أونلاين', en: 'Online' },
+    date: { ar: '02/03/2023', en: '02/03/2023' },
+    status: { ar: 'منتهي', en: 'Ended' },
+    image: '/assets/Huwawi.png',
   },
 ];
 
-// بس أول 3 فعاليات من نفس المصدر المشترك، عشان ما نكرر البيانات
-const events = allEventsData.slice(0, 3);
-
-export default function ArticlesSection() {
+export default function AllEventsPage() {
   const router = useRouter();
   const { searchQuery } = useSearch();
   const { user, isLoggedIn } = useAuth();
@@ -51,22 +92,19 @@ export default function ArticlesSection() {
         setRegisteredEvents([]);
         return;
       }
-
       const { data, error } = await supabase
         .from('event_registrations')
         .select('event_id')
         .eq('user_id', user.id);
-
       if (!error && data) {
         setRegisteredEvents(data.map((r) => r.event_id));
       }
     }
-
     loadRegistrations();
   }, [isLoggedIn, user]);
 
   const isEventEnded = (event: LegacyEventSummary) => {
-    const status = event.status?.[isEnglish ? 'en' : 'ar'];
+    const status = event.status[isEnglish ? 'en' : 'ar'];
     return status === 'Ended' || status === 'منتهي';
   };
 
@@ -75,7 +113,6 @@ export default function ArticlesSection() {
       setEndedEvent(event);
       return;
     }
-
     if (!isLoggedIn) {
       router.push(`/login?redirect=/events/${event.id}`);
     } else {
@@ -86,19 +123,15 @@ export default function ArticlesSection() {
 
   const confirmRegistration = async () => {
     if (!selectedEvent || !user) return;
-
     setSending(true);
     setRegisterError('');
-
     const { error } = await supabase.from('event_registrations').insert({
       user_id: user.id,
       event_id: selectedEvent.id,
       full_name: user.user_metadata?.full_name || '',
       email: user.email || '',
     });
-
     setSending(false);
-
     if (error) {
       setRegisterError(
         isEnglish
@@ -107,7 +140,6 @@ export default function ArticlesSection() {
       );
       return;
     }
-
     setRegisteredEvents((prev) => [...prev, selectedEvent.id]);
     setSelectedEvent(null);
 
@@ -123,7 +155,7 @@ export default function ArticlesSection() {
       .catch((err) => console.error('email error:', err));
   };
 
-  const filteredEvents = events.filter((e) => {
+  const filteredEvents = allEventsData.filter((e) => {
     const title = e.title[isEnglish ? 'en' : 'ar'];
     const location = e.location[isEnglish ? 'en' : 'ar'];
     return (
@@ -132,101 +164,81 @@ export default function ArticlesSection() {
     );
   });
 
-  const filteredArticles = articles.filter((a) =>
-    a[isEnglish ? 'en' : 'ar'].toLowerCase().includes((searchQuery || '').toLowerCase()),
-  );
-
   return (
-    <section className="sdc-events-articles-sec">
-      <div className="sdc-ea-container">
-        <div className="sdc-events-column">
-          <div className="sdc-section-header">
-            <h2 className="sdc-section-title">{isEnglish ? 'Latest Events' : 'أحدث الفعاليات'}</h2>
+    <div className="sdc-all-events-wrapper">
+      <Header />
+      <main className="sdc-all-events-main">
+        <section className="sdc-events-hero-banner">
+          <div className="sdc-events-hero-container">
+            <nav className="sdc-events-breadcrumb">
+              <Link href="/">{isEnglish ? 'Home' : 'الرئيسية'}</Link>
+              <span className="sdc-events-bc-sep">&gt;</span>
+              <span style={{ color: '#00E676' }}>{isEnglish ? 'Events' : 'الفعاليات'}</span>
+            </nav>
+            <h1 className="sdc-events-hero-title">
+              {isEnglish ? 'Community Events' : 'فعاليات المجتمع'}
+            </h1>
+            <p className="sdc-events-hero-subtitle">
+              {isEnglish
+                ? 'Discover upcoming community events and participate in workshops, hackathons, and technology meetups.'
+                : 'اكتشف فعاليات المجتمع القادمة، وشارك في ورش العمل، الهاكاثونات، والملتقيات التقنية.'}
+            </p>
           </div>
+        </section>
 
-          <div className="sdc-events-list">
-            {filteredEvents.map((event) => {
-              const eventTitle = event.title[isEnglish ? 'en' : 'ar'];
-              const eventLocation = event.location[isEnglish ? 'en' : 'ar'];
-              const eventDate = event.date[isEnglish ? 'en' : 'ar'];
-              const eventStatus = event.status[isEnglish ? 'en' : 'ar'];
-              const isRegistered = registeredEvents.includes(event.id);
-              return (
-                <div key={event.id} className="sdc-event-card">
-                  <div className="sdc-event-image-wrapper">
-                    <span
-                      className={`sdc-badge-status ${eventStatus === 'Coming Soon' || eventStatus === 'قريبًا' ? 'coming-soon' : 'available'}`}
-                    >
-                      {eventStatus}
-                    </span>
-                    <img src={event.image} alt={eventTitle} className="sdc-event-image" />
-                  </div>
-
-                  <div className="sdc-event-details">
-                    <div className="sdc-event-tags">
-                      <span className="sdc-tag tag-competitions">
-                        {isEnglish ? 'Competitions' : 'مسابقات'}
-                      </span>
-                      <span className="sdc-tag tag-tech">{isEnglish ? 'Technology' : 'تقنية'}</span>
-                      <span className="sdc-tag tag-students">
-                        {isEnglish ? 'Students' : 'طلاب'}
-                      </span>
-                    </div>
-
-                    <h3 className="sdc-event-title">{eventTitle}</h3>
-
-                    <div className="sdc-event-meta">
-                      <span>
-                        <MapPin size={13} className="sdc-icon-green" /> {eventLocation}
-                      </span>
-                      <span>
-                        <Calendar size={13} className="sdc-icon-green" /> {eventDate}
-                      </span>
-                    </div>
-
-                    <div className="sdc-event-actions">
-                      <button
-                        className={`sdc-btn-register ${isRegistered ? 'registered' : ''}`}
-                        onClick={() => !isRegistered && handleRegisterClick(event)}
-                        disabled={isRegistered}
+        <div className="sdc-all-events-container">
+          {filteredEvents.length > 0 ? (
+            <div className="sdc-all-events-grid">
+              {filteredEvents.map((event) => {
+                const isRegistered = registeredEvents.includes(event.id);
+                const eventTitle = event.title[isEnglish ? 'en' : 'ar'];
+                const eventLocation = event.location[isEnglish ? 'en' : 'ar'];
+                const eventDate = event.date[isEnglish ? 'en' : 'ar'];
+                const eventStatus = event.status[isEnglish ? 'en' : 'ar'];
+                return (
+                  <div key={event.id} className="sdc-event-full-card">
+                    <div className="sdc-card-img-wrapper">
+                      <span
+                        className={`sdc-card-status-badge ${eventStatus === 'Coming Soon' || eventStatus === 'قريبًا' ? 'coming-soon' : 'available'}`}
                       >
-                        {isRegistered ? t('registered') : t('register')}
-                      </button>
-
-                      <Link href={`/events/${event.id}`} className="sdc-btn-more">
-                        {isEnglish ? 'Read More' : 'قراءة المزيد'}
-                      </Link>
+                        {eventStatus}
+                      </span>
+                      <img src={event.image} alt={eventTitle} className="sdc-card-img" />
+                    </div>
+                    <div className="sdc-card-content">
+                      <h3 className="sdc-card-event-title">{eventTitle}</h3>
+                      <div className="sdc-card-event-meta">
+                        <span>
+                          <MapPin size={14} style={{ color: '#00E676' }} /> {eventLocation}
+                        </span>
+                        <span>
+                          <Calendar size={14} style={{ color: '#00E676' }} /> {eventDate}
+                        </span>
+                      </div>
+                      <div className="sdc-card-actions">
+                        <button
+                          className={`sdc-card-btn-register ${isRegistered ? 'registered' : ''}`}
+                          onClick={() => !isRegistered && handleRegisterClick(event)}
+                          disabled={isRegistered}
+                        >
+                          {isRegistered ? t('registered') : t('register')}
+                        </button>
+                        <Link href={`/events/${event.id}`} className="sdc-card-btn-more">
+                          {isEnglish ? 'Read More' : 'قراءة المزيد'}
+                        </Link>
+                      </div>
                     </div>
                   </div>
-                </div>
-              );
-            })}
-          </div>
+                );
+              })}
+            </div>
+          ) : (
+            <div className="sdc-no-results">
+              {isEnglish ? 'No results matched your search.' : 'لا توجد نتائج تطابق بحثك حالياً.'}
+            </div>
+          )}
         </div>
-
-        <div className="sdc-articles-column">
-          <div className="sdc-section-header">
-            <h2 className="sdc-section-title">{isEnglish ? 'Latest Threads' : 'أحدث الثريدات'}</h2>
-            <Link href="/articles" className="sdc-view-all-btn">
-              {t('viewAll')}
-            </Link>
-          </div>
-
-          <div className="sdc-articles-list">
-            {filteredArticles.map((article) => (
-              <Link
-                key={article.id}
-                href={`/articles/${article.id}`}
-                style={{ textDecoration: 'none' }}
-              >
-                <div className="sdc-article-item">
-                  <h3 className="sdc-article-title">{article[isEnglish ? 'en' : 'ar']}</h3>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </div>
+      </main>
 
       {selectedEvent && (
         <div className="sdc-modal-overlay" onClick={() => setSelectedEvent(null)}>
@@ -234,15 +246,12 @@ export default function ArticlesSection() {
             <button className="sdc-modal-close" onClick={() => setSelectedEvent(null)}>
               <X size={20} />
             </button>
-
             <div className="sdc-modal-header">
               <CheckCircle size={40} className="sdc-modal-icon" />
               <h3>{isEnglish ? 'Confirm event registration' : 'تأكيد التسجيل في الفعالية'}</h3>
             </div>
-
             <div className="sdc-modal-body">
               <p className="sdc-modal-event-name">{selectedEvent.title[isEnglish ? 'en' : 'ar']}</p>
-
               <div className="sdc-modal-user-info">
                 <span>
                   {isEnglish
@@ -260,7 +269,6 @@ export default function ArticlesSection() {
                   </li>
                 </ul>
               </div>
-
               {registerError && (
                 <div
                   style={{
@@ -278,7 +286,6 @@ export default function ArticlesSection() {
                 </div>
               )}
             </div>
-
             <div className="sdc-modal-footer">
               <button className="sdc-btn-confirm" onClick={confirmRegistration} disabled={sending}>
                 {sending
@@ -307,19 +314,16 @@ export default function ArticlesSection() {
             <button className="sdc-modal-close" onClick={() => setEndedEvent(null)}>
               <X size={20} />
             </button>
-
             <div className="sdc-modal-header">
-              <h3>{isEnglish ? 'Registration Closed' : 'انتهى التسجيل'}</h3>
+              <h3>{isEnglish ? 'Event Ended' : 'انتهت الفعالية'}</h3>
             </div>
-
-            <div className="sdc-modal-body">
-              <p style={{ textAlign: 'center', lineHeight: '1.8' }}>
+            <div className="sdc-modal-body" style={{ textAlign: 'center' }}>
+              <p style={{ color: '#cccccc', fontSize: '15px', lineHeight: '1.8' }}>
                 {isEnglish
-                  ? 'We apologize, this event has ended and registration is no longer available. We look forward to seeing you at our upcoming events.'
+                  ? 'We apologize, this event has ended and registration is no longer available. We look forward to seeing you in our upcoming events.'
                   : 'نعتذر، هذه الفعالية انتهت ولم يعد التسجيل متاحًا. نتطلع لوجودك في فعالياتنا القادمة.'}
               </p>
             </div>
-
             <div className="sdc-modal-footer">
               <button className="sdc-btn-confirm" onClick={() => setEndedEvent(null)}>
                 {isEnglish ? 'OK' : 'حسنًا'}
@@ -328,6 +332,8 @@ export default function ArticlesSection() {
           </div>
         </div>
       )}
-    </section>
+
+      <Footer />
+    </div>
   );
 }

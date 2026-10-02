@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { Link } from '@/i18n/navigation';
+import { usePathname, useRouter } from '@/i18n/navigation';
 import { Search, User, Globe, X, LogOut, Sun, Moon } from 'lucide-react';
 import { useSearch } from '../../context/SearchContext';
 import { useLanguage } from '../../context/LanguageContext';

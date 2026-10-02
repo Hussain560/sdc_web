@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 import Header from '../Header/Header';
 import Footer from '../Footer/Footer';
 import './NotFound.css';

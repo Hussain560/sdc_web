@@ -1,6 +1,7 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext } from 'react';
+import { usePathname, useRouter } from '@/i18n/navigation';
 
 const translations = {
   ar: {
@@ -152,35 +153,22 @@ interface LanguageContextValue {
 
 const LanguageContext = createContext<LanguageContextValue | null>(null);
 
-export function LanguageProvider({ children }: { children: React.ReactNode }) {
-  const [lang, setLang] = useState<Lang>('ar');
+export function LanguageProvider({
+  children,
+  locale,
+}: {
+  children: React.ReactNode;
+  locale: Lang;
+}) {
+  const router = useRouter();
+  const pathname = usePathname();
 
-  const updateDOMAndStorage = (newLang: Lang) => {
-    if (typeof window !== 'undefined') {
-      document.documentElement.dir = newLang === 'ar' ? 'rtl' : 'ltr';
-      document.documentElement.lang = newLang;
-      document.body.dir = newLang === 'ar' ? 'rtl' : 'ltr';
-      localStorage.setItem('app_lang', newLang);
-    }
-  };
-
+  // ADR-010: the language is the URL locale (rendered on the server with lang/dir).
+  // Toggling navigates to the same page in the other locale.
+  const lang = locale;
   const toggleLanguage = () => {
-    const nextLang: Lang = lang === 'ar' ? 'en' : 'ar';
-    setLang(nextLang);
-    updateDOMAndStorage(nextLang);
+    router.replace(pathname, { locale: lang === 'ar' ? 'en' : 'ar' });
   };
-
-  useEffect(() => {
-    const savedLang = localStorage.getItem('app_lang');
-    if (savedLang && (savedLang === 'ar' || savedLang === 'en')) {
-      // Hydrates the saved preference after mount (SSR always renders 'ar'). Replaced by URL locales — ADR-010.
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setLang(savedLang);
-      updateDOMAndStorage(savedLang);
-    } else {
-      updateDOMAndStorage('ar');
-    }
-  }, []);
 
   const t = (key: string): string => (translations[lang] as Record<string, string>)[key] || key;
 

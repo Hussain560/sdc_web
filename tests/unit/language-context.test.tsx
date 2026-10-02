@@ -1,7 +1,13 @@
-import { act, render, screen } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { LanguageProvider, useLanguage } from '@/context/LanguageContext';
+
+const replace = vi.fn();
+vi.mock('@/i18n/navigation', () => ({
+  useRouter: () => ({ replace }),
+  usePathname: () => '/events',
+}));
 
 function Probe() {
   const { lang, t, toggleLanguage } = useLanguage();
@@ -12,40 +18,35 @@ function Probe() {
   );
 }
 
-describe('LanguageContext', () => {
-  beforeEach(() => localStorage.clear());
+describe('LanguageContext (locale comes from the URL — ADR-010)', () => {
+  beforeEach(() => replace.mockClear());
 
-  it('defaults to Arabic, RTL', () => {
+  it('exposes the locale it is given', () => {
     render(
-      <LanguageProvider>
+      <LanguageProvider locale="en">
         <Probe />
       </LanguageProvider>,
     );
-    expect(document.documentElement.dir).toBe('rtl');
-    expect(screen.getByRole('button').textContent).toContain('ar:');
+    expect(screen.getByRole('button').textContent).toContain('en:');
   });
 
   it('falls back to the key when a translation is missing', () => {
     render(
-      <LanguageProvider>
+      <LanguageProvider locale="ar">
         <Probe />
       </LanguageProvider>,
     );
     expect(screen.getByRole('button').textContent).toBe('ar:definitely_missing_key');
   });
 
-  it('toggles to English, flips dir and persists', async () => {
+  it('toggling navigates to the same path in the other locale', async () => {
     render(
-      <LanguageProvider>
+      <LanguageProvider locale="ar">
         <Probe />
       </LanguageProvider>,
     );
-    await act(async () => {
-      await userEvent.click(screen.getByRole('button'));
-    });
-    expect(document.documentElement.dir).toBe('ltr');
-    expect(document.documentElement.lang).toBe('en');
-    expect(localStorage.getItem('app_lang')).toBe('en');
+    await userEvent.click(screen.getByRole('button'));
+    expect(replace).toHaveBeenCalledWith('/events', { locale: 'en' });
   });
 
   it('throws outside the provider', () => {

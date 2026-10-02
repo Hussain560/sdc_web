@@ -34,7 +34,6 @@ export const test = base.extend<{ setup: (opts?: { lang?: Lang }) => Promise<voi
       await page.addInitScript(
         (init: { l: string; t: string }) => {
           localStorage.setItem('sdc_theme', init.t);
-          localStorage.setItem('app_lang', init.l);
         },
         { l: lang, t: theme },
       );

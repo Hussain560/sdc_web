@@ -22,7 +22,8 @@ for (const lang of ['ar', 'en'] as const) {
   for (const route of routes) {
     test(`${route.name} [${lang}]`, async ({ page, setup }) => {
       await setup({ lang });
-      await page.goto(route.path);
+      const url = lang === 'en' ? `/en${route.path === '/' ? '' : route.path}` : route.path;
+      await page.goto(url);
       await expect(page.locator('html')).toHaveAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
       await settle(page);
       await expect(page).toHaveScreenshot(`${route.name}-${lang}.png`, {

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useRef } from 'react';
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 import { ChevronRight, ChevronLeft, User } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 import './MembersSection.css';
