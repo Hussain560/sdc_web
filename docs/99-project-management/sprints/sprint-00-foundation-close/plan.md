@@ -28,7 +28,7 @@ This retires TD-001 (no version control) and R-001/R-002 (open production data),
 
 | Story ID | Title | Priority | Points | Owner | Status |
 | -------- | ----- | -------- | ------ | ----- | ------ |
-| FND-006 | Push branch `chore/platform-foundation` to `sdc-saudi/SDC_website`, open a PR to `main`, review, merge | P0 | 2 | PO + TL | 🔄 local commits ready |
+| FND-006 | Push branch `chore/platform-foundation` to `sdc-saudi/SDC_website`, open a PR to `main`, review, merge | P0 | 2 | PO + TL | ⛔ On hold — owner said do not push (2026-10-02); local commits ready |
 | FND-004 | Branch protection on `main` (+ `develop`), ≥ 2 org owners, `CODEOWNERS` | P0 | 1 | PO | ⬜ |
 | FND-003 | Inspect remote `sdc-members` read-only: schema dump, policies, grants, buckets, data volumes (Q-025) | P0 | 2 | Supabase owner + TL | ⬜ |
 | SEC-001 | Containment migration (only if FND-003 confirms exposure) | P0 | 3 | TL | ⬜ conditional |

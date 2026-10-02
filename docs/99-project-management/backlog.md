@@ -40,7 +40,7 @@ Story ids: `<EPIC>-<nnn>`. Sprint assignment: see each [sprint plan](./sprints/R
 | FND-004 | Create/confirm GitHub org + repository; import code; protect `main`/`develop` (Q-024) | P0 |
 | FND-005 | Access inventory: owners of GitHub, Vercel, Supabase, email, domain; shared password manager | P0 |
 | SEC-001 | Containment migration for open RLS + email functions (only if FND-003 confirms exposure) | P0 |
-| FND-006 | Put the local working copy on a branch of `sdc-saudi/SDC_website`, push, open PR to `main` (Q-024, D-010) | P0 — 🔄 local commits done 2026-10-02; push awaits owner OK |
+| FND-006 | Put the local working copy on a branch of `sdc-saudi/SDC_website`, push, open PR to `main` (Q-024, D-010) | P0 — ⛔ local commits done 2026-10-02; **push on hold by owner instruction** |
 | FND-007 | Agent skills + frozen-identity guardrail (D-009) | P1 — ✅ done 2026-10-02 ([AI agent skills](../07-engineering/ai-agent-skills.md)) |
 
 ### EP-ENG / EP-DB / EP-UI — Baseline (Phase 1)
