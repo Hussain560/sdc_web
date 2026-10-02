@@ -49,6 +49,19 @@ export type Database = {
                   Relationships: [
                     
                   ]
+                },"profiles": {
+                  Row: {
+                    "avatar_path": string | null,"created_at": string,"email": string,"full_name_ar": string,"full_name_en": string | null,"id": string,"preferred_locale": string,"updated_at": string
+                  }
+                  Insert: {
+                    "avatar_path"?: string | null,"created_at"?: string,"email": string,"full_name_ar": string,"full_name_en"?: string | null,"id": string,"preferred_locale"?: string,"updated_at"?: string
+                  }
+                  Update: {
+                    "avatar_path"?: string | null,"created_at"?: string,"email"?: string,"full_name_ar"?: string,"full_name_en"?: string | null,"id"?: string,"preferred_locale"?: string,"updated_at"?: string
+                  }
+                  Relationships: [
+                    
+                  ]
                 }
           }
           Views: {

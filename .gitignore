@@ -148,3 +148,4 @@ supabase/.temp
 # local tooling
 test-results/
 playwright-report/
+.next-auth/

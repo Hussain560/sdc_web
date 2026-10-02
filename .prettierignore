@@ -10,3 +10,6 @@ supabase/.branches
 docs/**/*.md
 *.md
 public
+supabase/templates
+supabase/migrations
+.next-auth

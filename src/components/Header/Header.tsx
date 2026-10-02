@@ -68,6 +68,7 @@ export default function Header({ onSearch }: HeaderProps) {
   const handleLogoutClick = async () => {
     await logout();
     router.push('/');
+    router.refresh();
   };
 
   const displayName = user?.user_metadata?.full_name || user?.email || '';
@@ -121,10 +122,10 @@ export default function Header({ onSearch }: HeaderProps) {
 
             {isLoggedIn ? (
               <>
-                <span className="sdc-icon-btn" style={{ cursor: 'default' }}>
+                <Link href="/account" className="sdc-icon-btn">
                   <User size={18} />
                   <span>{displayName}</span>
-                </span>
+                </Link>
                 <button type="button" onClick={handleLogoutClick} className="sdc-btn-primary">
                   <LogOut size={18} />
                   <span>{lang === 'en' ? 'Logout' : 'تسجيل الخروج'}</span>

@@ -1,77 +1,54 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import type { AuthError, AuthResponse, User, UserResponse } from '@supabase/supabase-js';
+import type { User } from '@supabase/supabase-js';
 import { supabase } from '../lib/supabase';
+import { signOut } from '@/modules/auth/actions';
 
+// Read-only mirror of the cookie session for UI (header, forms). Authorization and every protected page
+// use the server (`getUser()` / `requirePermission()`); sign-in, sign-up and reset are Server Actions.
 interface AuthContextValue {
   user: User | null;
   isLoggedIn: boolean;
   loading: boolean;
-  login: (email: string, password: string) => Promise<AuthResponse>;
-  signup: (email: string, password: string, fullName: string) => Promise<AuthResponse>;
   logout: () => Promise<void>;
-  resetPasswordForEmail: (email: string) => Promise<{ data: unknown; error: AuthError | null }>;
-  updatePassword: (newPassword: string) => Promise<UserResponse>;
+  /** Re-reads the cookie session — call after a Server Action changed it (sign-in). */
+  refresh: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
-      setIsLoggedIn(!!session?.user);
+    // getUser() verifies the token with Supabase Auth; the cookie is the source of truth.
+    supabase.auth.getUser().then(({ data }) => {
+      setUser(data.user ?? null);
       setLoading(false);
     });
     const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
-      setIsLoggedIn(!!session?.user);
     });
     return () => {
       listener?.subscription?.unsubscribe();
     };
   }, []);
 
-  const login = (email: string, password: string) =>
-    supabase.auth.signInWithPassword({ email, password });
-
-  const signup = (email: string, password: string, fullName: string) =>
-    supabase.auth.signUp({
-      email,
-      password,
-      options: { data: { full_name: fullName } },
-    });
-
-  const logout = async () => {
-    await supabase.auth.signOut();
+  const refresh = async () => {
+    const { data } = await supabase.auth.getUser();
+    setUser(data.user ?? null);
   };
 
-  const resetPasswordForEmail = (email: string) =>
-    supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/reset-password`,
-    });
-
-  const updatePassword = (newPassword: string) =>
-    supabase.auth.updateUser({ password: newPassword });
+  const logout = async () => {
+    await signOut();
+    await supabase.auth.signOut({ scope: 'local' });
+    setUser(null);
+  };
 
   return (
-    <AuthContext.Provider
-      value={{
-        user,
-        isLoggedIn,
-        loading,
-        login,
-        signup,
-        logout,
-        resetPasswordForEmail,
-        updatePassword,
-      }}
-    >
+    <AuthContext.Provider value={{ user, isLoggedIn: !!user, loading, logout, refresh }}>
       {children}
     </AuthContext.Provider>
   );

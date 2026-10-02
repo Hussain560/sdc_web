@@ -10,9 +10,21 @@
 | **End Date**        | 2026-12-05 |
 | **Phase / Milestone** | Phase 2 — Identity & Access / M2 |
 | **Target version**  | `v0.3.0` (M2 exit) |
-| **Capacity**        | ~30 SP — planned 28 SP |
+| **Capacity**        | ~30 SP — planned 44 SP after adding stories; ADM-001 and AUTH-009 are explicit stretch; re-forecast after Sprint 03 |
 | **Team**            | Tech lead + volunteer developers (assigned at sprint planning) |
-| **Status**          | ⬜ Planned — dates indicative; re-forecast after Sprint 02 velocity |
+| **Status**          | 🔄 In progress — started 2026-10-02 (builds on Sprint 03's cookie session) |
+
+## Read First (reference pack)
+
+| Topic | Document | What to take from it |
+| ----- | -------- | -------------------- |
+| Module specs | [Access control](../../../11-modules/access-control/README.md) (AC-1…9, `assign_role`, `getAccess`), [Committees](../../../11-modules/committees/README.md) (CM-1…8, handover), [Administration](../../../11-modules/administration/README.md) (users, roles screens) | Rules, server operations, error codes, tests |
+| Security design | [Authorization model](../../../06-security/authorization-model.md), [Permission catalogue](../../../06-security/permission-catalog.md) (matrix = seed data), [RLS model](../../../05-database/rls-security-model.md) (`has_permission`, grants baseline, policy matrix) | Exactly what to seed and what each policy must say |
+| Data | [Identity and access entities](../../../05-database/entities/identity-and-access.md), [Organization entities](../../../05-database/entities/organization.md), [Platform entities §1 `audit_logs`](../../../05-database/entities/platform.md#1-audit_logs) | Columns, constraints, indexes |
+| Business | [Committee model](../../../03-business-domain/committee-model.md), [Organizational structure](../../../03-business-domain/organizational-structure.md) (position catalogue, terms), [Business rules](../../../03-business-domain/business-rules.md) BR-ORG-001…007 and BR-GOV-001…003, [Business processes](../../../03-business-domain/business-processes.md) (term handover, RACI) | Why the guards exist; who appoints whom |
+| Screens | [01 shell](../../../10-design-system/INTERNAL-SCREENS/01-shell-layout.md), [02 sidebar](../../../10-design-system/INTERNAL-SCREENS/02-sidebar-navigation.md) (item → permission table, nav config contract), [03 conditional rendering](../../../10-design-system/INTERNAL-SCREENS/03-conditional-rendering.md) (hide vs disable rules, 403 view), [04 skeletons](../../../10-design-system/INTERNAL-SCREENS/04-skeleton-loading.md), [23 users and roles](../../../10-design-system/INTERNAL-SCREENS/23-admin-users-roles.md), [07 public members](../../../10-design-system/PUBLIC-SCREENS/07-members.md) | Layout, states, copy |
+| Requirements | FR-CMT-001…005, FR-ADM-001/002/006 in [functional requirements](../../../02-requirements/functional-requirements.md) | Traceability |
+| Engineering | [Server logic](../../../04-architecture/server-logic-and-data-access.md), [Frontend architecture](../../../04-architecture/frontend-architecture.md), [ADR-004](../../../90-decisions/README.md), [Open questions](../../../90-decisions/open-questions.md) Q-003, Q-004, Q-014, Q-032, Q-039 (defaults used as assumptions) | Patterns and assumptions |
 
 ## Sprint Objective
 
@@ -28,6 +40,13 @@ Authorization comes from the database: roles, permissions and time-bound role as
 | ACC-002 | System admin assigns/ends roles with terms; anti-escalation and last-admin guards | P0 | 5 | — | ⬜ |
 | ACC-004 | Bootstrap admins; map the current reviewer to a role ⛔ Q-039 | P0 | 2 | — | ⬜ |
 | CMT-002 | Leadership sections on `/members` from `current_positions` ⛔ Q-014 | P0 | 5 | — | ⬜ |
+| ACC-005 | `audit_logs` table (append-only, no UPDATE/DELETE grants) + audit triggers on role assignments, committees (BR-GOV-001/002) | P0 | 3 | — | ⬜ |
+| ACC-006 | `/account/roles` — my positions and terms (read-only) | P1 | 2 | — | ⬜ |
+| SEC-001 | **Local** RLS lockdown of the legacy tables (`members` write, `event_registrations` read/update) via `has_permission`; the Sprint 01 todo pgTAP tests become hard assertions | P0 | 3 | — | ⬜ (applies locally; production waits for the deferred Supabase check) |
+| ADM-001 | Users list and 360° view (account + positions) at `/dashboard/admin/users` | P1 | 5 | — | ⬜ Stretch |
+| AUTH-009 | Account deletion request (audited; admins notified) — moved from Sprint 03 | P2 | 2 | — | ⬜ Stretch |
+| CMT-003 | `handover_head()` (end + assign in one transaction) and head appointment through the roles screen | P1 | 3 | — | ⬜ |
+| TEST-002 | Persona E2E: six seeded personas log in; each sees exactly their sidebar; a head of committee A gets 404 on committee B | P0 | 3 | — | ⬜ |
 
 ## Technical Tasks
 
@@ -38,7 +57,34 @@ Authorization comes from the database: roles, permissions and time-bound role as
 5. **Admin UI** — [23-admin-users-roles](../../../10-design-system/INTERNAL-SCREENS/23-admin-users-roles.md).
 6. **Leadership** — the top sections of `/members` read `current_positions` (visual check proves the same look); the header account menu replaces the committee link.
 
+7. **Audit** — `audit_logs` + a generic `private.audit()` trigger function used by role assignments and committees (ACC-005).
+8. **Legacy lockdown (local)** — one migration replacing the open policies on `members` and `event_registrations` with owner/`has_permission` policies, so the Sprint 01 todo tests turn into hard assertions (SEC-001); the legacy `/committee` page reads `can('registrations.review')` instead of the e-mail list until Sprint 06 replaces it.
+9. **Personas seed** — `supabase/seed.sql` adds six fictional personas with fixed `@example.test` addresses (local only) for pgTAP, E2E and the demo.
+10. **Nav config** — `src/config/dashboard-nav.ts` is the single typed list from [02 §5](../../../10-design-system/INTERNAL-SCREENS/02-sidebar-navigation.md#5-configuration-implementation-contract), filtered by `visibleNav(access)`.
+
 Every story also follows the [standard vertical-slice tasks](../../work-breakdown-structure.md#3-standard-tasks-per-story-vertical-slice) and the [Definition of Done](../../definition-of-done.md).
+
+## Story Details and Acceptance Criteria
+
+| Story | Given / When / Then | Rules | Traces to |
+| ----- | ------------------- | ----- | --------- |
+| ACC-001 | *Given* the seeded matrix, *when* pgTAP signs in as each persona, *then* each of the 30 permission keys is allowed or denied exactly as in [permission catalogue §2](../../../06-security/permission-catalog.md#2-role--permission-matrix-proposed-defaults). *Given* an assignment that starts tomorrow, *then* it grants nothing today | AC-1…AC-6 | FR-ADM-002 |
+| CMT-001 | *Given* a clean database, *then* five committees exist (AI, Cybersecurity, Technology & Development, Projects, Design & Identity — A-006); deleting one referenced by an assignment is blocked | CM-1, CM-2 | FR-CMT-001 |
+| ACC-003 | *Given* each persona, *when* they open `/dashboard`, *then* the sidebar equals the [role → view matrix](../../../10-design-system/INTERNAL-SCREENS/03-conditional-rendering.md#3-role--view-matrix-defaults-see-permission-catalog); a user with no permission is redirected to `/account`; the shell never shows a sidebar skeleton | AC-7 | FR-ADM-006 |
+| ACC-002 | *Given* the leader, *when* they assign `system_admin` to themselves, *then* `ESCALATION_DENIED`. *Given* one active admin, *when* ending them, *then* `LAST_ADMIN`. *Given* an active head, *when* appointing a second, *then* `HEAD_ALREADY_ACTIVE` | AC-3, AC-5, AC-6 | FR-ADM-002, FR-CMT-002 |
+| ACC-004 | *Given* the bootstrap script with two e-mails, *then* both become `system_admin` (idempotent, no real ids committed) and `committeeEmails.ts` is deleted | AC-9 | Q-039 |
+| CMT-002 | *Given* `current_positions`, *when* `/members` renders, *then* the leadership sections show the active public positions in the same layout; an ended position disappears on its end date | CM-7 | FR-PUB-003 |
+| ACC-005 | *Given* an assignment is created, updated or ended, *then* exactly one audit row exists with actor, action and before/after summary; any UPDATE/DELETE on `audit_logs` is denied even for admins | AD-2, AC-8 | BR-GOV-001/002 |
+| SEC-001 | *Given* the local database, *when* anon tries to insert into `members` or select `event_registrations`, *then* it is denied; the legacy pages still work (public member read, own registrations, reviewers see all) | — | Audit F-01/F-02 |
+| TEST-002 | *Given* six personas (plain user, committee member, committee head, leader, founder, system admin), *then* the sidebars match the matrix and cross-committee access is a 404 | AC-7 | FR-ADM-006 |
+
+## Definition of Ready (checked 2026-10-02)
+
+- [x] Permission catalogue and role matrix exist as seed-ready tables.
+- [x] Screen blueprints for shell, sidebar, conditional rendering and admin screens exist.
+- [x] Q-003, Q-004, Q-014, Q-032, Q-039 have recommended defaults recorded as assumptions; permissions are data, so late answers are seed-row migrations.
+- [x] Sprint 03 delivers `profiles` and the cookie session this sprint builds on.
+- [ ] Real first-admin e-mails (Q-039) — the bootstrap script takes them as parameters; local personas use fictional `@example.test` accounts.
 
 ## Dependencies
 
@@ -49,6 +95,8 @@ Every story also follows the [standard vertical-slice tasks](../../work-breakdow
 ## Acceptance Criteria
 
 - [ ] `grep -r COMMITTEE_EMAILS src app` returns nothing.
+- [ ] pgTAP: the full role × permission matrix passes; the Sprint 01 todo tests are now hard assertions and green.
+- [ ] `audit_logs` has no UPDATE/DELETE grants; every role change writes a row.
 - [ ] Each seeded role sees exactly the sidebar in the role → view matrix.
 - [ ] A head of committee A cannot act on committee B (UI hidden, server 403, RLS deny).
 - [ ] Ending a term removes access at the end time without a deploy.

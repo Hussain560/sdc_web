@@ -20,6 +20,8 @@ This module lets anyone create an **account**, prove they own the e-mail address
 | Same-site `redirect` handling, session refresh in `proxy.ts` | Social login (not planned) |
 | Account deletion request | The privacy policy text (Q-031) |
 
+> **Implementation status (2026-10-02):** Sprint 03 is complete locally — see the [sprint plan](../../99-project-management/sprints/sprint-03-auth-and-profiles/plan.md#implementation-status-updated-at-sprint-end). The problems listed below describe the system *before* that sprint, except where a note says otherwise.
+
 ## 2. Current state (CURRENT / PROBLEM)
 
 - Sessions exist only in the browser (`supabase-js` + `AuthContext`). Server Components cannot see the user, and protected content flashes before the redirect.

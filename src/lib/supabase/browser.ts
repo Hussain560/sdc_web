@@ -1,11 +1,10 @@
-import { createClient } from '@supabase/supabase-js';
+import { createBrowserClient } from '@supabase/ssr';
 import type { Database } from './database.types';
-
 import { clientEnv } from '../env';
 
-// Browser client (legacy pattern, unchanged behaviour). Server-side clients via
-// @supabase/ssr arrive with the Identity & Access phase (docs/06-security/authentication.md).
-export const supabase = createClient<Database>(
+// Browser client. Shares the cookie session written by the server clients (docs/06-security/authentication.md).
+// Prefer Server Components / Server Actions; use this only where a direct client call is justified.
+export const supabase = createBrowserClient<Database>(
   clientEnv.NEXT_PUBLIC_SUPABASE_URL,
   clientEnv.NEXT_PUBLIC_SUPABASE_ANON_KEY,
 );

@@ -62,6 +62,22 @@ jobs:
             test-results/
           retention-days: 7
 
+  e2e-auth:
+    name: Auth E2E (local Supabase)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version-file: .nvmrc, cache: npm }
+      - uses: supabase/setup-cli@v1
+        with: { version: latest }
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: supabase start -x studio,imgproxy,vector,logflare,edge-runtime
+      - run: npm run e2e:auth
+        env:
+          CI: 'true'
+
   db:
     name: Database policy tests (pgTAP)
     runs-on: ubuntu-latest
