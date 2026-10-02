@@ -49,24 +49,24 @@ Story ids: `<EPIC>-<nnn>`. Sprint assignment: see each [sprint plan](./sprints/R
 | ENG-001 | Upgrade Next.js/React to latest stable; regenerate `AGENTS.md` | P0 — ✅ done 2026-10-02 (Next 16.3.8 / React 19.3) |
 | ENG-002 | TypeScript strict config; convert shared libs | P0 — ✅ done 2026-10-02 (all app code) |
 | ENG-003 | ESLint flat config + Prettier + Husky/lint-staged; `.nvmrc` + `engines` | P0 — 🔄 ESLint, `.nvmrc`, `engines` done; Prettier + Husky pending (needs Git — Q-024) |
-| ENG-004 | Vitest + Testing Library + Playwright + pgTAP scaffolding | P0 |
-| ENG-005 | GitHub Actions `ci.yml` with required checks; commitlint; Dependabot | P0 |
-| ENG-006 | Staging Supabase project; Vercel environments; `.env.example`; `lib/env.ts` | P0 |
+| ENG-004 | Vitest + Testing Library + Playwright + pgTAP scaffolding | P0 — ✅ Done (Sprint 01) |
+| ENG-005 | GitHub Actions `ci.yml` with required checks; commitlint; Dependabot | P0 — 🔄 Written locally, not run (push on hold) |
+| ENG-006 | Staging Supabase project; Vercel environments; `.env.example`; `lib/env.ts` | P0 — 🔄 `lib/env.ts` done; staging needs owners |
 | ENG-007 | Remove dead code (`events.json`, `articlesData.json`, `Breadcrumb.jsx`, contact modal) | P1 — 🔄 files removed; contact modal kept (public page unchanged) |
-| DB-001 | Complete `supabase/config.toml` (auth, storage, inbucket SMTP port) | P0 |
-| DB-002 | Baseline migration of legacy schema + `migration repair` on remote | P0 |
-| DB-003 | Retire `seed_tables.sql`; synthetic `seed.sql` | P0 |
-| DB-004 | pgTAP regression: anon cannot write `members` / read registrations | P0 |
-| UI-001 | `tokens.css` (colors, type, spacing, radii, shadows, motion) both themes | P0 |
-| UI-002 | Configure Tailwind v4 mapped to tokens | P0 — 🔄 Tailwind configured; token mapping pending UI-001 |
-| UI-003 | `[locale]` routing with next-intl; server `lang`/`dir`; message catalogues for shared chrome | P0 |
-| UI-004 | Primitives batch 1: Button, IconButton, Badge, Card, Field/Input, Alert, Dialog | P1 |
+| DB-001 | Complete `supabase/config.toml` (auth, storage, inbucket SMTP port) | P0 — ✅ Done (Sprint 02) |
+| DB-002 | Baseline migration of legacy schema + `migration repair` on remote | P0 — 🔄 Local baseline done; remote repair deferred |
+| DB-003 | Retire `seed_tables.sql`; synthetic `seed.sql` | P0 — ✅ Done (Sprint 02) |
+| DB-004 | pgTAP regression: anon cannot write `members` / read registrations | P0 — ✅ Done (Sprint 01) |
+| UI-001 | `tokens.css` (colors, type, spacing, radii, shadows, motion) both themes | P0 — ✅ Done (Sprint 02) |
+| UI-002 | Configure Tailwind v4 mapped to tokens | P0 — ✅ Done (Sprint 02) |
+| UI-003 | `[locale]` routing with next-intl; server `lang`/`dir`; message catalogues for shared chrome | P0 — ✅ Done (Sprint 02) |
+| UI-004 | Primitives batch 1: Button, IconButton, Badge, Card, Field/Input, Alert, Dialog | P1 — ✅ Done (Sprint 02) |
 | UI-005 | `next/font` and `next/image` adoption in layout/header/footer | P1 |
 
 | UI-006 | Internal dashboard screen blueprints (shell, sidebar, conditional rendering, skeletons, screens, flows) | P0 — ✅ done 2026-10-02 ([INTERNAL-SCREENS](../10-design-system/INTERNAL-SCREENS/README.md)) |
 | UI-007 | Public screen blueprints of every current page (frozen look) + target states + visitor flows | P0 — ✅ done 2026-10-02 ([PUBLIC-SCREENS](../10-design-system/PUBLIC-SCREENS/README.md)) |
-| ENG-008 | Visual-regression baseline: Playwright screenshots of every public page (ar/en × dark/light × 1440/375) as a required CI check | P0 |
-| ENG-009 | Prettier + Husky + lint-staged + commitlint (now possible: Git exists) | P0 |
+| ENG-008 | Visual-regression baseline: Playwright screenshots of every public page (ar/en × dark/light × 1440/375) as a required CI check | P0 — ✅ Done (Sprint 01) |
+| ENG-009 | Prettier + Husky + lint-staged + commitlint (now possible: Git exists) | P0 — ✅ Done (Sprint 01) |
 
 ### EP-AUTH / EP-ACC / EP-CMT — Identity & access (Phase 2)
 | ID | Story | P |

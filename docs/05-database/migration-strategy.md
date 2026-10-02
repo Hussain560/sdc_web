@@ -15,7 +15,7 @@
 | MG-4 | Migrations are forward-only. "Rollback" = a new corrective migration, plus restore from backup for data loss. |
 | MG-5 | Destructive changes (drop column/table) happen in a **later release** than the change that stops using them (expand → migrate → contract). |
 | MG-6 | Local schema is always reproducible with `supabase db reset` (migrations + `supabase/seed.sql`). |
-| MG-7 | `supabase/seed.sql` contains **synthetic** data only and runs only locally/preview. The current `seed_tables.sql` is retired (it deletes data). |
+| MG-7 | `supabase/seed.sql` contains **synthetic** data only and runs only locally/preview. The former `seed_tables.sql` was retired in Sprint 02 (it deleted data); `seed.sql` is idempotent per `db reset`. |
 | MG-8 | Production-content data migrations (e.g., the six existing events and articles) are migrations, idempotent (`on conflict do nothing` by `legacy_id`), so every environment converges. |
 | MG-9 | Generated TypeScript types are regenerated and committed with each migration. |
 | MG-10 | Studio/dashboard edits on shared environments are prohibited; if an emergency edit happens, capture it immediately with `supabase db diff` into a migration. |

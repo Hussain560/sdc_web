@@ -12,7 +12,7 @@
 | **Target version**  | `v0.1.0` (docs + repository baseline), plus `v0.1.1` only if containment is needed |
 | **Capacity**        | ~15 SP |
 | **Team**            | Project owner (PO), tech lead (TL), Supabase project owner, leadership for the answers |
-| **Status**          | 🔄 In progress — most engineering preparation is already done (see [notes](./notes.md)) |
+| **Status**          | 🔄 In progress — engineering preparation done; the remaining items need the owner (push, Supabase, leadership answers) |
 
 ## Sprint Objective
 
@@ -32,9 +32,13 @@ This retires TD-001 (no version control) and R-001/R-002 (open production data),
 | FND-004 | Branch protection on `main` (+ `develop`), ≥ 2 org owners, `CODEOWNERS` | P0 | 1 | PO | ⬜ |
 | FND-003 | Inspect remote `sdc-members` read-only: schema dump, policies, grants, buckets, data volumes (Q-025) | P0 | 2 | Supabase owner + TL | ⏸ Deferred by owner (2026-10-02) |
 | SEC-001 | Containment migration (only if FND-003 confirms exposure) | P0 | 3 | TL | ⏸ Deferred with FND-003 |
-| FND-005 | Access inventory: GitHub, Vercel, Supabase, Gmail/SMTP, domain owners; shared password manager | P0 | 1 | PO | ⬜ |
+| FND-005 | Access inventory: GitHub, Vercel, Supabase, Gmail/SMTP, domain owners; shared password manager | P0 | 1 | PO | ⬜ Template ready: [access inventory](./access-inventory.md); the owner fills it |
 | FND-002 | Answer the P1 open questions (list below) | P0 | 3 | Leadership | ⬜ |
-| FND-001 | Review the documentation; mark the reviewed docs *In Review* / *Approved* | P0 | 3 | PO + TL | ⬜ |
+| FND-001 | Review the documentation; mark the reviewed docs *In Review* / *Approved* | P0 | 3 | PO + TL | ⬜ Review pack ready: [docs review checklist](./docs-review-checklist.md) |
+| FND-007 | Repository hygiene audit: no secrets tracked, `.env.local` ignored, line endings | P0 | 1 | TL | ✅ Done 2026-10-02 — nothing sensitive tracked; `.gitattributes` normalises LF |
+| FND-008 | Commit-attribution policy: no `Co-Authored-By` trailers (owner request) and clean the history before any push | P1 | 1 | PO + TL | 🔄 Rule saved; three local commits still carry the trailer; rewrite them (local only) when the owner confirms |
+| FND-009 | Create the GitHub teams referenced in `CODEOWNERS` (`tech-leads`, `product-owners`) | P1 | 1 | PO | ⬜ |
+| FND-010 | The "push go" checklist: what must be true before the first push (below) | P1 | 1 | PO + TL | ⬜ Draft below |
 
 ## Technical Tasks
 
@@ -72,6 +76,14 @@ This retires TD-001 (no version control) and R-001/R-002 (open production data),
 | Q-011 next intake date | Order of 3A vs 3B |
 | Q-010 / Q-017 email provider and sender domain | Phase 2 auth email |
 | Q-040 event types | Wizard step 1 |
+
+### Push-go checklist (FND-010)
+
+1. Restore the push URL: `git remote set-url --push origin https://github.com/sdc-saudi/SDC_website.git`.
+2. `npm run check` and `npm run e2e` are green locally.
+3. Settle the commit-trailer question (FND-008): rewriting history is only safe **before** the first push.
+4. Push `chore/platform-foundation`, open the PR into `main`, let CI run once. Expect the visual job to differ on Linux fonts, then regenerate the baselines there (Sprint 01 ENG-012).
+5. Turn on branch protection with the CI checks as required (FND-004).
 
 ## Dependencies
 

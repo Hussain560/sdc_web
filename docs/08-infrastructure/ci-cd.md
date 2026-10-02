@@ -63,3 +63,14 @@ Inspired by the Innosoft *Standards Gate* (tools produce evidence → gate evalu
 ## 5. Cost notes
 
 GitHub Actions minutes are free for public repositories and limited for private ones (**OPEN Q-024**: public or private repository?). The DB job (Docker + Supabase stack) is the most expensive; it runs only when `supabase/**` or `src/**` changes, and uses `supabase db start` (database only) where full services are not needed.
+
+## 6. Implemented (Sprint 01–02, local — workflows not yet pushed)
+
+| File | Purpose |
+| ---- | ------- |
+| `.github/workflows/ci.yml` | Jobs: `quality` (format · lint · typecheck · unit), `build`, `e2e` (Playwright visual regression, report uploaded on failure), `db` (pgTAP + generated-types drift), `commits` (PR title is a Conventional Commit) |
+| `.github/workflows/release-please.yml` | SemVer release PRs and tags from `main` |
+| `.github/dependabot.yml` | Weekly npm (grouped minor/patch) and monthly Actions updates, targeting `develop` |
+| `.github/CODEOWNERS`, `pull_request_template.md` | Review ownership and the Definition-of-Done checklist (replace the placeholder team handles) |
+
+The same checks run locally through the npm scripts in [local development](./local-development.md), so nothing depends on GitHub being reachable. Required status checks are enabled in the branch-protection step of Sprint 00 (FND-004) once the repository receives the code.

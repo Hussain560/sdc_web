@@ -72,3 +72,13 @@ Coverage is a signal, not a goal; untested authorization paths are blocking rega
 - `supabase/seed.sql` (+ `supabase/seed/*.sql`) creates: one user per role (system admin, founder, leader, advisor, head/deputy/member of two committees, plain member, plain user), committees, cycles in each phase, events in each status/phase, registrations in each status, articles in each status.
 - Tests create their own data inside transactions (pgTAP) or with unique suffixes (integration/E2E) and never depend on production data.
 - Test naming references requirement/rule ids: `it('BR-REG-002 rejects a second registration for the same event')`.
+
+## 7. Implemented scaffolding (Sprint 01)
+
+| Level | Tool | Location | State |
+| ----- | ---- | -------- | ----- |
+| Unit / component | Vitest + Testing Library (jsdom) | `tests/unit/` | Language, theme, env validation, UI primitives (14 tests) |
+| E2E + visual | Playwright (Chromium) | `tests/e2e/` | 12 public pages × ar/en × dark/light × desktop/mobile = 96 baselines + locale and shell tests; Supabase calls mocked with fictional fixtures (`tests/fixtures/`) |
+| Database | pgTAP (`supabase test db`) | `supabase/tests/` | Smoke tests + `todo` regression tests that document the legacy exposure (they flip to hard assertions in the containment/RBAC migration) |
+
+Visual-regression rules: threshold 0.1 % of pixels, animations disabled, copyright text masked, one retry; baselines change only in a PR that explicitly approves a redesign (D-009).

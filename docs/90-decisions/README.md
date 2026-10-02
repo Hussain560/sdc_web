@@ -46,6 +46,6 @@ Business, scope and process decisions that do not need a full ADR.
 | [ADR-007](./ADR-007-ci-cd-strategy.md) | CI/CD with GitHub Actions and tag-based production deploys | Proposed |
 | [ADR-008](./ADR-008-typescript-adoption.md) | Adopt TypeScript (strict) | Accepted (implemented) |
 | [ADR-009](./ADR-009-styling-and-design-tokens.md) | Styling: design tokens + Tailwind v4, progressive migration | Proposed (Tailwind configured) |
-| [ADR-010](./ADR-010-i18n-routing.md) | Locale in the URL with next-intl | Proposed |
+| [ADR-010](./ADR-010-i18n-routing.md) | Locale in the URL with next-intl | Accepted |
 | [ADR-011](./ADR-011-membership-intake-separate-from-accounts.md) | Membership via intake cycles, separate from accounts | Accepted |
 | [ADR-012](./ADR-012-event-model-and-wizard-from-kfucs.md) | Adopt the KFUCS event model and 4-step creation wizard | Accepted |

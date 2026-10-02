@@ -2,7 +2,7 @@
 
 | Field | Value |
 | ----- | ----- |
-| **Status** | Proposed |
+| **Status** | Accepted (implemented 2026-10-02, Sprint 02) |
 | **Date** | 2026-10-02 |
 | **Related** | NFR-I18N-001…006, [frontend architecture §3](../04-architecture/frontend-architecture.md#3-internationalization), [RTL rules](../10-design-system/foundations/rtl-and-i18n.md) |
 

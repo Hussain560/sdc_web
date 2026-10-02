@@ -33,14 +33,19 @@ npm ci
 npx supabase start
 ```
 
-Copy `.env.example` to `.env.local` and fill the values from `npx supabase status`. Then apply the schema manually by running `supabase/seed_tables.sql` in Studio's SQL editor (⚠ it deletes all rows in `members` and `event_registrations` — local only), and run:
+Copy `.env.example` to `.env.local` and fill the values from `npx supabase status`. `supabase start` applies the baseline migration and `supabase/seed.sql` (synthetic people only). To rebuild the database from scratch: `npx supabase db reset` (local only).
 
 ```bash
-npm run dev          # Next.js 16 (Turbopack)
-npm run typecheck    # tsc --noEmit
-npm run lint         # eslint .
-npm run db:types     # regenerate src/lib/supabase/database.types.ts after schema changes
+npm run dev            # Next.js 16 (Turbopack)  →  / (Arabic) and /en (English)
+npm run check          # prettier --check + eslint + tsc + unit tests (what the pre-push gate runs)
+npm run test           # Vitest (jsdom)
+npm run e2e            # Playwright: smoke + visual regression of every public page (mocked Supabase)
+npm run e2e:update     # regenerate visual baselines — ONLY for an approved redesign (D-009)
+npm run db:test        # pgTAP via `supabase test db`
+npm run db:types       # regenerate src/lib/supabase/database.types.ts after schema changes
 ```
+
+Git hooks (Husky): `pre-commit` runs lint-staged (eslint --fix + prettier); `commit-msg` enforces Conventional Commits. Windows note: do not use the `next-intl/plugin` helper in `next.config.ts` (its SWC addon is blocked by an ACL check); the alias is registered by hand.
 
 Edge Functions run in the `supabase_edge_runtime_sdc_web` container; they need `GMAIL_USER`/`GMAIL_APP_PASSWORD` to send (otherwise they fail; emails do **not** go to Mailpit because they use Gmail SMTP directly).
 

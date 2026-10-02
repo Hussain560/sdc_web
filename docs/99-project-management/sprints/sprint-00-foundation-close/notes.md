@@ -21,7 +21,10 @@
 
 | Date | Story | Update |
 | ---- | ----- | ------ |
-| | | |
+| 2026-10-02 | FND-007 | Repository audit: `.env.local` ignored and never committed; no secrets tracked |
+| 2026-10-02 | FND-001 / FND-005 | Review checklist and access-inventory template written |
+| 2026-10-02 | Sprint 01–02 | Started early because the local scope has no external dependency — see their plans |
+| 2026-10-02 | Policy | Owner: no GitHub push; no `Co-Authored-By` trailer on commits |
 
 ## Decisions taken in this sprint
 
@@ -30,3 +33,5 @@
 | D-008 | Events follow KFUCS (wizard, data, logic) |
 | D-009 | Visual identity frozen |
 | D-010 | Canonical repository `sdc-saudi/SDC_website` |
+| D-011 | English URLs live under `/en`, Arabic keeps unprefixed URLs (ADR-010 accepted); this supersedes the `/ar` wording in the first sprint drafts |
+| D-012 | Local checks (`npm run check`, `npm run e2e`, `npm run db:test`) are the quality gate until GitHub Actions can run |

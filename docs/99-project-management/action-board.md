@@ -4,7 +4,7 @@
 | ---------------- | ---------- |
 | **Last Updated** | 2026-10-02 |
 | **Status**       | Living document — update it at every sprint planning and review |
-| **Current sprint** | [Sprint 00 — Foundation close](./sprints/sprint-00-foundation-close/plan.md) (2026-10-04 → 10-10) |
+| **Current sprints** | [Sprint 00 — Foundation close](./sprints/sprint-00-foundation-close/plan.md) (owner items) · [Sprint 01](./sprints/sprint-01-engineering-baseline-1/plan.md) and [Sprint 02](./sprints/sprint-02-engineering-baseline-2/plan.md) (local scope done early) |
 
 One page that answers *"what do we do next, and who does it?"*. Details live in the linked sprint plans.
 
@@ -15,18 +15,30 @@ One page that answers *"what do we do next, and who does it?"*. Details live in 
 | 1 | **On hold (owner instruction 2026-10-02: do not push).** The 4 local commits on `chore/platform-foundation` stay local; the push URL is disabled. The owner decides when (and whether) to push and open a PR | Project owner | CI on GitHub (Sprint 01) | Owner gives an explicit go |
 | 2 | **Deferred by the owner (2026-10-02)** — log in to Supabase with the account that owns `sdc-members` and run the read-only dump (commands in [Sprint 00 task 3](./sprints/sprint-00-foundation-close/plan.md#technical-tasks)) | Supabase owner | Containment decision, migration baseline | Q-025 answered |
 | 3 | **Deferred with item 2** — if production is exposed: apply the containment migration (`v0.1.1`) | Tech lead | Security | Anon can no longer write `members` or read registrations |
+| 3b | **Owner decision:** when to lift the push hold, and whether to strip the `Co-Authored-By` trailer from 3 local commits ([push-go checklist](./sprints/sprint-00-foundation-close/plan.md#push-go-checklist-fnd-010)) | Project owner | CI on GitHub | Explicit go |
 | 4 | Leadership session to answer the P1 questions (Q-003, Q-004, Q-005, Q-010, Q-011, Q-017, Q-039, Q-040) | Project owner + leadership | Sprints 03–05 | Answers recorded in [open questions](../90-decisions/open-questions.md) |
-| 5 | Review the docs — start with [ADR-012](../90-decisions/ADR-012-event-model-and-wizard-from-kfucs.md), the [public](../10-design-system/PUBLIC-SCREENS/README.md) and [internal](../10-design-system/INTERNAL-SCREENS/README.md) screens | Project owner + tech lead | M0 | PR comments resolved |
-| 6 | Access inventory (GitHub, Vercel, Supabase, Gmail, domain) and a shared password manager | Project owner | Staging, deployments | [Risk R-013](../01-project/risk-register.md) closed |
+| 5 | Review the docs with the [review checklist](./sprints/sprint-00-foundation-close/docs-review-checklist.md) — start with [ADR-012](../90-decisions/ADR-012-event-model-and-wizard-from-kfucs.md), the [public](../10-design-system/PUBLIC-SCREENS/README.md) and [internal](../10-design-system/INTERNAL-SCREENS/README.md) screens | Project owner + tech lead | M0 | PR comments resolved |
+| 6 | Access inventory ([template](./sprints/sprint-00-foundation-close/access-inventory.md): GitHub, Vercel, Supabase, Gmail, domain) and a shared password manager | Project owner | Staging, deployments | [Risk R-013](../01-project/risk-register.md) closed |
 
-## 2. Next (Sprints 01–02, Phase 1)
+## 2. Done on 2026-10-02 (Sprints 01–02, local)
 
-- CI with required checks, plus a **visual-regression check of every public page**, so the frozen look cannot drift.
-- Prettier/Husky/commitlint.
-- Vitest, Playwright and pgTAP.
-- Migrations baseline and staging.
-- Tokens holding the current palette.
-- `/ar` and `/en` routing.
+- Prettier, Husky (pre-commit, commit-msg, pre-push), commitlint.
+- Vitest, Playwright (96 visual baselines of every public page, mocked data), pgTAP.
+- CI workflows, Dependabot, CODEOWNERS, PR template — written, **not pushed**.
+- Baseline migration, synthetic seed, full `config.toml`, typed database.
+- Design tokens (76 primitives, semantic layer, Tailwind mapping) — zero pixel change.
+- Locale in the URL: Arabic unprefixed, English under `/en`, `lang`/`dir` rendered on the server.
+- Dashboard UI primitives (Button, Badge, Card, Field, Alert, Skeleton, Dialog).
+
+## 2b. Next engineering work (no outside dependency)
+
+| Story | What |
+| ----- | ---- |
+| UI-005 | `next/font` for the two typefaces, only if the visual gate stays green |
+| UI-006 | Accessible names for the header icon buttons |
+| UI-007 | Chrome strings into `messages/{ar,en}.json` |
+| ENG-011 | Stub Google Fonts in e2e so screenshots do not need the network |
+| Sprint 03 | Authentication and profiles (server clients, `/auth/callback`, account pages) can start now |
 
 ## 3. Later (Sprints 03–13)
 

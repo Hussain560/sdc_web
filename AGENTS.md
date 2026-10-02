@@ -11,3 +11,6 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - Events follow the KFUCS model and 4-step wizard (ADR-012); authorization uses permission keys from the database, never hardcoded role or email lists (ADR-004).
 - Arabic-first and RTL: every UI string exists in Arabic and English; use logical CSS properties.
 - Conventional Commits; never commit `.env*` files or secrets.
+- Before finishing a change run `npm run check` (format, lint, types, unit tests) and, for anything that touches UI, `npm run e2e`. The Playwright suite is a visual gate over every public page: a diff means the frozen identity (D-009) moved. Never run `npm run e2e:update` unless a redesign was approved.
+- Use `Link`/`useRouter` from `@/i18n/navigation` (never `next/link`/`next/navigation` for routing); English URLs live under `/en`. New UI uses the primitives in `src/components/ui` and semantic tokens (`bg-surface`, `text-muted`), never raw hex.
+- Do not add `Co-Authored-By` trailers to commits; never push (owner instruction, see `docs/99-project-management/action-board.md`).
