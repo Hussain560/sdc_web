@@ -120,14 +120,14 @@ export default function AllArticlesPage() {
                   </div>
 
                   <Link href={`/articles/${article.id}`} className="sdc-card-read-btn">
-                    {isEnglish ? 'Read Article' : 'قراءة المقال'}
+                    {isEnglish ? 'Read Thread' : 'قراءة الثريد'}
                   </Link>
                 </div>
               ))}
             </div>
           ) : (
             <div className="sdc-no-results">
-              {isEnglish ? 'No articles matched your search.' : 'لا توجد مقالات تطابق البحث حالياً.'}
+             {isEnglish ? 'No threads matched your search.' : 'لا توجد ثريدات تطابق البحث حالياً.'}
             </div>
           )}
 

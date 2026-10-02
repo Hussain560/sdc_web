@@ -432,3 +432,96 @@
   border-radius: 8px;
   cursor: pointer;
 }
+/* ================== LIGHT MODE - EVENTS & THREADS ================== */
+
+:root[data-theme='light'] .sdc-events-articles-sec {
+  background-color: #F4FAF6;
+}
+
+:root[data-theme='light'] .sdc-section-title {
+  color: #123B35;
+}
+
+:root[data-theme='light'] .sdc-view-all-btn {
+  background-color: #FFFFFF;
+  border-color: #A9D8BC;
+  color: #123B35;
+}
+
+:root[data-theme='light'] .sdc-view-all-btn:hover {
+  border-color: #16A765;
+  color: #0B8F55;
+  background-color: #E5F5EA;
+}
+
+:root[data-theme='light'] .sdc-event-card {
+  background-color: #FFFFFF;
+  border-color: #CBE7D4;
+}
+
+:root[data-theme='light'] .sdc-event-card:hover {
+  border-color: #72C99A;
+  box-shadow: 0 4px 18px rgba(22, 167, 101, 0.12);
+}
+
+:root[data-theme='light'] .sdc-event-title {
+  color: #123B35;
+}
+
+:root[data-theme='light'] .sdc-event-meta {
+  color: #52766C;
+}
+
+:root[data-theme='light'] .sdc-btn-more {
+  border-color: #A9D8BC;
+  color: #123B35;
+}
+
+:root[data-theme='light'] .sdc-btn-more:hover {
+  border-color: #16A765;
+  color: #0B8F55;
+}
+
+:root[data-theme='light'] .sdc-article-item {
+  background-color: #FFFFFF;
+  border-top-color: #D8EDE0;
+  border-left-color: #D8EDE0;
+  border-right-color: #A9D8BC;
+  border-bottom-color: #A9D8BC;
+  box-shadow: 2px 4px 12px rgba(22, 167, 101, 0.08);
+}
+
+:root[data-theme='light'] .sdc-article-item:hover {
+  box-shadow: 4px 6px 18px rgba(22, 167, 101, 0.16);
+}
+
+:root[data-theme='light'] .sdc-article-title {
+  color: #123B35;
+}
+
+/* Light Mode للنافذة المنبثقة وقت التسجيل */
+:root[data-theme='light'] .sdc-modal-card {
+  background-color: #FFFFFF;
+  color: #123B35;
+  border-color: #A9D8BC;
+}
+
+:root[data-theme='light'] .sdc-modal-user-info {
+  background-color: #F4FAF6;
+  color: #52766C;
+}
+
+:root[data-theme='light'] .sdc-btn-cancel {
+  color: #123B35;
+  border-color: #A9D8BC;
+}
+/* زر تسجيل الفعالية في اللايت مود */
+:root[data-theme='light'] .sdc-btn-register {
+  background-color: #72C99A !important;
+  color: #0D3329 !important;
+}
+
+:root[data-theme='light'] .sdc-btn-register:hover {
+  background-color: #5DB987 !important;
+  color: #FFFFFF !important;
+}

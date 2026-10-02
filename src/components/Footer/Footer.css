@@ -132,3 +132,36 @@
     gap: 24px;
   }
 }
+/* ================= LIGHT MODE - FOOTER ================= */
+
+:root[data-theme='light'] .sdc-footer {
+  background-color: #E5F5EA;
+  color: #123B35;
+  border-top: 1px solid #CBE7D4;
+}
+
+:root[data-theme='light'] .sdc-footer-follow-label {
+  color: #355E54;
+}
+
+:root[data-theme='light'] .sdc-social-icon {
+  color: #123B35;
+  border-color: #A9D8BC;
+}
+
+:root[data-theme='light'] .sdc-social-icon:hover {
+  color: #16A765;
+  border-color: #16A765;
+}
+
+:root[data-theme='light'] .sdc-footer-app-link {
+  color: #123B35;
+}
+
+:root[data-theme='light'] .sdc-footer-app-link:hover {
+  color: #16A765;
+}
+
+:root[data-theme='light'] .sdc-footer-text {
+  color: #52766C;
+}

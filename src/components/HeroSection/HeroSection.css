@@ -138,3 +138,48 @@
     height: 220px;
   }
 }
+/* ================= LIGHT MODE - HERO ================= */
+
+:root[data-theme='light'] .sdc-hero-section {
+  background-color: #F4FAF6;
+}
+
+:root[data-theme='light'] .sdc-hero-title {
+  color: #123B35;
+}
+
+:root[data-theme='light'] .sdc-hero-description {
+  color: #52766C;
+}
+
+:root[data-theme='light'] .sdc-btn-primary-hero {
+  background-color: #A9D8BC;
+  border-color: #72C99A;
+  color: #123B35;
+}
+
+:root[data-theme='light'] .sdc-btn-primary-hero:hover {
+  background-color: #72C99A;
+  color: #0D3329;
+}
+
+:root[data-theme='light'] .sdc-hero-image-wrapper::before {
+  background: radial-gradient(
+    circle,
+    rgba(114, 201, 154, 0.28) 0%,
+    rgba(244, 250, 246, 0) 70%
+  );
+}
+/* إظهار صورة الهيرو في Light Mode */
+:root[data-theme='light'] .sdc-hero-image {
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  mix-blend-mode: normal !important;
+  filter: none !important;
+}
+
+:root[data-theme='light'] .sdc-hero-image-wrapper {
+  opacity: 1 !important;
+  visibility: visible !important;
+}

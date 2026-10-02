@@ -143,3 +143,28 @@
     font-size: 0.85rem;
   }
 }
+/* ================== LIGHT MODE ================== */
+:root[data-theme='light'] .sdc-community-sec {
+  background-color: #F4FAF6;
+}
+
+:root[data-theme='light'] .sdc-community-title {
+  color: #0D3329;
+}
+
+:root[data-theme='light'] .sdc-category-card {
+  background-color: #FFFFFF;
+}
+
+:root[data-theme='light'] .sdc-category-name {
+  color: #4B635A;
+}
+
+:root[data-theme='light'] .sdc-category-card:hover .sdc-category-name {
+  color: #0D3329;
+}
+
+:root[data-theme='light'] .sdc-category-card.border-top-only,
+:root[data-theme='light'] .sdc-category-card.border-bottom-only {
+  border-color: #72C99A;
+}

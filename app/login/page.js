@@ -34,11 +34,20 @@ export default function LoginPage() {
     setLoading(false);
 
     if (error) {
-      setErrorMsg(
-        isEnglish
-          ? 'Incorrect email or password. Please try again.'
-          : 'البريد الإلكتروني أو كلمة المرور غير صحيحة. حاول مرة أخرى.'
-      );
+      const msg = error.message?.toLowerCase() || '';
+      if (msg.includes('not confirmed')) {
+        setErrorMsg(
+          isEnglish
+            ? 'Please confirm your email first. Check your inbox for the confirmation link.'
+            : 'يرجى تأكيد بريدك الإلكتروني أولًا. تحقق من صندوق الوارد للرابط المرسل إليك.'
+        );
+      } else {
+        setErrorMsg(
+          isEnglish
+            ? 'Incorrect email or password. Please try again.'
+            : 'البريد الإلكتروني أو كلمة المرور غير صحيحة. حاول مرة أخرى.'
+        );
+      }
       return;
     }
 

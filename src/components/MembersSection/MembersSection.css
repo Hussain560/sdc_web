@@ -292,3 +292,60 @@
     font-size: 0.65rem;
   }
 }
+/* ================== LIGHT MODE - MEMBERS & PARTNERS ================== */
+
+:root[data-theme='light'] .sdc-community-frame {
+  background-color: #EAF6EE;
+  background-image:
+    linear-gradient(
+      90deg,
+      rgba(169, 216, 188, 0.55) 0%,
+      rgba(229, 245, 234, 0.88) 55%,
+      #F4FAF6 100%
+    ),
+    url('/assets/Service(1).png');
+}
+
+:root[data-theme='light'] .sdc-members-title {
+  color: #123B35;
+}
+
+:root[data-theme='light'] .sdc-avatar-item,
+:root[data-theme='light'] .sdc-avatar-more {
+  border-color: #F4FAF6;
+  background-color: #D8F0E1;
+}
+
+:root[data-theme='light'] .sdc-avatar-more {
+  color: #0B8F55;
+}
+
+:root[data-theme='light'] .sdc-members-view-btn {
+  color: #123B35;
+  border-color: #A9D8BC;
+  background-color: #FFFFFF;
+}
+
+:root[data-theme='light'] .sdc-members-view-btn:hover {
+  color: #0B8F55;
+  border-color: #16A765;
+}
+
+:root[data-theme='light'] .sdc-partners-title {
+  color: #355E54;
+}
+
+:root[data-theme='light'] .sdc-partner-card {
+  background-color: #FFFFFF;
+  border: 1px solid #D8EDE0;
+}
+
+:root[data-theme='light'] .sdc-partner-text {
+  color: #52766C;
+}
+
+:root[data-theme='light'] .sdc-slider-arrow {
+  background-color: #FFFFFF;
+  color: #123B35;
+  border: 1px solid #D8EDE0;
+}

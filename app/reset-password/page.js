@@ -9,6 +9,8 @@ import { useAuth } from '../../src/context/AuthContext';
 import { supabase } from '../../src/lib/supabase';
 import '../login/login.css';
 
+const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/;
+
 export default function ResetPasswordPage() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -20,6 +22,14 @@ export default function ResetPasswordPage() {
   const isEnglish = lang === 'en';
   const { updatePassword, logout } = useAuth();
   const router = useRouter();
+
+  const passwordHint = isEnglish
+    ? 'At least 8 characters, including an uppercase letter, a lowercase letter, a number, and a symbol.'
+    : 'يجب أن تحتوي على 8 أحرف على الأقل، وتشمل حرفًا كبيرًا وحرفًا صغيرًا ورقمًا ورمزًا خاصًا.';
+
+  const weakPasswordMsg = isEnglish
+    ? 'Password must be at least 8 characters and include an uppercase letter, a lowercase letter, a number, and a symbol.'
+    : 'يجب أن تحتوي كلمة المرور على 8 أحرف على الأقل، وتشمل حرفًا كبيرًا وحرفًا صغيرًا ورقمًا ورمزًا خاصًا.';
 
   useEffect(() => {
     const { data: listener } = supabase.auth.onAuthStateChange((event) => {
@@ -42,8 +52,8 @@ export default function ResetPasswordPage() {
       setErrorMsg(isEnglish ? 'Passwords do not match.' : 'كلمتا المرور غير متطابقتين.');
       return;
     }
-    if (password.length < 6) {
-      setErrorMsg(isEnglish ? 'Password must be at least 6 characters.' : 'يجب أن تكون كلمة المرور 6 أحرف على الأقل.');
+    if (!PASSWORD_REGEX.test(password)) {
+      setErrorMsg(weakPasswordMsg);
       return;
     }
 
@@ -52,11 +62,16 @@ export default function ResetPasswordPage() {
 
     if (error) {
       setLoading(false);
-      setErrorMsg(
-        isEnglish
-          ? 'Something went wrong. Please try again.'
-          : 'حدث خطأ أثناء تحديث كلمة المرور، يرجى المحاولة مرة أخرى.'
-      );
+      const msg = error.message?.toLowerCase() || '';
+      if (msg.includes('password')) {
+        setErrorMsg(weakPasswordMsg);
+      } else {
+        setErrorMsg(
+          isEnglish
+            ? 'Something went wrong. Please try again.'
+            : 'حدث خطأ أثناء تحديث كلمة المرور، يرجى المحاولة مرة أخرى.'
+        );
+      }
       return;
     }
 
@@ -117,6 +132,7 @@ export default function ResetPasswordPage() {
                   onChange={(e) => { setPassword(e.target.value); setErrorMsg(''); }}
                   required
                 />
+                <p style={{ margin: '6px 0 0', fontSize: '12px', color: '#9aa0a6', lineHeight: 1.6 }}>{passwordHint}</p>
               </div>
 
               <div className="sdc-form-group">

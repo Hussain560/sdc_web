@@ -66,7 +66,6 @@ export default function Footer() {
           <div className="sdc-footer-info">
             <p className="sdc-footer-text">{t('allRightsReserved')}</p>
             <p className="sdc-footer-text">{t('developedBy')}</p>
-            <p className="sdc-footer-text">{t('lastUpdated')}</p>
           </div>
 
           {/* الشعار العمودي جهة اليسار */}

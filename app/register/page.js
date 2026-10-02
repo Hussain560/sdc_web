@@ -10,6 +10,8 @@ import { useLanguage } from '../../src/context/LanguageContext';
 import { useAuth } from '../../src/context/AuthContext';
 import '../login/login.css';
 
+const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/;
+
 export default function RegisterPage() {
   const [formData, setFormData] = useState({ fullName: '', email: '', password: '', confirmPassword: '' });
   const [loading, setLoading] = useState(false);
@@ -19,6 +21,14 @@ export default function RegisterPage() {
   const isEnglish = lang === 'en';
   const { signup } = useAuth();
   const router = useRouter();
+
+  const passwordHint = isEnglish
+    ? 'At least 8 characters, including an uppercase letter, a lowercase letter, a number, and a symbol.'
+    : 'يجب أن تحتوي على 8 أحرف على الأقل، وتشمل حرفًا كبيرًا وحرفًا صغيرًا ورقمًا ورمزًا خاصًا.';
+
+  const weakPasswordMsg = isEnglish
+    ? 'Password must be at least 8 characters and include an uppercase letter, a lowercase letter, a number, and a symbol.'
+    : 'يجب أن تحتوي كلمة المرور على 8 أحرف على الأقل، وتشمل حرفًا كبيرًا وحرفًا صغيرًا ورقمًا ورمزًا خاصًا.';
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -45,8 +55,8 @@ export default function RegisterPage() {
       return;
     }
 
-    if (formData.password.length < 6) {
-      setErrorMsg(isEnglish ? 'Password must be at least 6 characters.' : 'يجب أن تكون كلمة المرور 6 أحرف على الأقل.');
+    if (!PASSWORD_REGEX.test(formData.password)) {
+      setErrorMsg(weakPasswordMsg);
       return;
     }
 
@@ -55,8 +65,11 @@ export default function RegisterPage() {
     setLoading(false);
 
     if (error) {
-      if (error.message?.toLowerCase().includes('already registered') || error.message?.toLowerCase().includes('already exists')) {
+      const msg = error.message?.toLowerCase() || '';
+      if (msg.includes('already registered') || msg.includes('already exists')) {
         setErrorMsg(isEnglish ? 'This email is already registered.' : 'هذا البريد الإلكتروني مسجل مسبقًا.');
+      } else if (msg.includes('password')) {
+        setErrorMsg(weakPasswordMsg);
       } else {
         setErrorMsg(isEnglish ? error.message : 'حدث خطأ أثناء إنشاء الحساب. حاول مرة أخرى.');
       }
@@ -142,6 +155,7 @@ export default function RegisterPage() {
             <div className="sdc-form-group">
               <label>{isEnglish ? 'Password' : 'كلمة المرور'}</label>
               <input type="password" name="password" placeholder="••••••••" value={formData.password} onChange={handleChange} required />
+              <p style={{ margin: '6px 0 0', fontSize: '12px', color: '#9aa0a6', lineHeight: 1.6 }}>{passwordHint}</p>
             </div>
 
             <div className="sdc-form-group">

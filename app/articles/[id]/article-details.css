@@ -164,3 +164,87 @@
     font-size: 0.95rem;
   }
 }
+/* ================== LIGHT MODE - ARTICLE DETAILS ================== */
+
+:root[data-theme='light'] .sdc-article-detail-wrapper {
+  background-color: #F4FAF6;
+  color: #123B35;
+}
+
+/* البنر */
+:root[data-theme='light'] .sdc-article-hero-banner {
+  background-color: #EAF6EE;
+  background-image:
+    linear-gradient(
+      90deg,
+      rgba(169, 216, 188, 0.55) 0%,
+      rgba(229, 245, 234, 0.88) 55%,
+      #F4FAF6 100%
+    ),
+    url('/assets/Service(1).png');
+}
+
+:root[data-theme='light'] .sdc-article-hero-title {
+  color: #123B35;
+}
+
+/* Breadcrumb */
+:root[data-theme='light'] .sdc-article-breadcrumb,
+:root[data-theme='light'] .sdc-article-breadcrumb a {
+  color: #52766C;
+}
+
+:root[data-theme='light'] .sdc-article-bc-sep {
+  color: #8AA39C;
+}
+
+:root[data-theme='light'] .sdc-article-breadcrumb a:hover {
+  color: #0B8F55 !important;
+}
+
+/* معلومات الثريد */
+:root[data-theme='light'] .sdc-article-header {
+  border-bottom-color: #D8EDE0;
+}
+
+:root[data-theme='light'] .sdc-article-meta-row {
+  color: #52766C;
+}
+
+/* التصنيفات */
+:root[data-theme='light'] .sdc-article-tag-pill {
+  background-color: #E5F5EA;
+  border-color: #A9D8BC;
+  color: #168A5B;
+}
+
+/* محتوى الثريد */
+:root[data-theme='light'] .sdc-article-content-card {
+  background-color: #FFFFFF;
+  border-color: #CBE7D4;
+  color: #294E46;
+  box-shadow: 0 6px 20px rgba(18, 59, 53, 0.06);
+}
+
+:root[data-theme='light'] .sdc-article-text {
+  color: #294E46;
+}
+.sdc-article-source-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 24px;
+  padding: 12px 22px;
+  background: #16A765;
+  color: #ffffff !important;
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 15px;
+  transition: 0.2s ease;
+}
+
+.sdc-article-source-link:hover {
+  transform: translateY(-2px);
+  opacity: 0.9;
+}

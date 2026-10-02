@@ -3,15 +3,17 @@
 import React, { useState,useEffect  } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Search, User, Globe, X, LogOut } from 'lucide-react';
+import { Search, User, Globe, X, LogOut, Sun, Moon } from 'lucide-react';
 import { useSearch } from '../../context/SearchContext';
 import { useLanguage } from '../../context/LanguageContext';
 import { useAuth } from '../../context/AuthContext';
+import { useTheme } from '../../context/ThemeContext';
 import { COMMITTEE_EMAILS } from '../../data/committeeEmails';
 import './Header.css';
 
 export default function Header({ onSearch }) {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const { isDarkMode, toggleTheme } = useTheme();
   const pathname = usePathname();
   const router = useRouter();
 
@@ -33,13 +35,30 @@ export default function Header({ onSearch }) {
   };
 
   const handleSearchSubmit = (e) => {
-    e.preventDefault();
-    if (!searchQuery.trim()) return;
-    if (onSearch) onSearch(searchQuery);
-    else router.push(`?search=${encodeURIComponent(searchQuery)}`);
-    setIsSearchOpen(false);
-  };
+  e.preventDefault();
 
+  const query = searchQuery.trim();
+
+  if (!query) return;
+
+  if (
+    query === 'فعاليات' ||
+    query === 'الفعاليات' ||
+    query.toLowerCase() === 'events'
+  ) {
+    router.push('/events');
+    setIsSearchOpen(false);
+    return;
+  }
+
+  if (onSearch) {
+    onSearch(query);
+  } else {
+    router.push('/search?query=' + encodeURIComponent(query));
+  }
+
+  setIsSearchOpen(false);
+};
   const handleLoginClick = () => {
     router.push('/login');
   };
@@ -59,7 +78,10 @@ export default function Header({ onSearch }) {
 
           <div className="sdc-logo">
             <Link href="/">
-              <img src="/assets/Full whiteLogo 1.png" alt="Logo" />
+              <img
+  src={isDarkMode ? "/assets/Full whiteLogo 1.png" : "/assets/navbar.png"}
+  alt="Logo"
+/>
             </Link>
           </div>
 
@@ -84,6 +106,9 @@ export default function Header({ onSearch }) {
 
           <div className="sdc-actions">
 
+          <button className="sdc-icon-btn" onClick={toggleTheme}>
+          {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
+          </button>
             <button className="sdc-icon-btn" onClick={() => setIsSearchOpen(true)}>
               <Search size={18} />
               <span>{t('search')}</span>

@@ -496,3 +496,179 @@
     padding: 0 16px 60px;
   }
 }
+/* ================== LIGHT MODE - MEMBER DETAILS ================== */
+
+:root[data-theme='light'] .sdc-details-page-wrapper {
+  background-color: #F4FAF6;
+  color: #123B35;
+}
+
+/* البنر */
+:root[data-theme='light'] .sdc-member-hero-banner {
+  background-color: #EAF6EE;
+  background-image:
+    linear-gradient(
+      90deg,
+      rgba(169, 216, 188, 0.55) 0%,
+      rgba(229, 245, 234, 0.88) 55%,
+      #F4FAF6 100%
+    ),
+    url('/assets/Service(1).png');
+}
+
+:root[data-theme='light'] .sdc-member-hero-title {
+  color: #123B35;
+}
+
+:root[data-theme='light'] .sdc-member-breadcrumb,
+:root[data-theme='light'] .sdc-member-breadcrumb a {
+  color: #52766C;
+}
+
+:root[data-theme='light'] .sdc-member-bc-sep {
+  color: #8AA39C;
+}
+
+:root[data-theme='light'] .sdc-member-breadcrumb a:hover {
+  color: #0B8F55 !important;
+}
+
+/* عنوان القسم */
+:root[data-theme='light'] .sdc-section-main-title {
+  color: #123B35;
+}
+
+:root[data-theme='light'] .sdc-section-sub-title {
+  color: #52766C;
+}
+
+:root[data-theme='light'] .sdc-view-all-btn {
+  background-color: #FFFFFF;
+  border-color: #A9D8BC;
+  color: #123B35;
+}
+
+:root[data-theme='light'] .sdc-view-all-btn:hover {
+  background-color: #E5F5EA;
+  border-color: #16A765;
+  color: #0B8F55;
+}
+
+/* كرت العضو */
+:root[data-theme='light'] .sdc-member-detail-card {
+  background-color: #FFFFFF;
+  border-color: #CBE7D4;
+  box-shadow: 0 8px 25px rgba(18, 59, 53, 0.06);
+}
+
+:root[data-theme='light'] .sdc-avatar-circle {
+  background-color: #E5F5EA;
+  border-color: #A9D8BC;
+  color: #168A5B;
+}
+
+:root[data-theme='light'] .sdc-detail-name {
+  color: #123B35;
+}
+
+:root[data-theme='light'] .sdc-name-underline {
+  background-color: #D8EDE0;
+}
+
+:root[data-theme='light'] .sdc-detail-role,
+:root[data-theme='light'] .sdc-info-sub {
+  color: #168A5B;
+}
+
+/* Tags */
+:root[data-theme='light'] .sdc-tag-item {
+  background-color: #F4FAF6;
+  border-color: #CBE7D4;
+  color: #52766C;
+}
+
+:root[data-theme='light'] .sdc-tag-item.tag-active {
+  background-color: #E5F5EA;
+  border-color: #72C99A;
+  color: #0D3329;
+}
+
+/* المعلومات الأكاديمية */
+:root[data-theme='light'] .sdc-info-label-group {
+  color: #123B35;
+}
+
+/* النبذة */
+:root[data-theme='light'] .sdc-bio-box {
+  background-color: #F8FCF9;
+  border-color: #CBE7D4;
+}
+
+:root[data-theme='light'] .sdc-bio-text {
+  color: #294E46;
+}
+
+/* التواصل */
+:root[data-theme='light'] .sdc-social-icon-link {
+  color: #52766C;
+}
+
+:root[data-theme='light'] .sdc-social-icon-link:hover {
+  color: #168A5B;
+}
+
+:root[data-theme='light'] .sdc-contact-me-btn {
+  background-color: #FFFFFF;
+  border-color: #A9D8BC;
+  color: #123B35;
+}
+
+:root[data-theme='light'] .sdc-contact-me-btn:hover {
+  background-color: #E5F5EA;
+  border-color: #16A765;
+  color: #0B8F55;
+}
+
+/* ================== Contact Modal ================== */
+
+:root[data-theme='light'] .sdc-modal-content {
+  background-color: #FFFFFF;
+  border-color: #CBE7D4;
+  box-shadow: 0 12px 35px rgba(18, 59, 53, 0.12);
+}
+
+:root[data-theme='light'] .sdc-modal-content h3 {
+  color: #123B35;
+}
+
+:root[data-theme='light'] .sdc-modal-content p {
+  color: #52766C;
+}
+
+:root[data-theme='light'] .sdc-modal-close {
+  color: #52766C;
+}
+
+:root[data-theme='light'] .sdc-modal-input {
+  background-color: #F8FCF9;
+  border-color: #CBE7D4;
+  color: #123B35;
+}
+
+:root[data-theme='light'] .sdc-modal-input::placeholder {
+  color: #8AA39C;
+}
+
+:root[data-theme='light'] .sdc-modal-input:focus {
+  background-color: #FFFFFF;
+  border-color: #72C99A;
+}
+
+:root[data-theme='light'] .sdc-modal-submit-btn {
+  background-color: #72C99A;
+  color: #0D3329;
+}
+
+:root[data-theme='light'] .sdc-modal-submit-btn:hover {
+  background-color: #5DB987;
+}

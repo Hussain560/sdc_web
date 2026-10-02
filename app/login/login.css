@@ -122,3 +122,66 @@
     padding: 28px 20px;
   }
 }
+/* ================== LIGHT MODE - LOGIN ================== */
+
+:root[data-theme='light'] .sdc-login-page-wrapper {
+  background-color: #F4FAF6;
+}
+
+:root[data-theme='light'] .sdc-login-card {
+  background-color: #FFFFFF;
+  border-color: #CBE7D4;
+  border-top-color: #72C99A;
+  box-shadow: 0 10px 30px rgba(18, 59, 53, 0.08);
+}
+
+:root[data-theme='light'] .sdc-login-title {
+  color: #123B35;
+}
+
+:root[data-theme='light'] .sdc-login-subtitle {
+  color: #52766C;
+}
+
+:root[data-theme='light'] .sdc-form-group label {
+  color: #294E46;
+}
+
+:root[data-theme='light'] .sdc-form-group input {
+  background-color: #F8FCF9;
+  border-color: #CBE7D4;
+  color: #123B35;
+}
+
+:root[data-theme='light'] .sdc-form-group input::placeholder {
+  color: #8AA39C;
+}
+
+:root[data-theme='light'] .sdc-form-group input:focus {
+  background-color: #FFFFFF;
+  border-color: #72C99A;
+  box-shadow: 0 0 0 3px rgba(114, 201, 154, 0.15);
+}
+
+:root[data-theme='light'] .sdc-login-submit-btn {
+  background-color: #72C99A;
+  color: #0D3329;
+}
+
+:root[data-theme='light'] .sdc-login-submit-btn:hover {
+  background-color: #5DB987;
+  color: #FFFFFF;
+}
+
+:root[data-theme='light'] .sdc-login-footer {
+  color: #52766C;
+  border-top-color: #D8EDE0;
+}
+
+:root[data-theme='light'] .sdc-login-link {
+  color: #168A5B;
+}
+
+:root[data-theme='light'] .sdc-login-link:hover {
+  color: #0F7049;
+}

@@ -5,6 +5,10 @@
   --background: #050D09;
   --foreground: #ffffff;
 }
+:root[data-theme='light'] {
+  --background: #F4FAF6;
+  --foreground: #123B35;
+}
 
 html {
   background-color: var(--background);

@@ -292,3 +292,86 @@
     padding: 0 16px;
   }
 }
+/* ================== LIGHT MODE - ALL EVENTS ================== */
+
+:root[data-theme='light'] .sdc-all-events-wrapper {
+  background-color: #F4FAF6;
+}
+
+:root[data-theme='light'] .sdc-events-hero-banner {
+  background-color: #EAF6EE;
+  background-image:
+    linear-gradient(
+      90deg,
+      rgba(169, 216, 188, 0.55) 0%,
+      rgba(229, 245, 234, 0.88) 55%,
+      #F4FAF6 100%
+    ),
+    url('/assets/Service(1).png');
+}
+
+:root[data-theme='light'] .sdc-events-hero-title {
+  color: #123B35;
+}
+
+:root[data-theme='light'] .sdc-events-hero-subtitle {
+  color: #52766C;
+}
+
+:root[data-theme='light'] .sdc-events-breadcrumb,
+:root[data-theme='light'] .sdc-events-breadcrumb a {
+  color: #52766C;
+}
+
+:root[data-theme='light'] .sdc-events-bc-sep {
+  color: #8AA39C;
+}
+
+:root[data-theme='light'] .sdc-events-breadcrumb a:hover {
+  color: #0B8F55 !important;
+}
+
+/* الكروت */
+:root[data-theme='light'] .sdc-event-full-card {
+  background-color: #FFFFFF;
+  border-color: #CBE7D4;
+  border-top-color: #72C99A;
+}
+
+:root[data-theme='light'] .sdc-event-full-card:hover {
+  box-shadow: 0 8px 25px rgba(22, 167, 101, 0.12);
+}
+
+:root[data-theme='light'] .sdc-card-event-title {
+  color: #123B35;
+}
+
+:root[data-theme='light'] .sdc-card-event-meta {
+  color: #52766C;
+}
+
+/* الأزرار */
+:root[data-theme='light'] .sdc-card-btn-register {
+  background-color: #72C99A;
+  color: #0D3329;
+}
+
+:root[data-theme='light'] .sdc-card-btn-register:hover {
+  background-color: #5DB987;
+  color: #FFFFFF;
+}
+
+:root[data-theme='light'] .sdc-card-btn-more {
+  background-color: #FFFFFF;
+  border-color: #A9D8BC;
+  color: #123B35;
+}
+
+:root[data-theme='light'] .sdc-card-btn-more:hover {
+  border-color: #16A765;
+  color: #0B8F55;
+}
+
+:root[data-theme='light'] .sdc-no-results {
+  color: #52766C;
+}
