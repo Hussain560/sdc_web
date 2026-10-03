@@ -64,7 +64,7 @@ Inspired by the Innosoft *Standards Gate* (tools produce evidence → gate evalu
 
 GitHub Actions minutes are free for public repositories and limited for private ones (**OPEN Q-024**: public or private repository?). The DB job (Docker + Supabase stack) is the most expensive; it runs only when `supabase/**` or `src/**` changes, and uses `supabase db start` (database only) where full services are not needed.
 
-## 6. Implemented (Sprint 01–02, local — workflows not yet pushed)
+## 6. Implemented (local — workflows not yet pushed; first-push steps in the [push checklist](../07-engineering/push-and-release-checklist.md))
 
 | File | Purpose |
 | ---- | ------- |

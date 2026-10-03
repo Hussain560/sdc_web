@@ -3,7 +3,7 @@
 | Field            | Value      |
 | ---------------- | ---------- |
 | **Last Updated** | 2026-10-02 |
-| **Status**       | Draft — repository location pending **OPEN Q-024** |
+| **Status**       | Active locally: `develop` and `release/v1.0.0` exist ([push checklist](push-and-release-checklist.md)); remote `sdc-saudi/SDC_website` (Q-024) |
 
 ## 1. Repository
 
