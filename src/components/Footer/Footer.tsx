@@ -3,9 +3,13 @@
 import React from 'react';
 import './Footer.css';
 import { useLanguage } from '../../context/LanguageContext';
+import { useSiteSettings } from '../../context/SiteSettingsContext';
 
 export default function Footer() {
   const { lang, t } = useLanguage();
+  const settings = useSiteSettings();
+  const rights =
+    (lang === 'ar' ? settings.footerRightsAr : settings.footerRightsEn) || t('allRightsReserved');
 
   return (
     <footer className="sdc-footer">
@@ -17,7 +21,7 @@ export default function Footer() {
           <div className="sdc-footer-socials">
             {/* إنستغرام */}
             <a
-              href="https://instagram.com"
+              href={settings.socialInstagram}
               target="_blank"
               rel="noreferrer"
               className="sdc-social-icon"
@@ -41,7 +45,7 @@ export default function Footer() {
 
             {/* لينكد إن */}
             <a
-              href="https://www.linkedin.com/company/sdc-%D8%A7%D9%84%D9%85%D8%AC%D8%AA%D9%85%D8%B9-%D8%A7%D9%84%D8%B3%D8%B9%D9%88%D8%AF%D9%8A-%D9%84%D9%84%D9%85%D8%B7%D9%88%D8%B1%D9%8A%D9%86/"
+              href={settings.socialLinkedin}
               target="_blank"
               rel="noreferrer"
               className="sdc-social-icon"
@@ -54,7 +58,7 @@ export default function Footer() {
 
             {/* منصة X */}
             <a
-              href="https://x.com/sdc_saudi?s=21&t=XwrJBduv3_FE7Zi5Vp45Dw"
+              href={settings.socialX}
               target="_blank"
               rel="noreferrer"
               className="sdc-social-icon"
@@ -71,7 +75,7 @@ export default function Footer() {
         <div className="sdc-footer-bottom">
           {/* حقوق النشر والتفاصيل */}
           <div className="sdc-footer-info">
-            <p className="sdc-footer-text">{t('allRightsReserved')}</p>
+            <p className="sdc-footer-text">{rights}</p>
             <p className="sdc-footer-text">{t('developedBy')}</p>
           </div>
 

@@ -25,3 +25,8 @@ join public.events e on e.legacy_id = 1;
 
 -- The legacy-shaped rows above become members exactly like production rows do (idempotent).
 select private.import_legacy_members();
+
+-- Local placeholders for the home-page partners strip, so the visual baselines keep their 12 cards. Production
+-- starts with none, and the section stays hidden until real partners are added (Q-021).
+insert into public.partners (name_ar, name_en, display_order)
+select 'شعار المنصة', 'Platform Logo', n from generate_series(1, 12) n;

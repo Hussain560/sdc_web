@@ -758,6 +758,19 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"partners": {
+                  Row: {
+                    "created_at": string,"display_order": number,"id": string,"is_active": boolean,"logo_url": string | null,"name_ar": string,"name_en": string | null,"website_url": string | null
+                  }
+                  Insert: {
+                    "created_at"?: string,"display_order"?: number,"id"?: string,"is_active"?: boolean,"logo_url"?: string | null,"name_ar": string,"name_en"?: string | null,"website_url"?: string | null
+                  }
+                  Update: {
+                    "created_at"?: string,"display_order"?: number,"id"?: string,"is_active"?: boolean,"logo_url"?: string | null,"name_ar"?: string,"name_en"?: string | null,"website_url"?: string | null
+                  }
+                  Relationships: [
+                    
+                  ]
                 },"permissions": {
                   Row: {
                     "description_ar": string,"description_en": string,"key": string,"module": string
@@ -1283,6 +1296,9 @@ isOneToOne: false
             "assign_role":
 { Args: { "p_bio_ar"?: string,"p_bio_en"?: string,"p_committee"?: string,"p_ends_at"?: string,"p_role": string,"p_starts_at"?: string,"p_tags_ar"?: (string)[],"p_tags_en"?: (string)[],"p_title_ar"?: string,"p_title_en"?: string,"p_user": string }; Returns: string
                            },
+"audit_facets":
+{ Args: Record<PropertyKey, never>; Returns: Json
+                           },
 "cancel_registration":
 { Args: { "p_id": string }; Returns: undefined
                            },
@@ -1339,6 +1355,12 @@ isOneToOne: false
 "delete_event_draft":
 { Args: { "p_id": string }; Returns: undefined
                            },
+"delete_partner":
+{ Args: { "p_id": string }; Returns: undefined
+                           },
+"delete_tag":
+{ Args: { "p_id": string }; Returns: undefined
+                           },
 "due_email_retries":
 { Args: { "p_limit"?: number }; Returns: {
               "attempt": number,"entity_id": string,"entity_type": string,"id": string,"template_key": string
@@ -1372,6 +1394,9 @@ isOneToOne: false
 "issue_certificates":
 { Args: { "p_event": string }; Returns: Json
                            },
+"list_audit_logs":
+{ Args: { "p_action"?: string,"p_actor"?: string,"p_entity"?: string,"p_from"?: string,"p_limit"?: number,"p_offset"?: number,"p_to"?: string }; Returns: Json
+                           },
 "my_activity":
 { Args: Record<PropertyKey, never>; Returns: Json
                            },
@@ -1388,7 +1413,7 @@ isOneToOne: false
 { Args: { "p_present"?: boolean,"p_registrations": (string)[],"p_session": string }; Returns: number
                            },
 "record_export":
-{ Args: { "p_count": number,"p_kind": string }; Returns: undefined
+{ Args: { "p_count": number,"p_filter"?: Json,"p_kind": string }; Returns: undefined
                            },
 "register_for_event":
 { Args: { "p_answers"?: Json,"p_event": string }; Returns: Json
@@ -1404,6 +1429,15 @@ isOneToOne: false
                            },
 "save_membership_cycle":
 { Args: { "p": Json,"p_id": string }; Returns: Json
+                           },
+"save_partner":
+{ Args: { "p": Json,"p_id": string }; Returns: string
+                           },
+"save_site_settings":
+{ Args: { "p_values": Json }; Returns: undefined
+                           },
+"save_tag":
+{ Args: { "p_id": string,"p_label_ar": string,"p_label_en": string }; Returns: undefined
                            },
 "search_article_author_candidates":
 { Args: { "p_query": string }; Returns: {
@@ -1431,6 +1465,11 @@ isOneToOne: false
                            },
 "submit_membership_application":
 { Args: { "p": Json,"p_cycle": string }; Returns: Json
+                           },
+"tag_usage":
+{ Args: Record<PropertyKey, never>; Returns: {
+              "id": string,"label_ar": string,"label_en": string,"slug": string,"uses": number
+            }[]
                            },
 "transition_article":
 { Args: { "p_action": string,"p_id": string,"p_note"?: string }; Returns: string

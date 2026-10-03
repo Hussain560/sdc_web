@@ -5,15 +5,18 @@ import { canGlobal } from '@/lib/auth/permissions';
 import { requireUser } from '@/lib/auth/session';
 import { createClient } from '@/lib/supabase/server';
 import { getAccess } from '@/modules/access/queries';
+import { TagsTable } from '@/modules/admin/components/TagsTable';
+import { listTags } from '@/modules/admin/queries';
 import { ReferenceTable, type ReferenceRow } from '@/modules/reference/components/ReferenceTable';
 
 // Reference lists (screen 24): universities, majors (with sub-majors) and tracks. Permission: reference_data.manage.
-const TABS = ['universities', 'majors', 'tracks'] as const;
+const TABS = ['universities', 'majors', 'tracks', 'tags'] as const;
 type Tab = (typeof TABS)[number];
 const LABEL: Record<Tab, { ar: string; en: string }> = {
   universities: { ar: 'الجامعات', en: 'Universities' },
   majors: { ar: 'التخصصات', en: 'Majors' },
   tracks: { ar: 'المسارات', en: 'Tracks' },
+  tags: { ar: 'وسوم المقالات', en: 'Thread tags' },
 };
 
 export default async function ReferenceDataPage({
@@ -36,6 +39,27 @@ export default async function ReferenceDataPage({
     : 'universities';
 
   const supabase = await createClient();
+  if (tab === 'tags') {
+    const tags = await listTags();
+    return (
+      <>
+        <PageHeader
+          title={ar ? 'القوائم المرجعية' : 'Reference lists'}
+          description={
+            ar
+              ? 'وسوم المقالات: تعديل الاسم، وحذف غير المستخدم منها.'
+              : 'Thread tags: rename them, or delete the ones nothing uses.'
+          }
+        />
+        <Tabs
+          items={TABS.map((x) => ({ key: x, label: LABEL[x][lang], href: `?tab=${x}` }))}
+          active={tab}
+          label={ar ? 'القائمة' : 'List'}
+        />
+        <TagsTable rows={tags} />
+      </>
+    );
+  }
   let rows: ReferenceRow[] = [];
   let parents: Array<{ id: number; name: string }> | undefined;
   if (tab === 'majors') {

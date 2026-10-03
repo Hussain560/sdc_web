@@ -59,7 +59,11 @@ export async function GET(request: Request) {
     ),
   ];
   // The export itself is recorded in the audit log (only a row count, never the data).
-  await supabase.rpc('record_export', { p_kind: 'registrations', p_count: rows.length });
+  await supabase.rpc('record_export', {
+    p_kind: 'registrations',
+    p_count: rows.length,
+    p_filter: { ...(event ? { event } : {}), ...(status ? { status } : {}) },
+  });
 
   // BOM so Excel opens the Arabic text correctly.
   return new NextResponse('﻿' + lines.join('\r\n'), {

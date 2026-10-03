@@ -8,9 +8,10 @@ import './MembersSection.css';
 
 const memberPlaceholdersCount = 4;
 
-const partnersCount = Array.from({ length: 12 });
+import type { PublicPartner } from '@/modules/admin/public';
 
-export default function MembersSection() {
+/** Partners come from the database; with none, the whole strip is hidden instead of showing placeholders (Q-021). */
+export default function MembersSection({ partners = [] }: { partners?: PublicPartner[] }) {
   const sliderRef = useRef<HTMLDivElement>(null);
   const { lang } = useLanguage();
   const isEnglish = lang === 'en';
@@ -58,46 +59,62 @@ export default function MembersSection() {
         </Link>
       </div>
 
-      <div className="sdc-partners-container">
-        <h3 className="sdc-partners-title">{isEnglish ? 'Partners' : 'قسم الشركاء'}</h3>
+      {partners.length > 0 && (
+        <div className="sdc-partners-container">
+          <h3 className="sdc-partners-title">{isEnglish ? 'Partners' : 'قسم الشركاء'}</h3>
 
-        <div className="sdc-partners-slider">
-          <button
-            className="sdc-slider-arrow"
-            onClick={() => scroll('right')}
-            aria-label={isEnglish ? 'Scroll right' : 'التمرير لليمين'}
-          >
-            <ChevronRight size={22} />
-          </button>
+          <div className="sdc-partners-slider">
+            <button
+              className="sdc-slider-arrow"
+              onClick={() => scroll('right')}
+              aria-label={isEnglish ? 'Scroll right' : 'التمرير لليمين'}
+            >
+              <ChevronRight size={22} />
+            </button>
 
-          <div className="sdc-partner-cards-list" ref={sliderRef}>
-            {partnersCount.map((_, index) => (
-              <div key={index} className="sdc-partner-card">
-                <img
-                  src="/assets/partner-logo.png"
-                  alt={isEnglish ? 'Platform logo' : 'شعار'}
-                  className="sdc-partner-logo"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).src =
-                      'https://via.placeholder.com/28/000000/FFFFFF?text=🇸🇦';
-                  }}
-                />
-                <span className="sdc-partner-text">
-                  {isEnglish ? 'Platform Logo' : 'شعار المنصة'}
-                </span>
-              </div>
-            ))}
+            <div className="sdc-partner-cards-list" ref={sliderRef}>
+              {partners.map((p) => {
+                const name = isEnglish ? (p.nameEn ?? p.nameAr) : p.nameAr;
+                const card = (
+                  <div key={p.id} className="sdc-partner-card">
+                    <img
+                      src={p.logoUrl ?? '/assets/partner-logo.png'}
+                      alt=""
+                      className="sdc-partner-logo"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src =
+                          'https://via.placeholder.com/28/000000/FFFFFF?text=🇸🇦';
+                      }}
+                    />
+                    <span className="sdc-partner-text">{name}</span>
+                  </div>
+                );
+                return p.websiteUrl ? (
+                  <a
+                    key={p.id}
+                    href={p.websiteUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    aria-label={name}
+                  >
+                    {card}
+                  </a>
+                ) : (
+                  card
+                );
+              })}
+            </div>
+
+            <button
+              className="sdc-slider-arrow"
+              onClick={() => scroll('left')}
+              aria-label={isEnglish ? 'Scroll left' : 'التمرير لليسار'}
+            >
+              <ChevronLeft size={22} />
+            </button>
           </div>
-
-          <button
-            className="sdc-slider-arrow"
-            onClick={() => scroll('left')}
-            aria-label={isEnglish ? 'Scroll left' : 'التمرير لليسار'}
-          >
-            <ChevronLeft size={22} />
-          </button>
         </div>
-      </div>
+      )}
     </section>
   );
 }

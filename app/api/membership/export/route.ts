@@ -65,7 +65,11 @@ export async function GET(request: Request) {
 
   // The export is itself sensitive: it is recorded in the audit log (docs/11-modules/membership §10).
   const supabase = await createClient();
-  await supabase.rpc('record_export', { p_kind: 'membership_applications', p_count: rows.length });
+  await supabase.rpc('record_export', {
+    p_kind: 'membership_applications',
+    p_count: rows.length,
+    p_filter: { ...(cycle ? { cycle } : {}), ...(status ? { status } : {}) },
+  });
 
   return new NextResponse('﻿' + lines.join('\r\n'), {
     headers: {

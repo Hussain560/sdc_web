@@ -3,6 +3,8 @@ import { SearchProvider } from '@/context/SearchContext';
 import { AuthProvider } from '@/context/AuthContext';
 import { ToastProvider } from '@/components/ui/Toast';
 import { ThemeProvider } from '@/context/ThemeContext';
+import { SiteSettingsProvider } from '@/context/SiteSettingsContext';
+import { getPublicSettings } from '@/lib/site-settings';
 import '../globals.css';
 import type { Metadata } from 'next';
 import Script from 'next/script';
@@ -55,6 +57,7 @@ export default async function RootLayout({
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) notFound();
   setRequestLocale(locale);
+  const settings = await getPublicSettings();
 
   return (
     <html lang={locale} dir={localeDirection(locale)} suppressHydrationWarning>
@@ -78,7 +81,9 @@ export default async function RootLayout({
             <LanguageProvider locale={locale}>
               <AuthProvider>
                 <SearchProvider>
-                  <ToastProvider>{children}</ToastProvider>
+                  <SiteSettingsProvider value={settings}>
+                    <ToastProvider>{children}</ToastProvider>
+                  </SiteSettingsProvider>
                 </SearchProvider>
               </AuthProvider>
             </LanguageProvider>

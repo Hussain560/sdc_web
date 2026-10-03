@@ -2,8 +2,8 @@
 
 | Field            | Value |
 | ---------------- | ----- |
-| **Last Updated** | 2026-10-02 |
-| **Status**       | Draft |
+| **Last Updated** | 2026-10-03 |
+| **Status**       | Audit log, e-mail log, reference data (with thread tags), site settings and partners implemented (Sprints 09–11) |
 | **Owner**        | System administrators (Technology & Development) · community leader (limited) |
 | **Phase / Sprints** | Phase 2 / Sprint 04 (users, roles) · Phase 4 / Sprint 11 (audit, e-mail log, reference data, settings) |
 | **Code**         | `src/modules/admin/` |
@@ -164,3 +164,11 @@ src/modules/admin/
 ## 14. Open questions
 
 Q-032 (audit visibility for leadership/founders), Q-039 (first admins).
+
+## 15. Implementation notes (Sprint 11)
+
+- **Audit log:** `/dashboard/admin/audit` reads `list_audit_logs` (needs `audit.view`; actors by name; filters actor, action family, entity, date range; 25 per page; expandable key/value summary) and exports the current filter as CSV. The export is itself audited.
+- **Exports:** `record_export(kind, count, filter)` stores the filter used (short scalar values only) next to the row count for registrations, membership applications and the audit log.
+- **Site settings:** `save_site_settings` validates every key in the database (https social links, e-mail, rights text ≤ 200 characters, `certificates_enabled` boolean, `certificate_threshold` integer 0–100), writes one audit row naming the changed keys and refuses unknown keys. Public keys feed the footer through a cached loader that the save action revalidates.
+- **Partners:** `partners` (RLS: public sees active rows; `settings.manage` manages through definer functions). The home strip is hidden when none is active (Q-021).
+- **Thread tags:** renamed or, when unused, deleted from the reference-data screen (`save_tag`, `delete_tag`, `tag_usage`).

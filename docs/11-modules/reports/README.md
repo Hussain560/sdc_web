@@ -2,8 +2,8 @@
 
 | Field            | Value |
 | ---------------- | ----- |
-| **Last Updated** | 2026-10-02 |
-| **Status**       | Draft — metric set pending **Q-008** |
+| **Last Updated** | 2026-10-03 |
+| **Status**       | Implemented in Sprint 11 with the proposed metric catalogue — final KPI list pending **Q-008** |
 | **Owner**        | Founders / community leader |
 | **Phase / Sprints** | Phase 2 (overview page skeleton, S04) · Phase 4 (metrics, S11) |
 | **Code**         | `src/modules/reports/` |
@@ -168,3 +168,11 @@ src/modules/reports/
 ## 14. Open questions
 
 Q-008 (KPIs, public stats), Q-032 (founders' access to drafts and audit), Q-037 (web analytics).
+
+## 15. Implementation notes (Sprint 11)
+
+- **One definition per metric:** `private.report_metrics(from, to, committee)` feeds `community_stats`, `committee_stats` and the committee rows of the community dashboard, so a number can never differ between screens. The previous period is the same length, immediately before.
+- **Functions:** `community_stats`, `committee_stats`, `pending_queues`, `dashboard_summary`, `my_activity` (all `SECURITY DEFINER`, permission re-checked inside, counts only what the caller may see). Groups under five people return `null`; the UI shows "<5". Rates with no denominator are `null` and show "—".
+- **Default period:** the last 12 months (no membership year exists yet); presets *This year* and *This month*, and a custom range of up to five years. The period lives in the URL (`?period=`, `from`, `to`).
+- **Charts:** plain CSS bars and columns with a native "view as table" disclosure; no library and no colour beyond the accent token.
+- **Screens:** `/dashboard` (overview), `/dashboard/reports`, `/dashboard/reports/committees/[id]`. A committee head reaching `/dashboard/reports` is sent to their committee.
