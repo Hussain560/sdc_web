@@ -109,3 +109,28 @@ export async function sendClaimInviteMail(input: {
     },
   });
 }
+
+/** member.created — a leader added the member directly; a new account carries its one-time activation link. */
+export async function sendMemberCreatedMail(input: {
+  memberId: string;
+  userId: string;
+  email: string;
+  name: string;
+  lang: Lang;
+  activationUrl?: string;
+}): Promise<NotifyOutcome> {
+  const prefix = input.lang === 'en' ? '/en' : '';
+  return notify({
+    templateKey: 'member.created',
+    entityType: 'member',
+    entityId: input.memberId,
+    state: 'created',
+    recipient: { userId: input.userId, email: input.email, locale: input.lang },
+    data: {
+      name: input.name,
+      eventTitle: '',
+      membershipUrl: `${siteUrl()}${prefix}/account/member-profile`,
+      activationUrl: input.activationUrl,
+    },
+  });
+}

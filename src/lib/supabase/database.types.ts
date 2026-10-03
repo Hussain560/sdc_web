@@ -1418,6 +1418,9 @@ isOneToOne: false
 "correct_attendance":
 { Args: { "p_present": boolean,"p_reason": string,"p_registration": string,"p_session": string }; Returns: undefined
                            },
+"create_member":
+{ Args: { "p": Json,"p_user": string }; Returns: string
+                           },
 "create_member_claim_token":
 { Args: { "p_email": string,"p_member": string }; Returns: string
                            },

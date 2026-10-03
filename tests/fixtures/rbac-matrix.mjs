@@ -20,6 +20,7 @@ export const PERMISSIONS = [
   'membership.export',
   'members.view',
   'members.manage',
+  'members.create',
   'committees.manage',
   'committee_members.manage',
   'roles.view',
@@ -40,6 +41,7 @@ export const GRANTS = {
   founder: [
     'events.view_drafts',
     'members.view',
+    'members.create',
     'roles.view',
     'reports.view_community',
     'reports.view_committee',

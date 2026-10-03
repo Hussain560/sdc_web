@@ -1,65 +1,21 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Link } from '@/i18n/navigation';
 import { usePathname, useRouter } from '@/i18n/navigation';
-import { Search, User, Globe, X, LogOut, Sun, Moon, LoaderCircle } from 'lucide-react';
-import { useSearch } from '../../context/SearchContext';
+import { LayoutDashboard, LogIn, User, Globe, LogOut, Sun, Moon, LoaderCircle } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
 import './Header.css';
 
-interface HeaderProps {
-  onSearch?: (query: string) => void;
-}
-
-export default function Header({ onSearch }: HeaderProps) {
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
+export default function Header() {
   const { isDarkMode, toggleTheme } = useTheme();
   const pathname = usePathname();
   const router = useRouter();
 
-  const { searchQuery, setSearchQuery } = useSearch();
   const { lang, toggleLanguage, isSwitching, t } = useLanguage();
-  const { isLoggedIn, user, logout, hasPosition } = useAuth();
-  /* لحذف نتائج البحث عند الانتقال الى صفحة أخرى*/
-  useEffect(() => {
-    if (searchQuery) {
-      setSearchQuery('');
-      if (onSearch) onSearch('');
-    }
-    // Intentionally runs only on navigation: clears the page-scoped search when the route changes.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pathname]);
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setSearchQuery(value);
-    if (onSearch) onSearch(value);
-  };
-
-  const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    const query = searchQuery.trim();
-
-    if (!query) return;
-
-    if (query === 'فعاليات' || query === 'الفعاليات' || query.toLowerCase() === 'events') {
-      router.push('/events');
-      setIsSearchOpen(false);
-      return;
-    }
-
-    if (onSearch) {
-      onSearch(query);
-    } else {
-      router.push('/search?query=' + encodeURIComponent(query));
-    }
-
-    setIsSearchOpen(false);
-  };
+  const { isLoggedIn, logout } = useAuth();
   const handleJoinClick = () => {
     router.push('/join');
   };
@@ -69,8 +25,6 @@ export default function Header({ onSearch }: HeaderProps) {
     router.push('/');
     router.refresh();
   };
-
-  const displayName = user?.user_metadata?.full_name || user?.email || '';
 
   return (
     <>
@@ -96,11 +50,6 @@ export default function Header({ onSearch }: HeaderProps) {
               <li className={pathname === '/members' ? 'active-link' : ''}>
                 <Link href="/members">{t('members')}</Link>
               </li>
-              {hasPosition && (
-                <li className={pathname.startsWith('/dashboard') ? 'active-link' : ''}>
-                  <Link href="/dashboard">{lang === 'en' ? 'Dashboard' : 'لوحة التحكم'}</Link>
-                </li>
-              )}
             </ul>
           </nav>
 
@@ -108,11 +57,6 @@ export default function Header({ onSearch }: HeaderProps) {
             <button className="sdc-icon-btn" onClick={toggleTheme}>
               {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
             </button>
-            <button className="sdc-icon-btn" onClick={() => setIsSearchOpen(true)}>
-              <Search size={18} />
-              <span>{t('search')}</span>
-            </button>
-
             <button
               className="sdc-icon-btn"
               onClick={toggleLanguage}
@@ -130,52 +74,35 @@ export default function Header({ onSearch }: HeaderProps) {
 
             {isLoggedIn ? (
               <>
-                <Link href="/account" className="sdc-icon-btn">
-                  <User size={18} />
-                  <span>{displayName}</span>
+                <Link href="/dashboard" className="sdc-btn-primary">
+                  <LayoutDashboard size={18} />
+                  <span>{lang === 'en' ? 'Dashboard' : 'لوحة التحكم'}</span>
                 </Link>
-                <button type="button" onClick={handleLogoutClick} className="sdc-btn-primary">
+                <button
+                  type="button"
+                  onClick={handleLogoutClick}
+                  className="sdc-icon-btn"
+                  aria-label={lang === 'en' ? 'Logout' : 'تسجيل الخروج'}
+                  title={lang === 'en' ? 'Logout' : 'تسجيل الخروج'}
+                >
                   <LogOut size={18} />
-                  <span>{lang === 'en' ? 'Logout' : 'تسجيل الخروج'}</span>
                 </button>
               </>
             ) : (
-              <button type="button" onClick={handleJoinClick} className="sdc-btn-primary">
-                <User size={18} />
-                <span>{lang === 'en' ? 'Join us' : 'انضم إلينا'}</span>
-              </button>
+              <>
+                <Link href="/login" className="sdc-btn-secondary">
+                  <LogIn size={18} />
+                  <span>{lang === 'en' ? 'Login' : 'تسجيل الدخول'}</span>
+                </Link>
+                <button type="button" onClick={handleJoinClick} className="sdc-btn-primary">
+                  <User size={18} />
+                  <span>{lang === 'en' ? 'Join us' : 'انضم إلينا'}</span>
+                </button>
+              </>
             )}
           </div>
         </div>
       </header>
-
-      {isSearchOpen && (
-        <div className="sdc-search-overlay" onClick={() => setIsSearchOpen(false)}>
-          <div className="sdc-search-modal" onClick={(e) => e.stopPropagation()}>
-            <form onSubmit={handleSearchSubmit}>
-              <Search size={20} className="sdc-modal-search-icon" />
-              <input
-                type="text"
-                placeholder={t('searchPlaceholder')}
-                value={searchQuery}
-                onChange={handleInputChange}
-                autoFocus
-              />
-              <button
-                type="button"
-                onClick={() => {
-                  setIsSearchOpen(false);
-                  setSearchQuery('');
-                  if (onSearch) onSearch('');
-                }}
-                className="sdc-close-btn"
-              >
-                <X size={20} />
-              </button>
-            </form>
-          </div>
-        </div>
-      )}
     </>
   );
 }

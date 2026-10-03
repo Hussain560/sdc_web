@@ -49,8 +49,8 @@ const sidebarOf = (role: RoleKey | 'plain_user') =>
   Object.fromEntries(visibleNav(persona(role)).map((g) => [g.key, g.items.map((i) => i.key)]));
 
 describe('catalogue constants', () => {
-  it('lists 30 permissions and 7 roles, matching the documented matrix', () => {
-    expect(PERMISSION_KEYS).toHaveLength(30);
+  it('lists 31 permissions and 7 roles, matching the documented matrix', () => {
+    expect(PERMISSION_KEYS).toHaveLength(31);
     expect([...PERMISSION_KEYS].sort()).toEqual([...PERMISSIONS].sort());
     expect(ROLE_KEYS).toHaveLength(7);
     expect(Object.keys(GRANTS).sort()).toEqual([...ROLE_KEYS, 'plain_user'].sort());

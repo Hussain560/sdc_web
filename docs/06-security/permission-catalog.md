@@ -28,6 +28,7 @@
 | `membership.export` | Membership | Export applications (audited) | global |
 | `members.view` | Members | View private member fields (incl. hidden profiles) | global |
 | `members.manage` | Members | Change member status; manual/legacy member records; claim emails | global |
+| `members.create` | Members | Add a member directly (the account is created and an activation link is e-mailed) | global |
 | `committees.manage` | Committees | Create/edit/deactivate committees | global |
 | `committee_members.manage` | Committees | Assign/end `committee_member` (and deputy) in scope | committee |
 | `roles.view` | Access | View all role assignments | global |
@@ -67,6 +68,7 @@ Ownership rights (no permission key): read/update own profile; read/cancel own r
 | membership.export | ✅ | — | ✅ | — | — | — | — |
 | members.view | ✅ | ✅ (**Q-007**) | ✅ | — | — | — | — |
 | members.manage | ✅ | — | ✅ | — | — | — | — |
+| members.create | ✅ | ✅ | ✅ | — | — | — | — |
 | committees.manage | ✅ | — | ✅ | — | — | — | — |
 | committee_members.manage | ✅ | — | ✅ | — | ◐ | — | — |
 | roles.view | ✅ | ✅ | ✅ | — | — | — | — |

@@ -222,7 +222,11 @@ test.describe('account area', () => {
       await expect(page).toHaveURL((u) => u.pathname === '/account');
       await gotoReady(page, '/');
       await expectHeaderName(page, /./);
-      await page.locator('header.sdc-header button.sdc-btn-primary').click();
+      await page
+        .locator(
+          'header.sdc-header button[aria-label="Logout"], header.sdc-header button[aria-label="تسجيل الخروج"]',
+        )
+        .click();
       // Wait for the server action to finish before navigating away.
       await expect(page.locator('header.sdc-header')).toContainText(/Join us|انضم إلينا/);
       await gotoReady(page, '/account');

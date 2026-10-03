@@ -14,6 +14,7 @@ export type TemplateKey =
   | 'membership.application_rejected'
   | 'membership.application_waitlisted'
   | 'member.claim_invite'
+  | 'member.created'
   | 'review.pending'
   | 'committee.assigned'
   | 'certificate.issued';
@@ -195,6 +196,32 @@ function copy(key: TemplateKey, lang: Lang, d: TemplateData): Copy {
         ],
         action: { label: ar ? 'طلبي' : 'My application', url: d.membershipUrl },
       };
+    case 'member.created':
+      return {
+        subject: ar
+          ? 'أُضيفت عضويتك في المجتمع السعودي للمطورين'
+          : 'You were added to the Saudi Developer Community',
+        lead: ar
+          ? 'يسرّنا إبلاغك بإضافتك عضوًا في المجتمع السعودي للمطورين.'
+          : 'We are delighted to tell you that you were added as a member of the Saudi Developer Community.',
+        body: d.activationUrl
+          ? [
+              ar
+                ? 'أنشأنا لك حسابًا في بوابة الأعضاء. اضغط الزر أدناه لاختيار كلمة المرور وتفعيل حسابك، ثم أكمل ملفك الشخصي.'
+                : 'We created your account in the members portal. Use the button below to choose a password and activate it, then complete your profile.',
+              ar
+                ? 'إذا انتهت صلاحية الرابط فاختر «نسيت كلمة المرور» من صفحة الدخول لتحصل على رابط جديد.'
+                : 'If the link has expired, use “Forgot password” on the sign-in page to get a new one.',
+            ]
+          : [
+              ar
+                ? 'يمكنك الدخول بحسابك الحالي وإكمال ملفك الشخصي.'
+                : 'You can sign in with your existing account and complete your profile.',
+            ],
+        action: d.activationUrl
+          ? { label: ar ? 'تفعيل الحساب' : 'Activate your account', url: d.activationUrl }
+          : { label: ar ? 'ملف العضوية' : 'My member profile', url: d.membershipUrl },
+      };
     case 'member.claim_invite':
       return {
         subject: ar ? 'استعد ملفك في المجتمع السعودي للمطورين' : 'Claim your SDC member profile',
@@ -203,8 +230,8 @@ function copy(key: TemplateKey, lang: Lang, d: TemplateData): Copy {
           : 'You have an existing member profile in the Saudi Developer Community. Link it to your account in one step.',
         body: [
           ar
-            ? 'سجّل الدخول (أو أنشئ حسابًا) بهذا البريد الإلكتروني نفسه ثم أكّد أن الملف لك. الرابط صالح لمدة 7 أيام ويُستخدم مرة واحدة.'
-            : 'Sign in (or create an account) with this same e-mail address, then confirm the profile is yours. The link is valid for 7 days and works once.',
+            ? 'سجّل الدخول بهذا البريد الإلكتروني نفسه ثم أكّد أن الملف لك. الرابط صالح لمدة 7 أيام ويُستخدم مرة واحدة.'
+            : 'Sign in with this same e-mail address, then confirm the profile is yours. The link is valid for 7 days and works once.',
         ],
         action: { label: ar ? 'المطالبة بملفي' : 'Claim my profile', url: d.claimUrl },
       };

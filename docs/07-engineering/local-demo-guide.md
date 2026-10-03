@@ -108,3 +108,4 @@ English dashboard URLs add `/en` in front, for example `/en/dashboard/reports`.
 - **Event registration as a guest:** on any open event press *Register*, fill the modal, and the confirmation (and its e-mail, in Mailpit) arrives at once. Try the same e-mail twice, or many quick attempts, to see the refusals.
 - **Check-in and certificate as a guest:** the QR page asks for the registered e-mail; the certificate e-mail links to the public certificate page where the PDF downloads.
 - **Becoming a member:** open `/join` while an intake cycle is open (create one as the leader under *Membership > Cycles*), apply with a new e-mail, accept the application as the leader, then open the *Activate your account* e-mail in Mailpit and set a password.
+- **Adding a member directly:** as the leader (or a founder) open *Members* and press *Add member*; the new member receives the *Activate your account* e-mail in Mailpit.

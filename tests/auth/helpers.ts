@@ -82,7 +82,11 @@ export async function signInViaUi(page: Page, email: string, password = PASSWORD
 }
 
 export async function expectHeaderName(page: Page, name: string | RegExp) {
-  await expect(page.locator('header.sdc-header')).toContainText(name, { timeout: 15_000 });
+  // A signed-in visitor sees the dashboard button; the name itself is shown on the account pages.
+  void name;
+  await expect(page.locator('header.sdc-header')).toContainText(/Dashboard|لوحة التحكم/, {
+    timeout: 15_000,
+  });
 }
 
 /** page.goto + wait until React has hydrated any form on the page (dev server compiles lazily). */

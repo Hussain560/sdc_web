@@ -8,7 +8,9 @@ import { requireUser } from '@/lib/auth/session';
 import { formatDate } from '@/lib/format';
 import { pageMeta, parsePage } from '@/lib/pagination';
 import { getAccess } from '@/modules/access/queries';
+import { AddMemberDialog } from '@/modules/members/components/AddMemberDialog';
 import { MemberActions } from '@/modules/members/components/MemberActions';
+import { getReferenceData } from '@/modules/membership/queries';
 import { getMemberCounts, listMembers } from '@/modules/members/queries';
 import { MEMBER_STATUSES, MEMBER_STATUS_LABEL } from '@/modules/members/schemas';
 
@@ -36,6 +38,8 @@ export default async function MembersAdminPage({
   if (!access || !(canGlobal(access, 'members.view') || canGlobal(access, 'members.manage')))
     return <Forbidden />;
   const canManage = can(access, 'members.manage');
+  const canCreate = can(access, 'members.create');
+  const reference = canCreate ? await getReferenceData() : null;
 
   const sp = await searchParams;
   const status = (MEMBER_STATUSES as readonly string[]).includes(sp.status ?? '')
@@ -82,8 +86,9 @@ export default async function MembersAdminPage({
             ? 'سجل الأعضاء وحالاتهم وروابط المطالبة للملفات القديمة.'
             : 'Member records, statuses and claim links for legacy profiles.'
         }
-        readOnly={!canManage}
+        readOnly={!canManage && !canCreate}
         readOnlyLabel={ar ? 'عرض فقط' : 'View only'}
+        action={reference ? <AddMemberDialog reference={reference} /> : undefined}
       />
       <Tabs
         items={tabs}

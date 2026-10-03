@@ -4,10 +4,12 @@ import { revalidatePath } from 'next/cache';
 import { after } from 'next/server';
 import { z } from 'zod';
 import { fail, ok, type ErrorCode, type Result } from '@/lib/result';
+import { createAdminClient } from '@/lib/supabase/admin';
 import { createClient } from '@/lib/supabase/server';
 import { isLang, type Lang } from '@/modules/auth/messages';
 import { getAccess } from '@/modules/access/queries';
-import { sendClaimInviteMail } from '@/modules/notifications/membership';
+import { sendClaimInviteMail, sendMemberCreatedMail } from '@/modules/notifications/membership';
+import { can } from '@/lib/auth/permissions';
 import { memberCode, memberMessage } from './messages';
 import {
   toProfilePayload,
@@ -131,4 +133,113 @@ export async function claimLegacyMember(
   if (error) return dbFailure(error, lang);
   // No revalidation here: the claim page keeps its confirmation panel (a refresh would re-run the now-spent token).
   return ok({ id: data as string });
+}
+
+const createSchema = z.object({
+  fullNameAr: z.string().trim().min(3).max(100),
+  fullNameEn: z.string().trim().max(100).optional(),
+  email: z
+    .string()
+    .trim()
+    .max(160)
+    .regex(/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/),
+  academicStatus: z.enum(['student', 'graduate', 'employee', 'other']),
+  universityId: z.string().regex(/^\d*$/).optional(),
+  majorId: z.string().regex(/^\d*$/).optional(),
+  trackId: z.string().regex(/^\d*$/).optional(),
+});
+export type CreateMemberInput = z.input<typeof createSchema>;
+
+const siteUrl = () => (process.env.SITE_URL ?? 'http://localhost:3000').replace(/\/$/, '');
+
+/**
+ * Leadership adds a member (KFUCS parity). The account is created here with the server key (confirmed, no password),
+ * the member row is written by a permission-checked database function, and the new member gets an e-mail with the
+ * one-time link to choose a password. An e-mail that already has an account is linked instead. If the member row
+ * cannot be written, an account created a moment ago is removed again.
+ */
+export async function createMember(
+  input: CreateMemberInput,
+  ctx: { lang: Lang },
+): Promise<Result<{ id: string; activationSent: boolean }>> {
+  const lang = langOf(ctx?.lang);
+  const access = await getAccess();
+  if (!access) return failCode('UNAUTHENTICATED', lang);
+  if (!can(access, 'members.create')) return failCode('FORBIDDEN', lang);
+  const parsed = createSchema.safeParse(input);
+  if (!parsed.success) {
+    const fieldErrors: Record<string, string> = {};
+    for (const i of parsed.error.issues)
+      fieldErrors[String(i.path[0])] ??= memberMessage('VALIDATION_FAILED', lang);
+    return fail('VALIDATION_FAILED', memberMessage('VALIDATION_FAILED', lang), fieldErrors);
+  }
+  const v = parsed.data;
+  const mail = v.email.toLowerCase();
+
+  const db = createAdminClient();
+  const { data: existing } = await db
+    .from('profiles')
+    .select('id')
+    .ilike('email', mail)
+    .maybeSingle();
+  let userId = existing?.id ?? null;
+  let created = false;
+  try {
+    if (!userId) {
+      const res = await db.auth.admin.createUser({
+        email: mail,
+        email_confirm: true,
+        user_metadata: { full_name: v.fullNameAr, locale: lang },
+      });
+      if (res.error || !res.data.user) throw new Error(res.error?.message ?? 'createUser failed');
+      userId = res.data.user.id;
+      created = true;
+    }
+
+    const supabase = await createClient();
+    const { data, error } = await supabase.rpc('create_member', {
+      p_user: userId,
+      p: {
+        full_name_ar: v.fullNameAr,
+        full_name_en: v.fullNameEn ?? '',
+        academic_status: v.academicStatus,
+        university_id: v.universityId ?? '',
+        major_id: v.majorId ?? '',
+        track_id: v.trackId ?? '',
+      } as never,
+    });
+    if (error) {
+      if (created) await db.auth.admin.deleteUser(userId);
+      return dbFailure(error, lang);
+    }
+    const memberId = data as string;
+
+    let activationUrl: string | undefined;
+    if (created) {
+      const gen = await db.auth.admin.generateLink({ type: 'recovery', email: mail });
+      const hash = gen.data?.properties?.hashed_token;
+      if (hash)
+        activationUrl = `${siteUrl()}/auth/confirm?token_hash=${encodeURIComponent(hash)}&type=recovery&next=${encodeURIComponent('/reset-password?welcome=1')}${lang === 'en' ? '&locale=en' : ''}`;
+    }
+    after(async () => {
+      try {
+        await sendMemberCreatedMail({
+          memberId,
+          userId: userId!,
+          email: mail,
+          name: v.fullNameAr,
+          lang,
+          activationUrl,
+        });
+      } catch (e) {
+        console.error('[members] welcome e-mail failed', (e as Error).message);
+      }
+    });
+    refresh();
+    return ok({ id: memberId, activationSent: !!activationUrl });
+  } catch (e) {
+    console.error('[members] create failed', (e as Error).message);
+    if (created && userId) await db.auth.admin.deleteUser(userId);
+    return failCode('INTERNAL', lang);
+  }
 }

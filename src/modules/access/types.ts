@@ -19,6 +19,7 @@ export const PERMISSION_KEYS = [
   'membership.export',
   'members.view',
   'members.manage',
+  'members.create',
   'committees.manage',
   'committee_members.manage',
   'roles.view',

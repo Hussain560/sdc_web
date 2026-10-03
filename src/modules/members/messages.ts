@@ -18,6 +18,7 @@ const MEMBER_CODES = [
   'SELF_DECISION',
   'CAPACITY_REACHED',
   'VALIDATION_FAILED',
+  'ALREADY_MEMBER',
 ] as const satisfies readonly ErrorCode[];
 
 const messages: Partial<Record<ErrorCode, Record<Lang, string>>> = {
@@ -52,6 +53,10 @@ const messages: Partial<Record<ErrorCode, Record<Lang, string>>> = {
   CAPACITY_REACHED: {
     ar: 'اكتمل العدد المحدد للقبول.',
     en: 'The acceptance limit is reached.',
+  },
+  ALREADY_MEMBER: {
+    ar: 'هذا البريد لعضو في المجتمع بالفعل.',
+    en: 'This e-mail already belongs to a member.',
   },
   VALIDATION_FAILED: {
     ar: 'يرجى مراجعة الحقول المحددة.',
