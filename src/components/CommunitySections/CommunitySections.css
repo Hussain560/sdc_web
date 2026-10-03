@@ -1,5 +1,5 @@
 .sdc-community-sec {
-  background-color: #08090C;
+  background-color: var(--c-08090c);
   padding: 60px 24px;
   direction: inherit;
   display: flex;
@@ -18,7 +18,7 @@
 .sdc-community-title {
   font-size: 2.2rem;
   font-weight: 800;
-  color: #FFFFFF;
+  color: var(--c-ffffff);
   margin: 0;
   text-align: start;
 }
@@ -33,7 +33,7 @@
 
 /* التنسيق الأساسي للبطاقة */
 .sdc-category-card {
-  background-color: #0D0E12;
+  background-color: var(--c-0d0e12);
   border-radius: 16px;
   padding: 28px 12px;
   display: flex;
@@ -51,7 +51,7 @@
 
 /* 🟢 النوع الأول: الحد الأخضر من الأعلى والزوايا العلوية */
 .sdc-category-card.border-top-only {
-  border-top: 1px solid #00E676;
+  border-top: 1px solid var(--c-00e676);
   border-right: 1px solid rgba(0, 230, 118, 0.2);
   border-left: 1px solid rgba(0, 230, 118, 0.2);
   border-bottom: 1px solid transparent;
@@ -59,13 +59,11 @@
 
 /* 🟢 النوع الثاني: الحد الأخضر من الأسفل والزوايا السفلية */
 .sdc-category-card.border-bottom-only {
-  border-bottom: 1px solid #00E676;
+  border-bottom: 1px solid var(--c-00e676);
   border-right: 1px solid rgba(0, 230, 118, 0.2);
   border-left: 1px solid rgba(0, 230, 118, 0.2);
   border-top: 1px solid transparent;
 }
-
-
 
 /* إضاءة البطاقات العلوية من الأعلى فقط */
 .sdc-category-card.border-top-only:hover,
@@ -94,7 +92,7 @@
 }
 
 .sdc-category-name {
-  color: #9CA3AF;
+  color: var(--c-9ca3af);
   font-size: 0.95rem;
   font-weight: 600;
   margin: 0;
@@ -104,7 +102,7 @@
 }
 
 .sdc-category-card:hover .sdc-category-name {
-  color: #FFFFFF;
+  color: var(--c-ffffff);
 }
 
 /* ================== التجاوب للمتصفحات والجوال ================== */
@@ -142,4 +140,29 @@
   .sdc-category-name {
     font-size: 0.85rem;
   }
+}
+/* ================== LIGHT MODE ================== */
+:root[data-theme='light'] .sdc-community-sec {
+  background-color: var(--c-f4faf6);
+}
+
+:root[data-theme='light'] .sdc-community-title {
+  color: var(--c-0d3329);
+}
+
+:root[data-theme='light'] .sdc-category-card {
+  background-color: var(--c-ffffff);
+}
+
+:root[data-theme='light'] .sdc-category-name {
+  color: var(--c-4b635a);
+}
+
+:root[data-theme='light'] .sdc-category-card:hover .sdc-category-name {
+  color: var(--c-0d3329);
+}
+
+:root[data-theme='light'] .sdc-category-card.border-top-only,
+:root[data-theme='light'] .sdc-category-card.border-bottom-only {
+  border-color: var(--c-72c99a);
 }

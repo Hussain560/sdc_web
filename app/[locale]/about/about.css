@@ -1,0 +1,267 @@
+.sdc-about-wrapper {
+  background-color: var(--c-050d09);
+  color: var(--c-ffffff);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  direction: inherit;
+}
+
+.sdc-about-main-content {
+  flex: 1;
+  padding-bottom: 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+/* ================= البنر العلوي الموحد (1440px * 164px) ================= */
+.sdc-about-hero-banner {
+  position: relative;
+  width: 100vw;
+  margin-right: calc(-50vw + 50%);
+  margin-left: calc(-50vw + 50%);
+  height: 164px;
+  min-height: 164px;
+  max-height: 164px;
+  background-color: var(--c-050d09);
+  background-image:
+    linear-gradient(
+      90deg,
+      rgba(122, 175, 152, 0.22) 0%,
+      rgba(5, 20, 15, 0.85) 55%,
+      var(--c-050d09) 100%
+    ),
+    url('/assets/Service(1).png');
+  background-repeat: no-repeat, repeat-x;
+  background-position:
+    center left,
+    center right;
+  background-size: cover, cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 40px;
+  box-sizing: border-box;
+}
+
+.sdc-about-hero-overlay {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  max-width: 1440px;
+  padding: 0 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  text-align: start;
+  box-sizing: border-box;
+  gap: 10px;
+}
+
+/* التتبع داخل البنر */
+.sdc-about-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  color: var(--c-9ca3af);
+}
+
+.sdc-about-breadcrumb a {
+  color: var(--c-9ca3af);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.sdc-about-breadcrumb a:hover {
+  color: var(--c-00e676) !important;
+}
+
+.sdc-about-bc-sep {
+  color: var(--c-6b7280);
+}
+
+.sdc-about-main-title {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--c-ffffff);
+  margin: 0;
+}
+
+/* الحاوية الرئيسية للمحتوى */
+.sdc-about-container {
+  max-width: 1440px;
+  width: 100%;
+  padding: 0 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  box-sizing: border-box;
+}
+
+/* فقرة التقديم */
+.sdc-about-intro-box {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sdc-intro-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--c-ffffff);
+  margin: 0;
+}
+
+.sdc-intro-text {
+  color: var(--c-d1d5db);
+  font-size: 1.05rem;
+  line-height: 1.8;
+  max-width: 1100px;
+}
+
+/* شبكة الأعمدة */
+.sdc-vision-mission-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-top: 10px;
+  width: 100%;
+}
+
+.sdc-vm-column {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sdc-vm-outside-title {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--c-ffffff);
+  margin: 0;
+  text-align: start;
+}
+
+.sdc-vm-card-box {
+  background-color: var(--c-0d0e12);
+  border-top: 1px solid rgba(171, 239, 198, 0.2);
+  border-left: 1px solid rgba(171, 239, 198, 0.2);
+  border-right: 2.5px solid var(--c-abefc6);
+  border-bottom: 2.5px solid var(--c-abefc6);
+  border-radius: 20px;
+  padding: 24px 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: start;
+  gap: 16px;
+  transition: all 0.25s ease;
+  box-shadow: 2px 4px 12px rgba(171, 239, 198, 0.15);
+  box-sizing: border-box;
+}
+
+.sdc-vm-card-box:hover {
+  border-color: var(--c-abefc6);
+  box-shadow: 4px 6px 20px rgba(171, 239, 198, 0.35);
+  transform: translateY(-2px);
+}
+
+.sdc-vm-icon-right {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.sdc-vm-icon-img {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+}
+
+.sdc-vm-text {
+  color: var(--c-d1d5db);
+  font-size: 1rem;
+  line-height: 1.7;
+  margin: 0;
+}
+
+/* ================= تجاوب الشاشات والجوال ================= */
+@media (max-width: 768px) {
+  .sdc-about-hero-banner {
+    height: auto;
+    min-height: 140px;
+    padding: 20px 0;
+  }
+
+  .sdc-about-main-title {
+    font-size: 1.3rem;
+  }
+
+  .sdc-about-container {
+    padding: 0 16px;
+  }
+
+  .sdc-vision-mission-grid {
+    grid-template-columns: 1fr;
+  }
+}
+/* ================= LIGHT MODE - ABOUT PAGE ================= */
+
+:root[data-theme='light'] .sdc-about-wrapper {
+  background-color: var(--c-f4faf6);
+  color: var(--c-123b35);
+}
+
+:root[data-theme='light'] .sdc-about-hero-banner {
+  background-color: var(--c-f4faf6);
+  background-image:
+    linear-gradient(
+      90deg,
+      rgba(169, 216, 188, 0.55) 0%,
+      rgba(229, 245, 234, 0.85) 55%,
+      var(--c-f4faf6) 100%
+    ),
+    url('/assets/Service(1).png');
+}
+
+:root[data-theme='light'] .sdc-about-main-title {
+  color: var(--c-123b35);
+}
+
+:root[data-theme='light'] .sdc-about-breadcrumb,
+:root[data-theme='light'] .sdc-about-breadcrumb a {
+  color: var(--c-52766c);
+}
+
+:root[data-theme='light'] .sdc-about-bc-sep {
+  color: var(--c-7a9a90);
+}
+
+:root[data-theme='light'] .sdc-intro-title,
+:root[data-theme='light'] .sdc-vm-outside-title {
+  color: var(--c-123b35);
+}
+
+:root[data-theme='light'] .sdc-intro-text,
+:root[data-theme='light'] .sdc-vm-text {
+  color: var(--c-355e54);
+}
+
+:root[data-theme='light'] .sdc-vm-card-box {
+  background-color: var(--c-e5f5ea);
+  border-top: 1px solid var(--c-cbe7d4);
+  border-left: 1px solid var(--c-cbe7d4);
+  border-right: 2.5px solid var(--c-a9d8bc);
+  border-bottom: 2.5px solid var(--c-a9d8bc);
+  box-shadow: 2px 4px 12px rgba(22, 167, 101, 0.1);
+}
+
+:root[data-theme='light'] .sdc-vm-card-box:hover {
+  border-color: var(--c-16a765);
+  box-shadow: 4px 6px 20px rgba(22, 167, 101, 0.18);
+}

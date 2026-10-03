@@ -1,0 +1,267 @@
+.sdc-article-detail-wrapper {
+  background-color: var(--c-050d09);
+  min-height: 100vh;
+  direction: inherit;
+  color: var(--c-ffffff);
+  display: flex;
+  flex-direction: column;
+}
+
+.sdc-article-detail-main {
+  flex: 1;
+  width: 100%;
+  padding-bottom: 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+/* ================= البنر العلوي الموحد (1440px * 164px) ================= */
+.sdc-article-hero-banner {
+  position: relative;
+  width: 100vw;
+  margin-right: calc(-50vw + 50%);
+  margin-left: calc(-50vw + 50%);
+  height: 164px;
+  min-height: 164px;
+  max-height: 164px;
+  background-color: var(--c-050d09);
+  background-image:
+    linear-gradient(
+      90deg,
+      rgba(122, 175, 152, 0.22) 0%,
+      rgba(5, 20, 15, 0.85) 55%,
+      var(--c-050d09) 100%
+    ),
+    url('/assets/Service(1).png');
+  background-repeat: no-repeat, repeat-x;
+  background-position:
+    center left,
+    center right;
+  background-size: cover, cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 32px;
+  box-sizing: border-box;
+}
+
+.sdc-article-hero-container {
+  max-width: 1440px;
+  width: 100%;
+  padding: 0 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-sizing: border-box;
+}
+
+/* التتبع داخل البنر */
+.sdc-article-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  color: var(--c-9ca3af);
+}
+
+.sdc-article-breadcrumb a {
+  color: var(--c-9ca3af);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.sdc-article-breadcrumb a:hover {
+  color: var(--c-00e676) !important;
+}
+
+.sdc-article-bc-sep {
+  color: var(--c-6b7280);
+}
+
+.sdc-article-hero-title {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--c-ffffff);
+  margin: 0;
+}
+
+/* حاوية المحتوى الرئيسي */
+.sdc-article-container {
+  max-width: 1440px;
+  width: 100%;
+  padding: 0 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  box-sizing: border-box;
+}
+
+.sdc-article-header {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 20px;
+}
+
+.sdc-article-meta-row {
+  display: flex;
+  gap: 20px;
+  color: var(--c-9ca3af);
+  font-size: 0.88rem;
+  flex-wrap: wrap;
+}
+
+.sdc-article-meta-row span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.sdc-article-tags-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.sdc-article-tag-pill {
+  font-size: 0.78rem;
+  padding: 4px 12px;
+  border-radius: 6px;
+  background-color: rgba(0, 230, 118, 0.1);
+  border: 1px solid rgba(0, 230, 118, 0.3);
+  color: var(--c-00e676);
+}
+
+.sdc-article-content-card {
+  background-color: rgba(13, 17, 23, 0.6);
+  border: 1px solid rgba(0, 230, 118, 0.25);
+  border-radius: 16px;
+  padding: 32px;
+  line-height: 1.9;
+  font-size: 1.05rem;
+  color: var(--c-d1d5db);
+}
+
+.sdc-article-text {
+  margin: 0;
+  white-space: pre-line;
+}
+
+/* ================= تجاوب الشاشات والجوال ================= */
+@media (max-width: 768px) {
+  .sdc-article-hero-banner {
+    height: auto;
+    min-height: 140px;
+    padding: 20px 0;
+  }
+
+  .sdc-article-hero-title {
+    font-size: 1.3rem;
+  }
+
+  .sdc-article-container {
+    padding: 0 16px;
+  }
+
+  .sdc-article-content-card {
+    padding: 20px;
+    font-size: 0.95rem;
+  }
+}
+/* ================== LIGHT MODE - ARTICLE DETAILS ================== */
+
+:root[data-theme='light'] .sdc-article-detail-wrapper {
+  background-color: var(--c-f4faf6);
+  color: var(--c-123b35);
+}
+
+/* البنر */
+:root[data-theme='light'] .sdc-article-hero-banner {
+  background-color: var(--c-eaf6ee);
+  background-image:
+    linear-gradient(
+      90deg,
+      rgba(169, 216, 188, 0.55) 0%,
+      rgba(229, 245, 234, 0.88) 55%,
+      var(--c-f4faf6) 100%
+    ),
+    url('/assets/Service(1).png');
+}
+
+:root[data-theme='light'] .sdc-article-hero-title {
+  color: var(--c-123b35);
+}
+
+/* Breadcrumb */
+:root[data-theme='light'] .sdc-article-breadcrumb,
+:root[data-theme='light'] .sdc-article-breadcrumb a {
+  color: var(--c-52766c);
+}
+
+:root[data-theme='light'] .sdc-article-bc-sep {
+  color: var(--c-8aa39c);
+}
+
+:root[data-theme='light'] .sdc-article-breadcrumb a:hover {
+  color: var(--c-0b8f55) !important;
+}
+
+/* معلومات الثريد */
+:root[data-theme='light'] .sdc-article-header {
+  border-bottom-color: var(--c-d8ede0);
+}
+
+:root[data-theme='light'] .sdc-article-meta-row {
+  color: var(--c-52766c);
+}
+
+/* التصنيفات */
+:root[data-theme='light'] .sdc-article-tag-pill {
+  background-color: var(--c-e5f5ea);
+  border-color: var(--c-a9d8bc);
+  color: var(--c-168a5b);
+}
+
+/* محتوى الثريد */
+:root[data-theme='light'] .sdc-article-content-card {
+  background-color: var(--c-ffffff);
+  border-color: var(--c-cbe7d4);
+  color: var(--c-294e46);
+  box-shadow: 0 6px 20px rgba(18, 59, 53, 0.06);
+}
+
+:root[data-theme='light'] .sdc-article-text {
+  color: var(--c-294e46);
+}
+.sdc-article-source-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 24px;
+  padding: 12px 22px;
+  background: var(--c-16a765);
+  color: var(--c-ffffff) !important;
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 15px;
+  transition: 0.2s ease;
+}
+
+.sdc-article-source-link:hover {
+  transform: translateY(-2px);
+  opacity: 0.9;
+}
+
+/* Notice shown when an English reader gets the Arabic body (no English version yet). */
+.sdc-article-lang-note {
+  margin: 0 0 16px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--border, rgb(127 127 127 / 0.3));
+  font-size: 13px;
+  opacity: 0.85;
+}

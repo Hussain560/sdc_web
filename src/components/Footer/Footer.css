@@ -1,9 +1,9 @@
 /* ================== الفوتر المطبّق مطابق للفيجما ================== */
 .sdc-footer {
-  background-color: #050D09;
+  background-color: var(--c-050d09);
   border-top: 1px solid rgba(255, 255, 255, 0.15); /* الخط الفاصل الأفقي في الأعلى */
   padding: 30px 48px 40px;
-  color: #FFFFFF;
+  color: var(--c-ffffff);
   direction: inherit;
   display: flex;
   justify-content: center;
@@ -28,7 +28,7 @@
 }
 
 .sdc-footer-follow-label {
-  color: #D1D5DB;
+  color: var(--c-d1d5db);
   font-size: 0.95rem;
   font-weight: 500;
   margin: 0;
@@ -50,14 +50,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #FFFFFF;
+  color: var(--c-ffffff);
   text-decoration: none;
   transition: all 0.2s ease;
 }
 
 .sdc-social-icon:hover {
-  border-color: #56987B;
-  color: #56987B;
+  border-color: var(--c-56987b);
+  color: var(--c-56987b);
   transform: translateY(-2px);
 }
 
@@ -79,7 +79,7 @@
 }
 
 .sdc-footer-app-link {
-  color: #FFFFFF;
+  color: var(--c-ffffff);
   font-size: 1rem;
   font-weight: 700;
   text-decoration: underline;
@@ -89,11 +89,11 @@
 }
 
 .sdc-footer-app-link:hover {
-  color: #56987B;
+  color: var(--c-56987b);
 }
 
 .sdc-footer-text {
-  color: #9CA3AF;
+  color: var(--c-9ca3af);
   font-size: 0.82rem;
   margin: 0;
   line-height: 1.6;
@@ -114,7 +114,7 @@
   .sdc-footer {
     padding: 30px 20px;
   }
-  
+
   .sdc-footer-bottom {
     flex-direction: column;
     align-items: flex-start;
@@ -125,10 +125,52 @@
   .sdc-footer {
     padding: 30px 20px;
   }
-  
+
   .sdc-footer-bottom {
     flex-direction: column-reverse; /* يضع الشعار في الأعلى والنصوص تحته على الشاشات الصغيرة */
     align-items: flex-start;
     gap: 24px;
   }
+}
+/* ================= LIGHT MODE - FOOTER ================= */
+
+:root[data-theme='light'] .sdc-footer {
+  background-color: var(--c-e5f5ea);
+  color: var(--c-123b35);
+  border-top: 1px solid var(--c-cbe7d4);
+}
+
+:root[data-theme='light'] .sdc-footer-follow-label {
+  color: var(--c-355e54);
+}
+
+:root[data-theme='light'] .sdc-social-icon {
+  color: var(--c-123b35);
+  border-color: var(--c-a9d8bc);
+}
+
+:root[data-theme='light'] .sdc-social-icon:hover {
+  color: var(--c-16a765);
+  border-color: var(--c-16a765);
+}
+
+:root[data-theme='light'] .sdc-footer-app-link {
+  color: var(--c-123b35);
+}
+
+:root[data-theme='light'] .sdc-footer-app-link:hover {
+  color: var(--c-16a765);
+}
+
+:root[data-theme='light'] .sdc-footer-text {
+  color: var(--c-52766c);
+}
+
+.sdc-footer-member-link {
+  color: inherit;
+  text-decoration: underline;
+  opacity: 0.85;
+}
+.sdc-footer-member-link:hover {
+  opacity: 1;
 }

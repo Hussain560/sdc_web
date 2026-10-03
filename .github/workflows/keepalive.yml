@@ -1,0 +1,30 @@
+name: keepalive
+
+# SEC-005 / NFR-OPS-004: a daily call to /api/health keeps free-tier projects from pausing and fails (so GitHub
+# notifies the maintainers) when the site or its database is down. Set the repository variables
+# HEALTH_URLS (space separated, e.g. "https://sdc.example/api/health https://staging.sdc.example/api/health").
+on:
+  schedule:
+    - cron: '30 5 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  health:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call the health endpoints
+        env:
+          HEALTH_URLS: ${{ vars.HEALTH_URLS }}
+        run: |
+          set -u
+          if [ -z "${HEALTH_URLS:-}" ]; then echo "HEALTH_URLS is not set"; exit 1; fi
+          failed=0
+          for url in $HEALTH_URLS; do
+            code=$(curl -s -o /tmp/health.json -w '%{http_code}' --max-time 20 "$url" || echo 000)
+            echo "$url -> $code $(cat /tmp/health.json 2>/dev/null)"
+            if [ "$code" != "200" ]; then failed=1; fi
+          done
+          exit $failed

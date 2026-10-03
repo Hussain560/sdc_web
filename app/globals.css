@@ -1,23 +1,46 @@
-@import "tailwindcss";
 @import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
+@import 'tailwindcss';
+@import '../src/styles/primitives.css';
+@import '../src/styles/tokens.css';
+@import '../src/styles/ui.css';
+@import '../src/styles/a11y.css';
 
 :root {
-  --background: #050D09;
-  --foreground: #ffffff;
+  --background: var(--c-050d09);
+  --foreground: var(--c-ffffff);
+}
+:root[data-theme='light'] {
+  --background: var(--c-f4faf6);
+  --foreground: var(--c-123b35);
 }
 
 html {
   background-color: var(--background);
   color: var(--foreground);
-  font-family: 'Rubik', 'IBM Plex Sans Arabic', system-ui, -apple-system, sans-serif;
+  font-family:
+    'Rubik',
+    'IBM Plex Sans Arabic',
+    system-ui,
+    -apple-system,
+    sans-serif;
 }
 
 :lang(ar) {
-  font-family: 'IBM Plex Sans Arabic', 'Rubik', system-ui, -apple-system, sans-serif;
+  font-family:
+    'IBM Plex Sans Arabic',
+    'Rubik',
+    system-ui,
+    -apple-system,
+    sans-serif;
 }
 
 :lang(en) {
-  font-family: 'Rubik', 'IBM Plex Sans Arabic', system-ui, -apple-system, sans-serif;
+  font-family:
+    'Rubik',
+    'IBM Plex Sans Arabic',
+    system-ui,
+    -apple-system,
+    sans-serif;
 }
 
 html[dir='rtl'] {
@@ -35,7 +58,8 @@ html[dir='ltr'] {
   word-spacing: normal !important;
 }
 
-html, body {
+html,
+body {
   margin: 0;
   padding: 0;
   width: 100%;
@@ -52,7 +76,10 @@ body {
   min-height: 100vh;
 }
 
-img, video, canvas, svg {
+img,
+video,
+canvas,
+svg {
   max-width: 100%;
   height: auto;
 }
@@ -85,4 +112,23 @@ img, video, canvas, svg {
     font-size: 1rem !important;
     line-height: 1.7 !important;
   }
+}
+
+/* Inter (self-hosted) for English text on the internal screens and toasts. Public pages keep Rubik (D-009).
+   Registered as "SDC Inter" so the public 404 page, which names plain "Inter", keeps rendering as before. */
+@font-face {
+  font-family: 'SDC Inter';
+  src: url('/assets/font/Inter/Inter-VariableFont_opsz%2Cwght.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+.sdc-inter:lang(en),
+.sdc-inter:lang(en) * {
+  font-family:
+    'SDC Inter',
+    system-ui,
+    -apple-system,
+    sans-serif;
 }

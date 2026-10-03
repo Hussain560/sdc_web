@@ -1,5 +1,5 @@
 .sdc-hero-section {
-  background-color: #08090C;
+  background-color: var(--c-08090c);
   padding: 60px 24px 40px 24px;
   direction: inherit;
   display: flex;
@@ -20,12 +20,11 @@
 .sdc-hero-content-free {
   width: 100%;
   display: flex;
-  flex-direction: row; 
+  flex-direction: row;
   align-items: center;
   justify-content: space-between;
   gap: 40px;
 }
-
 
 .sdc-hero-text-content {
   flex: 1;
@@ -40,22 +39,22 @@
   font-size: 3.2rem;
   font-weight: 800;
   line-height: 1.2;
-  color: #FFFFFF;
+  color: var(--c-ffffff);
   margin: 0;
 }
 
 .sdc-hero-description {
   font-size: 1.15rem;
-  color: #9CA3AF;
+  color: var(--c-9ca3af);
   line-height: 1.6;
   margin: 0;
   max-width: 500px;
 }
 
 .sdc-btn-primary-hero {
-  background-color: #1B3D31; /* أو #28674B حسب الدرجة المطلوبة */
-  border: 1px solid #00E676;
-  color: #FFFFFF;
+  background-color: var(--c-1b3d31); /* أو var(--c-28674b) حسب الدرجة المطلوبة */
+  border: 1px solid var(--c-00e676);
+  color: var(--c-ffffff);
   padding: 10px 28px;
   border-radius: 50px; /* جعل الحواف مستديرة بالكامل بنفس انحناء عرض الكل */
   font-weight: 700;
@@ -69,11 +68,10 @@
 }
 
 .sdc-btn-primary-hero:hover {
-  background-color: #00E676;
-  color: #050D09;
+  background-color: var(--c-00e676);
+  color: var(--c-050d09);
   transform: translateY(-2px);
 }
-
 
 .sdc-hero-image-wrapper {
   flex: 1;
@@ -108,7 +106,7 @@
     flex-direction: column;
     text-align: center;
   }
-  
+
   .sdc-hero-text-content {
     align-items: center;
     text-align: center;
@@ -137,4 +135,45 @@
     width: 220px;
     height: 220px;
   }
+}
+/* ================= LIGHT MODE - HERO ================= */
+
+:root[data-theme='light'] .sdc-hero-section {
+  background-color: var(--c-f4faf6);
+}
+
+:root[data-theme='light'] .sdc-hero-title {
+  color: var(--c-123b35);
+}
+
+:root[data-theme='light'] .sdc-hero-description {
+  color: var(--c-52766c);
+}
+
+:root[data-theme='light'] .sdc-btn-primary-hero {
+  background-color: var(--c-a9d8bc);
+  border-color: var(--c-72c99a);
+  color: var(--c-123b35);
+}
+
+:root[data-theme='light'] .sdc-btn-primary-hero:hover {
+  background-color: var(--c-72c99a);
+  color: var(--c-0d3329);
+}
+
+:root[data-theme='light'] .sdc-hero-image-wrapper::before {
+  background: radial-gradient(circle, rgba(114, 201, 154, 0.28) 0%, rgba(244, 250, 246, 0) 70%);
+}
+/* إظهار صورة الهيرو في Light Mode */
+:root[data-theme='light'] .sdc-hero-image {
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  mix-blend-mode: normal !important;
+  filter: none !important;
+}
+
+:root[data-theme='light'] .sdc-hero-image-wrapper {
+  opacity: 1 !important;
+  visibility: visible !important;
 }

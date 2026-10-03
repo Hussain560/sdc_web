@@ -1,0 +1,47 @@
+/* Shared UI behaviour that Tailwind utilities cannot express. Colours come from semantic tokens only. */
+
+/* Loading placeholders: a neutral tint of the text colour, so they are visible on every surface in both
+ * themes (the old raised-surface fill vanished on white in the light theme). The shimmer follows the
+ * reading direction and is disabled for people who prefer reduced motion. */
+.ui-skeleton {
+  --skeleton-base: color-mix(in srgb, var(--text) 9%, transparent);
+  --skeleton-shine: color-mix(in srgb, var(--text) 17%, transparent);
+  background-color: var(--skeleton-base);
+  background-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--skeleton-shine) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  background-repeat: no-repeat;
+  animation: ui-skeleton-shimmer 1.4s ease-in-out infinite;
+}
+
+[dir='rtl'] .ui-skeleton {
+  animation-name: ui-skeleton-shimmer-rtl;
+}
+
+@keyframes ui-skeleton-shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -100% 0;
+  }
+}
+
+@keyframes ui-skeleton-shimmer-rtl {
+  from {
+    background-position: -100% 0;
+  }
+  to {
+    background-position: 200% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ui-skeleton {
+    animation: none;
+  }
+}

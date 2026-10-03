@@ -1,0 +1,75 @@
+/* Markdown body (articles). Block rhythm is one line, like the plain paragraphs it replaces. */
+.sdc-md,
+.sdc-md.sdc-article-text {
+  /* Beats the legacy pre-line of .sdc-article-text: the block rhythm below replaces its blank lines. */
+  white-space: normal;
+}
+.sdc-md > * {
+  margin: 0;
+}
+.sdc-md > * + * {
+  margin-top: 1lh;
+}
+.sdc-md h1,
+.sdc-md h2,
+.sdc-md h3,
+.sdc-md h4 {
+  line-height: 1.4;
+  font-weight: 700;
+}
+.sdc-md h1 {
+  font-size: 1.5em;
+}
+.sdc-md h2 {
+  font-size: 1.3em;
+}
+.sdc-md h3 {
+  font-size: 1.15em;
+}
+.sdc-md ul,
+.sdc-md ol {
+  padding-inline-start: 1.5em;
+}
+.sdc-md ul {
+  list-style: disc;
+}
+.sdc-md ol {
+  list-style: decimal;
+}
+.sdc-md li + li {
+  margin-top: 0.25em;
+}
+.sdc-md blockquote {
+  padding-inline-start: 1em;
+  border-inline-start: 3px solid var(--accent, currentColor);
+  opacity: 0.9;
+}
+.sdc-md a {
+  color: var(--accent, inherit);
+  text-decoration: underline;
+}
+.sdc-md code {
+  padding: 0.1em 0.35em;
+  border-radius: 6px;
+  background: rgb(127 127 127 / 0.16);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.9em;
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+.sdc-md pre {
+  overflow-x: auto;
+  padding: 1em;
+  border-radius: 10px;
+  background: rgb(127 127 127 / 0.16);
+  direction: ltr;
+  text-align: left;
+}
+.sdc-md pre code {
+  padding: 0;
+  background: none;
+}
+.sdc-md hr {
+  border: none;
+  border-top: 1px solid rgb(127 127 127 / 0.3);
+}
