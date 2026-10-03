@@ -23,7 +23,32 @@ export type Database = {
           }
         },"public": {
           Tables: {
-            "article_authors": {
+            "application_attempts": {
+                  Row: {
+                    "at": string,"cycle_id": string,"email_hash": string,"id": number,"ip_hash": string | null
+                  }
+                  Insert: {
+                    "at"?: string,"cycle_id": string,"email_hash": string,"id"?: never,"ip_hash"?: string | null
+                  }
+                  Update: {
+                    "at"?: string,"cycle_id"?: string,"email_hash"?: string,"id"?: never,"ip_hash"?: string | null
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "application_attempts_cycle_id_fkey"
+      columns: ["cycle_id"]
+isOneToOne: false
+      referencedRelation: "membership_cycle_phase"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "application_attempts_cycle_id_fkey"
+      columns: ["cycle_id"]
+isOneToOne: false
+      referencedRelation: "membership_cycles"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"article_authors": {
                   Row: {
                     "article_id": string,"committee_id": string | null,"display_name_ar": string | null,"display_name_en": string | null,"position": number,"user_id": string | null
                   }
@@ -681,13 +706,13 @@ isOneToOne: true
                   ]
                 },"membership_applications": {
                   Row: {
-                    "academic_status": string,"answers": NonNullable<Json>,"bio_ar": string | null,"bio_en": string | null,"consent_at": string,"consent_version": string,"created_at": string,"cycle_id": string,"decided_at": string | null,"decided_by": string | null,"decision_note": string | null,"full_name_ar": string,"full_name_en": string | null,"github_url": string | null,"id": string,"linkedin_url": string | null,"major_id": number | null,"phone": string | null,"portfolio_url": string | null,"preferred_committee_id": string | null,"reviewer_id": string | null,"status": string,"sub_major_id": number | null,"submitted_at": string,"track_id": number | null,"university_id": number | null,"updated_at": string,"user_id": string,"wants_directory_listing": boolean,"withdrawn_at": string | null,"x_url": string | null
+                    "academic_status": string,"answers": NonNullable<Json>,"bio_ar": string | null,"bio_en": string | null,"consent_at": string,"consent_version": string,"created_at": string,"cycle_id": string,"decided_at": string | null,"decided_by": string | null,"decision_note": string | null,"email": string,"full_name_ar": string,"full_name_en": string | null,"github_url": string | null,"id": string,"linkedin_url": string | null,"locale": string,"major_id": number | null,"phone": string | null,"portfolio_url": string | null,"preferred_committee_id": string | null,"reviewer_id": string | null,"status": string,"sub_major_id": number | null,"submitted_at": string,"track_id": number | null,"university_id": number | null,"updated_at": string,"user_id": string | null,"wants_directory_listing": boolean,"withdrawn_at": string | null,"x_url": string | null
                   }
                   Insert: {
-                    "academic_status": string,"answers"?: NonNullable<Json>,"bio_ar"?: string | null,"bio_en"?: string | null,"consent_at"?: string,"consent_version": string,"created_at"?: string,"cycle_id": string,"decided_at"?: string | null,"decided_by"?: string | null,"decision_note"?: string | null,"full_name_ar": string,"full_name_en"?: string | null,"github_url"?: string | null,"id"?: string,"linkedin_url"?: string | null,"major_id"?: number | null,"phone"?: string | null,"portfolio_url"?: string | null,"preferred_committee_id"?: string | null,"reviewer_id"?: string | null,"status"?: string,"sub_major_id"?: number | null,"submitted_at"?: string,"track_id"?: number | null,"university_id"?: number | null,"updated_at"?: string,"user_id": string,"wants_directory_listing"?: boolean,"withdrawn_at"?: string | null,"x_url"?: string | null
+                    "academic_status": string,"answers"?: NonNullable<Json>,"bio_ar"?: string | null,"bio_en"?: string | null,"consent_at"?: string,"consent_version": string,"created_at"?: string,"cycle_id": string,"decided_at"?: string | null,"decided_by"?: string | null,"decision_note"?: string | null,"email": string,"full_name_ar": string,"full_name_en"?: string | null,"github_url"?: string | null,"id"?: string,"linkedin_url"?: string | null,"locale"?: string,"major_id"?: number | null,"phone"?: string | null,"portfolio_url"?: string | null,"preferred_committee_id"?: string | null,"reviewer_id"?: string | null,"status"?: string,"sub_major_id"?: number | null,"submitted_at"?: string,"track_id"?: number | null,"university_id"?: number | null,"updated_at"?: string,"user_id"?: string | null,"wants_directory_listing"?: boolean,"withdrawn_at"?: string | null,"x_url"?: string | null
                   }
                   Update: {
-                    "academic_status"?: string,"answers"?: NonNullable<Json>,"bio_ar"?: string | null,"bio_en"?: string | null,"consent_at"?: string,"consent_version"?: string,"created_at"?: string,"cycle_id"?: string,"decided_at"?: string | null,"decided_by"?: string | null,"decision_note"?: string | null,"full_name_ar"?: string,"full_name_en"?: string | null,"github_url"?: string | null,"id"?: string,"linkedin_url"?: string | null,"major_id"?: number | null,"phone"?: string | null,"portfolio_url"?: string | null,"preferred_committee_id"?: string | null,"reviewer_id"?: string | null,"status"?: string,"sub_major_id"?: number | null,"submitted_at"?: string,"track_id"?: number | null,"university_id"?: number | null,"updated_at"?: string,"user_id"?: string,"wants_directory_listing"?: boolean,"withdrawn_at"?: string | null,"x_url"?: string | null
+                    "academic_status"?: string,"answers"?: NonNullable<Json>,"bio_ar"?: string | null,"bio_en"?: string | null,"consent_at"?: string,"consent_version"?: string,"created_at"?: string,"cycle_id"?: string,"decided_at"?: string | null,"decided_by"?: string | null,"decision_note"?: string | null,"email"?: string,"full_name_ar"?: string,"full_name_en"?: string | null,"github_url"?: string | null,"id"?: string,"linkedin_url"?: string | null,"locale"?: string,"major_id"?: number | null,"phone"?: string | null,"portfolio_url"?: string | null,"preferred_committee_id"?: string | null,"reviewer_id"?: string | null,"status"?: string,"sub_major_id"?: number | null,"submitted_at"?: string,"track_id"?: number | null,"university_id"?: number | null,"updated_at"?: string,"user_id"?: string | null,"wants_directory_listing"?: boolean,"withdrawn_at"?: string | null,"x_url"?: string | null
                   }
                   Relationships: [
                     {
@@ -1159,7 +1184,13 @@ isOneToOne: false
                   Row: {
                     "academic_status": string | null,"cycle_id": string | null,"decided_at": string | null,"decision_note": string | null,"email": string | null,"full_name_ar": string | null,"full_name_en": string | null,"id": string | null,"major_id": number | null,"preferred_committee_id": string | null,"reviewer_id": string | null,"status": string | null,"submitted_at": string | null,"track_id": number | null,"university_id": number | null,"user_id": string | null,"wants_directory_listing": boolean | null
                   }
-                  Relationships: [
+                  Insert: {
+                           "academic_status"?: string | null,"cycle_id"?: string | null,"decided_at"?: string | null,"decision_note"?: string | null,"email"?: string | null,"full_name_ar"?: string | null,"full_name_en"?: string | null,"id"?: string | null,"major_id"?: number | null,"preferred_committee_id"?: string | null,"reviewer_id"?: string | null,"status"?: string | null,"submitted_at"?: string | null,"track_id"?: number | null,"university_id"?: number | null,"user_id"?: string | null,"wants_directory_listing"?: boolean | null
+                         }
+                        Update: {
+                           "academic_status"?: string | null,"cycle_id"?: string | null,"decided_at"?: string | null,"decision_note"?: string | null,"email"?: string | null,"full_name_ar"?: string | null,"full_name_en"?: string | null,"id"?: string | null,"major_id"?: number | null,"preferred_committee_id"?: string | null,"reviewer_id"?: string | null,"status"?: string | null,"submitted_at"?: string | null,"track_id"?: number | null,"university_id"?: number | null,"user_id"?: string | null,"wants_directory_listing"?: boolean | null
+                         }
+                        Relationships: [
                     {
       foreignKeyName: "membership_applications_cycle_id_fkey"
       columns: ["cycle_id"]
@@ -1337,7 +1368,10 @@ isOneToOne: false
                 }
           }
           Functions: {
-            "assign_role":
+            "apply_for_membership":
+{ Args: { "p": Json,"p_cycle": string,"p_elapsed_ms"?: number,"p_honeypot"?: string,"p_ip_hash"?: string }; Returns: Json
+                           },
+"assign_role":
 { Args: { "p_bio_ar"?: string,"p_bio_en"?: string,"p_committee"?: string,"p_ends_at"?: string,"p_role": string,"p_starts_at"?: string,"p_tags_ar"?: (string)[],"p_tags_en"?: (string)[],"p_title_ar"?: string,"p_title_en"?: string,"p_user": string }; Returns: string
                            },
 "audit_facets":

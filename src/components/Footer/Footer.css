@@ -165,3 +165,12 @@
 :root[data-theme='light'] .sdc-footer-text {
   color: var(--c-52766c);
 }
+
+.sdc-footer-member-link {
+  color: inherit;
+  text-decoration: underline;
+  opacity: 0.85;
+}
+.sdc-footer-member-link:hover {
+  opacity: 1;
+}

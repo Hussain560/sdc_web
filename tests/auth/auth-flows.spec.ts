@@ -14,40 +14,26 @@ import {
 // Sprint 03 — TEST-001. Runs against the real local Auth + Mailpit.
 const FULL_NAME = 'سارة محمد العتيبي';
 
-async function fillRegister(page: import('@playwright/test').Page, email: string) {
-  await page.locator('input[name="fullName"]').fill(FULL_NAME);
-  await page.locator('input[name="email"]').fill(email);
-  await page.locator('input[name="password"]').fill(PASSWORD);
-  await page.locator('input[name="confirmPassword"]').fill(PASSWORD);
-  await page.locator('button[type="submit"]').click();
-}
-
 for (const lang of ['ar', 'en'] as const) {
   const prefix = lang === 'en' ? '/en' : '';
 
   test.describe(`[${lang}]`, () => {
-    test('sign up → Mailpit → confirm → land on the original page, signed in', async ({
+    test('there is no sign-up: /register leads to the membership application, login offers no account creation', async ({
       page,
-      baseURL,
     }) => {
-      const email = uniqueEmail('signup');
-      await gotoReady(page, `${prefix}/register?redirect=/events/google-ai-studio-workshop`);
-      await fillRegister(page, email);
-      await expect(page.getByText(/check your email|تحقق من بريدك/i)).toBeVisible();
-
-      const mail = await waitForMail(email, { subject: /SDC|حسابك/ });
-      // Bilingual branded template picks the user's language.
-      expect(mail.html).toContain(lang === 'en' ? 'Confirm your email' : 'أكّد بريدك الإلكتروني');
-      expect(mail.html).toContain('type=signup');
-
-      await gotoReady(page, confirmLink(mail, baseURL!));
-      await expect(page).toHaveURL(new RegExp(`${prefix}/events/google-ai-studio-workshop$`));
-      await expectHeaderName(page, FULL_NAME);
-
-      // The cookie session is readable on the server: /account renders without a redirect.
-      await gotoReady(page, `${prefix}/account`);
-      await expect(page).toHaveURL(new RegExp(`${prefix}/account$`));
-      await expect(page.getByRole('heading', { level: 1 })).toContainText(FULL_NAME);
+      await page.goto(`${prefix}/register`);
+      await expect(page).toHaveURL(new RegExp(`${prefix}/join$`));
+      await page.goto(`${prefix}/login`);
+      await expect(
+        page.getByRole('link', { name: /create a new account|إنشاء حساب جديد/i }),
+      ).toHaveCount(0);
+      await expect(
+        page.getByRole('link', { name: /apply to join|قدّم طلب الانضمام/i }),
+      ).toBeVisible();
+      // the public header invites visitors to join, not to log in
+      await expect(page.locator('header.sdc-header')).toContainText(
+        lang === 'en' ? 'Join us' : 'انضم إلينا',
+      );
     });
 
     test('sign in returns to the page I came from', async ({ page }) => {
@@ -139,26 +125,6 @@ test.describe('security', () => {
         texts.push(await notice.innerText());
       }
       expect(texts[0]).toBe(texts[1]);
-    } finally {
-      await deleteUser(id);
-    }
-  });
-
-  test('sign-up with an existing e-mail looks identical to a new one (no oracle)', async ({
-    page,
-  }) => {
-    const existing = uniqueEmail('exists');
-    const id = await createConfirmedUser(existing);
-    const shown: string[] = [];
-    try {
-      for (const email of [existing, uniqueEmail('fresh')]) {
-        await gotoReady(page, '/en/register');
-        await fillRegister(page, email);
-        const notice = page.getByText(/If we can create the account/);
-        await expect(notice).toBeVisible();
-        shown.push(await notice.innerText());
-      }
-      expect(shown[0]).toBe(shown[1]);
     } finally {
       await deleteUser(id);
     }
@@ -258,7 +224,7 @@ test.describe('account area', () => {
       await expectHeaderName(page, /./);
       await page.locator('header.sdc-header button.sdc-btn-primary').click();
       // Wait for the server action to finish before navigating away.
-      await expect(page.locator('header.sdc-header')).toContainText(/Login|تسجيل الدخول/);
+      await expect(page.locator('header.sdc-header')).toContainText(/Join us|انضم إلينا/);
       await gotoReady(page, '/account');
       await expect(page).toHaveURL(/\/login\?redirect=%2Faccount/);
     } finally {

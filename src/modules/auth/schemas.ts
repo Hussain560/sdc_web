@@ -38,19 +38,6 @@ export const emailField = (lang: Lang) =>
 
 export const passwordField = (lang: Lang) => z.string().regex(PASSWORD_REGEX, t.password[lang]);
 
-export const signUpSchema = (lang: Lang) =>
-  z
-    .object({
-      fullName: fullNameField(lang),
-      email: emailField(lang),
-      password: passwordField(lang),
-      confirmPassword: z.string(),
-    })
-    .refine((v) => v.password === v.confirmPassword, {
-      path: ['confirmPassword'],
-      message: t.mismatch[lang],
-    });
-
 export const signInSchema = (lang: Lang) =>
   z.object({
     email: emailField(lang),

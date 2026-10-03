@@ -1,8 +1,11 @@
 'use server';
 
+import { createHmac } from 'node:crypto';
 import { revalidatePath } from 'next/cache';
+import { headers } from 'next/headers';
 import { after } from 'next/server';
 import { fail, ok, type ErrorCode, type Result } from '@/lib/result';
+import { createPublicClient } from '@/lib/supabase/public';
 import { createClient } from '@/lib/supabase/server';
 import { isLang, type Lang } from '@/modules/auth/messages';
 import { getAccess } from '@/modules/access/queries';
@@ -76,6 +79,65 @@ export async function submitApplication(
       console.error('[membership] notification failed', (e as Error).message);
     }
   });
+  refresh();
+  return ok({ id });
+}
+
+/**
+ * Apply without an account (owner decision: non-members never sign up). The database applies the cycle window and
+ * the anti-spam layers (honeypot, minimum fill time, per-e-mail and per-address throttles, one application per
+ * e-mail and cycle). The account is created later, when leadership accepts.
+ */
+export async function applyForMembership(
+  input: { cycleId: string; values: ApplicationValues; honeypot?: string; elapsedMs?: number },
+  ctx: { lang: Lang },
+): Promise<Result<{ id: string | null }>> {
+  const lang = langOf(ctx?.lang);
+  if (!UUID.test(input?.cycleId ?? '')) return failCode('NOT_FOUND', lang);
+
+  const db = createPublicClient();
+  // The cycle's questions are read again on the server: the client's copy is never trusted for validation.
+  const { data: cycle } = await db
+    .from('membership_cycle_phase')
+    .select('questions')
+    .eq('id', input.cycleId)
+    .maybeSingle();
+  if (!cycle) return failCode('NOT_FOUND', lang);
+  const questions = (Array.isArray(cycle.questions)
+    ? cycle.questions
+    : []) as unknown as CycleQuestion[];
+  const errors = validateApplication(input.values, questions, lang);
+  if (Object.keys(errors).length > 0)
+    return fail('VALIDATION_FAILED', membershipMessage('VALIDATION_FAILED', lang), errors);
+
+  const h = await headers();
+  const ip = (h.get('x-forwarded-for')?.split(',')[0] ?? h.get('x-real-ip') ?? '').trim();
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY ?? 'dev-only-key';
+  const ipHash = ip ? createHmac('sha256', key).update(ip).digest('hex') : null;
+
+  const { data, error } = await db.rpc('apply_for_membership', {
+    p_cycle: input.cycleId,
+    p: { ...toApplicationPayload(input.values, CONSENT_VERSION), lang } as never,
+    p_ip_hash: ipHash as string,
+    p_honeypot: (input.honeypot ?? '') as string,
+    p_elapsed_ms: (input.elapsedMs ?? null) as number,
+  });
+  if (error) return dbFailure(error, lang);
+  const o = (data ?? {}) as { ok?: boolean; code?: string; id?: string | null };
+  if (!o.ok) {
+    const code = (o.code ?? 'INTERNAL') as ErrorCode;
+    const message = membershipMessage(code, lang);
+    return fail(code, message, code === 'VALIDATION_FAILED' ? { email: message } : undefined);
+  }
+  const id = o.id ?? null;
+  if (id)
+    after(async () => {
+      try {
+        await notifyApplicationReceived(id);
+      } catch (e) {
+        console.error('[membership] notification failed', (e as Error).message);
+      }
+    });
   refresh();
   return ok({ id });
 }

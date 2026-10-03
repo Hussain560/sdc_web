@@ -60,10 +60,6 @@ export function errorMessage(code: ErrorCode, lang: Lang): string {
 
 /** Same text for every outcome so an e-mail's existence cannot be inferred (AU-5). */
 export const genericNotices = {
-  signUp: {
-    ar: 'إذا كان بإمكاننا إنشاء الحساب، فقد أرسلنا رابط التحقق إلى بريدك الإلكتروني.',
-    en: 'If we can create the account, a verification link has been sent to your email.',
-  },
   reset: {
     ar: 'إذا كان هناك حساب بهذا البريد، فقد أرسلنا رابط إعادة التعيين.',
     en: 'If an account exists for this email, we sent a reset link.',

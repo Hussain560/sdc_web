@@ -247,3 +247,7 @@ src/modules/registrations/
 ## 16. Open questions
 
 Q-009 (members-only), Q-018 (approval default), Q-028 (rejection wording), Q-029 (capacity and waitlist).
+
+## Revision — guests (2026-10-03)
+
+Registration needs no account ([ADR-013](../../90-decisions/ADR-013-accounts-for-members-only.md)). A visitor registers from a modal on the event page through `register_guest` (name, e-mail, phone, optional university): same seat rules as `register_for_event`, plus honeypot, minimum fill time (1.5 s), per-e-mail (3 per 3 min) and per-address (8 per 10 min, hashed) throttles, and one active registration per e-mail and event. The row has no `user_id`, keeps the phone and university in `answers`, and e-mails use the language the person used. Organizers see a *Guest* badge, the phone and the university in the registrant dialog. Guests cannot cancel by themselves; the organizer can.

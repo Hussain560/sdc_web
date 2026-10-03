@@ -4,6 +4,7 @@
 | ----- | ----- |
 | **Status** | Accepted (business decision D-001); data design Proposed |
 | **Date** | 2026-10-02 |
+| **Update** | 2026-10-03: Q-002 answered — applications need no account; the account is created on acceptance ([ADR-013](./ADR-013-accounts-for-members-only.md)) |
 | **Related** | [Membership lifecycle](../03-business-domain/membership-lifecycle.md), [membership entities](../05-database/entities/membership.md), Q-002, Q-011, Q-012, Q-038 |
 
 ## Context

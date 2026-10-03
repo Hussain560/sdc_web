@@ -228,3 +228,7 @@ src/modules/account/   queries.ts · actions.ts · components/ (ProfileForm, Sec
 ## 16. Open questions
 
 Q-010 / Q-017 (e-mail provider and sender), Q-031 (deletion and retention).
+
+## Revision — no self sign-up (2026-10-03)
+
+Accounts exist only for members and staff ([ADR-013](../../90-decisions/ADR-013-accounts-for-members-only.md)). Sign-up is disabled in the auth service and removed from the app (`/register` redirects to `/join`, the `signUp` action is gone). Accounts are created when a membership application is accepted; the member sets a password through the activation link (`/reset-password?welcome=1`). Sign-in, password reset and e-mail change are unchanged.

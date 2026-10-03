@@ -21,6 +21,8 @@ const MEMBERSHIP_CODES = [
   'SELF_DECISION',
   'CAPACITY_REACHED',
   'ALREADY_CLAIMED',
+  'RATE_LIMITED',
+  'TOO_FAST',
 ] as const satisfies readonly ErrorCode[];
 
 const messages: Partial<Record<ErrorCode, Record<Lang, string>>> = {
@@ -29,8 +31,22 @@ const messages: Partial<Record<ErrorCode, Record<Lang, string>>> = {
     en: 'Confirm your e-mail address before applying.',
   },
   CYCLE_CLOSED: { ar: 'باب التقديم مغلق حاليًا.', en: 'Applications are closed.' },
-  ALREADY_APPLIED: { ar: 'لديك طلب في هذه الدورة.', en: 'You already applied in this cycle.' },
-  ALREADY_MEMBER: { ar: 'أنت عضو بالفعل.', en: 'You are already a member.' },
+  ALREADY_APPLIED: {
+    ar: 'استلمنا طلبًا بهذا البريد في هذه الدورة.',
+    en: 'We already received an application with this e-mail in this cycle.',
+  },
+  RATE_LIMITED: {
+    ar: 'محاولات كثيرة. انتظر دقائق ثم حاول مجددًا.',
+    en: 'Too many attempts. Wait a few minutes and try again.',
+  },
+  TOO_FAST: {
+    ar: 'أُرسل النموذج بسرعة كبيرة. راجع بياناتك ثم أرسله مجددًا.',
+    en: 'The form was sent too quickly. Check your details and send it again.',
+  },
+  ALREADY_MEMBER: {
+    ar: 'هذا البريد لعضو في المجتمع بالفعل. سجّل الدخول من بوابة الأعضاء.',
+    en: 'This e-mail already belongs to a member. Sign in through the members portal.',
+  },
   CONSENT_REQUIRED: {
     ar: 'يجب الموافقة على سياسة الخصوصية.',
     en: 'You must accept the privacy notice.',

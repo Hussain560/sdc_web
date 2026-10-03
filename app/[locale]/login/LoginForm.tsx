@@ -158,9 +158,9 @@ export default function LoginForm({
           </form>
 
           <div className="sdc-login-footer">
-            <span>{isEnglish ? 'New user? ' : 'مستخدم جديد؟ '}</span>
-            <Link href="/register" className="sdc-login-link">
-              {isEnglish ? 'Create a new account' : 'إنشاء حساب جديد'}
+            <span>{isEnglish ? 'Not a member yet? ' : 'لست عضوًا بعد؟ '}</span>
+            <Link href="/join" className="sdc-login-link">
+              {isEnglish ? 'Apply to join' : 'قدّم طلب الانضمام'}
             </Link>
           </div>
         </div>

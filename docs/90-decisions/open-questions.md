@@ -36,7 +36,7 @@
 
 | ID | Question | Module | Recommended default | Owner | Status |
 | -- | -------- | ------ | ------------------- | ----- | ------ |
-| Q-002 | Must applicants have an account before applying for membership? | Membership | Yes — sign in to apply (A-003) | Leadership | Open |
+| Q-002 | Must applicants have an account before applying for membership? | Membership | ~~Yes — sign in to apply (A-003)~~ **Answered 2026-10-03: no account; the account is created when the application is accepted** ([ADR-013](./ADR-013-accounts-for-members-only.md)) | Owner | Answered |
 | Q-011 | Intake cycle details: frequency (once a year? more?), duration, who opens/closes it, eligibility criteria, capacity limit, required fields (phone?), extra questions per cycle | Membership | Configurable per cycle; leader manages; phone optional; no capacity unless set | Leadership | Open |
 | Q-012 | Does membership expire (renew each cycle) or last until ended? Can rejected applicants re-apply next cycle? | Membership/Members | Lasts until ended; re-application allowed | Leadership | Open |
 | Q-013 | Who reviews applications? Do applicants choose a preferred committee? Do committee heads take part? | Membership | Leader decides; preferred committee optional; heads may view for recommendation | Leadership | Open |

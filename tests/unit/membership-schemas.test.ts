@@ -22,6 +22,7 @@ const questions: CycleQuestion[] = [
 
 const valid = () => ({
   ...emptyApplication(),
+  email: 'applicant@example.test',
   fullNameAr: 'متقدم اختبار',
   academicStatus: 'student' as const,
   universityId: '1',
@@ -37,9 +38,9 @@ describe('application steps', () => {
   });
 
   it('personal: needs an Arabic name and a plausible phone', () => {
-    const v = { ...valid(), fullNameAr: 'ab', phone: '12' };
+    const v = { ...valid(), fullNameAr: 'ab', phone: '12', email: 'x' };
     const e = validateApplicationStep('personal', v, questions, 'en');
-    expect(Object.keys(e)).toEqual(['fullNameAr', 'phone']);
+    expect(Object.keys(e)).toEqual(['fullNameAr', 'email', 'phone']);
     expect(
       validateApplicationStep('personal', { ...valid(), phone: '+966501234567' }, questions, 'en'),
     ).toEqual({});

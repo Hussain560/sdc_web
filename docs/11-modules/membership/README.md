@@ -287,3 +287,7 @@ src/modules/membership/
 ## 16. Open questions
 
 Q-002 (account required), Q-011 (next intake, capacity, questions), Q-012 (expiry and renewal, re-application), Q-013 (who reviews), Q-031 (consent text).
+
+## Revision — apply without an account (2026-10-03)
+
+Q-002 is answered: applications need no account ([ADR-013](../../90-decisions/ADR-013-accounts-for-members-only.md)). `/join` shows the form to everyone while a cycle is open; `apply_for_membership` stores the application with its e-mail and language (no `user_id`) behind the same anti-spam layers as guest registration (minimum fill time 5 s, 3 per e-mail per 3 min, 6 per address per 10 min). Accepting creates the account (confirmed, no password), links it, creates the member and e-mails a one-time link to `/reset-password?welcome=1` to choose a password. A failure creating the account leaves that application undecided. Self sign-up is disabled; `/register` redirects to `/join`.

@@ -32,6 +32,7 @@ Business, scope and process decisions that do not need a full ADR.
 | D-008 | Event creation and the event/registration/attendance data and logic follow KFUCS (4-step wizard, sessions, certificates model). | Stakeholder (2026-10-02 follow-up) | 2026-10-02 | Events, Registrations — [ADR-012](./ADR-012-event-model-and-wizard-from-kfucs.md) |
 | D-009 | The visual identity (colors, fonts, shapes, dark-first) is frozen; design skills and redesigns may refine layout and consistency but must not change tokens. | Stakeholder (2026-10-02 follow-up) | 2026-10-02 | 10-design-system, [AI agent skills](../07-engineering/ai-agent-skills.md) |
 | D-010 | The canonical Git repository is `github.com/sdc-saudi/SDC_website`; the local working copy is newer and becomes the next commits on a branch. | Stakeholder (Q-024) | 2026-10-02 | 07-engineering |
+| D-011 | Accounts exist only for members and staff. Visitors register for events, check in and receive certificates as guests, and apply for membership with a form; the account is created and activated by e-mail when the application is accepted. | Stakeholder (2026-10-03) | 2026-10-03 | Registrations, Attendance, Membership — [ADR-013](./ADR-013-accounts-for-members-only.md) |
 
 ## 3. ADR index
 
@@ -49,3 +50,4 @@ Business, scope and process decisions that do not need a full ADR.
 | [ADR-010](./ADR-010-i18n-routing.md) | Locale in the URL with next-intl | Accepted |
 | [ADR-011](./ADR-011-membership-intake-separate-from-accounts.md) | Membership via intake cycles, separate from accounts | Accepted |
 | [ADR-012](./ADR-012-event-model-and-wizard-from-kfucs.md) | Adopt the KFUCS event model and 4-step creation wizard | Accepted |
+| [ADR-013](./ADR-013-accounts-for-members-only.md) | Accounts for members only; everyone else is a guest | Accepted |

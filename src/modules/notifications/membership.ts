@@ -14,18 +14,14 @@ export async function notifyApplicationReceived(
   const { data: a } = await db
     .from('membership_applications')
     .select(
-      'id, user_id, full_name_ar, submitted_at, cycle_id, membership_cycles(name_ar, name_en)',
+      'id, user_id, email, locale, full_name_ar, submitted_at, cycle_id, membership_cycles(name_ar, name_en)',
     )
     .eq('id', applicationId)
     .maybeSingle();
   if (!a) return 'none';
-  const { data: profile } = await db
-    .from('profiles')
-    .select('email, preferred_locale')
-    .eq('id', a.user_id)
-    .maybeSingle();
-  if (!profile) return 'none';
-  const lang: Lang = profile.preferred_locale === 'en' ? 'en' : 'ar';
+  // The applicant may have no account: the application carries the e-mail and the language they used.
+  const lang: Lang = a.locale === 'en' ? 'en' : 'ar';
+  const profile = { email: a.email };
   const cycleName =
     (lang === 'en' ? a.membership_cycles?.name_en : null) || a.membership_cycles?.name_ar || '';
   return notify({
@@ -37,7 +33,10 @@ export async function notifyApplicationReceived(
     data: {
       name: a.full_name_ar,
       eventTitle: cycleName,
-      membershipUrl: `${siteUrl()}${lang === 'en' ? '/en' : ''}/account/membership`,
+      membershipUrl: a.user_id
+        ? `${siteUrl()}${lang === 'en' ? '/en' : ''}/account/membership`
+        : undefined,
+      eventUrl: `${siteUrl()}${lang === 'en' ? '/en' : ''}/events`,
     },
   });
 }
@@ -45,11 +44,15 @@ export async function notifyApplicationReceived(
 /** membership.application_accepted / rejected / waitlisted — one mail per decision (idempotent on the decision time). */
 export async function notifyApplicationDecision(
   applicationId: string,
+  /** Only for an acceptance that just created the person's account: the one-time link to set a password. */
+  activationUrl?: string,
 ): Promise<NotifyOutcome | 'none'> {
   const db = createAdminClient();
   const { data: a } = await db
     .from('membership_applications')
-    .select('id, user_id, status, full_name_ar, decided_at, membership_cycles(name_ar, name_en)')
+    .select(
+      'id, user_id, email, locale, status, full_name_ar, decided_at, membership_cycles(name_ar, name_en)',
+    )
     .eq('id', applicationId)
     .maybeSingle();
   if (!a || !a.decided_at) return 'none';
@@ -62,13 +65,8 @@ export async function notifyApplicationDecision(
           ? 'membership.application_waitlisted'
           : null;
   if (!template) return 'none';
-  const { data: profile } = await db
-    .from('profiles')
-    .select('email, preferred_locale')
-    .eq('id', a.user_id)
-    .maybeSingle();
-  if (!profile) return 'none';
-  const lang: Lang = profile.preferred_locale === 'en' ? 'en' : 'ar';
+  const lang: Lang = a.locale === 'en' ? 'en' : 'ar';
+  const profile = { email: a.email };
   const prefix = lang === 'en' ? '/en' : '';
   const cycleName =
     (lang === 'en' ? a.membership_cycles?.name_en : null) || a.membership_cycles?.name_ar || '';
@@ -84,6 +82,7 @@ export async function notifyApplicationDecision(
       eventTitle: cycleName,
       membershipUrl: `${siteUrl()}${prefix}${template === 'membership.application_accepted' ? '/account/member-profile' : '/account/membership'}`,
       eventUrl: `${siteUrl()}${prefix}/events`,
+      activationUrl,
     },
   });
 }

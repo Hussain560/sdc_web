@@ -49,10 +49,10 @@ Password for **all** accounts: `Dev!Passw0rd1`. Sign in at `/login` (English: `/
 | Threads (articles) | `/articles` | `/en/articles` |
 | Committee page | `/committees/ai` | `/en/committees/ai` |
 | Members directory | `/members` | `/en/members` |
-| Join the community | `/join` | `/en/join` |
+| Join the community: the application form, no account needed | `/join` | `/en/join` |
 | Certificate verification | `/certificates/<id>` | `/en/certificates/<id>` |
 | About | `/about` | `/en/about` |
-| Login · Register · Forgot password | `/login` · `/register` · `/forgot-password` | same under `/en` |
+| Member login · Forgot password (no sign-up: `/register` leads to `/join`) | `/login` · `/forgot-password` | same under `/en` |
 
 ## 5. Account area (any signed-in user)
 
@@ -101,3 +101,10 @@ English dashboard URLs add `/en` in front, for example `/en/dashboard/reports`.
 5. **Attendance and certificates:** as the leader turn on certificates in settings, open an event (for example *Google AI Studio Workshop*, which has demo registrants), go to *Attendance*, open the session, show the QR display (120 s rotation, live numbers), open the check-in link in a private window and type `demo.sara@example.test`, mark others manually, close and finalize the day, sign off the event, then use the *Certificates* tab; the e-mails arrive in Mailpit.
 6. **Toasts:** every save shows a toast, top-left in Arabic and top-right in English.
 7. **Theme and language:** toggle dark and light and Arabic and English from the header.
+
+## 8. Guests and members (no sign-up)
+
+- **Visitors never create accounts.** The header shows *Join us*; the footer has a small *Member login* link.
+- **Event registration as a guest:** on any open event press *Register*, fill the modal, and the confirmation (and its e-mail, in Mailpit) arrives at once. Try the same e-mail twice, or many quick attempts, to see the refusals.
+- **Check-in and certificate as a guest:** the QR page asks for the registered e-mail; the certificate e-mail links to the public certificate page where the PDF downloads.
+- **Becoming a member:** open `/join` while an intake cycle is open (create one as the leader under *Membership > Cycles*), apply with a new e-mail, accept the application as the leader, then open the *Activate your account* e-mail in Mailpit and set a password.

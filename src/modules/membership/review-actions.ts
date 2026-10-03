@@ -7,6 +7,7 @@ import { createClient } from '@/lib/supabase/server';
 import { isLang, type Lang } from '@/modules/auth/messages';
 import { getAccess } from '@/modules/access/queries';
 import { notifyApplicationDecision } from '@/modules/notifications/membership';
+import { ensureApplicantAccounts } from './accounts';
 import { membershipCode, membershipMessage } from './messages';
 
 /** Review Server Actions (MBR-004): claim / release and bulk decisions with per-application results. */
@@ -54,20 +55,34 @@ export async function decideApplications(
     return failCode('VALIDATION_FAILED', lang);
   if (!(await getAccess())) return failCode('UNAUTHENTICATED', lang);
 
+  // Applicants have no account until they are accepted: acceptance creates it first (the member row needs it).
+  const accounts =
+    input.decision === 'accept'
+      ? await ensureApplicantAccounts(ids)
+      : { activation: new Map<string, string>(), failed: new Set<string>() };
+  const decidable = ids.filter((x) => !accounts.failed.has(x));
+  const failedOutcomes: ApplicationOutcome[] = [...accounts.failed].map((id) => ({
+    id,
+    ok: false,
+    code: 'INTERNAL' as ErrorCode,
+  }));
+
   const supabase = await createClient();
-  const { data, error } = await supabase.rpc('decide_membership_applications', {
-    p_ids: ids,
-    p_decision: input.decision,
-    p_note: input.note?.trim() || undefined,
-  });
+  const { data, error } = decidable.length
+    ? await supabase.rpc('decide_membership_applications', {
+        p_ids: decidable,
+        p_decision: input.decision,
+        p_note: input.note?.trim() || undefined,
+      })
+    : { data: [], error: null };
   if (error) return dbFailure(error, lang);
 
-  const results = data as ApplicationOutcome[];
+  const results = [...(data as ApplicationOutcome[]), ...failedOutcomes];
   // E-mails go out after the response; a mail problem never undoes a decision (the log + retry cover it).
   after(async () => {
     for (const r of results.filter((x) => x.ok)) {
       try {
-        await notifyApplicationDecision(r.id);
+        await notifyApplicationDecision(r.id, accounts.activation.get(r.id));
       } catch (e) {
         console.error('[membership] decision notification failed', (e as Error).message);
       }

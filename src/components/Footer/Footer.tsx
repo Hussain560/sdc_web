@@ -77,6 +77,11 @@ export default function Footer() {
           <div className="sdc-footer-info">
             <p className="sdc-footer-text">{rights}</p>
             <p className="sdc-footer-text">{t('developedBy')}</p>
+            <p className="sdc-footer-text">
+              <a href={lang === 'ar' ? '/login' : '/en/login'} className="sdc-footer-member-link">
+                {lang === 'ar' ? 'دخول الأعضاء' : 'Member login'}
+              </a>
+            </p>
           </div>
 
           {/* الشعار العمودي جهة اليسار */}

@@ -88,6 +88,7 @@ export type PublicCycle = {
 
 /** Values of the 5-step application form. Strings are kept as typed; numbers are chosen ids. */
 export type ApplicationValues = {
+  email: string;
   fullNameAr: string;
   fullNameEn: string;
   phone: string;
@@ -111,6 +112,7 @@ export type ApplicationValues = {
 };
 
 export const emptyApplication = (): ApplicationValues => ({
+  email: '',
   fullNameAr: '',
   fullNameEn: '',
   phone: '',

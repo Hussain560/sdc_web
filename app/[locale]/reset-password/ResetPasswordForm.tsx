@@ -10,7 +10,13 @@ import { updatePassword } from '@/modules/auth/actions';
 import { updatePasswordSchema, fieldErrorsOf } from '@/modules/auth/schemas';
 import '../login/login.css';
 
-export default function ResetPasswordForm({ hasSession }: { hasSession: boolean }) {
+export default function ResetPasswordForm({
+  hasSession,
+  welcome = false,
+}: {
+  hasSession: boolean;
+  welcome?: boolean;
+}) {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -63,12 +69,22 @@ export default function ResetPasswordForm({ hasSession }: { hasSession: boolean 
         <div className="sdc-login-card">
           <div className="sdc-login-header">
             <h1 className="sdc-login-title">
-              {isEnglish ? 'Reset Password' : 'تعيين كلمة مرور جديدة'}
+              {welcome
+                ? isEnglish
+                  ? 'Activate your account'
+                  : 'تفعيل حسابك'
+                : isEnglish
+                  ? 'Reset Password'
+                  : 'تعيين كلمة مرور جديدة'}
             </h1>
             <p className="sdc-login-subtitle">
-              {isEnglish
-                ? 'Enter the new password below to complete the reset.'
-                : 'يرجى إدخال كلمة المرور الجديدة أدناه لإكمال عملية إعادة التعيين.'}
+              {welcome
+                ? isEnglish
+                  ? 'Welcome to the community! Choose a password to activate your members portal account.'
+                  : 'أهلًا بك في المجتمع! اختر كلمة مرور لتفعيل حسابك في بوابة الأعضاء.'
+                : isEnglish
+                  ? 'Enter the new password below to complete the reset.'
+                  : 'يرجى إدخال كلمة المرور الجديدة أدناه لإكمال عملية إعادة التعيين.'}
             </p>
           </div>
 

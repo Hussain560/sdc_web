@@ -11,7 +11,6 @@ import {
   emailOnlySchema,
   fieldErrorsOf,
   signInSchema,
-  signUpSchema,
   updatePasswordSchema,
   updateProfileSchema,
 } from './schemas';
@@ -50,47 +49,6 @@ function codeFromAuthError(error: AuthError): ErrorCode {
 
 const failCode = (code: ErrorCode, lang: Lang) => fail(code, errorMessage(code, lang));
 
-// ---------------------------------------------------------------- sign up
-export async function signUp(
-  input: { fullName: string; email: string; password: string; confirmPassword: string },
-  ctx: { lang: Lang; redirect?: string },
-): Promise<Result<{ notice: string }>> {
-  const lang = langOf(ctx?.lang);
-  const parsed = signUpSchema(lang).safeParse(input);
-  if (!parsed.success) {
-    return fail(
-      'VALIDATION_FAILED',
-      errorMessage('VALIDATION_FAILED', lang),
-      fieldErrorsOf(parsed.error),
-    );
-  }
-
-  const supabase = await createClient();
-  const { error } = await supabase.auth.signUp({
-    email: parsed.data.email,
-    password: parsed.data.password,
-    options: {
-      // Read by the e-mail template ({{ .Data.* }}) and by the sign-up trigger.
-      data: {
-        full_name: parsed.data.fullName,
-        locale: lang,
-        next: sanitizeRedirect(ctx?.redirect),
-      },
-    },
-  });
-
-  if (error) {
-    const code = codeFromAuthError(error);
-    // Only non-enumerating failures are surfaced; "user exists" never reaches here (Auth returns success).
-    if (code === 'WEAK_PASSWORD' || code === 'RATE_LIMITED') return failCode(code, lang);
-    // An already-registered address must look exactly like a new one (AU-5).
-    if (code === 'EMAIL_IN_USE') return ok({ notice: genericNotices.signUp[lang] });
-    return failCode('INTERNAL', lang);
-  }
-  return ok({ notice: genericNotices.signUp[lang] });
-}
-
-// ---------------------------------------------------------------- sign in
 export async function signIn(
   input: { email: string; password: string },
   ctx: { lang: Lang; redirect?: string },

@@ -4,8 +4,7 @@ import { useEffect, useRef, useState, useTransition } from 'react';
 import { CheckCircle2 } from 'lucide-react';
 import { Button, Chips, Field, Select, Stepper, Textarea, useToast } from '@/components/ui';
 import { useLanguage } from '@/context/LanguageContext';
-import { Link } from '@/i18n/navigation';
-import { submitApplication, updateApplication } from '../actions';
+import { applyForMembership } from '../actions';
 import {
   APPLICATION_STEPS,
   OTHER,
@@ -47,27 +46,18 @@ const draftKey = (cycleId: string) => `sdc-join-draft:${cycleId}`;
 export function ApplicationForm({
   cycle,
   reference,
-  initial,
-  applicationId,
-  defaultName,
 }: {
   cycle: PublicCycle;
   reference: Reference;
-  /** Present when editing an existing application. */
-  initial?: ApplicationValues;
-  applicationId?: string;
-  defaultName?: string;
 }) {
   const { lang } = useLanguage();
   const ar = lang === 'ar';
-  const editing = Boolean(applicationId);
   const questions: CycleQuestion[] = cycle.questions;
 
   const steps = APPLICATION_STEPS.filter((s) => s !== 'questions' || questions.length > 0);
-  const [values, setValues] = useState<ApplicationValues>(() => ({
-    ...(initial ?? emptyApplication()),
-    fullNameAr: initial?.fullNameAr ?? defaultName ?? '',
-  }));
+  const [values, setValues] = useState<ApplicationValues>(() => emptyApplication());
+  const [openedAt] = useState(() => Date.now()); // for the minimum fill time (anti-spam)
+  const [honeypot, setHoneypot] = useState('');
   const [stepIndex, setStepIndex] = useState(0);
   const [maxReached, setMaxReached] = useState(0);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -78,7 +68,7 @@ export function ApplicationForm({
 
   // Restore a draft once, after mount (never during render: sessionStorage does not exist on the server).
   useEffect(() => {
-    if (editing || restored.current) return;
+    if (restored.current) return;
     restored.current = true;
     try {
       const raw = sessionStorage.getItem(draftKey(cycle.id));
@@ -93,16 +83,16 @@ export function ApplicationForm({
     } catch {
       /* private mode or blocked storage: the form simply starts empty */
     }
-  }, [cycle.id, editing]);
+  }, [cycle.id]);
 
   useEffect(() => {
-    if (editing || done) return;
+    if (done) return;
     try {
       sessionStorage.setItem(draftKey(cycle.id), JSON.stringify({ ...values, consent: false }));
     } catch {
       /* ignore */
     }
-  }, [values, cycle.id, editing, done]);
+  }, [values, cycle.id, done]);
 
   const step = steps[stepIndex]!;
   const set = <K extends keyof ApplicationValues>(key: K, value: ApplicationValues[K]) => {
@@ -141,9 +131,10 @@ export function ApplicationForm({
       return;
     }
     startTransition(async () => {
-      const r = editing
-        ? await updateApplication({ id: applicationId!, values }, { lang })
-        : await submitApplication({ cycleId: cycle.id, values }, { lang });
+      const r = await applyForMembership(
+        { cycleId: cycle.id, values, honeypot, elapsedMs: Date.now() - openedAt },
+        { lang },
+      );
       if (!r.ok) {
         toast.error(r.message);
         if (r.fieldErrors) setErrors(r.fieldErrors);
@@ -154,15 +145,7 @@ export function ApplicationForm({
       } catch {
         /* ignore */
       }
-      toast.success(
-        editing
-          ? ar
-            ? 'تم حفظ التعديلات على طلبك.'
-            : 'Your application was updated.'
-          : ar
-            ? 'تم إرسال طلبك.'
-            : 'Your application was submitted.',
-      );
+      toast.success(ar ? 'تم إرسال طلبك.' : 'Your application was submitted.');
       setDone(true);
     });
   };
@@ -172,25 +155,13 @@ export function ApplicationForm({
       <div className="flex flex-col items-center gap-4 py-6 text-center" role="status">
         <CheckCircle2 size={44} className="text-accent" aria-hidden="true" />
         <h2 className="text-xl font-extrabold">
-          {editing
-            ? ar
-              ? 'تم تحديث طلبك'
-              : 'Your application was updated'
-            : ar
-              ? 'تم استلام طلبك ✓'
-              : 'Application received ✓'}
+          {ar ? 'تم استلام طلبك ✓' : 'Application received ✓'}
         </h2>
         <p className="max-w-md text-muted">
           {ar
-            ? 'سنراجع الطلبات بعد إغلاق باب التقديم وسيصلك القرار بالبريد الإلكتروني. تابع حالة طلبك من حسابك.'
-            : 'We review applications once the window closes and you will receive the decision by e-mail. Follow your status from your account.'}
+            ? `أرسلنا رسالة تأكيد إلى ${values.email}. سنراجع الطلبات بعد إغلاق باب التقديم، وإذا قُبل طلبك فسيصلك بريد فيه رابط لتفعيل حسابك في بوابة الأعضاء.`
+            : `We sent a confirmation to ${values.email}. We review applications once the window closes; if you are accepted you will get an e-mail with a link to activate your account in the members portal.`}
         </p>
-        <Link
-          href="/account/membership"
-          className="rounded-full bg-accent px-6 py-2 text-sm font-semibold text-on-accent hover:bg-accent-hover"
-        >
-          {ar ? 'طلبي' : 'My application'}
-        </Link>
       </div>
     );
   }
@@ -221,6 +192,27 @@ export function ApplicationForm({
       <div className="flex flex-col gap-4">
         {step === 'personal' && (
           <>
+            <div
+              aria-hidden="true"
+              style={{
+                position: 'absolute',
+                insetInlineStart: '-9999px',
+                height: 0,
+                overflow: 'hidden',
+              }}
+            >
+              <label>
+                Website
+                <input
+                  type="text"
+                  name="company_website"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  value={honeypot}
+                  onChange={(e) => setHoneypot(e.target.value)}
+                />
+              </label>
+            </div>
             <Field
               id="field-fullNameAr"
               label={ar ? 'الاسم بالعربية *' : 'Name in Arabic *'}
@@ -237,6 +229,23 @@ export function ApplicationForm({
               onChange={(e) => set('fullNameEn', e.target.value)}
               dir="ltr"
               maxLength={100}
+            />
+            <Field
+              id="field-email"
+              label={ar ? 'البريد الإلكتروني *' : 'E-mail *'}
+              hint={
+                ar
+                  ? 'يصلك عليه القرار، وعليه تفعّل حسابك إذا قُبلت.'
+                  : 'The decision arrives here, and you activate your account here if accepted.'
+              }
+              value={values.email}
+              onChange={(e) => set('email', e.target.value)}
+              error={err('email')}
+              dir="ltr"
+              type="email"
+              inputMode="email"
+              autoComplete="email"
+              maxLength={160}
             />
             <Field
               id="field-phone"
@@ -529,13 +538,7 @@ export function ApplicationForm({
         </Button>
         {step === 'review' ? (
           <Button type="button" onClick={submit} loading={pending}>
-            {editing
-              ? ar
-                ? 'حفظ التعديلات'
-                : 'Save changes'
-              : ar
-                ? 'إرسال الطلب'
-                : 'Submit application'}
+            {ar ? 'إرسال الطلب' : 'Submit application'}
           </Button>
         ) : (
           <Button type="button" onClick={next}>
@@ -573,6 +576,7 @@ function ReviewSummary({
       ar ? 'الاسم' : 'Name',
       values.fullNameAr + (values.fullNameEn ? ` / ${values.fullNameEn}` : ''),
     ],
+    ['personal', ar ? 'البريد' : 'E-mail', values.email],
     ['personal', ar ? 'الجوال' : 'Mobile', values.phone || '—'],
     [
       'academic',

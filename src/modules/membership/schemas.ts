@@ -13,6 +13,10 @@ const m = {
     ar: 'اكتب اسمك بالعربية (3 أحرف على الأقل).',
     en: 'Enter your name in Arabic (at least 3 characters).',
   },
+  email: {
+    ar: 'اكتب بريدًا إلكترونيًا صحيحًا — سيصلك عليه القرار ورابط تفعيل الحساب.',
+    en: 'Enter a valid e-mail — the decision and your account activation link are sent there.',
+  },
   nameLong: { ar: 'النص طويل جدًا.', en: 'The text is too long.' },
   phone: {
     ar: 'رقم الجوال غير صحيح (أرقام فقط، مع + اختياريًا).',
@@ -70,6 +74,7 @@ export function validateApplicationStep(
 
   if (step === 'personal') {
     if (v.fullNameAr.trim().length < 3) add('fullNameAr', m.nameAr[lang]);
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.email.trim())) add('email', m.email[lang]);
     if (v.fullNameAr.length > 100 || v.fullNameEn.length > 100) add('fullNameAr', m.nameLong[lang]);
     if (v.phone.trim() && !/^\+?[0-9]{8,15}$/.test(v.phone.trim())) add('phone', m.phone[lang]);
   }
@@ -122,6 +127,7 @@ export function toApplicationPayload(v: ApplicationValues, consentVersion: strin
   if (v.universityId === OTHER) answers.other_university = v.otherUniversity.trim();
   if (v.majorId === OTHER) answers.other_major = v.otherMajor.trim();
   return {
+    email: v.email.trim(),
     full_name_ar: v.fullNameAr.trim(),
     full_name_en: v.fullNameEn.trim(),
     phone: v.phone.trim(),
@@ -154,6 +160,7 @@ export function fromApplicationRow(r: Record<string, unknown>): ApplicationValue
   >;
   const { other_university, other_major, ...rest } = answers as Record<string, string | string[]>;
   return {
+    email: s('email'),
     fullNameAr: s('full_name_ar'),
     fullNameEn: s('full_name_en'),
     phone: s('phone'),

@@ -60,8 +60,8 @@ export default function Header({ onSearch }: HeaderProps) {
 
     setIsSearchOpen(false);
   };
-  const handleLoginClick = () => {
-    router.push('/login');
+  const handleJoinClick = () => {
+    router.push('/join');
   };
 
   const handleLogoutClick = async () => {
@@ -140,9 +140,9 @@ export default function Header({ onSearch }: HeaderProps) {
                 </button>
               </>
             ) : (
-              <button type="button" onClick={handleLoginClick} className="sdc-btn-primary">
+              <button type="button" onClick={handleJoinClick} className="sdc-btn-primary">
                 <User size={18} />
-                <span>{t('login')}</span>
+                <span>{lang === 'en' ? 'Join us' : 'انضم إلينا'}</span>
               </button>
             )}
           </div>

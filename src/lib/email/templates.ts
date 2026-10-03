@@ -24,6 +24,8 @@ export type TemplateData = {
   eventUrl?: string;
   registrationsUrl?: string;
   membershipUrl?: string;
+  /** membership.application_accepted for a person who had no account: the link that sets their password. */
+  activationUrl?: string;
   /** member.claim_invite: the one-time link (7 days). */
   claimUrl?: string;
   /** review.pending: where a publisher opens the submitted item. */
@@ -151,12 +153,23 @@ function copy(key: TemplateKey, lang: Lang, d: TemplateData): Copy {
         lead: ar
           ? `يسرّنا إبلاغك بقبول طلب عضويتك في «${t}».`
           : `We are delighted to tell you that your membership application (“${t}”) was accepted.`,
-        body: [
-          ar
-            ? 'يمكنك الآن إكمال ملفك الشخصي واختيار ما إذا كنت ترغب في الظهور في دليل الأعضاء.'
-            : 'You can now complete your profile and choose whether to appear in the member directory.',
-        ],
-        action: { label: ar ? 'ملف العضوية' : 'My member profile', url: d.membershipUrl },
+        body: d.activationUrl
+          ? [
+              ar
+                ? 'أنشأنا لك حسابًا في بوابة الأعضاء. اضغط الزر أدناه لاختيار كلمة المرور وتفعيل حسابك، ثم أكمل ملفك الشخصي واختر ما إذا كنت ترغب في الظهور في دليل الأعضاء.'
+                : 'We created your account in the members portal. Use the button below to choose a password and activate it, then complete your profile and choose whether to appear in the member directory.',
+              ar
+                ? 'إذا انتهت صلاحية الرابط فاختر «نسيت كلمة المرور» من صفحة الدخول لتحصل على رابط جديد.'
+                : 'If the link has expired, use “Forgot password” on the sign-in page to get a new one.',
+            ]
+          : [
+              ar
+                ? 'يمكنك الآن إكمال ملفك الشخصي واختيار ما إذا كنت ترغب في الظهور في دليل الأعضاء.'
+                : 'You can now complete your profile and choose whether to appear in the member directory.',
+            ],
+        action: d.activationUrl
+          ? { label: ar ? 'تفعيل الحساب' : 'Activate your account', url: d.activationUrl }
+          : { label: ar ? 'ملف العضوية' : 'My member profile', url: d.membershipUrl },
       };
     case 'membership.application_rejected':
       return {
