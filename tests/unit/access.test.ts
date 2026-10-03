@@ -95,7 +95,7 @@ describe('sidebar per persona (role → view matrix)', () => {
   it('committee member: overview + committee events, no admin or management items', () => {
     const nav = sidebarOf('committee_member');
     expect(nav.general).toEqual(['overview']);
-    expect(nav.committee).toEqual(['committee-events']);
+    expect(nav.committee).toEqual(['committee-events', 'committee-articles']);
     expect(nav.admin).toBeUndefined();
     expect(nav.management).toBeUndefined();
   });
@@ -105,6 +105,7 @@ describe('sidebar per persona (role → view matrix)', () => {
     expect(sidebarOf('committee_head').committee).toEqual([
       'committee-events',
       'committee-registrations',
+      'committee-articles',
     ]);
   });
 

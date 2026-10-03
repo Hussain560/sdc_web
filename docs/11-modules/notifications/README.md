@@ -125,8 +125,10 @@ erDiagram
 | `event.cancelled`, `event.changed` | events | registrants | S06 |
 | `membership.application_received`, `…_accepted`, `…_rejected`, `…_waitlisted` | membership | applicant | S07–S08 |
 | `member.claim_invite` | members | legacy member | S08 |
+| `review.pending` | articles | committee publishers | S09 |
+| `committee.assigned` | access | assigned person | S09 |
 | `certificate.issued` | attendance | participant | S10 |
-| `event.reminder`, `review.pending`, `committee.assigned` | events / access | — | optional, Phase 4 |
+| `event.reminder` | events | registrants | optional, Phase 4 |
 
 The full trigger table is in [notification rules](../../03-business-domain/notification-rules.md).
 
@@ -163,7 +165,7 @@ The full trigger table is in [notification rules](../../03-business-domain/notif
 
 1. **S03:** provider SMTP for Supabase Auth; templates in `supabase/templates/`.
 2. **S06:** `lib/email` (provider adapter, layout, first templates), `notify()`, `email_logs` RLS, status column + retry; delete the two Edge Functions.
-3. **S09:** remaining templates, retry cron, admin e-mail log.
+3. **S09 (done):** `review.pending` and `committee.assigned`, `retryEmailLog()` + `retryDueEmails()` (backoff and attempt limit in `due_email_retries()`), `/api/cron/email-retry` scheduled by `vercel.json` (daily on Hobby — call it more often on Pro / `pg_cron` / an external scheduler), admin e-mail log `/dashboard/admin/emails`.
 4. **S10:** `certificate.issued` with the PDF link.
 
 ## 14. Open questions

@@ -23,7 +23,136 @@ export type Database = {
           }
         },"public": {
           Tables: {
-            "audit_logs": {
+            "article_authors": {
+                  Row: {
+                    "article_id": string,"committee_id": string | null,"display_name_ar": string | null,"display_name_en": string | null,"position": number,"user_id": string | null
+                  }
+                  Insert: {
+                    "article_id": string,"committee_id"?: string | null,"display_name_ar"?: string | null,"display_name_en"?: string | null,"position": number,"user_id"?: string | null
+                  }
+                  Update: {
+                    "article_id"?: string,"committee_id"?: string | null,"display_name_ar"?: string | null,"display_name_en"?: string | null,"position"?: number,"user_id"?: string | null
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "article_authors_article_id_fkey"
+      columns: ["article_id"]
+isOneToOne: false
+      referencedRelation: "articles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "article_authors_article_id_fkey"
+      columns: ["article_id"]
+isOneToOne: false
+      referencedRelation: "dashboard_articles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "article_authors_article_id_fkey"
+      columns: ["article_id"]
+isOneToOne: false
+      referencedRelation: "public_articles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "article_authors_committee_id_fkey"
+      columns: ["committee_id"]
+isOneToOne: false
+      referencedRelation: "committees"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "article_authors_committee_id_fkey"
+      columns: ["committee_id"]
+isOneToOne: false
+      referencedRelation: "current_positions"
+      referencedColumns: ["committee_id"]
+    },{
+      foreignKeyName: "article_authors_user_id_fkey"
+      columns: ["user_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"article_tags": {
+                  Row: {
+                    "article_id": string,"position": number,"tag_id": string
+                  }
+                  Insert: {
+                    "article_id": string,"position"?: number,"tag_id": string
+                  }
+                  Update: {
+                    "article_id"?: string,"position"?: number,"tag_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "article_tags_article_id_fkey"
+      columns: ["article_id"]
+isOneToOne: false
+      referencedRelation: "articles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "article_tags_article_id_fkey"
+      columns: ["article_id"]
+isOneToOne: false
+      referencedRelation: "dashboard_articles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "article_tags_article_id_fkey"
+      columns: ["article_id"]
+isOneToOne: false
+      referencedRelation: "public_articles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "article_tags_tag_id_fkey"
+      columns: ["tag_id"]
+isOneToOne: false
+      referencedRelation: "tags"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"articles": {
+                  Row: {
+                    "archived_at": string | null,"body_ar": string,"body_en": string | null,"committee_id": string | null,"cover_image_path": string | null,"created_at": string,"created_by": string | null,"excerpt_ar": string | null,"excerpt_en": string | null,"id": string,"legacy_id": number | null,"published_at": string | null,"reading_minutes": number,"resource_label_ar": string | null,"resource_label_en": string | null,"resource_url": string | null,"review_note": string | null,"reviewed_at": string | null,"reviewed_by": string | null,"slug": string,"status": string,"submitted_at": string | null,"submitted_by": string | null,"title_ar": string,"title_en": string | null,"updated_at": string
+                  }
+                  Insert: {
+                    "archived_at"?: string | null,"body_ar"?: string,"body_en"?: string | null,"committee_id"?: string | null,"cover_image_path"?: string | null,"created_at"?: string,"created_by"?: string | null,"excerpt_ar"?: string | null,"excerpt_en"?: string | null,"id"?: string,"legacy_id"?: number | null,"published_at"?: string | null,"reading_minutes"?: number,"resource_label_ar"?: string | null,"resource_label_en"?: string | null,"resource_url"?: string | null,"review_note"?: string | null,"reviewed_at"?: string | null,"reviewed_by"?: string | null,"slug": string,"status"?: string,"submitted_at"?: string | null,"submitted_by"?: string | null,"title_ar": string,"title_en"?: string | null,"updated_at"?: string
+                  }
+                  Update: {
+                    "archived_at"?: string | null,"body_ar"?: string,"body_en"?: string | null,"committee_id"?: string | null,"cover_image_path"?: string | null,"created_at"?: string,"created_by"?: string | null,"excerpt_ar"?: string | null,"excerpt_en"?: string | null,"id"?: string,"legacy_id"?: number | null,"published_at"?: string | null,"reading_minutes"?: number,"resource_label_ar"?: string | null,"resource_label_en"?: string | null,"resource_url"?: string | null,"review_note"?: string | null,"reviewed_at"?: string | null,"reviewed_by"?: string | null,"slug"?: string,"status"?: string,"submitted_at"?: string | null,"submitted_by"?: string | null,"title_ar"?: string,"title_en"?: string | null,"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "articles_committee_id_fkey"
+      columns: ["committee_id"]
+isOneToOne: false
+      referencedRelation: "committees"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "articles_committee_id_fkey"
+      columns: ["committee_id"]
+isOneToOne: false
+      referencedRelation: "current_positions"
+      referencedColumns: ["committee_id"]
+    },{
+      foreignKeyName: "articles_created_by_fkey"
+      columns: ["created_by"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "articles_reviewed_by_fkey"
+      columns: ["reviewed_by"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "articles_submitted_by_fkey"
+      columns: ["submitted_by"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"audit_logs": {
                   Row: {
                     "action": string,"actor_id": string | null,"committee_id": string | null,"entity_id": string,"entity_type": string,"id": number,"occurred_at": string,"request_id": string | null,"summary": NonNullable<Json>
                   }
@@ -613,6 +742,19 @@ isOneToOne: false
                   Relationships: [
                     
                   ]
+                },"tags": {
+                  Row: {
+                    "created_at": string,"id": string,"label_ar": string,"label_en": string | null,"slug": string
+                  }
+                  Insert: {
+                    "created_at"?: string,"id"?: string,"label_ar": string,"label_en"?: string | null,"slug": string
+                  }
+                  Update: {
+                    "created_at"?: string,"id"?: string,"label_ar"?: string,"label_en"?: string | null,"slug"?: string
+                  }
+                  Relationships: [
+                    
+                  ]
                 },"tracks": {
                   Row: {
                     "display_order": number,"id": number,"is_active": boolean,"name_ar": string,"name_en": string | null
@@ -642,7 +784,70 @@ isOneToOne: false
                 }
           }
           Views: {
-            "current_positions": {
+            "admin_email_logs": {
+                  Row: {
+                    "attempt": number | null,"created_at": string | null,"entity_id": string | null,"entity_type": string | null,"error_code": string | null,"error_message": string | null,"id": string | null,"locale": string | null,"provider": string | null,"recipient_email": string | null,"state": string | null,"status": string | null,"template_key": string | null
+                  }
+                  Insert: {
+                           "attempt"?: number | null,"created_at"?: string | null,"entity_id"?: string | null,"entity_type"?: string | null,"error_code"?: string | null,"error_message"?: string | null,"id"?: string | null,"locale"?: string | null,"provider"?: string | null,"recipient_email"?: string | null,"state"?: never,"status"?: string | null,"template_key"?: string | null
+                         }
+                        Update: {
+                           "attempt"?: number | null,"created_at"?: string | null,"entity_id"?: string | null,"entity_type"?: string | null,"error_code"?: string | null,"error_message"?: string | null,"id"?: string | null,"locale"?: string | null,"provider"?: string | null,"recipient_email"?: string | null,"state"?: never,"status"?: string | null,"template_key"?: string | null
+                         }
+                        Relationships: [
+                    
+                  ]
+                },"article_authors_named": {
+                  Row: {
+                    "article_id": string | null,"committee_id": string | null,"display_name_ar": string | null,"display_name_en": string | null,"label_ar": string | null,"label_en": string | null,"position": number | null,"user_id": string | null
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "article_authors_article_id_fkey"
+      columns: ["article_id"]
+isOneToOne: false
+      referencedRelation: "articles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "article_authors_article_id_fkey"
+      columns: ["article_id"]
+isOneToOne: false
+      referencedRelation: "dashboard_articles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "article_authors_article_id_fkey"
+      columns: ["article_id"]
+isOneToOne: false
+      referencedRelation: "public_articles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "article_authors_committee_id_fkey"
+      columns: ["committee_id"]
+isOneToOne: false
+      referencedRelation: "committees"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "article_authors_committee_id_fkey"
+      columns: ["committee_id"]
+isOneToOne: false
+      referencedRelation: "current_positions"
+      referencedColumns: ["committee_id"]
+    },{
+      foreignKeyName: "article_authors_user_id_fkey"
+      columns: ["user_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"article_status_counts": {
+                  Row: {
+                    "status": string | null,"total": number | null
+                  }
+                  Relationships: [
+                    
+                  ]
+                },"current_positions": {
                   Row: {
                     "assignment_id": string | null,"committee_id": string | null,"committee_name_ar": string | null,"committee_name_en": string | null,"committee_order": number | null,"committee_slug": string | null,"display_title_ar": string | null,"display_title_en": string | null,"ends_at": string | null,"person_name_ar": string | null,"person_name_en": string | null,"public_bio_ar": string | null,"public_bio_en": string | null,"public_tags_ar": (string)[] | null,"public_tags_en": (string)[] | null,"role_key": string | null,"role_name_ar": string | null,"role_name_en": string | null,"role_order": number | null,"starts_at": string | null
                   }
@@ -653,6 +858,31 @@ isOneToOne: false
 isOneToOne: false
       referencedRelation: "roles"
       referencedColumns: ["key"]
+    }
+                  ]
+                },"dashboard_articles": {
+                  Row: {
+                    "author_names_ar": Json | null,"author_names_en": Json | null,"committee_id": string | null,"committee_name_ar": string | null,"committee_name_en": string | null,"created_by": string | null,"id": string | null,"published_at": string | null,"reading_minutes": number | null,"review_note": string | null,"slug": string | null,"status": string | null,"submitted_at": string | null,"tag_count": number | null,"title_ar": string | null,"title_en": string | null,"updated_at": string | null
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "articles_committee_id_fkey"
+      columns: ["committee_id"]
+isOneToOne: false
+      referencedRelation: "committees"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "articles_committee_id_fkey"
+      columns: ["committee_id"]
+isOneToOne: false
+      referencedRelation: "current_positions"
+      referencedColumns: ["committee_id"]
+    },{
+      foreignKeyName: "articles_created_by_fkey"
+      columns: ["created_by"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
     }
                   ]
                 },"event_registration_counts": {
@@ -861,6 +1091,25 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"public_articles": {
+                  Row: {
+                    "authors": Json | null,"body_ar": string | null,"body_en": string | null,"committee_id": string | null,"committee_name_ar": string | null,"committee_name_en": string | null,"committee_slug": string | null,"cover_image_path": string | null,"display_rank": number | null,"excerpt_ar": string | null,"excerpt_en": string | null,"id": string | null,"legacy_id": number | null,"published_at": string | null,"reading_minutes": number | null,"resource_label_ar": string | null,"resource_label_en": string | null,"resource_url": string | null,"slug": string | null,"tags": Json | null,"title_ar": string | null,"title_en": string | null
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "articles_committee_id_fkey"
+      columns: ["committee_id"]
+isOneToOne: false
+      referencedRelation: "committees"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "articles_committee_id_fkey"
+      columns: ["committee_id"]
+isOneToOne: false
+      referencedRelation: "current_positions"
+      referencedColumns: ["committee_id"]
+    }
+                  ]
                 },"public_events": {
                   Row: {
                     "accepted_count": number | null,"audience": string | null,"awards_ar": string | null,"awards_en": string | null,"cancel_reason": string | null,"cancelled_at": string | null,"certificate_available": boolean | null,"committee_id": string | null,"committee_name_ar": string | null,"committee_name_en": string | null,"committee_slug": string | null,"contact_email": string | null,"contact_phone": string | null,"cover_image_path": string | null,"description_ar": string | null,"description_en": string | null,"details": Json | null,"display_config": Json | null,"end_date": string | null,"end_time": string | null,"faq": Json | null,"goals": Json | null,"id": string | null,"last_date": string | null,"legacy_id": number | null,"location_ar": string | null,"location_en": string | null,"location_mode": string | null,"map_url": string | null,"phase": string | null,"published_at": string | null,"registration_end_at": string | null,"registration_start_at": string | null,"requires_approval": boolean | null,"schedule_type": string | null,"seats": number | null,"seats_left": number | null,"slug": string | null,"start_date": string | null,"start_time": string | null,"status": string | null,"summary_ar": string | null,"summary_en": string | null,"title_ar": string | null,"title_en": string | null,"type": string | null,"waitlist_enabled": boolean | null
@@ -907,8 +1156,16 @@ isOneToOne: false
 "decide_registrations":
 { Args: { "p_decision": string,"p_ids": (string)[],"p_note"?: string }; Returns: Json
                            },
+"delete_article_draft":
+{ Args: { "p_id": string }; Returns: undefined
+                           },
 "delete_event_draft":
 { Args: { "p_id": string }; Returns: undefined
+                           },
+"due_email_retries":
+{ Args: { "p_limit"?: number }; Returns: {
+              "attempt": number,"entity_id": string,"entity_type": string,"id": string,"template_key": string
+            }[]
                            },
 "end_role_assignment":
 { Args: { "p_ends_at"?: string,"p_id": string,"p_reason": string }; Returns: undefined
@@ -935,11 +1192,19 @@ isOneToOne: false
 "register_for_event":
 { Args: { "p_answers"?: Json,"p_event": string }; Returns: Json
                            },
+"save_article":
+{ Args: { "p": Json,"p_expected_updated_at"?: string,"p_id": string }; Returns: Json
+                           },
 "save_event":
 { Args: { "p": Json,"p_event_id": string,"p_expected_updated_at"?: string }; Returns: Json
                            },
 "save_membership_cycle":
 { Args: { "p": Json,"p_id": string }; Returns: Json
+                           },
+"search_article_author_candidates":
+{ Args: { "p_query": string }; Returns: {
+              "full_name_ar": string,"full_name_en": string,"id": string
+            }[]
                            },
 "search_presenter_candidates":
 { Args: { "p_query": string }; Returns: {
@@ -951,6 +1216,9 @@ isOneToOne: false
                            },
 "submit_membership_application":
 { Args: { "p": Json,"p_cycle": string }; Returns: Json
+                           },
+"transition_article":
+{ Args: { "p_action": string,"p_id": string,"p_note"?: string }; Returns: string
                            },
 "transition_event":
 { Args: { "p_action": string,"p_id": string,"p_note"?: string }; Returns: string

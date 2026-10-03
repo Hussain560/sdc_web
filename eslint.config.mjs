@@ -29,6 +29,7 @@ const eslintConfig = defineConfig([
   {
     files: [
       'src/modules/events/components/public/**/*.tsx',
+      'src/modules/articles/components/public/**/*.tsx',
       'src/modules/registrations/components/useRegistrationFlow.tsx',
     ],
     rules: { 'no-restricted-syntax': 'off' },

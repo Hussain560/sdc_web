@@ -113,9 +113,10 @@ svg {
   }
 }
 
-/* Inter (self-hosted) for English text on the internal screens and toasts. Public pages keep Rubik (D-009). */
+/* Inter (self-hosted) for English text on the internal screens and toasts. Public pages keep Rubik (D-009).
+   Registered as "SDC Inter" so the public 404 page, which names plain "Inter", keeps rendering as before. */
 @font-face {
-  font-family: 'Inter';
+  font-family: 'SDC Inter';
   src: url('/assets/font/Inter/Inter-VariableFont_opsz%2Cwght.ttf') format('truetype');
   font-weight: 100 900;
   font-style: normal;
@@ -125,7 +126,7 @@ svg {
 .sdc-inter:lang(en),
 .sdc-inter:lang(en) * {
   font-family:
-    'Inter',
+    'SDC Inter',
     system-ui,
     -apple-system,
     sans-serif;

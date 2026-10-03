@@ -101,7 +101,7 @@ export const DASHBOARD_NAV: NavGroupDef[] = [
         icon: 'file',
         scoped: true,
         requires: { permission: 'articles.create', scope: 'committee' },
-        ready: false,
+        ready: true,
       },
       {
         key: 'committee-members',
@@ -158,7 +158,7 @@ export const DASHBOARD_NAV: NavGroupDef[] = [
         href: '/dashboard/articles',
         icon: 'file',
         requires: { permission: 'articles.publish', scope: 'global' },
-        ready: false,
+        ready: true,
       },
       {
         key: 'reports',
@@ -234,7 +234,7 @@ export const DASHBOARD_NAV: NavGroupDef[] = [
         href: '/dashboard/admin/emails',
         icon: 'mail',
         requires: { permission: 'email_logs.view', scope: 'any' },
-        ready: false,
+        ready: true,
       },
       {
         key: 'admin-reference',

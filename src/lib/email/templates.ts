@@ -13,7 +13,9 @@ export type TemplateKey =
   | 'membership.application_accepted'
   | 'membership.application_rejected'
   | 'membership.application_waitlisted'
-  | 'member.claim_invite';
+  | 'member.claim_invite'
+  | 'review.pending'
+  | 'committee.assigned';
 
 export type TemplateData = {
   name: string;
@@ -23,6 +25,10 @@ export type TemplateData = {
   membershipUrl?: string;
   /** member.claim_invite: the one-time link (7 days). */
   claimUrl?: string;
+  /** review.pending: where a publisher opens the submitted item. */
+  reviewUrl?: string;
+  /** committee.assigned: the dashboard the new position opens. */
+  dashboardUrl?: string;
   when?: string;
   where?: string;
   /** Only ever set for registration.confirmed (NO-6). */
@@ -182,6 +188,32 @@ function copy(key: TemplateKey, lang: Lang, d: TemplateData): Copy {
             : 'Sign in (or create an account) with this same e-mail address, then confirm the profile is yours. The link is valid for 7 days and works once.',
         ],
         action: { label: ar ? 'المطالبة بملفي' : 'Claim my profile', url: d.claimUrl },
+      };
+    case 'review.pending':
+      return {
+        subject: ar ? `مقال بانتظار مراجعتك: ${t}` : `An article is waiting for your review: ${t}`,
+        lead: ar
+          ? `أُرسل مقال «${t}» للمراجعة وهو بانتظار قرارك.`
+          : `“${t}” was submitted for review and is waiting for your decision.`,
+        body: [
+          ar
+            ? 'يمكنك نشره أو طلب تعديلات من المؤلف مع ملاحظة.'
+            : 'You can publish it, or ask the author for changes with a note.',
+        ],
+        action: { label: ar ? 'مراجعة المقال' : 'Review the article', url: d.reviewUrl },
+      };
+    case 'committee.assigned':
+      return {
+        subject: ar ? `تم تكليفك: ${t}` : `You have a new position: ${t}`,
+        lead: ar
+          ? `تم تكليفك بمنصب «${t}» في المجتمع السعودي للمطورين.`
+          : `You have been assigned the position “${t}” in the Saudi Developer Community.`,
+        body: [
+          ar
+            ? 'ستجد الأدوات الخاصة بمنصبك في لوحة التحكم.'
+            : 'You will find the tools for your position in the dashboard.',
+        ],
+        action: { label: ar ? 'لوحة التحكم' : 'Open the dashboard', url: d.dashboardUrl },
       };
     case 'event.cancelled':
       return {

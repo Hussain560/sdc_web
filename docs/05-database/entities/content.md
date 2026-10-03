@@ -45,6 +45,7 @@ Indexes: `slug` unique; partial `(published_at desc) where status = 'published'`
 | ------ | ---- | ---------- |
 | `article_id` | uuid | FK → `articles` CASCADE |
 | `tag_id` | uuid | FK → `tags` RESTRICT |
+| `position` | smallint | default 0, display order |
 | | | PK (`article_id`, `tag_id`) |
 
 Supporting table `article_slug_redirects` (`old_slug` PK, `article_id` FK) keeps old URLs working when a slug changes ([articles module](../../11-modules/articles/README.md)).

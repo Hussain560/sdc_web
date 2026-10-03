@@ -14,6 +14,8 @@ const KEYS: TemplateKey[] = [
   'registration.cancelled_by_organizer',
   'event.cancelled',
   'event.changed',
+  'review.pending',
+  'committee.assigned',
 ];
 
 describe('e-mail templates', () => {
@@ -49,5 +51,25 @@ describe('e-mail templates', () => {
       note: 'Room unavailable',
     });
     expect(mail.html).toContain('Room unavailable');
+  });
+
+  it('review.pending points the publisher at the submitted article', () => {
+    const mail = renderTemplate('review.pending', 'en', {
+      ...base,
+      reviewUrl: 'https://x.test/en/dashboard/articles/abc',
+    });
+    expect(mail.subject).toContain('waiting for your review');
+    expect(mail.html).toContain('href="https://x.test/en/dashboard/articles/abc"');
+    expect(renderTemplate('review.pending', 'ar', base).subject).toContain('بانتظار مراجعتك');
+  });
+
+  it('committee.assigned names the position and opens the dashboard', () => {
+    const mail = renderTemplate('committee.assigned', 'en', {
+      ...base,
+      eventTitle: 'Committee head · AI',
+      dashboardUrl: 'https://x.test/en/dashboard',
+    });
+    expect(mail.subject).toContain('Committee head · AI');
+    expect(mail.html).toContain('href="https://x.test/en/dashboard"');
   });
 });

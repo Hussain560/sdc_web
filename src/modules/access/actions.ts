@@ -1,9 +1,11 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
+import { after } from 'next/server';
 import { can } from '@/lib/auth/permissions';
 import { fail, ok, type ErrorCode, type Result } from '@/lib/result';
 import { createClient } from '@/lib/supabase/server';
+import { notifyCommitteeAssigned } from '@/modules/notifications/access';
 import { fieldErrorsOf } from '@/modules/auth/schemas';
 import { isLang, type Lang } from '@/modules/auth/messages';
 import { accessMessage, codeFromDbError } from './messages';
@@ -17,6 +19,17 @@ import { assignRoleSchema, endAssignmentSchema, handoverSchema, riyadhMidnight }
  */
 const langOf = (v: unknown): Lang => (isLang(v) ? v : 'ar');
 const failCode = (code: ErrorCode, lang: Lang) => fail(code, accessMessage(code, lang));
+
+/** Tells the person about their new position after the response is sent; a mail problem never fails the action. */
+function mailAssignment(assignmentId: string) {
+  after(async () => {
+    try {
+      await notifyCommitteeAssigned(assignmentId);
+    } catch (e) {
+      console.error('[access] assignment notification failed', (e as Error).message);
+    }
+  });
+}
 
 export async function assignRole(
   input: unknown,
@@ -55,6 +68,7 @@ export async function assignRole(
   });
   if (error) return failCode(codeFromDbError(error), lang);
 
+  mailAssignment(data);
   revalidatePath('/', 'layout');
   return ok({ id: data });
 }
@@ -112,6 +126,7 @@ export async function handoverHead(
   });
   if (error) return failCode(codeFromDbError(error), lang);
 
+  mailAssignment(data);
   revalidatePath('/', 'layout');
   return ok({ id: data });
 }

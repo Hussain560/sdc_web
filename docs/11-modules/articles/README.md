@@ -3,7 +3,7 @@
 | Field            | Value |
 | ---------------- | ----- |
 | **Last Updated** | 2026-10-02 |
-| **Status**       | Draft |
+| **Status**       | Implemented in Sprint 09 (local); Q-006 / Q-033 proposals in effect |
 | **Owner**        | Committees (authoring) · committee heads / leader (publishing) |
 | **Phase / Sprints** | Phase 3C / Sprint 09 |
 | **Code**         | `src/modules/articles/` |
@@ -115,7 +115,7 @@ erDiagram
 | `articles`, `article_authors`, `article_tags`, `tags` | [content entities](../../05-database/entities/content.md) |
 | `public_articles` (view) | Published only, with authors, tags, committee |
 | `transition_article(id, action, note)` | Status writer |
-| `article_slug_redirects` | Old slug → article (a slug changed before publish never needs one; kept for safety) |
+| `article_slug_redirects` | **Not created** — the slug locks at the first publish and the old numeric URLs resolve through `legacy_id` (Sprint 09) |
 
 ## 8. Business logic and validation
 

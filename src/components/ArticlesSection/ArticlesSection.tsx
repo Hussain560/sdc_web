@@ -14,26 +14,16 @@ import {
   statusTone,
   type PublicEventCard,
 } from '@/modules/events/public-types';
+import { articleTitle, type PublicArticleCard } from '@/modules/articles/types';
 import './ArticlesSection.css';
 
-const articles = [
-  { id: 1, ar: 'هندسة الأوامر (Prompt Engineering)', en: 'Prompt Engineering' },
-  { id: 2, ar: 'تقنية Voice2Face', en: 'Voice2Face Technology' },
-  { id: 3, ar: 'أنظمة التوصية (Recommendation Systems)', en: 'Recommendation Systems' },
-  { id: 4, ar: 'التطبيقات الصينية والإنجليزية', en: 'Chinese and English Applications' },
-  {
-    id: 5,
-    ar: 'الذكاء الاصطناعي في الألعاب والتعلّم المعزّز',
-    en: 'AI in Gaming and Reinforcement Learning',
-  },
-  {
-    id: 6,
-    ar: 'تطبيقات الذكاء الاصطناعي في تحليل المشاعر',
-    en: 'AI Applications in Sentiment Analysis',
-  },
-];
-
-export default function ArticlesSection({ events }: { events: PublicEventCard[] }) {
+export default function ArticlesSection({
+  events,
+  articles,
+}: {
+  events: PublicEventCard[];
+  articles: PublicArticleCard[];
+}) {
   const { searchQuery } = useSearch();
   const { lang, t } = useLanguage();
   const isEnglish = lang === 'en';
@@ -47,7 +37,9 @@ export default function ArticlesSection({ events }: { events: PublicEventCard[] 
   );
 
   const filteredArticles = articles.filter((a) =>
-    a[isEnglish ? 'en' : 'ar'].toLowerCase().includes((searchQuery || '').toLowerCase()),
+    articleTitle(a, lang)
+      .toLowerCase()
+      .includes((searchQuery || '').toLowerCase()),
   );
 
   return (
@@ -125,11 +117,11 @@ export default function ArticlesSection({ events }: { events: PublicEventCard[] 
             {filteredArticles.map((article) => (
               <Link
                 key={article.id}
-                href={`/articles/${article.id}`}
+                href={`/articles/${article.slug}`}
                 style={{ textDecoration: 'none' }}
               >
                 <div className="sdc-article-item">
-                  <h3 className="sdc-article-title">{article[isEnglish ? 'en' : 'ar']}</h3>
+                  <h3 className="sdc-article-title">{articleTitle(article, lang)}</h3>
                 </div>
               </Link>
             ))}

@@ -62,6 +62,7 @@ export type ErrorCode =
   | 'MEMBERS_ONLY'
   | 'TOO_LATE_TO_CANCEL'
   | 'CAPACITY_REACHED'
+  | 'NOTHING_TO_RETRY'
   | 'INTERNAL';
 
 export type Result<T = void> =
