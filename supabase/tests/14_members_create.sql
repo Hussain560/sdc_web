@@ -36,7 +36,7 @@ select throws_ok($$select public.create_member(gen_random_uuid(), '{"full_name_a
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-00000000f202","role":"authenticated"}', true);
 select lives_ok($$select public.create_member('00000000-0000-0000-0000-00000000f205', '{"full_name_ar":"عضو ثان بالتأسيس","academic_status":"employee"}'::jsonb)$$, 'a founder adds a member too');
 reset role;
-select is((select count(*)::int from public.audit_logs where action = 'member.created'), 2, 'each addition is audited');
+select is((select count(*)::int from public.audit_logs where action = 'member.created' and entity_id in (select id::text from public.members where user_id in ('00000000-0000-0000-0000-00000000f204', '00000000-0000-0000-0000-00000000f205'))), 2, 'each addition is audited');
 
 select * from finish();
 rollback;
