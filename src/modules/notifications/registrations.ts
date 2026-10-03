@@ -44,7 +44,7 @@ export async function notifyRegistration(registrationId: string): Promise<Notify
   const { data: r } = await db
     .from('event_registrations')
     .select(
-      `id, user_id, status, event_id, full_name_snapshot, email_snapshot, decision_note, cancelled_by,
+      `id, user_id, status, event_id, full_name_snapshot, email_snapshot, decision_note, cancelled_by, answers,
        created_at, decided_at, cancelled_at, events(${EVENT_COLUMNS})`,
     )
     .eq('id', registrationId)
@@ -79,10 +79,12 @@ export async function notifyRegistration(registrationId: string): Promise<Notify
     return 'none';
   }
 
+  // A person with an account gets their preferred language; a guest gets the language they registered in.
   const { data: profile } = r.user_id
     ? await db.from('profiles').select('preferred_locale').eq('id', r.user_id).maybeSingle()
     : { data: null };
-  const lang: Lang = profile?.preferred_locale === 'en' ? 'en' : 'ar';
+  const guestLang = (r.answers as { lang?: string } | null)?.lang;
+  const lang: Lang = (profile?.preferred_locale ?? guestLang) === 'en' ? 'en' : 'ar';
 
   // The group link goes only into the "confirmed" mail (NO-6).
   let groupLink: string | null = null;
@@ -105,7 +107,7 @@ export async function notifyRegistration(registrationId: string): Promise<Notify
     data: {
       name: r.full_name_snapshot,
       ...eventFacts(r.events, lang),
-      registrationsUrl: localized(lang, '/account/registrations'),
+      registrationsUrl: r.user_id ? localized(lang, '/account/registrations') : undefined,
       groupLink,
       note: r.decision_note,
     },
@@ -127,7 +129,7 @@ export async function notifyEventRegistrants(
   if (!e) return { sent: 0, failed: 0 };
   const { data: rows } = await db
     .from('event_registrations')
-    .select('id, user_id, full_name_snapshot, email_snapshot')
+    .select('id, user_id, full_name_snapshot, email_snapshot, answers')
     .eq('event_id', eventId)
     .in('status', ['pending', 'accepted', 'waitlisted']);
 
@@ -137,7 +139,8 @@ export async function notifyEventRegistrants(
     const { data: profile } = r.user_id
       ? await db.from('profiles').select('preferred_locale').eq('id', r.user_id).maybeSingle()
       : { data: null };
-    const lang: Lang = profile?.preferred_locale === 'en' ? 'en' : 'ar';
+    const guestLang = (r.answers as { lang?: string } | null)?.lang;
+    const lang: Lang = (profile?.preferred_locale ?? guestLang) === 'en' ? 'en' : 'ar';
     const outcome = await notify({
       templateKey: kind === 'cancelled' ? 'event.cancelled' : 'event.changed',
       entityType: 'event',

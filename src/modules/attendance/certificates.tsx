@@ -26,6 +26,7 @@ const dates = (start: string | null, end: string | null, locale: string) =>
 
 type Row = {
   id: string;
+  registration_id: string;
   event_id: string;
   user_id: string | null;
   recipient_name: string;
@@ -105,7 +106,14 @@ export async function deliverCertificate(
     const { data: profile } = row.user_id
       ? await db.from('profiles').select('preferred_locale').eq('id', row.user_id).maybeSingle()
       : { data: null };
-    const lang = profile?.preferred_locale === 'en' ? 'en' : 'ar';
+    // A guest gets the language they registered in.
+    const { data: reg } = await db
+      .from('event_registrations')
+      .select('answers')
+      .eq('id', row.registration_id)
+      .maybeSingle();
+    const guestLang = (reg?.answers as { lang?: string } | null)?.lang;
+    const lang = (profile?.preferred_locale ?? guestLang) === 'en' ? 'en' : 'ar';
     const outcome = await notify({
       templateKey: 'certificate.issued',
       entityType: 'certificate',
@@ -116,7 +124,9 @@ export async function deliverCertificate(
         name: row.recipient_name,
         eventTitle: (lang === 'en' ? e?.title_en : null) || e?.title_ar || '',
         certificateUrl: `${siteUrl()}${lang === 'en' ? '/en' : ''}/certificates/${row.id}`,
-        registrationsUrl: `${siteUrl()}${lang === 'en' ? '/en' : ''}/account/registrations`,
+        registrationsUrl: row.user_id
+          ? `${siteUrl()}${lang === 'en' ? '/en' : ''}/account/registrations`
+          : undefined,
       },
     });
     if (outcome === 'sent' || outcome === 'duplicate') {

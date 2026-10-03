@@ -3,12 +3,12 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { CheckCircle, X } from 'lucide-react';
 import { useToast } from '@/components/ui';
-import { useRouter } from '@/i18n/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { supabase } from '@/lib/supabase';
 import { eventTitle, type PublicEventCard } from '@/modules/events/public-types';
 import { registerForEvent } from '../actions';
+import { GuestRegisterDialog } from './GuestRegisterDialog';
 
 type Closed = { event: PublicEventCard } | null;
 
@@ -18,7 +18,6 @@ type Closed = { event: PublicEventCard } | null;
  * existing CSS (modal classes included) is reused unchanged. Returns the dialogs as an element to render once.
  */
 export function useRegistrationFlow() {
-  const router = useRouter();
   const { user, isLoggedIn } = useAuth();
   const { lang, t } = useLanguage();
   const en = lang === 'en';
@@ -26,6 +25,8 @@ export function useRegistrationFlow() {
   const [mine, setMine] = useState<Set<string>>(new Set());
   const [selected, setSelected] = useState<PublicEventCard | null>(null);
   const [closed, setClosed] = useState<Closed>(null);
+  const [guest, setGuest] = useState<PublicEventCard | null>(null);
+  const [guestDone, setGuestDone] = useState<Set<string>>(new Set());
   const [sending, setSending] = useState(false);
   const toast = useToast();
 
@@ -44,7 +45,23 @@ export function useRegistrationFlow() {
     };
   }, [isLoggedIn, user]);
 
-  const isRegistered = useCallback((id: string) => isLoggedIn && mine.has(id), [isLoggedIn, mine]);
+  // A guest registration is remembered on this device (the server is still the judge of duplicates).
+  useEffect(() => {
+    try {
+      const ids = Object.keys(localStorage)
+        .filter((k) => k.startsWith('sdc_guest_reg_'))
+        .map((k) => k.slice('sdc_guest_reg_'.length));
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- read the device memory once after mount
+      setGuestDone(new Set(ids));
+    } catch {
+      /* storage unavailable */
+    }
+  }, []);
+
+  const isRegistered = useCallback(
+    (id: string) => (isLoggedIn && mine.has(id)) || (!isLoggedIn && guestDone.has(id)),
+    [isLoggedIn, mine, guestDone],
+  );
 
   const start = useCallback(
     (event: PublicEventCard) => {
@@ -53,12 +70,13 @@ export function useRegistrationFlow() {
         return;
       }
       if (!isLoggedIn) {
-        router.push(`/login?redirect=/events/${event.slug}`);
+        // No account needed: the form opens in a modal (KFUCS parity).
+        setGuest(event);
         return;
       }
       setSelected(event);
     },
-    [isLoggedIn, router],
+    [isLoggedIn],
   );
 
   const confirm = async () => {
@@ -115,6 +133,13 @@ export function useRegistrationFlow() {
 
   const dialogs = (
     <>
+      {guest && (
+        <GuestRegisterDialog
+          event={guest}
+          onClose={() => setGuest(null)}
+          onRegistered={() => setGuestDone((prev) => new Set(prev).add(guest.id))}
+        />
+      )}
       {selected && (
         <div className="sdc-modal-overlay" onClick={() => setSelected(null)}>
           <div className="sdc-modal-card" onClick={(e) => e.stopPropagation()}>

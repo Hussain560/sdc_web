@@ -57,8 +57,11 @@ type Copy = {
 function copy(key: TemplateKey, lang: Lang, d: TemplateData): Copy {
   const t = d.eventTitle;
   const ar = lang === 'ar';
-  const mine = { label: ar ? 'تسجيلاتي' : 'My registrations', url: d.registrationsUrl };
   const browse = { label: ar ? 'تصفّح الفعاليات' : 'Browse events', url: d.eventUrl };
+  // Guests have no account area: their mails point at the event page instead.
+  const mine = d.registrationsUrl
+    ? { label: ar ? 'تسجيلاتي' : 'My registrations', url: d.registrationsUrl }
+    : browse;
   const details = [
     ...(d.when ? [ar ? `الموعد: ${d.when}` : `When: ${d.when}`] : []),
     ...(d.where ? [ar ? `المكان: ${d.where}` : `Where: ${d.where}`] : []),

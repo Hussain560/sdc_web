@@ -16,6 +16,8 @@ const REGISTRATION_CODES = [
   'INVALID_TRANSITION',
   'REASON_REQUIRED',
   'VALIDATION_FAILED',
+  'RATE_LIMITED',
+  'TOO_FAST',
 ] as const satisfies readonly ErrorCode[];
 
 const messages: Partial<Record<ErrorCode, Record<Lang, string>>> = {
@@ -50,6 +52,14 @@ const messages: Partial<Record<ErrorCode, Record<Lang, string>>> = {
     en: "This action isn't available for this registration.",
   },
   REASON_REQUIRED: { ar: 'يرجى كتابة السبب.', en: 'Please provide a reason.' },
+  RATE_LIMITED: {
+    ar: 'محاولات كثيرة. انتظر دقائق ثم حاول مجددًا.',
+    en: 'Too many attempts. Wait a few minutes and try again.',
+  },
+  TOO_FAST: {
+    ar: 'أُرسل النموذج بسرعة كبيرة. راجع بياناتك ثم أرسله مجددًا.',
+    en: 'The form was sent too quickly. Check your details and send it again.',
+  },
   VALIDATION_FAILED: {
     ar: 'تعذّر تنفيذ الطلب. راجع المدخلات.',
     en: 'The request could not be processed. Check your input.',

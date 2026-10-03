@@ -455,11 +455,22 @@ export function ReviewTable({
                 {NOTIFY_LABEL[open.notifyStatus]?.[lang]}
               </Badge>
               {open.wasMember && <Badge tone="accent">{L('عضو', 'Member')}</Badge>}
+              {open.guest && <Badge>{L('بدون حساب', 'Guest')}</Badge>}
             </div>
             <dl className="grid grid-cols-2 gap-3 rounded-xl border border-line bg-canvas p-4">
               <Info label={L('الفعالية', 'Event')}>
                 {ar ? open.eventTitleAr : open.eventTitleEn || open.eventTitleAr}
               </Info>
+              {open.phone && (
+                <Info label={L('الجوال', 'Phone')}>
+                  <span dir="ltr">{open.phone}</span>
+                </Info>
+              )}
+              {open.university && (
+                <Info label={L('الجامعة / الجهة', 'University / workplace')}>
+                  {open.university}
+                </Info>
+              )}
               <Info label={L('تاريخ التسجيل', 'Registered at')}>
                 {fullDate(open.createdAt, lang)}
               </Info>

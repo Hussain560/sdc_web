@@ -1,20 +1,19 @@
 import { NextResponse } from 'next/server';
-import { getUser } from '@/lib/auth/session';
-import { createClient } from '@/lib/supabase/server';
+import { createAdminClient } from '@/lib/supabase/admin';
 import { deliverCertificate, readCertificatePdf } from '@/modules/attendance/certificates';
 
 export const dynamic = 'force-dynamic';
 
 /**
- * Certificate download. RLS decides who may even see the row (its owner, or organizers holding events.complete);
- * the PDF itself lives in a private bucket and is read with the server key only after that check (AT-9).
+ * Certificate download for everyone who holds the link: participants do not need an account, so the certificate id
+ * (an unguessable uuid, already the key of the public verification page) is the secret. The e-mail carries the
+ * link. The PDF lives in a private bucket and is read with the server key. Same facts as the verification page.
  */
 export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   if (!/^[0-9a-f-]{36}$/i.test(id)) return new NextResponse('Not found', { status: 404 });
-  if (!(await getUser())) return new NextResponse('Unauthorized', { status: 401 });
 
-  const supabase = await createClient();
+  const supabase = createAdminClient();
   const { data: cert } = await supabase
     .from('certificates')
     .select('id, pdf_path, recipient_name')

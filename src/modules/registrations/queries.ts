@@ -73,6 +73,9 @@ export type ReviewRow = {
   decisionNote: string | null;
   notifyStatus: 'not_sent' | 'sending' | 'sent' | 'failed';
   attendancePercent: number | null;
+  phone: string | null;
+  university: string | null;
+  guest: boolean;
   eventId: string;
   eventTitleAr: string;
   eventTitleEn: string | null;
@@ -90,7 +93,7 @@ export async function listRegistrations(
   let query = supabase
     .from('event_registrations')
     .select(
-      'id, status, full_name_snapshot, email_snapshot, was_member, created_at, decided_at, decision_note, notify_status, attendance_percent, event_id, events(title_ar, title_en, seats)',
+      'id, status, full_name_snapshot, email_snapshot, was_member, created_at, decided_at, decision_note, notify_status, attendance_percent, answers, user_id, event_id, events(title_ar, title_en, seats)',
       { count: 'exact' },
     )
     .order('created_at', { ascending: true })
@@ -111,6 +114,15 @@ export async function listRegistrations(
     decidedAt: r.decided_at,
     decisionNote: r.decision_note,
     notifyStatus: r.notify_status as ReviewRow['notifyStatus'],
+    phone:
+      typeof (r.answers as Record<string, unknown>)?.phone === 'string'
+        ? ((r.answers as Record<string, string>).phone ?? null)
+        : null,
+    university:
+      typeof (r.answers as Record<string, unknown>)?.university === 'string'
+        ? ((r.answers as Record<string, string>).university ?? null)
+        : null,
+    guest: r.user_id === null,
     attendancePercent: r.attendance_percent,
     eventId: r.event_id,
     eventTitleAr: r.events?.title_ar ?? '',

@@ -816,6 +816,31 @@ isOneToOne: false
                   Relationships: [
                     
                   ]
+                },"registration_attempts": {
+                  Row: {
+                    "at": string,"email_hash": string,"event_id": string,"id": number,"ip_hash": string | null
+                  }
+                  Insert: {
+                    "at"?: string,"email_hash": string,"event_id": string,"id"?: never,"ip_hash"?: string | null
+                  }
+                  Update: {
+                    "at"?: string,"email_hash"?: string,"event_id"?: string,"id"?: never,"ip_hash"?: string | null
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "registration_attempts_event_id_fkey"
+      columns: ["event_id"]
+isOneToOne: false
+      referencedRelation: "events"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "registration_attempts_event_id_fkey"
+      columns: ["event_id"]
+isOneToOne: false
+      referencedRelation: "public_events"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"role_assignments": {
                   Row: {
                     "assigned_by": string | null,"committee_id": string | null,"created_at": string,"display_title_ar": string | null,"display_title_en": string | null,"end_reason": string | null,"ended_by": string | null,"ends_at": string | null,"id": string,"public_bio_ar": string | null,"public_bio_en": string | null,"public_tags_ar": (string)[] | null,"public_tags_en": (string)[] | null,"role_key": string,"starts_at": string,"updated_at": string,"user_id": string
@@ -1442,6 +1467,9 @@ isOneToOne: false
                            },
 "register_for_event":
 { Args: { "p_answers"?: Json,"p_event": string }; Returns: Json
+                           },
+"register_guest":
+{ Args: { "p_answers"?: Json,"p_elapsed_ms"?: number,"p_email": string,"p_event": string,"p_honeypot"?: string,"p_ip_hash"?: string,"p_name": string,"p_phone": string }; Returns: Json
                            },
 "save_article":
 { Args: { "p": Json,"p_expected_updated_at"?: string,"p_id": string }; Returns: Json

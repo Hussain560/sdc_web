@@ -1,6 +1,8 @@
 'use server';
 
+import { createHmac } from 'node:crypto';
 import { revalidatePath } from 'next/cache';
+import { headers } from 'next/headers';
 import { after } from 'next/server';
 import { z } from 'zod';
 import { fail, ok, type ErrorCode, type Result } from '@/lib/result';
@@ -136,4 +138,73 @@ export async function resendRegistrationMail(id: string, ctx: { lang: Lang }): P
   if (!data) return failCode('NOT_FOUND', lang);
   mailLater(id);
   return ok(undefined);
+}
+
+const GUEST_FIELD: Record<string, { ar: string; en: string }> = {
+  name: { ar: 'الاسم الكامل (3 أحرف على الأقل)', en: 'full name (at least 3 characters)' },
+  email: { ar: 'البريد الإلكتروني', en: 'e-mail address' },
+  phone: { ar: 'رقم الجوال', en: 'phone number' },
+};
+
+const guestSchema = z.object({
+  eventId: z.uuid(),
+  name: z.string().trim().max(100),
+  email: z.string().trim().max(160),
+  phone: z.string().trim().max(25),
+  university: z.string().trim().max(120).optional(),
+  honeypot: z.string().max(200).optional(),
+  elapsedMs: z.number().int().min(0).max(86_400_000).optional(),
+});
+
+/**
+ * Registration without an account (KFUCS parity). The database applies the seat rules and the anti-spam layers
+ * (honeypot, minimum fill time, per-e-mail and per-address throttles, one active registration per e-mail); the
+ * address is only ever stored as a keyed hash. The confirmation mail goes out after the response.
+ */
+export async function registerGuest(
+  input: z.input<typeof guestSchema>,
+  ctx: { lang: Lang },
+): Promise<Result<{ id: string | null; status: RegistrationStatus }>> {
+  const lang = langOf(ctx?.lang);
+  const parsed = guestSchema.safeParse(input);
+  if (!parsed.success) return failCode('VALIDATION_FAILED', lang);
+  const v = parsed.data;
+
+  const h = await headers();
+  const ip = (h.get('x-forwarded-for')?.split(',')[0] ?? h.get('x-real-ip') ?? '').trim();
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY ?? 'dev-only-key';
+  const ipHash = ip ? createHmac('sha256', key).update(ip).digest('hex') : null;
+
+  const supabase = await createClient();
+  const { data, error } = await supabase.rpc('register_guest', {
+    p_event: v.eventId,
+    p_name: v.name,
+    p_email: v.email,
+    p_phone: v.phone,
+    p_answers: { lang, ...(v.university ? { university: v.university } : {}) } as never,
+    p_ip_hash: ipHash as string,
+    p_honeypot: (v.honeypot ?? '') as string,
+    p_elapsed_ms: (v.elapsedMs ?? null) as number,
+  });
+  if (error) return dbFailure(error, lang);
+
+  const o = (data ?? {}) as {
+    ok?: boolean;
+    code?: string;
+    field?: string;
+    id?: string | null;
+    status?: string;
+  };
+  if (!o.ok) {
+    const code = (o.code ?? 'INTERNAL') as ErrorCode;
+    const field = o.field ? GUEST_FIELD[o.field] : undefined;
+    const message =
+      code === 'VALIDATION_FAILED' && field
+        ? `${lang === 'ar' ? 'تحقق من ' : 'Check the '}${field[lang]}.`
+        : registrationMessage(code, lang);
+    return fail(code, message, o.field ? { [o.field]: message } : undefined);
+  }
+  if (o.id) mailLater(o.id);
+  revalidatePath('/', 'layout');
+  return ok({ id: o.id ?? null, status: (o.status ?? 'pending') as RegistrationStatus });
 }

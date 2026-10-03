@@ -248,7 +248,7 @@ test.describe('attendance: tabs, public check-in, sign-off, certificates', () =>
         )
       )[0]!.id;
 
-      // The owner downloads a real PDF; anyone verifies by id; strangers cannot download.
+      // The owner downloads a real PDF; anyone holding the link verifies and downloads.
       const pctx = await browser.newContext({ baseURL: 'http://127.0.0.1:3300' });
       const ppage = await pctx.newPage();
       await signInAndWait(ppage, p1.email, undefined, '/en/login');
@@ -268,8 +268,9 @@ test.describe('attendance: tabs, public check-in, sign-off, certificates', () =>
       const spage = await stranger.newPage();
       await spage.goto(`/en/certificates/${certId}`);
       await expect(spage.getByRole('main').getByText('Attendee One Person')).toBeVisible();
-      await expect(spage.getByRole('link', { name: 'Download the PDF' })).toHaveCount(0);
-      expect((await spage.request.get(`/api/certificates/${certId}/pdf`)).status()).toBe(401);
+      // participants need no account: anyone holding the e-mailed link downloads the PDF
+      await expect(spage.getByRole('link', { name: 'Download the PDF' })).toBeVisible();
+      expect((await spage.request.get(`/api/certificates/${certId}/pdf`)).status()).toBe(200);
       expect(
         (await spage.goto('/en/certificates/00000000-0000-0000-0000-000000000099'))?.status(),
       ).toBe(404);

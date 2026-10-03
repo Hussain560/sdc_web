@@ -35,6 +35,7 @@ const eslintConfig = defineConfig([
       'src/modules/attendance/components/public/**/*.tsx',
       'src/modules/committees/components/public/**/*.tsx',
       'src/modules/registrations/components/useRegistrationFlow.tsx',
+      'src/modules/registrations/components/GuestRegisterDialog.tsx',
     ],
     rules: { 'no-restricted-syntax': 'off' },
   },

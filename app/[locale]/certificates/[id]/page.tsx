@@ -1,12 +1,10 @@
 import { notFound } from 'next/navigation';
-import { getUser } from '@/lib/auth/session';
-import { createClient } from '@/lib/supabase/server';
 import CertificateView from '@/modules/attendance/components/public/CertificateView';
 import { verifyCertificate } from '@/modules/attendance/queries';
 
 export const dynamic = 'force-dynamic';
 
-/** Q-020 / AT-9: anyone can verify a certificate by its id; only its owner (or an organizer) sees the download. */
+/** AT-9: the certificate id is the key. Anyone with the link (the e-mail carries it) verifies and downloads it. */
 export default async function CertificatePage({
   params,
 }: {
@@ -15,12 +13,5 @@ export default async function CertificatePage({
   const { id } = await params;
   const facts = await verifyCertificate(id);
   if (!facts) notFound();
-
-  let canDownload = false;
-  if (await getUser()) {
-    const supabase = await createClient();
-    const { data } = await supabase.from('certificates').select('id').eq('id', id).maybeSingle();
-    canDownload = !!data;
-  }
-  return <CertificateView id={id} facts={facts} canDownload={canDownload} />;
+  return <CertificateView id={id} facts={facts} canDownload />;
 }
