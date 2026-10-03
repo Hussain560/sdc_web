@@ -63,7 +63,13 @@ The AGENTS.md rule "never push" and the disabled push URL are owner decisions: c
 4. Fill in `docs/99-project-management/releases/v1.0.0.md` and announce.
 5. Hotfixes follow the git workflow: `fix/…` from `main`, tag `v1.0.1`, merge back to `develop`.
 
-## 6. Pre-push verification (done locally on the release branch)
+## 6. Visual baselines need a freshly seeded database
+
+The home, events and join pages show database content, so their screenshots only match a database in the state
+`supabase db reset` leaves (the auth e2e suite adds test events). Run `npx supabase db reset` before `npm run e2e` or
+`npm run e2e:update`; CI always starts from a fresh seed.
+
+## 7. Pre-push verification (done locally on the release branch)
 
 `npm run check`, `npx supabase test db`, `npm run e2e`, `npm run e2e:auth`, `node scripts/check-bundle.mjs`
 (after `npm run build`), `node scripts/restore-drill.mjs`, `node scripts/cutover-rehearsal.mjs`.
