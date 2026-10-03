@@ -24,11 +24,11 @@ The rebuilt platform is **ready to become production**: the cutover is scripted,
 
 | Story ID | Title | Priority | Points | Assignee | Status |
 | -------- | ----- | -------- | ------ | -------- | ------ |
-| LCH-001 | Production cutover runbook and rehearsal (timed, with rollback) | P0 | 5 | — | ⬜ |
-| LCH-002 | Contract migration (drop legacy tables), proven on a rehearsal copy | P0 | 3 | — | ⬜ |
-| LCH-003 | Production env, domain, e-mail domain verification, monitoring/keep-alive | P0 | 3 | — | ⬜ |
-| LCH-004 | Handover: administrator guide, runbooks, access inventory | P0 | 3 | — | ⬜ |
-| LCH-005 | Launch announcement (ar/en), release notes, release record | P1 | 2 | — | ⬜ |
+| LCH-001 | Production cutover runbook and rehearsal (timed, with rollback) | P0 | 5 | — | ✅ (local) |
+| LCH-002 | Contract migration (drop legacy tables), proven on a rehearsal copy | P0 | 3 | — | ✅ (local) |
+| LCH-003 | Production env, domain, e-mail domain verification, monitoring/keep-alive | P0 | 3 | — | ✅ (local) |
+| LCH-004 | Handover: administrator guide, runbooks, access inventory | P0 | 3 | — | ✅ (local) |
+| LCH-005 | Launch announcement (ar/en), release notes, release record | P1 | 2 | — | ✅ (local) |
 
 ### Acceptance criteria per story
 
@@ -115,7 +115,17 @@ Read for this sprint (paths relative to `docs/`):
 ### Completed
 | Item | Details |
 | ---- | ------- |
+| LCH-001 | [Cutover runbook](../../../08-infrastructure/cutover-runbook.md); `scripts/cutover-rehearsal.mjs` (backup, restore, pending migrations, contract, smoke, rollback test); [rehearsal 1](../../releases/rehearsal-1.md) passed locally. |
+| LCH-002 | `supabase/contract/20270410000000_drop_legacy_tables.sql` with a reconciliation guard, applied on the restored copy; kept out of `supabase/migrations/`. |
+| LCH-003 | `.env.example` complete, [environment-variables](../../../08-infrastructure/environment-variables.md) aligned, `scripts/preflight-production.mjs` (`--online` checks sign-ups), SPF/DKIM/DMARC and Auth checklists in the runbook. |
+| LCH-004 | [Administrator guide](../../../07-engineering/administrator-guide.md) (ar/en), [access inventory template](../../../07-engineering/access-inventory-template.md). |
+| LCH-005 | [Launch announcement](../../releases/launch-announcement.md) (ar/en), [CHANGELOG](../../../../CHANGELOG.md), [v1.0.0 record](../../releases/v1.0.0.md) drafted, not signed. |
 
 ### Known Gaps
 | Gap | Notes / follow-up |
 | --- | ----------------- |
+| Production actions | Projects, DNS, e-mail domain, hosted Auth settings, backup secrets, two named administrators (Q-017, Q-024, Q-025, Q-027, Q-010, Q-039) belong to the owners. |
+| Rehearsal on real data | Rehearsal 1 used the local sample data; rehearse again on a restored production backup. |
+| Contract follow-up edits | After the contract runs: regenerate database types, drop the legacy lines in `supabase/seed.sql`, and the legacy assertions in `supabase/tests/06_registrations.sql`; pgTAP and e2e were not re-run against the contracted copy. |
+| Tag | `v1.0.0` is not tagged and nothing was pushed. |
+| Visual baselines | Footer privacy link and logo rendering need an approved baseline refresh. |

@@ -11,6 +11,7 @@ Release records live here as `vX.Y.Z.md`, created from [`_template.md`](./_templ
 
 | Version | Milestone | Date | Record |
 | ------- | --------- | ---- | ------ |
+| v1.0.0 | M8 | planned 2027-04-10 | [draft](v1.0.0.md) — not tagged |
 | — | — | — | No releases yet. The first tag (`v0.1.0`) is created only after the strategy is approved and Phase 0 exits. |
 
 ## Unreleased (since the 2026-10-02 baseline)

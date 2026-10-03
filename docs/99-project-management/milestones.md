@@ -16,7 +16,7 @@ Each milestone is a gate: the release is tagged only when its criteria are met a
 | M4 | Membership intake ready | v0.5.0 | 3B | 2027-01-30 (S08) | `/join` with cycles; applications reviewed; members linked to accounts; directory from view; legacy claim | ⬜ Planned |
 | M5 | Content from the database | v0.6.0 | 3C | 2027-02-13 (S09) | Articles lifecycle; legacy articles migrated; full notification catalogue | ⬜ Planned |
 | M6 | Management & reports | v0.7.0 | 4 | 2027-03-13 (S11) | Dashboards, attendance sessions (QR/online/manual) + finalization, exports, audit UI, settings | ⬜ Planned |
-| M7 | Hardened | v0.8.0 | 5 | 2027-03-27 (S12) | WCAG AA verified; CSP enforced; CWV targets; privacy flows; restore drill | ⬜ Planned |
-| M8 | 🚀 Launch | v1.0.0 | 6 | 2027-04-10 (S13) | All Must requirements; production cutover; runbooks; two admins | ⬜ Planned |
+| M7 | Hardened | v0.8.0 | 5 | 2027-03-27 (S12) | WCAG AA verified; CSP enforced; CWV targets; privacy flows; restore drill | ✅ Done locally (production verification pending) |
+| M8 | 🚀 Launch | v1.0.0 | 6 | 2027-04-10 (S13) | All Must requirements; production cutover; runbooks; two admins | 🔄 Rehearsed locally; cutover is an owner action |
 
 Status legend: ✅ Complete · 🔄 In progress · 🔜 Next · ⬜ Planned · ⛔ Blocked.

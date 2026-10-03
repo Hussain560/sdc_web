@@ -36,8 +36,8 @@ Dates are indicative (2-week sprints starting Sundays, Saudi work week) and will
 | [Sprint 09](./sprint-09-articles-and-notifications/plan.md) | Articles & notifications completion | 2027-01-31 → 02-13 | 3C | M5 · `v0.6.0` | 20 | ✅ Local scope complete |
 | [Sprint 10](./sprint-10-attendance-and-committees/plan.md) | Attendance sessions (KFUCS), certificates model, committees | 2027-02-14 → 02-27 | 4 | M6 | 21 | ✅ Local scope complete |
 | [Sprint 11](./sprint-11-reports-audit-settings/plan.md) | Reports, audit log, exports, settings | 2027-02-28 → 03-13 | 4 | M6 · `v0.7.0` | 20 | ✅ Local scope complete |
-| [Sprint 12](./sprint-12-hardening/plan.md) | Quality & security hardening | 2027-03-14 → 03-27 | 5 | M7 · `v0.8.0` | 24 | 🔄 In progress (local) |
-| [Sprint 13](./sprint-13-launch/plan.md) | Production readiness & launch | 2027-03-28 → 04-10 | 6 | M8 · `v1.0.0` 🚀 | 16 | 🔄 In progress (local) |
+| [Sprint 12](./sprint-12-hardening/plan.md) | Quality & security hardening | 2027-03-14 → 03-27 | 5 | M7 · `v0.8.0` | 24 | ✅ Done locally (visual baseline approval pending) |
+| [Sprint 13](./sprint-13-launch/plan.md) | Production readiness & launch | 2027-03-28 → 04-10 | 6 | M8 · `v1.0.0` 🚀 | 16 | 🔄 Local work done; production actions with owners |
 
 Each sprint folder gets `notes.md` when it starts and `report.md` when it ends (from [`_template/`](./_template/plan.md)).
 

@@ -61,7 +61,7 @@ select is((select status from public.event_registrations where id = '00000000-00
 select is((select user_id from public.members where first_name_ar = '—'), null, 'the member row is unlinked from the account');
 select is((select bio_ar from public.members where first_name_ar = '—'), null, 'and its profile text is removed');
 select is((select status from public.data_requests where id = (select id from _req)), 'done', 'the request is closed');
-select is((select count(*)::int from public.audit_logs where action = 'privacy.request_done'), 1, 'and audited');
+select is((select count(*)::int from public.audit_logs where action = 'privacy.request_done' and entity_id = (select id::text from _req)), 1, 'and audited');
 select is((select count(*)::int from public.role_assignments where user_id = '00000000-0000-0000-0000-00000000f302'), 0, 'no positions remain');
 
 -- ------------------------------------------------------------------ retention

@@ -2,21 +2,33 @@
 
 | Field            | Value      |
 | ---------------- | ---------- |
-| **Last Updated** | 2026-10-02 |
+| **Last Updated** | 2026-10-03 |
 | **Status**       | Draft      |
 
-## 1. Current (CURRENT)
+## 1. Variables the application reads today (CURRENT)
 
-| Variable | Where | Notes |
-| -------- | ----- | ----- |
-| `NEXT_PUBLIC_SUPABASE_URL` | `.env.local` | Local stack URL |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | `.env.local` | Local anon key |
-| `GMAIL_USER`, `GMAIL_APP_PASSWORD` | Edge Function secrets (remote; location undocumented) | To be retired |
-| `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` | Injected into Edge Functions by Supabase | Used by `check-email-exists` |
+`.env.example` is the committed template; `node scripts/preflight-production.mjs --env <file> [--online]` checks a production set.
 
-There is no `.env.example`, and no validation of required variables.
+| Variable | Exposure | Production value | Purpose |
+| -------- | -------- | ---------------- | ------- |
+| `NEXT_PUBLIC_SUPABASE_URL` | Browser | hosted project URL (https) | Supabase API; also allowed in the CSP |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Browser | hosted anon/publishable key | RLS-limited client key |
+| `SUPABASE_SERVICE_ROLE_KEY` | **Server only** | hosted service key | Account creation, retention, certificates |
+| `SITE_URL` | Server | public https origin | Absolute links in e-mails and activation links |
+| `EMAIL_TRANSPORT` | Server | `smtp` (`mailpit` locally, `log` prints) | Adapter selection |
+| `SMTP_URL` | **Server only** | provider URL with credentials | Hosted e-mail |
+| `MAILPIT_URL` | Server | unset | Local capture only |
+| `EMAIL_FROM` | Server | verified sender on the project domain | Sender identity |
+| `EMAIL_DAILY_LIMIT` | Server | optional | Daily send cap |
+| `CRON_SECRET` | **Server only** | random, 16+ characters | Protects `/api/cron/email-retry` and `/api/cron/retention` |
+| `VERCEL` | Set by Vercel | `1` | Enables `upgrade-insecure-requests` in the CSP |
+| `PORT`, `NEXT_DIST_DIR` | Test runners | unset | Used by the e2e runners only |
 
-## 2. Target catalogue
+Repository variable and secrets for the workflows: `HEALTH_URLS` (variable), `SUPABASE_DB_URL` and `BACKUP_ENCRYPTION_KEY` (production environment secrets).
+
+The older Edge Function secrets (`GMAIL_USER`, `GMAIL_APP_PASSWORD`) belong to the retired legacy site and are not used by this application.
+
+## 2. Target catalogue (design intent; the table above is what is implemented)
 
 | Variable | Exposure | Local | Preview / Staging | Production | Purpose |
 | -------- | -------- | ----- | ----------------- | ---------- | ------- |
