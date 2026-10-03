@@ -109,3 +109,6 @@ Requirements: FR-RPT-001…003, FR-ADM-001…006, FR-REG-007, FR-PUB-001.
 | Partner logos | Logos are https links; there is no upload yet (a storage bucket can follow) |
 | Account activity page | The overview's "My activity" card covers it; there is no separate `/account/activity` |
 | Cron | The e-mail retry cron is daily because of the Hobby plan limit (see Sprint 09) |
+
+### Revision after review (2026-10-03)
+The public header changed (logo enlarged, search removed, *Login* and *Join us* for visitors, *Dashboard* when signed in), the Footer links read the settings added here, and the visual baselines were refreshed with the owner's approval. Leadership can add members from `/dashboard/members` (`members.create`).

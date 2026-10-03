@@ -92,3 +92,6 @@ Every story also follows the [standard vertical-slice tasks](../../work-breakdow
 | Sub-major data | Sub-majors come from legacy values only; reference-data admin can add more |
 | Membership expiry / renewal (Q-012) | Intentionally absent |
 | E-mail log screen | `email_logs` rows exist and are RLS-scoped; the admin screen is Sprint 09 |
+
+### Revision after review (2026-10-03)
+Accepting an application now **creates the account** and e-mails the activation link; leadership (system administrator, community leader, founders: new `members.create` permission) can also **add a member directly** from `/dashboard/members` with the same activation e-mail. See [ADR-013](../../../90-decisions/ADR-013-accounts-for-members-only.md).

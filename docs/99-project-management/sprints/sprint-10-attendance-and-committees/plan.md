@@ -117,3 +117,6 @@ Requirements: FR-REG-006, FR-EVT-006, FR-CMT-001…005, FR-PUB-003; BR-REG-010, 
 
 ### Revision after review (2026-10-03)
 Attendance, registrations and certificates moved into tabs of the event page with a public e-mail check-in and a 120-second QR, matching KFUCS — see [11-modules/attendance §17](../../../11-modules/attendance/README.md). The standalone `/dashboard/events/[id]/attendance/*` pages were removed.
+
+### Revision after review — guests (2026-10-03)
+Check-in works from the public QR page with the registered e-mail (no sign-in, throttled) and the certificate e-mail links to a public page where the PDF downloads (the certificate id is the key). See [attendance §17](../../../11-modules/attendance/README.md) and [ADR-013](../../../90-decisions/ADR-013-accounts-for-members-only.md).

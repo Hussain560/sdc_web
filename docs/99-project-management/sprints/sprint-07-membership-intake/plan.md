@@ -92,3 +92,6 @@ Every story also follows the [standard vertical-slice tasks](../../work-breakdow
 | Phone and preferred committee | Optional, per Q-011/Q-013 defaults |
 | Merge duplicates and "needs mapping" list | Reference-data merge and the reviewers' mapping of typed "other" answers come with the review screen (Sprint 08) |
 | `/join` countdown | Whole days only; the live "opens in one minute" demo works through the derived phase on refresh |
+
+### Revision after review (2026-10-03)
+`/join` needs no account: Q-002 is answered and the application form stores the e-mail and language (`apply_for_membership`, anti-spam layers). Self sign-up is removed. See [ADR-013](../../../90-decisions/ADR-013-accounts-for-members-only.md) and [membership §Revision](../../../11-modules/membership/README.md).

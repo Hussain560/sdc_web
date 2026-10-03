@@ -153,3 +153,6 @@ Every story also follows the [standard vertical-slice tasks](../../work-breakdow
 | Export audit | ✅ Sprint 08: `record_export()` writes the row count to `audit_logs` |
 | Legacy table | `event_registrations_legacy` is dropped in the hardening sprint after reconciliation sign-off |
 | Registrations tabs | `/account/registrations` is one list with status chips; the upcoming/past/cancelled tabs from the story are backlog |
+
+### Revision after review (2026-10-03)
+Registration no longer needs an account: a visitor registers from a modal on the event page (`register_guest`, honeypot, fill-time, throttles, one registration per e-mail), the organizer sees a *Guest* badge and the details, and guests receive e-mails in the language they used. See [ADR-013](../../../90-decisions/ADR-013-accounts-for-members-only.md) and [registrations §Revision](../../../11-modules/registrations/README.md). The registrations review queue also asks for confirmation before every decision and opens a details dialog per registrant.
