@@ -6,6 +6,16 @@ import { notify, type NotifyOutcome } from './notify';
 
 const siteUrl = () => (process.env.SITE_URL ?? 'http://localhost:3000').replace(/\/$/, '');
 
+/** The community WhatsApp group link set by the administrators (empty when none). */
+async function communityWhatsapp(): Promise<string | null> {
+  const { data } = await createAdminClient()
+    .from('site_settings')
+    .select('value')
+    .eq('key', 'community_whatsapp_link')
+    .maybeSingle();
+  return typeof data?.value === 'string' && data.value ? data.value : null;
+}
+
 /** membership.application_received — sent once per submission (idempotent on the submission time). */
 export async function notifyApplicationReceived(
   applicationId: string,
@@ -56,14 +66,8 @@ export async function notifyApplicationDecision(
     .eq('id', applicationId)
     .maybeSingle();
   if (!a || !a.decided_at) return 'none';
-  const template =
-    a.status === 'accepted'
-      ? 'membership.application_accepted'
-      : a.status === 'rejected'
-        ? 'membership.application_rejected'
-        : a.status === 'waitlisted'
-          ? 'membership.application_waitlisted'
-          : null;
+  // Only an acceptance is e-mailed; a rejection or waiting list is shown in the account instead.
+  const template = a.status === 'accepted' ? 'membership.application_accepted' : null;
   if (!template) return 'none';
   const lang: Lang = a.locale === 'en' ? 'en' : 'ar';
   const profile = { email: a.email };
@@ -83,6 +87,7 @@ export async function notifyApplicationDecision(
       membershipUrl: `${siteUrl()}${prefix}${template === 'membership.application_accepted' ? '/account/member-profile' : '/account/membership'}`,
       eventUrl: `${siteUrl()}${prefix}/events`,
       activationUrl,
+      whatsappUrl: await communityWhatsapp(),
     },
   });
 }
@@ -131,6 +136,7 @@ export async function sendMemberCreatedMail(input: {
       eventTitle: '',
       membershipUrl: `${siteUrl()}${prefix}/account/member-profile`,
       activationUrl: input.activationUrl,
+      whatsappUrl: await communityWhatsapp(),
     },
   });
 }

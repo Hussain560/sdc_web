@@ -106,6 +106,16 @@ test.describe('administration', () => {
       await page.getByRole('button', { name: 'Save settings' }).click();
       await expect(page.getByRole('status').filter({ hasText: 'Settings saved' })).toBeVisible();
 
+      await page.getByLabel('Community WhatsApp group link').fill('https://example.test/group');
+      await page.getByRole('button', { name: 'Save settings' }).click();
+      await expect(
+        page
+          .getByRole('alert')
+          .filter({ hasText: /WhatsApp group link/ })
+          .first(),
+      ).toBeVisible();
+      await page.getByLabel('Community WhatsApp group link').fill('');
+
       await page.goto('/en');
       await expect(page.getByRole('link', { name: 'Instagram' })).toHaveAttribute('href', url);
 

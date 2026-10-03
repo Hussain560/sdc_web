@@ -42,6 +42,8 @@ export type TemplateData = {
   note?: string | null;
   /** Welcome mails: the committee the person joins (optional). */
   committeeName?: string | null;
+  /** Welcome mails: the community WhatsApp group invitation (omitted when the admins set none). */
+  whatsappUrl?: string | null;
 };
 
 export type Rendered = { subject: string; html: string; text: string };
@@ -338,6 +340,10 @@ function renderWelcome(key: TemplateKey, lang: Lang, data: TemplateData): Render
   const closing = ar
     ? ['مكانك معنا يبدأ من هنا.', 'أهلًا بك في SDC ✨']
     : ['Your place with us starts here.', 'Welcome to SDC ✨'];
+  const whatsappText = ar
+    ? 'انضم إلى مجموعة المجتمع على واتساب لتبقى على اطلاع بالفعاليات وتتعرف على الأعضاء.'
+    : 'Join the community WhatsApp group to stay up to date with events and meet the members.';
+  const whatsappLabel = ar ? 'الانضمام إلى مجموعة واتساب' : 'Join the WhatsApp group';
   const hashtag = ar
     ? 'شاركنا مشاعرك عبر هاشتاق #SDC_Saudi #مجتمع_يؤثر'
     : 'Share how you feel with the hashtag #SDC_Saudi #مجتمع_يؤثر';
@@ -366,6 +372,7 @@ function renderWelcome(key: TemplateKey, lang: Lang, data: TemplateData): Render
           ${p(closing[0]!, 'font-weight:bold;margin:0;')}
           ${p(closing[1]!)}
           ${p(hashtag)}
+          ${data.whatsappUrl ? `${p(whatsappText)}<p style="margin:0 0 24px;"><a href="${esc(data.whatsappUrl)}" style="display:inline-block;background:#25a244;color:#ffffff;text-decoration:none;padding:12px 26px;border-radius:8px;font-size:15px;font-weight:bold;">${esc(whatsappLabel)}</a></p>` : ''}
           ${url ? `<p style="margin:24px 0;"><a href="${esc(url)}" style="display:inline-block;background:#335a4e;color:#ffffff;text-decoration:none;padding:12px 26px;border-radius:8px;font-size:15px;font-weight:bold;">${esc(label)}</a></p>` : ''}
           ${data.activationUrl && extra[0] ? p(extra[0], 'font-size:13px;color:#666666;') : ''}
           <p style="margin:0;font-size:14px;color:#333333;">${esc(signoff)}<br><strong>${esc(team)}</strong></p>
@@ -383,6 +390,7 @@ function renderWelcome(key: TemplateKey, lang: Lang, data: TemplateData): Render
     ...closing,
     '',
     hashtag,
+    ...(data.whatsappUrl ? ['', whatsappText, `${whatsappLabel}: ${data.whatsappUrl}`] : []),
     ...(url ? ['', `${label}: ${url}`] : []),
     ...(data.activationUrl && extra[0] ? ['', extra[0]] : []),
     '',

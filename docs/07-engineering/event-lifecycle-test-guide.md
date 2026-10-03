@@ -52,14 +52,14 @@ Expected: the event is now on `/events` and `/en/events` and has a public page.
 ## 3. Register as a guest (visitor, private window)
 
 1. Open the public event page → **Register** → modal. Fill name, e-mail (use `guest.one@example.test`), phone, tick consent, **Submit**.
-2. Expected: a success message, and a confirmation e-mail in Mailpit.
+2. Expected: a success message on screen. No e-mail is sent yet: the first e-mail arrives when the head accepts the registration (step 4).
 3. Spam checks, all expected to be refused with a clear message: the same e-mail again (duplicate); submitting within a second of opening the modal (too fast); many attempts in a row (throttle).
 4. Register two more guests (`guest.two@example.test`, `guest.three@example.test`).
 
 ## 4. Accept the registrations (head)
 
 1. Event page → **Registrations** tab, or `/dashboard/registrations`.
-2. Select a registrant → **Accept**. A confirmation dialog appears; confirm. A toast confirms and the person gets an e-mail with the group link.
+2. Select a registrant → **Accept**. A confirmation dialog appears; confirm. A toast confirms and the person gets the acceptance e-mail with the group link (the only registration e-mail; rejected, waitlisted and cancelled registrations send none).
 3. Accept the three guests. Click a name to open the details modal (registered at, e-mail, attendance %).
 
 ## 5. Day 1 attendance

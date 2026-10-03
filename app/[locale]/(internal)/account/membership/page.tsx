@@ -28,8 +28,8 @@ export default async function MyMembershipPage({
           title={ar ? 'لم تقدّم طلب عضوية بعد' : 'You have not applied for membership yet'}
           description={
             ar
-              ? 'نفتح باب العضوية مرة في السنة تقريبًا. تحقّق من صفحة الانضمام.'
-              : 'We open membership about once a year. Check the join page.'
+              ? 'تحقّق من صفحة الانضمام لمعرفة موعد فتح باب العضوية.'
+              : 'Check the join page to see when membership opens.'
           }
           action={
             <Link

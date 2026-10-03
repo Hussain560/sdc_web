@@ -23,6 +23,7 @@ export function SettingsForm({
     socialLinkedin: initial.socialLinkedin,
     socialX: initial.socialX,
     contactEmail: initial.contactEmail,
+    whatsappLink: initial.whatsappLink,
     footerRightsAr: initial.footerRightsAr,
     footerRightsEn: initial.footerRightsEn,
     certificatesEnabled: initial.certificatesEnabled,
@@ -86,6 +87,19 @@ export function SettingsForm({
               hint={ar ? 'اختياري.' : 'Optional.'}
               dir="ltr"
               type="email"
+            />
+            <Field
+              label={ar ? 'رابط مجموعة واتساب للمجتمع' : 'Community WhatsApp group link'}
+              value={v.whatsappLink}
+              onChange={(e) => set('whatsappLink', e.target.value)}
+              error={errors.whatsappLink}
+              hint={
+                ar
+                  ? 'يظهر في رسالة قبول العضوية وإضافة العضو. اتركه فارغًا لإخفائه. مثال: https://chat.whatsapp.com/…'
+                  : 'Shown in the membership acceptance and add-member e-mails. Leave empty to hide it. Example: https://chat.whatsapp.com/…'
+              }
+              dir="ltr"
+              inputMode="url"
             />
             <Field
               label={ar ? 'نص الحقوق (عربي)' : 'Rights text (Arabic)'}

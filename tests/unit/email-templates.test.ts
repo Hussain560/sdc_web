@@ -73,3 +73,18 @@ describe('e-mail templates', () => {
     expect(mail.html).toContain('href="https://x.test/en/dashboard"');
   });
 });
+
+describe('welcome mail', () => {
+  const data = { name: 'Sara', eventTitle: '', activationUrl: 'https://x.test/activate' };
+  it('shows the WhatsApp group only when a link is set', () => {
+    const without = renderTemplate('membership.application_accepted', 'ar', data);
+    expect(without.html).not.toContain('whatsapp');
+    const withLink = renderTemplate('member.created', 'en', {
+      ...data,
+      whatsappUrl: 'https://chat.whatsapp.com/abc',
+    });
+    expect(withLink.html).toContain('href="https://chat.whatsapp.com/abc"');
+    expect(withLink.text).toContain('https://chat.whatsapp.com/abc');
+    expect(withLink.html).toContain('welcome-banner.png');
+  });
+});

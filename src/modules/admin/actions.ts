@@ -38,6 +38,7 @@ export type SettingsInput = {
   socialLinkedin: string;
   socialX: string;
   contactEmail: string;
+  whatsappLink: string;
   footerRightsAr: string;
   footerRightsEn: string;
   certificatesEnabled: boolean;
@@ -55,6 +56,7 @@ export async function saveSettings(input: SettingsInput, ctx: { lang: Lang }): P
       social_linkedin: input.socialLinkedin,
       social_x: input.socialX,
       contact_email: input.contactEmail,
+      community_whatsapp_link: input.whatsappLink,
       footer_rights_ar: input.footerRightsAr,
       footer_rights_en: input.footerRightsEn,
       certificates_enabled: input.certificatesEnabled,

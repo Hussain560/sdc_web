@@ -88,6 +88,7 @@ export type AdminSettings = {
   socialLinkedin: string;
   socialX: string;
   contactEmail: string;
+  whatsappLink: string;
   footerRightsAr: string;
   footerRightsEn: string;
   certificatesEnabled: boolean;
@@ -106,6 +107,7 @@ export async function getAdminSettings(): Promise<AdminSettings> {
     socialLinkedin: s('social_linkedin'),
     socialX: s('social_x'),
     contactEmail: s('contact_email'),
+    whatsappLink: s('community_whatsapp_link'),
     footerRightsAr: s('footer_rights_ar'),
     footerRightsEn: s('footer_rights_en'),
     certificatesEnabled: m.get('certificates_enabled') === true,

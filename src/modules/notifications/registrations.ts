@@ -51,29 +51,9 @@ export async function notifyRegistration(registrationId: string): Promise<Notify
     .maybeSingle();
   if (!r?.events) return 'none';
 
-  let template: TemplateKey | null;
-  switch (r.status) {
-    case 'pending':
-      template = null; // no mail on submission: the person hears from us when the registration is decided
-      break;
-    case 'accepted':
-      template = 'registration.confirmed';
-      break;
-    case 'rejected':
-      template = 'registration.rejected';
-      break;
-    case 'waitlisted':
-      template = 'registration.waitlisted';
-      break;
-    case 'cancelled':
-      template =
-        r.cancelled_by && r.cancelled_by !== r.user_id
-          ? 'registration.cancelled_by_organizer'
-          : null;
-      break;
-    default:
-      template = null;
-  }
+  // Only an acceptance is e-mailed. Submission, rejection, waiting list and cancellation send nothing;
+  // the person sees the status in their account (or on the event page for a guest).
+  const template: TemplateKey | null = r.status === 'accepted' ? 'registration.confirmed' : null;
   if (!template) {
     await db.from('event_registrations').update({ notify_status: 'sent' }).eq('id', r.id);
     return 'none';

@@ -131,8 +131,8 @@ function ClosedCard({ ar }: { ar: boolean }) {
       </h2>
       <p className="max-w-md text-muted">
         {ar
-          ? 'نفتح باب العضوية مرة في السنة تقريبًا. تابع حساباتنا ليصلك إعلان الدورة القادمة.'
-          : 'We open membership about once a year. Follow our accounts to hear about the next intake.'}
+          ? 'تابع حساباتنا ليصلك إعلان فتح باب العضوية في الدورة القادمة.'
+          : 'Follow our accounts to hear when membership opens for the next intake.'}
       </p>
       <p className="text-muted">
         {ar ? 'يمكنك حضور فعالياتنا دون عضوية →' : 'You can attend our events without membership →'}{' '}
