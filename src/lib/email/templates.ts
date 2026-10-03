@@ -40,6 +40,8 @@ export type TemplateData = {
   /** Only ever set for registration.confirmed (NO-6). */
   groupLink?: string | null;
   note?: string | null;
+  /** Welcome mails: the committee the person joins (optional). */
+  committeeName?: string | null;
 };
 
 export type Rendered = { subject: string; html: string; text: string };
@@ -295,7 +297,103 @@ function copy(key: TemplateKey, lang: Lang, d: TemplateData): Copy {
   }
 }
 
+const WELCOME_KEYS: TemplateKey[] = ['member.created', 'membership.application_accepted'];
+
+/** The welcome / acceptance mail: the banner image, the community welcome text and one button (activation or profile). */
+function renderWelcome(key: TemplateKey, lang: Lang, data: TemplateData): Rendered {
+  const ar = lang === 'ar';
+  const c = copy(key, lang, data);
+  const site = (process.env.SITE_URL ?? 'http://localhost:3000').replace(/\/$/, '');
+  const banner = `${site}/assets/email/welcome-banner.png`;
+  const committee = data.committeeName?.trim();
+  const lines = ar
+    ? [
+        `مرحبًا ${data.name}،`,
+        key === 'member.created'
+          ? 'يسعدنا إبلاغك بانضمامك إلى المجتمع السعودي للمطورين (SDC) 🤍'
+          : 'يسعدنا إبلاغك بقبول طلب انضمامك إلى المجتمع السعودي للمطورين (SDC) 🤍',
+        ...(committee
+          ? [
+              `وسعيدين بانضمامك إلى ${committee}، ونتطلع نشوف اهتماماتك ومهاراتك تتحول إلى تجارب، مساهمات، ومشاريع مع أعضاء المجتمع.`,
+            ]
+          : []),
+        'في SDC نؤمن أن أفضل طريقة للتعلّم هي أن نبني معًا؛ نسأل، نجرّب، نشارك ما نتعلمه، ونحوّل الأفكار إلى إنجازات نقدر نشوفها ونشاركها.',
+        'نتمنى تكون هذه بداية جميلة لك معنا، وتلقى فيها أشخاصًا تتعلم منهم، وأشخاصًا يتعلمون منك، ومساحة تجرّب فيها أفكارك وتطوّر نفسك بطريقتك.',
+      ]
+    : [
+        `Hello ${data.name},`,
+        key === 'member.created'
+          ? 'We are delighted to tell you that you have joined the Saudi Developer Community (SDC) 🤍'
+          : 'We are delighted to tell you that your application to join the Saudi Developer Community (SDC) was accepted 🤍',
+        ...(committee
+          ? [
+              `We are happy to have you in ${committee}, and we look forward to seeing your interests and skills turn into experiences, contributions and projects with the community.`,
+            ]
+          : []),
+        'At SDC we believe the best way to learn is to build together: ask, try, share what we learn, and turn ideas into achievements we can see and share.',
+        'We hope this is a great start with us, where you meet people to learn from, people who learn from you, and room to try your ideas and grow your own way.',
+      ];
+  const greeting = lines[0] ?? '';
+  const rest = lines.slice(1);
+  const closing = ar
+    ? ['مكانك معنا يبدأ من هنا.', 'أهلًا بك في SDC ✨']
+    : ['Your place with us starts here.', 'Welcome to SDC ✨'];
+  const hashtag = ar
+    ? 'شاركنا مشاعرك عبر هاشتاق #SDC_Saudi #مجتمع_يؤثر'
+    : 'Share how you feel with the hashtag #SDC_Saudi #مجتمع_يؤثر';
+  const extra = c.body.slice(-1); // the "link expired" hint
+  const label = data.activationUrl
+    ? ar
+      ? 'الدخول إلى مجتمع SDC'
+      : 'Activate your account'
+    : (c.action?.label ?? '');
+  const url = c.action?.url;
+  const signoff = ar ? 'مع تحياتي،' : 'Kind regards,';
+  const team = ar ? 'فريق SDC' : 'SDC team';
+
+  const p = (s: string, style = '') =>
+    `<p style="margin:0 0 16px;font-size:15px;line-height:2;color:#333333;${style}">${esc(s)}</p>`;
+  const html = `<!DOCTYPE html>
+<html dir="${ar ? 'rtl' : 'ltr'}" lang="${lang}">
+<body style="margin:0;padding:0;background-color:#f4f4f5;font-family:Tahoma, Arial, sans-serif;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f4f4f5;padding:32px 0;">
+    <tr><td align="center">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;background-color:#ffffff;border-radius:12px;overflow:hidden;">
+        <tr><td style="padding:0;line-height:0;"><img src="${esc(banner)}" width="560" alt="${esc(ar ? 'أهلًا بك في SDC' : 'Welcome to SDC')}" style="display:block;width:100%;height:auto;border:0;"></td></tr>
+        <tr><td style="padding:28px 28px 24px;text-align:${ar ? 'right' : 'left'};">
+          ${p(greeting)}
+          ${rest.map((s) => p(s)).join('')}
+          ${p(closing[0]!, 'font-weight:bold;margin:0;')}
+          ${p(closing[1]!)}
+          ${p(hashtag)}
+          ${url ? `<p style="margin:24px 0;"><a href="${esc(url)}" style="display:inline-block;background:#335a4e;color:#ffffff;text-decoration:none;padding:12px 26px;border-radius:8px;font-size:15px;font-weight:bold;">${esc(label)}</a></p>` : ''}
+          ${data.activationUrl && extra[0] ? p(extra[0], 'font-size:13px;color:#666666;') : ''}
+          <p style="margin:0;font-size:14px;color:#333333;">${esc(signoff)}<br><strong>${esc(team)}</strong></p>
+        </td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`;
+  const text = [
+    greeting,
+    '',
+    ...rest,
+    '',
+    ...closing,
+    '',
+    hashtag,
+    ...(url ? ['', `${label}: ${url}`] : []),
+    ...(data.activationUrl && extra[0] ? ['', extra[0]] : []),
+    '',
+    signoff,
+    team,
+  ].join('\n');
+  return { subject: c.subject, html, text };
+}
+
 export function renderTemplate(key: TemplateKey, lang: Lang, data: TemplateData): Rendered {
+  if (WELCOME_KEYS.includes(key)) return renderWelcome(key, lang, data);
   const c = copy(key, lang, data);
   const ar = lang === 'ar';
   const greeting = ar ? `أهلًا بك ${data.name}،` : `Hello ${data.name},`;

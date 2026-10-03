@@ -54,7 +54,7 @@ export async function notifyRegistration(registrationId: string): Promise<Notify
   let template: TemplateKey | null;
   switch (r.status) {
     case 'pending':
-      template = 'registration.received';
+      template = null; // no mail on submission: the person hears from us when the registration is decided
       break;
     case 'accepted':
       template = 'registration.confirmed';

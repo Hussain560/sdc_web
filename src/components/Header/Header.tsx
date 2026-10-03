@@ -56,6 +56,9 @@ export default function Header() {
 
           <nav className="sdc-nav">
             <ul>
+              <li className={pathname === '/' ? 'active-link' : ''}>
+                <Link href="/">{t('home')}</Link>
+              </li>
               <li className={pathname === '/about' ? 'active-link' : ''}>
                 <Link href="/about">{t('about')}</Link>
               </li>

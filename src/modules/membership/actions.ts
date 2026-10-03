@@ -9,7 +9,6 @@ import { createPublicClient } from '@/lib/supabase/public';
 import { createClient } from '@/lib/supabase/server';
 import { isLang, type Lang } from '@/modules/auth/messages';
 import { getAccess } from '@/modules/access/queries';
-import { notifyApplicationReceived } from '@/modules/notifications/membership';
 import { membershipCode, membershipMessage } from './messages';
 import {
   toApplicationPayload,
@@ -72,13 +71,6 @@ export async function submitApplication(
   if (error) return dbFailure(error, lang);
 
   const id = (data as { id: string }).id;
-  after(async () => {
-    try {
-      await notifyApplicationReceived(id);
-    } catch (e) {
-      console.error('[membership] notification failed', (e as Error).message);
-    }
-  });
   refresh();
   return ok({ id });
 }
@@ -130,14 +122,6 @@ export async function applyForMembership(
     return fail(code, message, code === 'VALIDATION_FAILED' ? { email: message } : undefined);
   }
   const id = o.id ?? null;
-  if (id)
-    after(async () => {
-      try {
-        await notifyApplicationReceived(id);
-      } catch (e) {
-        console.error('[membership] notification failed', (e as Error).message);
-      }
-    });
   refresh();
   return ok({ id });
 }

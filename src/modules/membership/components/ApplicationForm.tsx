@@ -160,8 +160,8 @@ export function ApplicationForm({
         </h2>
         <p className="max-w-md text-muted">
           {ar
-            ? `أرسلنا رسالة تأكيد إلى ${values.email}. سنراجع الطلبات بعد إغلاق باب التقديم، وإذا قُبل طلبك فسيصلك بريد فيه رابط لتفعيل حسابك في بوابة الأعضاء.`
-            : `We sent a confirmation to ${values.email}. We review applications once the window closes; if you are accepted you will get an e-mail with a link to activate your account in the members portal.`}
+            ? `سنراجع الطلبات بعد إغلاق باب التقديم. إذا قُبل طلبك فسنراسلك على ${values.email} برسالة فيها رابط لتفعيل حسابك في بوابة الأعضاء.`
+            : `We review applications once the window closes. If you are accepted we will e-mail ${values.email} with a link to activate your account in the members portal.`}
         </p>
       </div>
     );

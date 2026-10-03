@@ -58,6 +58,7 @@ test.describe('intake cycle → /join → application', () => {
     browser,
     baseURL,
   }) => {
+    test.setTimeout(120_000); // two five-second form waits, two accounts and a full activation
     const leader = await persona('community_leader', { fullName: 'Intake Leader Person' });
     const head = await persona('committee_head', {
       committeeSlug: 'ai',
@@ -109,10 +110,7 @@ test.describe('intake cycle → /join → application', () => {
       await page.getByRole('button', { name: 'Submit application' }).click();
       await expect(page.getByText('Application received')).toBeVisible({ timeout: 20_000 });
 
-      const received = await waitForMail(email, {
-        subject: /received your membership application/i,
-      });
-      expect(received.html).not.toContain('/account/membership');
+      // No mail on submission: the applicant hears from us when the application is decided.
       const [app] = await sql<{ user_id: string | null; email: string }>(
         `select user_id, email from public.membership_applications where email = $1`,
         [email],

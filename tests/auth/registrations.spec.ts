@@ -96,9 +96,7 @@ test.describe('registration', () => {
       await page.locator('.sdc-btn-confirm').click();
       await expect(page.locator('.sdc-hero-btn-register')).toBeDisabled();
 
-      const received = await waitForMail(user.email, { subject: /received your registration/i });
-      expect(received.html).not.toContain(GROUP);
-
+      // No mail on submission; the first mail is the acceptance below.
       await gotoReady(page, '/en/account/registrations');
       await expect(page.getByText('Pending').first()).toBeVisible();
       await expect(page.getByText('Event group')).toHaveCount(0);

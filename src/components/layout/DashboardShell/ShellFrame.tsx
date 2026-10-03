@@ -16,6 +16,7 @@ import {
   LogOut,
   Mail,
   Menu,
+  PanelLeft,
   Moon,
   ScrollText,
   Settings,
@@ -66,6 +67,7 @@ const GROUP_ICONS: Partial<Record<NavGroupKey, LucideIcon>> = {
 };
 
 const OPEN_KEY = 'sdc_sidebar_open';
+const COLLAPSE_KEY = 'sdc_sidebar_collapsed';
 
 const ACCOUNT_LINKS = [
   { href: '/account/profile', icon: UserRound, label: { ar: 'ملفي الشخصي', en: 'My profile' } },
@@ -200,12 +202,10 @@ function NavSection({
 function SidebarContent({
   nav,
   activeItem,
-  user,
   onNavigate,
 }: {
   nav: VisibleNavGroup[];
   activeItem: string | null;
-  user: ShellUser;
   onNavigate: () => void;
 }) {
   const { lang } = useLanguage();
@@ -235,7 +235,6 @@ function SidebarContent({
   const flat = nav.filter((g) => g.key === 'general').flatMap((g) => g.items);
   const sections = nav.filter((g) => g.key !== 'general');
   const home = flat[0]?.href ?? '/dashboard';
-  const initial = (user.name.trim().charAt(0) || '?').toUpperCase();
 
   return (
     <div className="flex h-full flex-col">
@@ -303,20 +302,6 @@ function SidebarContent({
           <ExternalLink size={17} aria-hidden="true" />
           {ar ? 'الموقع العام' : 'Public site'}
         </Link>
-        <div className="flex items-center gap-2.5 rounded-lg px-3 py-2">
-          <span
-            aria-hidden="true"
-            className="flex size-8 shrink-0 items-center justify-center rounded-full bg-accent text-sm font-bold text-on-accent"
-          >
-            {initial}
-          </span>
-          <div className="min-w-0">
-            <p className="truncate text-[13px] font-semibold">{user.name}</p>
-            <p dir="ltr" className="truncate text-xs text-muted" style={{ textAlign: 'start' }}>
-              {user.email}
-            </p>
-          </div>
-        </div>
       </div>
     </div>
   );
@@ -351,7 +336,26 @@ function ShellFrameInner({
   const toast = useToast();
   const [drawer, setDrawer] = useState(false);
   const [menu, setMenu] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
   const ar = lang === 'ar';
+
+  useEffect(() => {
+    try {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- restore the saved choice after hydration
+      setCollapsed(localStorage.getItem(COLLAPSE_KEY) === '1');
+    } catch {
+      /* private mode: stay open */
+    }
+  }, []);
+  const toggleSidebar = () => {
+    const next = !collapsed;
+    setCollapsed(next);
+    try {
+      localStorage.setItem(COLLAPSE_KEY, next ? '1' : '0');
+    } catch {
+      /* ignore */
+    }
+  };
 
   const items = flatten(nav);
   const active = activeKey(items, pathname);
@@ -385,10 +389,20 @@ function ShellFrameInner({
   };
 
   return (
-    <div className="sdc-inter min-h-dvh bg-canvas text-text lg:grid lg:grid-cols-[240px_minmax(0,1fr)]">
+    <div
+      className={cn(
+        'sdc-inter min-h-dvh bg-canvas text-text lg:grid',
+        collapsed ? 'lg:grid-cols-[minmax(0,1fr)]' : 'lg:grid-cols-[240px_minmax(0,1fr)]',
+      )}
+    >
       {/* Desktop sidebar (first in DOM → inline-start in both directions) */}
-      <aside className="sticky top-0 hidden h-dvh border-e border-line bg-surface lg:block">
-        <SidebarContent nav={nav} activeItem={active} user={user} onNavigate={() => undefined} />
+      <aside
+        className={cn(
+          'sticky top-0 hidden h-dvh border-e border-line bg-surface',
+          collapsed ? 'lg:hidden' : 'lg:block',
+        )}
+      >
+        <SidebarContent nav={nav} activeItem={active} onNavigate={() => undefined} />
       </aside>
 
       {/* Mobile drawer */}
@@ -414,12 +428,7 @@ function ShellFrameInner({
             >
               <X size={18} />
             </button>
-            <SidebarContent
-              nav={nav}
-              activeItem={active}
-              user={user}
-              onNavigate={() => setDrawer(false)}
-            />
+            <SidebarContent nav={nav} activeItem={active} onNavigate={() => setDrawer(false)} />
           </div>
         </div>
       )}
@@ -433,6 +442,23 @@ function ShellFrameInner({
             onClick={() => setDrawer(true)}
           >
             <Menu size={20} />
+          </button>
+          <button
+            type="button"
+            className="hidden rounded-full p-2 text-muted hover:text-text lg:block"
+            aria-label={
+              collapsed
+                ? ar
+                  ? 'فتح الشريط الجانبي'
+                  : 'Open sidebar'
+                : ar
+                  ? 'إغلاق الشريط الجانبي'
+                  : 'Close sidebar'
+            }
+            aria-expanded={!collapsed}
+            onClick={toggleSidebar}
+          >
+            <PanelLeft size={20} className="rtl:-scale-x-100" aria-hidden="true" />
           </button>
           <nav aria-label={ar ? 'مسار الصفحة' : 'Breadcrumb'} className="min-w-0 flex-1">
             <ol className="flex min-w-0 items-center gap-2 text-sm">

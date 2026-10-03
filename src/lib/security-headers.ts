@@ -22,7 +22,7 @@ export function buildSecurityHeaders(opts: {
     `script-src 'self' 'unsafe-inline'${opts.production ? '' : " 'unsafe-eval'"}`,
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "font-src 'self' data: https://fonts.gstatic.com",
-    "img-src 'self' data: blob: https:",
+    `img-src 'self' data: blob: https: ${supabaseOrigin}`.trim(),
     `connect-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com ${supabaseOrigin} ${supabaseWs}`.trim(),
     "object-src 'none'",
     "base-uri 'self'",

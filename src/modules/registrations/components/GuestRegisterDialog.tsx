@@ -113,8 +113,8 @@ export function GuestRegisterDialog({
             'The event is full. You are on the waiting list and we will e-mail you if a seat opens.',
           )
         : L(
-            'استلمنا طلبك وسيصلك إشعار على بريدك بعد المراجعة.',
-            'Request received. You will be notified by e-mail after review.',
+            'استلمنا طلبك. سنراسلك على بريدك عند قبول التسجيل.',
+            'Request received. We will e-mail you once your registration is accepted.',
           );
 
   const err = (text?: string) =>

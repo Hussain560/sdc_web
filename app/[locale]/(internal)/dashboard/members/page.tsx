@@ -83,8 +83,8 @@ export default async function MembersAdminPage({
         title={ar ? 'الأعضاء' : 'Members'}
         description={
           ar
-            ? 'سجل الأعضاء وحالاتهم وروابط المطالبة للملفات القديمة.'
-            : 'Member records, statuses and claim links for legacy profiles.'
+            ? 'سجل الأعضاء وحالاتهم. «غير مرتبطة» هي ملفات أعضاء قدامى لم يربطوها بحساب بعد؛ أرسل لهم رابطًا ليربطوا ملفهم بحسابهم.'
+            : 'Member records and statuses. "Unclaimed" are old member profiles not yet linked to an account; send them a link so they can attach the profile to their account.'
         }
         readOnly={!canManage && !canCreate}
         readOnlyLabel={ar ? 'عرض فقط' : 'View only'}
