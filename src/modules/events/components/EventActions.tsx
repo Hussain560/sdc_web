@@ -38,11 +38,14 @@ export function EventActions({
   status,
   perms,
   hasEnded,
+  attendancePending = false,
 }: {
   id: string;
   status: EventStatus;
   perms: EventPerms;
   hasEnded: boolean;
+  /** Sessions exist but the event's attendance is not signed off yet. */
+  attendancePending?: boolean;
 }) {
   const { lang } = useLanguage();
   const ar = lang === 'ar';
@@ -153,7 +156,11 @@ export function EventActions({
               ? ar
                 ? 'متاح بعد انتهاء الفعالية'
                 : 'Available after the event ends'
-              : undefined
+              : attendancePending
+                ? ar
+                  ? 'اعتمد حضور الفعالية أولًا (تبويب الحضور)'
+                  : 'Finalize the attendance first (Attendance tab)'
+                : undefined
           }
           onClick={() => run('complete')}
         >

@@ -3,7 +3,7 @@
 | Field            | Value |
 | ---------------- | ----- |
 | **Last Updated** | 2026-10-02 |
-| **Status**       | Draft — KFUCS model ([ADR-012](../../90-decisions/ADR-012-event-model-and-wizard-from-kfucs.md)); certificate issuance behind a setting (**Q-020**) |
+| **Status**       | Implemented in Sprint 10 (local) — KFUCS model ([ADR-012](../../90-decisions/ADR-012-event-model-and-wizard-from-kfucs.md)); certificate issuance behind a setting (**Q-020**), default off |
 | **Owner**        | Committee heads (operation) · community leader (completion, certificates) |
 | **Phase / Sprints** | Phase 4 / Sprint 10 |
 | **Code**         | `src/modules/attendance/` |

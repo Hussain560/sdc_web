@@ -27,6 +27,8 @@ export type MyRegistration = {
   locationEn: string | null;
   groupLink: string | null;
   meetingUrl: string | null;
+  attendancePercent: number | null;
+  certificateId: string | null;
 };
 
 /** The signed-in person's registrations (RLS-filtered view; links appear only once accepted). */
@@ -35,7 +37,7 @@ export async function getMyRegistrations(): Promise<MyRegistration[]> {
   const { data } = await supabase
     .from('my_registrations')
     .select(
-      'id, event_id, status, attendance_result, created_at, slug, title_ar, title_en, event_status, start_date, end_date, start_time, location_ar, location_en, group_link, meeting_url',
+      'id, event_id, status, attendance_result, created_at, slug, title_ar, title_en, event_status, start_date, end_date, start_time, location_ar, location_en, group_link, meeting_url, attendance_percent, certificate_id',
     )
     .order('created_at', { ascending: false });
   return (data ?? []).map((r) => ({
@@ -55,6 +57,8 @@ export async function getMyRegistrations(): Promise<MyRegistration[]> {
     locationEn: r.location_en,
     groupLink: r.group_link,
     meetingUrl: r.meeting_url,
+    attendancePercent: r.attendance_percent,
+    certificateId: r.certificate_id,
   }));
 }
 

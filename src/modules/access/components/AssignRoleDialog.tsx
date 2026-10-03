@@ -32,18 +32,21 @@ export function AssignRoleDialog({
   committees,
   permissionLabels,
   canHandover,
+  fixedCommitteeId,
 }: {
   roles: RoleOption[];
   committees: CommitteeOption[];
   permissionLabels: Record<string, Localized>;
   canHandover: boolean;
+  /** On a committee page the position is always for that committee. */
+  fixedCommitteeId?: string;
 }) {
   const { lang } = useLanguage();
   const ar = lang === 'ar';
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [pending, startTransition] = useTransition();
-  const [values, setValues] = useState(empty);
+  const [values, setValues] = useState({ ...empty, committeeId: fixedCommitteeId ?? '' });
   const [user, setUser] = useState<Picked | null>(null);
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<Picked[]>([]);
@@ -67,7 +70,7 @@ export function AssignRoleDialog({
   const visibleResults = query.trim().length < 2 || user ? [] : results;
 
   const reset = () => {
-    setValues(empty);
+    setValues({ ...empty, committeeId: fixedCommitteeId ?? '' });
     setUser(null);
     setQuery('');
     setResults([]);
@@ -218,6 +221,7 @@ export function AssignRoleDialog({
               label={`${ar ? 'اللجنة' : 'Committee'} *`}
               value={values.committeeId}
               onChange={set('committeeId')}
+              disabled={!!fixedCommitteeId}
               required
             >
               <option value="">{ar ? 'اختر…' : 'Choose…'}</option>

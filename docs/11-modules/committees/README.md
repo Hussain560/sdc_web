@@ -3,7 +3,7 @@
 | Field            | Value |
 | ---------------- | ----- |
 | **Last Updated** | 2026-10-02 |
-| **Status**       | Draft |
+| **Status**       | Implemented through Sprint 10 (local) |
 | **Owner**        | Community leader |
 | **Phase / Sprints** | Phase 2 / Sprint 04 (model, leadership view) · Phase 4 / Sprint 10 (management UI, public committee pages) |
 | **Code**         | `src/modules/committees/` |
@@ -22,7 +22,7 @@ This module represents SDC's **committees** and **who holds which position for w
 | Public leadership view (`current_positions`) and `/committees/[slug]` pages | Committee reports (→ [reports](../reports/README.md)) |
 | Term handover (end the current term, appoint the next) | Elections and voting (not planned) |
 
-> **Implementation status (2026-10-02):** Sprint 04 delivered: the committees table and seed, `current_positions`, `handover_head()`, and the leadership sections on `/members`. The committee management screens and public committee pages remain Sprint 10.
+> **Implementation status (2026-10-03):** Sprint 04 delivered the committees table and seed, `current_positions`, `handover_head()` and the leadership sections on `/members`. Sprint 10 added `save_committee`, `set_committee_status` (deactivation ends the open positions), `delete_committee` (only when it owns nothing), `committee_cards`, the dashboard list and detail screens, and the public `/committees/[slug]` page. The home "community sections" tiles still wait for Q-004.
 
 ## 2. Current state (CURRENT / PROBLEM)
 

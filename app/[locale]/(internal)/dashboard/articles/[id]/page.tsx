@@ -8,15 +8,8 @@ import { ArticleEditor } from '@/modules/articles/components/ArticleEditor';
 import { articlePerms } from '@/modules/articles/permissions';
 import { getArticleForEdit, listTags } from '@/modules/articles/queries';
 
-export default async function ArticlePage({
-  params,
-  searchParams,
-}: {
-  params: Promise<{ id: string }>;
-  searchParams: Promise<{ saved?: string }>;
-}) {
+export default async function ArticlePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const { saved } = await searchParams;
   const user = await requireUser(`/dashboard/articles/${id}`);
   const access = await getAccess();
   if (!access || !canAny(access, ['articles.create', 'articles.edit', 'articles.publish']))
@@ -43,7 +36,6 @@ export default async function ArticlePage({
       tagSuggestions={await listTags()}
       perms={articlePerms(access, article)}
       me={{ id: user.id, name: access.displayName }}
-      justSaved={saved === '1'}
     />
   );
 }

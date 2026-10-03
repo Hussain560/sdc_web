@@ -80,6 +80,7 @@ const cases: Array<{
       '/en/dashboard/events',
       '/en/dashboard/registrations',
       '/en/dashboard/articles',
+      '/en/dashboard/committees',
     ],
   },
   {
@@ -89,6 +90,7 @@ const cases: Array<{
     expected: [
       '/en/dashboard',
       '/en/dashboard/events',
+      '/en/dashboard/committees',
       '/en/dashboard/members',
       '/en/dashboard/admin/roles',
     ],
@@ -101,6 +103,7 @@ const cases: Array<{
       '/en/dashboard',
       '/en/dashboard/events',
       '/en/dashboard/registrations',
+      '/en/dashboard/committees',
       '/en/dashboard/articles',
       '/en/dashboard/membership/cycles',
       '/en/dashboard/membership/applications',
@@ -119,6 +122,7 @@ const cases: Array<{
       '/en/dashboard',
       '/en/dashboard/events',
       '/en/dashboard/registrations',
+      '/en/dashboard/committees',
       '/en/dashboard/articles',
       '/en/dashboard/membership/cycles',
       '/en/dashboard/membership/applications',

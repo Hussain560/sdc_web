@@ -146,6 +146,8 @@ Indexes: `(event_id, status)`, `(user_id)`.
 
 RLS: participant reads own; reviewers (`registrations.review` in the event's committee scope, or global) read and decide; nobody updates directly — transitions via functions.
 
+> **Implementation notes (Sprint 10):** a session row exists only once an organizer opens the day (`scheduled` is the absence of a row, so the stored statuses are `open`, `closed`, `finalized`); `qr_secret` has no table grant — organizers read sessions through `event_attendance_overview()` / `session_roster()` and the token through `session_qr_token()`; `check_in()` verifies the HMAC itself; the token-less check-in is allowed for online and hybrid events only. The dates guard also protects a schedule edit: `sync_event_dates` and `save_event` keep the dates that stay and only delete the ones that leave.
+
 ## 6. `attendance_sessions`
 
 | Column | Type | Null | Constraint | Description |

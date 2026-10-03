@@ -1,5 +1,6 @@
 import 'server-only';
 import { createAdminClient } from '@/lib/supabase/admin';
+import { deliverCertificate } from '@/modules/attendance/certificates';
 import { notifyArticleSubmitted } from './articles';
 import { notifyCommitteeAssigned } from './access';
 import { notifyApplicationDecision, notifyApplicationReceived } from './membership';
@@ -62,6 +63,11 @@ export async function retryEmailLog(logId: string): Promise<RetryOutcome> {
     case 'role_assignment':
       outcome = await notifyCommitteeAssigned(id);
       break;
+    case 'certificate': {
+      const res = await deliverCertificate(id);
+      outcome = res === 'sent' ? 'sent' : res === 'failed' ? 'failed' : 'nothing';
+      break;
+    }
     default:
       return 'unsupported';
   }

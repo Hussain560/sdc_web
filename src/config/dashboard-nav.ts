@@ -110,7 +110,7 @@ export const DASHBOARD_NAV: NavGroupDef[] = [
         icon: 'users',
         scoped: true,
         requires: { permission: 'committee_members.manage', scope: 'committee' },
-        ready: false,
+        ready: true,
       },
       {
         key: 'committee-report',
@@ -150,7 +150,7 @@ export const DASHBOARD_NAV: NavGroupDef[] = [
         icon: 'building',
         requires: { permission: 'committees.manage', scope: 'any' },
         orRequires: [{ permission: 'roles.view', scope: 'any' }],
-        ready: false,
+        ready: true,
       },
       {
         key: 'articles',

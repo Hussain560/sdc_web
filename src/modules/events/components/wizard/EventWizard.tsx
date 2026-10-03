@@ -68,10 +68,8 @@ export function EventWizard(props: Props) {
   const toast = useToast();
   const invalidText =
     lang === 'ar' ? 'يرجى مراجعة الحقول المحددة.' : 'Please review the highlighted fields.';
-  useEffect(() => {
-    if (props.justSaved) toast.success(lang === 'ar' ? 'تم حفظ المسودة' : 'Draft saved');
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- once, on arrival from the first save
-  }, []);
+  // The "Draft saved" toast of the first save survives the redirect (the provider lives above the page), so the
+  // `justSaved` flag from the URL needs no toast of its own.
   const [restored, setRestored] = useState(false);
   const [confirmChange, setConfirmChange] = useState<null | 'submit' | 'approve' | 'save'>(null);
   const [pending, startTransition] = useTransition();

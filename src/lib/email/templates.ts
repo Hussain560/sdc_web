@@ -15,7 +15,8 @@ export type TemplateKey =
   | 'membership.application_waitlisted'
   | 'member.claim_invite'
   | 'review.pending'
-  | 'committee.assigned';
+  | 'committee.assigned'
+  | 'certificate.issued';
 
 export type TemplateData = {
   name: string;
@@ -29,6 +30,8 @@ export type TemplateData = {
   reviewUrl?: string;
   /** committee.assigned: the dashboard the new position opens. */
   dashboardUrl?: string;
+  /** certificate.issued: the public verification page (the PDF is downloaded from there). */
+  certificateUrl?: string;
   when?: string;
   where?: string;
   /** Only ever set for registration.confirmed (NO-6). */
@@ -214,6 +217,19 @@ function copy(key: TemplateKey, lang: Lang, d: TemplateData): Copy {
             : 'You will find the tools for your position in the dashboard.',
         ],
         action: { label: ar ? 'لوحة التحكم' : 'Open the dashboard', url: d.dashboardUrl },
+      };
+    case 'certificate.issued':
+      return {
+        subject: ar ? `شهادة حضورك في ${t}` : `Your certificate for ${t}`,
+        lead: ar
+          ? `شكرًا لحضورك فعالية «${t}». شهادتك جاهزة.`
+          : `Thank you for attending “${t}”. Your certificate is ready.`,
+        body: [
+          ar
+            ? 'يمكنك عرض الشهادة وتنزيلها بصيغة PDF، ومشاركة رابط التحقق منها مع من تشاء.'
+            : 'You can view and download it as a PDF, and share its verification link with anyone.',
+        ],
+        action: { label: ar ? 'عرض الشهادة' : 'View your certificate', url: d.certificateUrl },
       };
     case 'event.cancelled':
       return {

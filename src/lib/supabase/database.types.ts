@@ -152,6 +152,92 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"attendance_records": {
+                  Row: {
+                    "checked_in_at": string,"id": string,"method": string,"recorded_by": string | null,"registration_id": string,"session_id": string
+                  }
+                  Insert: {
+                    "checked_in_at"?: string,"id"?: string,"method": string,"recorded_by"?: string | null,"registration_id": string,"session_id": string
+                  }
+                  Update: {
+                    "checked_in_at"?: string,"id"?: string,"method"?: string,"recorded_by"?: string | null,"registration_id"?: string,"session_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "attendance_records_recorded_by_fkey"
+      columns: ["recorded_by"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "attendance_records_registration_id_fkey"
+      columns: ["registration_id"]
+isOneToOne: false
+      referencedRelation: "event_registrations"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "attendance_records_registration_id_fkey"
+      columns: ["registration_id"]
+isOneToOne: false
+      referencedRelation: "my_registrations"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "attendance_records_session_id_fkey"
+      columns: ["session_id"]
+isOneToOne: false
+      referencedRelation: "attendance_sessions"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"attendance_sessions": {
+                  Row: {
+                    "closed_at": string | null,"closed_by": string | null,"created_at": string,"event_date_id": string,"event_id": string,"finalized_at": string | null,"finalized_by": string | null,"id": string,"opened_at": string,"opened_by": string | null,"opened_late": boolean,"qr_secret": string,"status": string
+                  }
+                  Insert: {
+                    "closed_at"?: string | null,"closed_by"?: string | null,"created_at"?: string,"event_date_id": string,"event_id": string,"finalized_at"?: string | null,"finalized_by"?: string | null,"id"?: string,"opened_at"?: string,"opened_by"?: string | null,"opened_late"?: boolean,"qr_secret"?: string,"status"?: string
+                  }
+                  Update: {
+                    "closed_at"?: string | null,"closed_by"?: string | null,"created_at"?: string,"event_date_id"?: string,"event_id"?: string,"finalized_at"?: string | null,"finalized_by"?: string | null,"id"?: string,"opened_at"?: string,"opened_by"?: string | null,"opened_late"?: boolean,"qr_secret"?: string,"status"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "attendance_sessions_closed_by_fkey"
+      columns: ["closed_by"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "attendance_sessions_event_date_id_fkey"
+      columns: ["event_date_id"]
+isOneToOne: true
+      referencedRelation: "event_dates"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "attendance_sessions_event_id_fkey"
+      columns: ["event_id"]
+isOneToOne: false
+      referencedRelation: "events"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "attendance_sessions_event_id_fkey"
+      columns: ["event_id"]
+isOneToOne: false
+      referencedRelation: "public_events"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "attendance_sessions_finalized_by_fkey"
+      columns: ["finalized_by"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "attendance_sessions_opened_by_fkey"
+      columns: ["opened_by"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"audit_logs": {
                   Row: {
                     "action": string,"actor_id": string | null,"committee_id": string | null,"entity_id": string,"entity_type": string,"id": number,"occurred_at": string,"request_id": string | null,"summary": NonNullable<Json>
@@ -166,6 +252,49 @@ isOneToOne: false
                     {
       foreignKeyName: "audit_logs_actor_id_fkey"
       columns: ["actor_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"certificates": {
+                  Row: {
+                    "attempt_count": number,"attendance_percent": number,"delivery_status": string,"error_code": string | null,"event_id": string,"id": string,"issued_at": string,"last_attempt_at": string | null,"pdf_path": string | null,"recipient_email": string,"recipient_name": string,"registration_id": string,"sent_at": string | null,"sessions_attended": number,"sessions_expected": number,"user_id": string | null
+                  }
+                  Insert: {
+                    "attempt_count"?: number,"attendance_percent": number,"delivery_status"?: string,"error_code"?: string | null,"event_id": string,"id"?: string,"issued_at"?: string,"last_attempt_at"?: string | null,"pdf_path"?: string | null,"recipient_email": string,"recipient_name": string,"registration_id": string,"sent_at"?: string | null,"sessions_attended": number,"sessions_expected": number,"user_id"?: string | null
+                  }
+                  Update: {
+                    "attempt_count"?: number,"attendance_percent"?: number,"delivery_status"?: string,"error_code"?: string | null,"event_id"?: string,"id"?: string,"issued_at"?: string,"last_attempt_at"?: string | null,"pdf_path"?: string | null,"recipient_email"?: string,"recipient_name"?: string,"registration_id"?: string,"sent_at"?: string | null,"sessions_attended"?: number,"sessions_expected"?: number,"user_id"?: string | null
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "certificates_event_id_fkey"
+      columns: ["event_id"]
+isOneToOne: false
+      referencedRelation: "events"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "certificates_event_id_fkey"
+      columns: ["event_id"]
+isOneToOne: false
+      referencedRelation: "public_events"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "certificates_registration_id_fkey"
+      columns: ["registration_id"]
+isOneToOne: true
+      referencedRelation: "event_registrations"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "certificates_registration_id_fkey"
+      columns: ["registration_id"]
+isOneToOne: true
+      referencedRelation: "my_registrations"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "certificates_user_id_fkey"
+      columns: ["user_id"]
 isOneToOne: false
       referencedRelation: "profiles"
       referencedColumns: ["id"]
@@ -742,6 +871,25 @@ isOneToOne: false
                   Relationships: [
                     
                   ]
+                },"site_settings": {
+                  Row: {
+                    "is_public": boolean,"key": string,"updated_at": string,"updated_by": string | null,"value": NonNullable<Json>
+                  }
+                  Insert: {
+                    "is_public"?: boolean,"key": string,"updated_at"?: string,"updated_by"?: string | null,"value": NonNullable<Json>
+                  }
+                  Update: {
+                    "is_public"?: boolean,"key"?: string,"updated_at"?: string,"updated_by"?: string | null,"value"?: NonNullable<Json>
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "site_settings_updated_by_fkey"
+      columns: ["updated_by"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"tags": {
                   Row: {
                     "created_at": string,"id": string,"label_ar": string,"label_en": string | null,"slug": string
@@ -1074,7 +1222,7 @@ isOneToOne: false
                   ]
                 },"my_registrations": {
                   Row: {
-                    "attendance_result": string | null,"cancelled_at": string | null,"cover_image_path": string | null,"created_at": string | null,"decided_at": string | null,"end_date": string | null,"event_id": string | null,"event_status": string | null,"group_link": string | null,"id": string | null,"location_ar": string | null,"location_en": string | null,"location_mode": string | null,"meeting_notes": string | null,"meeting_url": string | null,"slug": string | null,"start_date": string | null,"start_time": string | null,"status": string | null,"title_ar": string | null,"title_en": string | null
+                    "attendance_percent": number | null,"attendance_result": string | null,"cancelled_at": string | null,"certificate_id": string | null,"cover_image_path": string | null,"created_at": string | null,"decided_at": string | null,"end_date": string | null,"event_id": string | null,"event_status": string | null,"group_link": string | null,"id": string | null,"location_ar": string | null,"location_en": string | null,"location_mode": string | null,"meeting_notes": string | null,"meeting_url": string | null,"slug": string | null,"start_date": string | null,"start_time": string | null,"status": string | null,"title_ar": string | null,"title_en": string | null
                   }
                   Relationships: [
                     {
@@ -1141,14 +1289,40 @@ isOneToOne: false
 "cancel_registration_by_organizer":
 { Args: { "p_id": string,"p_reason": string }; Returns: undefined
                            },
+"check_in":
+{ Args: { "p_session": string,"p_token"?: string }; Returns: string
+                           },
+"check_in_context":
+{ Args: { "p_session"?: string,"p_slug": string }; Returns: Json
+                           },
 "claim_legacy_member":
 { Args: { "p_token": string }; Returns: string
                            },
 "claim_membership_application":
 { Args: { "p_id": string,"p_release"?: boolean }; Returns: undefined
                            },
+"close_session":
+{ Args: { "p_session": string }; Returns: undefined
+                           },
+"committee_cards":
+{ Args: Record<PropertyKey, never>; Returns: {
+              "articles_count": number,"deputy_name_ar": string,"deputy_name_en": string,"display_order": number,"events_count": number,"head_name_ar": string,"head_name_en": string,"id": string,"members_count": number,"name_ar": string,"name_en": string,"slug": string,"status": string
+            }[]
+                           },
+"committee_stats":
+{ Args: { "p_committee": string,"p_from": string,"p_to": string }; Returns: Json
+                           },
+"community_stats":
+{ Args: { "p_from": string,"p_to": string }; Returns: Json
+                           },
+"correct_attendance":
+{ Args: { "p_present": boolean,"p_reason": string,"p_registration": string,"p_session": string }; Returns: undefined
+                           },
 "create_member_claim_token":
 { Args: { "p_email": string,"p_member": string }; Returns: string
+                           },
+"dashboard_summary":
+{ Args: Record<PropertyKey, never>; Returns: Json
                            },
 "decide_membership_applications":
 { Args: { "p_decision": string,"p_ids": (string)[],"p_note"?: string }; Returns: Json
@@ -1157,6 +1331,9 @@ isOneToOne: false
 { Args: { "p_decision": string,"p_ids": (string)[],"p_note"?: string }; Returns: Json
                            },
 "delete_article_draft":
+{ Args: { "p_id": string }; Returns: undefined
+                           },
+"delete_committee":
 { Args: { "p_id": string }; Returns: undefined
                            },
 "delete_event_draft":
@@ -1170,6 +1347,9 @@ isOneToOne: false
 "end_role_assignment":
 { Args: { "p_ends_at"?: string,"p_id": string,"p_reason": string }; Returns: undefined
                            },
+"event_attendance_overview":
+{ Args: { "p_event": string }; Returns: Json
+                           },
 "event_history":
 { Args: { "p_id": string }; Returns: {
               "action": string,"actor_name": string,"occurred_at": string,"summary": Json
@@ -1180,11 +1360,32 @@ isOneToOne: false
               "id": string,"link": string,"name_ar": string,"name_en": string,"photo_path": string,"profile_id": string,"role": string,"sort_order": number,"title_ar": string,"title_en": string
             }[]
                            },
+"finalize_event_attendance":
+{ Args: { "p_event": string }; Returns: Json
+                           },
+"finalize_session":
+{ Args: { "p_session": string }; Returns: Json
+                           },
 "handover_head":
 { Args: { "p_at"?: string,"p_committee": string,"p_new_head": string }; Returns: string
                            },
+"issue_certificates":
+{ Args: { "p_event": string }; Returns: Json
+                           },
+"my_activity":
+{ Args: Record<PropertyKey, never>; Returns: Json
+                           },
+"open_session":
+{ Args: { "p_confirm"?: boolean,"p_event_date": string }; Returns: string
+                           },
+"pending_queues":
+{ Args: Record<PropertyKey, never>; Returns: Json
+                           },
 "preview_member_claim":
 { Args: { "p_token": string }; Returns: Json
+                           },
+"record_attendance":
+{ Args: { "p_present"?: boolean,"p_registrations": (string)[],"p_session": string }; Returns: number
                            },
 "record_export":
 { Args: { "p_count": number,"p_kind": string }; Returns: undefined
@@ -1194,6 +1395,9 @@ isOneToOne: false
                            },
 "save_article":
 { Args: { "p": Json,"p_expected_updated_at"?: string,"p_id": string }; Returns: Json
+                           },
+"save_committee":
+{ Args: { "p": Json,"p_id": string }; Returns: Json
                            },
 "save_event":
 { Args: { "p": Json,"p_event_id": string,"p_expected_updated_at"?: string }; Returns: Json
@@ -1210,6 +1414,17 @@ isOneToOne: false
 { Args: { "p_query": string }; Returns: {
               "full_name_ar": string,"full_name_en": string,"id": string
             }[]
+                           },
+"session_qr_token":
+{ Args: { "p_session": string }; Returns: Json
+                           },
+"session_roster":
+{ Args: { "p_session": string }; Returns: {
+              "checked_in_at": string,"full_name": string,"method": string,"present": boolean,"registration_id": string,"was_member": boolean
+            }[]
+                           },
+"set_committee_status":
+{ Args: { "p_active": boolean,"p_id": string,"p_reason"?: string }; Returns: Json
                            },
 "set_member_status":
 { Args: { "p_id": string,"p_reason"?: string,"p_status": string }; Returns: string
@@ -1231,6 +1446,11 @@ isOneToOne: false
                            },
 "update_my_member_profile":
 { Args: { "p": Json }; Returns: undefined
+                           },
+"verify_certificate":
+{ Args: { "p_id": string }; Returns: {
+              "attendance_percent": number,"end_date": string,"issued_at": string,"recipient_name": string,"start_date": string,"title_ar": string,"title_en": string
+            }[]
                            },
 "withdraw_membership_application":
 { Args: { "p_id": string }; Returns: undefined

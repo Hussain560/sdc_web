@@ -103,6 +103,29 @@ export default async function MyRegistrationsPage({
                         : 'You are on the waiting list; we will tell you when a seat opens.'}
                     </p>
                   )}
+                  {r.attendancePercent !== null && (
+                    <p className="text-sm tabular-nums text-muted">
+                      {ar
+                        ? `نسبة حضورك: ${r.attendancePercent}%`
+                        : `Your attendance: ${r.attendancePercent}%`}
+                    </p>
+                  )}
+                  {r.certificateId && (
+                    <div className="flex flex-wrap gap-3 text-sm">
+                      <Link
+                        href={`/certificates/${r.certificateId}`}
+                        className="text-accent underline"
+                      >
+                        {ar ? 'عرض الشهادة والتحقق منها' : 'View and verify the certificate'}
+                      </Link>
+                      <a
+                        href={`/api/certificates/${r.certificateId}/pdf`}
+                        className="text-accent underline"
+                      >
+                        {ar ? 'تنزيل PDF' : 'Download PDF'}
+                      </a>
+                    </div>
+                  )}
                   {canCancel && (
                     <div>
                       <CancelMyRegistration id={r.id} title={title} />

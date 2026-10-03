@@ -127,7 +127,7 @@ erDiagram
 | `member.claim_invite` | members | legacy member | S08 |
 | `review.pending` | articles | committee publishers | S09 |
 | `committee.assigned` | access | assigned person | S09 |
-| `certificate.issued` | attendance | participant | S10 |
+| `certificate.issued` | attendance | participant | S10 (done) |
 | `event.reminder` | events | registrants | optional, Phase 4 |
 
 The full trigger table is in [notification rules](../../03-business-domain/notification-rules.md).

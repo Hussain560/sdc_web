@@ -2,10 +2,12 @@ import { Lock } from 'lucide-react';
 import { notFound } from 'next/navigation';
 import { Alert, Badge, Card, Tabs } from '@/components/ui';
 import { Link } from '@/i18n/navigation';
+import { can } from '@/lib/auth/permissions';
 import { requireUser } from '@/lib/auth/session';
 import { todayInRiyadh } from '@/lib/time';
 import { formatDate, formatDateRange, formatRelative, formatTimeRange } from '@/lib/format';
 import { getAccess } from '@/modules/access/queries';
+import { getAttendanceOverview } from '@/modules/attendance/queries';
 import { EventActions } from '@/modules/events/components/EventActions';
 import { EventPreviewCard } from '@/modules/events/components/EventPreviewCard';
 import { Timeline } from '@/modules/events/components/Timeline';
@@ -50,6 +52,15 @@ export default async function EventDetailPage({
       : f.endDate || f.startDate || null;
   const hasEnded = lastDate !== null && lastDate < todayInRiyadh();
   const history = tab === 'history' ? await getEventHistory(id) : [];
+  // Attendance belongs to events that are live or done, for the people who run it (registrations.attendance).
+  const attendanceTab =
+    ['published', 'completed'].includes(event.status) &&
+    can(access, 'registrations.attendance', event.committeeId);
+  const overview =
+    attendanceTab && event.status === 'published' ? await getAttendanceOverview(id) : null;
+  // Completion needs signed-off attendance as soon as any session exists (AT-6 / KFUCS F-36).
+  const attendancePending =
+    !!overview && overview.days.some((d) => d.sessionId !== null) && !overview.event.finalizedAt;
   const title = ar ? f.titleAr : f.titleEn || f.titleAr;
   const other = ar ? f.titleEn : f.titleAr;
 
@@ -94,7 +105,13 @@ export default async function EventDetailPage({
             {event.committeeName[lang]} · {TYPE_LABEL[f.type][lang]}
           </p>
         </div>
-        <EventActions id={event.id} status={event.status} perms={perms} hasEnded={hasEnded} />
+        <EventActions
+          id={event.id}
+          status={event.status}
+          perms={perms}
+          hasEnded={hasEnded}
+          attendancePending={attendancePending}
+        />
       </div>
 
       <Card className="mb-4">
@@ -130,6 +147,15 @@ export default async function EventDetailPage({
         active={tab}
         items={[
           { key: 'overview', label: ar ? 'نظرة عامة' : 'Overview', href: '?tab=overview' },
+          ...(attendanceTab
+            ? [
+                {
+                  key: 'attendance',
+                  label: ar ? 'الحضور' : 'Attendance',
+                  href: `/dashboard/events/${event.id}/attendance`,
+                },
+              ]
+            : []),
           { key: 'history', label: ar ? 'السجل' : 'History', href: '?tab=history' },
         ]}
       />

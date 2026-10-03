@@ -62,7 +62,6 @@ type Props = {
   tagSuggestions: TagInput[];
   perms: ArticlePerms;
   me: { id: string; name: string };
-  justSaved?: boolean;
 };
 
 /**
@@ -81,7 +80,6 @@ export function ArticleEditor({
   tagSuggestions,
   perms,
   me,
-  justSaved,
 }: Props) {
   const { lang } = useLanguage();
   const ar = lang === 'ar';
@@ -100,11 +98,6 @@ export function ArticleEditor({
   );
   const [dialog, setDialog] = useState<null | 'changes' | 'archive' | 'delete'>(null);
   const [note, setNote] = useState('');
-
-  useEffect(() => {
-    if (justSaved) toast.success(ar ? 'تم حفظ المسودة' : 'Draft saved');
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- once, on arrival from the first save
-  }, []);
 
   const editable = perms.edit;
   const dirty = JSON.stringify(values) !== baseline;
