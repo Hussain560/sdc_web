@@ -76,10 +76,10 @@ export default function LoginForm({
             display: 'inline-flex',
             alignItems: 'center',
             gap: '6px',
-            color: '#fff',
+            color: 'var(--foreground)',
             fontSize: '14px',
             textDecoration: 'none',
-            opacity: 0.85,
+            opacity: 1,
           }}
         >
           {isEnglish ? <ArrowLeft size={18} /> : <ArrowRight size={18} />}

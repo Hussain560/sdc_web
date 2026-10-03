@@ -8,7 +8,7 @@ import { eventTitle, type PublicEventCard } from '@/modules/events/public-types'
 import { registerGuest, type RegistrationStatus } from '../actions';
 import '../../../../app/[locale]/login/login.css';
 
-type Errors = Partial<Record<'name' | 'email' | 'phone', string>>;
+type Errors = Partial<Record<'name' | 'email' | 'phone' | 'consent', string>>;
 
 /** Remembered on this device so the button reads "Registered" and a second submission is not even offered. */
 export const guestKey = (eventId: string) => `sdc_guest_reg_${eventId}`;
@@ -37,6 +37,7 @@ export function GuestRegisterDialog({
   const [phone, setPhone] = useState('');
   const [university, setUniversity] = useState('');
   const [honeypot, setHoneypot] = useState('');
+  const [consent, setConsent] = useState(false);
   const [errors, setErrors] = useState<Errors>({});
   const [message, setMessage] = useState('');
   const [sending, setSending] = useState(false);
@@ -53,6 +54,8 @@ export function GuestRegisterDialog({
     const digits = phone.replace(/\D/g, '');
     if (digits.length < 8 || digits.length > 15 || !/^[+0-9 ()-]+$/.test(phone.trim()))
       e.phone = L('اكتب رقم جوال صحيحًا.', 'Enter a valid phone number.');
+    if (!consent)
+      e.consent = L('يجب الموافقة على سياسة الخصوصية.', 'You must accept the privacy notice.');
     return e;
   };
 
@@ -74,6 +77,7 @@ export function GuestRegisterDialog({
         phone,
         university: university.trim() || undefined,
         honeypot,
+        consent,
         elapsedMs: Date.now() - openedAt,
       },
       { lang },
@@ -249,6 +253,33 @@ export function GuestRegisterDialog({
                 maxLength={120}
                 disabled={sending}
               />
+            </div>
+
+            <div className="sdc-form-group">
+              <label style={{ display: 'flex', gap: 8, alignItems: 'flex-start', fontWeight: 400 }}>
+                <input
+                  type="checkbox"
+                  checked={consent}
+                  onChange={(e) => {
+                    setConsent(e.target.checked);
+                    setErrors((p) => ({ ...p, consent: '' }));
+                  }}
+                  disabled={sending}
+                  aria-invalid={!!errors.consent}
+                  style={{ marginTop: 4 }}
+                />
+                <span>
+                  {L('قرأت ', 'I have read the ')}
+                  <Link href="/privacy" className="sdc-login-link" target="_blank">
+                    {L('سياسة الخصوصية', 'privacy notice')}
+                  </Link>
+                  {L(
+                    ' وأوافق على معالجة بياناتي لغرض التسجيل في الفعالية.',
+                    ' and agree to my data being processed for this registration.',
+                  )}
+                </span>
+              </label>
+              {err(errors.consent)}
             </div>
 
             <div className="sdc-modal-footer" style={{ marginTop: 4 }}>

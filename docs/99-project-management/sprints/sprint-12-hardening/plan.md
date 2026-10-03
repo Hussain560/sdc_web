@@ -131,7 +131,19 @@ Requirements: NFR-SEC-005/007/009/010, NFR-PRIV-001…006, NFR-PERF-001/003/005,
 ### Completed
 | Item | Details |
 | ---- | ------- |
+| SEC-004 accessibility | axe specs for public routes and 18 dashboard routes (ar/en, both themes); zero serious/critical findings. Light-theme contrast fixed with existing palette primitives (`src/styles/a11y.css`, light `--accent`). |
+| SEC-002 headers and CSP | `src/lib/security-headers.ts`, enforced CSP, report endpoint `/api/csp-report`, `/api/health`; `tests/e2e/security-headers.spec.ts`. |
+| SEC-003 privacy | Notice at `/privacy` (version `2027-03-draft`), consent recorded for guests and applicants, member data export, deletion requests handled by an administrator, `run_retention` cron (weekly); pgTAP `15_privacy.sql` and `privacy.spec.ts`. |
+| SEC-005 backups | `scripts/restore-drill.mjs` passed (counts, 50 policies, RLS flags); `backup.yml` and `keepalive.yml` workflows; operations.md updated. |
+| ENG-010 performance | `next/image` for logos, lazy cover images, `perf.spec.ts` (LCP, CLS) and `scripts/check-bundle.mjs` budget (581 kB of 640 kB gzip). |
 
 ### Known Gaps
 | Gap | Notes / follow-up |
 | --- | ----------------- |
+| Visual baselines pending approval | The footer now links to the privacy notice and the logos use `next/image`, so every public baseline differs by about 3,400 px in the footer only. `e2e:update` needs the owner's approval (D-009 gate). |
+| CSP is not nonce based | `script-src` keeps `'unsafe-inline'` and `img-src` allows any https; tighten after launch. |
+| Q-031 | Privacy wording and retention periods are a draft awaiting legal review. |
+| Owner actions | Backup secrets (`SUPABASE_DB_URL`, `BACKUP_ENCRYPTION_KEY`), `HEALTH_URLS`, staging project. |
+| Covers not optimized | Event and article covers are lazy but not `next/image` (remote hosts vary). |
+| Bundle budget | Whole-app proxy, not per-route. |
+| Audit log retention | Not purged by `run_retention`. |

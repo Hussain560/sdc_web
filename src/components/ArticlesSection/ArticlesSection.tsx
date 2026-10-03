@@ -60,7 +60,13 @@ export default function ArticlesSection({
                     <span className={`sdc-badge-status ${statusTone(event.phase)}`}>
                       {statusLabel(event.phase, lang)}
                     </span>
-                    <img src={event.cover} alt={title} className="sdc-event-image" />
+                    <img
+                      src={event.cover}
+                      alt={title}
+                      className="sdc-event-image"
+                      loading="lazy"
+                      decoding="async"
+                    />
                   </div>
 
                   <div className="sdc-event-details">

@@ -229,6 +229,14 @@ export const DASHBOARD_NAV: NavGroupDef[] = [
         ready: true,
       },
       {
+        key: 'admin-privacy',
+        label: { ar: 'طلبات الخصوصية', en: 'Privacy requests' },
+        href: '/dashboard/admin/privacy',
+        icon: 'shield',
+        requires: { permission: 'settings.manage', scope: 'any' },
+        ready: true,
+      },
+      {
         key: 'admin-emails',
         label: { ar: 'سجل البريد', en: 'Email log' },
         href: '/dashboard/admin/emails',

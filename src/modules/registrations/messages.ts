@@ -18,6 +18,7 @@ const REGISTRATION_CODES = [
   'VALIDATION_FAILED',
   'RATE_LIMITED',
   'TOO_FAST',
+  'CONSENT_REQUIRED',
 ] as const satisfies readonly ErrorCode[];
 
 const messages: Partial<Record<ErrorCode, Record<Lang, string>>> = {
@@ -55,6 +56,10 @@ const messages: Partial<Record<ErrorCode, Record<Lang, string>>> = {
   RATE_LIMITED: {
     ar: 'محاولات كثيرة. انتظر دقائق ثم حاول مجددًا.',
     en: 'Too many attempts. Wait a few minutes and try again.',
+  },
+  CONSENT_REQUIRED: {
+    ar: 'يجب الموافقة على سياسة الخصوصية للتسجيل.',
+    en: 'You must accept the privacy notice to register.',
   },
   TOO_FAST: {
     ar: 'أُرسل النموذج بسرعة كبيرة. راجع بياناتك ثم أرسله مجددًا.',

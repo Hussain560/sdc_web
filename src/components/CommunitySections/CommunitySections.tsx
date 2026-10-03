@@ -31,6 +31,10 @@ export default function CommunitySections() {
                 src="/assets/Featured icon.png"
                 alt={item[isEnglish ? 'en' : 'ar']}
                 className="sdc-category-icon-img"
+                width={56}
+                height={56}
+                loading="lazy"
+                decoding="async"
               />
               <h3 className="sdc-category-name">{item[isEnglish ? 'en' : 'ar']}</h3>
             </div>

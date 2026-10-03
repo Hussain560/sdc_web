@@ -78,6 +78,13 @@ export default function Footer() {
             <p className="sdc-footer-text">{rights}</p>
             <p className="sdc-footer-text">{t('developedBy')}</p>
             <p className="sdc-footer-text">
+              <a
+                href={lang === 'ar' ? '/privacy' : '/en/privacy'}
+                className="sdc-footer-member-link"
+              >
+                {lang === 'ar' ? 'سياسة الخصوصية' : 'Privacy notice'}
+              </a>
+              {' · '}
               <a href={lang === 'ar' ? '/login' : '/en/login'} className="sdc-footer-member-link">
                 {lang === 'ar' ? 'دخول الأعضاء' : 'Member login'}
               </a>
@@ -90,6 +97,10 @@ export default function Footer() {
               src="/assets/Logos.png"
               alt={lang === 'ar' ? 'المجتمع السعودي للمطورين' : 'Saudi Developer Community'}
               className="sdc-footer-logo"
+              width={224}
+              height={99}
+              loading="lazy"
+              decoding="async"
               onError={(e) => {
                 (e.target as HTMLImageElement).src =
                   'https://via.placeholder.com/100x95/050D09/FFFFFF?text=SDC';

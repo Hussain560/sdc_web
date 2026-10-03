@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import { Link } from '@/i18n/navigation';
 import { usePathname, useRouter } from '@/i18n/navigation';
 import { LayoutDashboard, LogIn, User, Globe, LogOut, Sun, Moon, LoaderCircle } from 'lucide-react';
@@ -32,10 +33,24 @@ export default function Header() {
         <div className="sdc-header-container">
           <div className="sdc-logo">
             <Link href="/">
-              <img
-                src={isDarkMode ? '/assets/Full whiteLogo 1.png' : '/assets/navbar.png'}
-                alt="Logo"
-              />
+              {isDarkMode ? (
+                <Image
+                  src="/assets/Full whiteLogo 1.png"
+                  alt="Logo"
+                  width={159}
+                  height={67}
+                  priority
+                />
+              ) : (
+                <Image
+                  src="/assets/navbar.png"
+                  alt="Logo"
+                  width={1928}
+                  height={816}
+                  priority
+                  sizes="172px"
+                />
+              )}
             </Link>
           </div>
 
@@ -54,7 +69,19 @@ export default function Header() {
           </nav>
 
           <div className="sdc-actions">
-            <button className="sdc-icon-btn" onClick={toggleTheme}>
+            <button
+              className="sdc-icon-btn"
+              onClick={toggleTheme}
+              aria-label={
+                lang === 'en'
+                  ? isDarkMode
+                    ? 'Switch to light mode'
+                    : 'Switch to dark mode'
+                  : isDarkMode
+                    ? 'التبديل إلى الوضع الفاتح'
+                    : 'التبديل إلى الوضع الداكن'
+              }
+            >
               {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
             </button>
             <button

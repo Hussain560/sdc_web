@@ -26,9 +26,10 @@
   --surface-overlay: var(--c-ffffff);
   --text: var(--c-123b35);
   --text-muted: var(--c-52766c);
-  --text-on-accent: var(--c-0d3329);
-  --accent: var(--c-0b8f55);
-  --accent-hover: var(--c-16a765);
+  /* SEC-004: white on the darker palette green (5.7:1) instead of dark on #0b8f55 (3.8:1). */
+  --text-on-accent: var(--c-ffffff);
+  --accent: var(--c-0a7a49);
+  --accent-hover: var(--c-067847);
   --accent-soft: var(--c-cbe7d4);
   --brand: var(--c-72c99a);
   --warning: var(--c-ffab00);

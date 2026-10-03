@@ -363,6 +363,31 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"data_requests": {
+                  Row: {
+                    "created_at": string,"email": string,"handled_at": string | null,"handled_by": string | null,"id": string,"kind": string,"note": string | null,"reason": string | null,"status": string,"user_id": string | null
+                  }
+                  Insert: {
+                    "created_at"?: string,"email": string,"handled_at"?: string | null,"handled_by"?: string | null,"id"?: string,"kind"?: string,"note"?: string | null,"reason"?: string | null,"status"?: string,"user_id"?: string | null
+                  }
+                  Update: {
+                    "created_at"?: string,"email"?: string,"handled_at"?: string | null,"handled_by"?: string | null,"id"?: string,"kind"?: string,"note"?: string | null,"reason"?: string | null,"status"?: string,"user_id"?: string | null
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "data_requests_handled_by_fkey"
+      columns: ["handled_by"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "data_requests_user_id_fkey"
+      columns: ["user_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"email_logs": {
                   Row: {
                     "attempt": number,"created_at": string,"entity_id": string | null,"entity_type": string | null,"error_code": string | null,"error_message": string | null,"id": string,"idempotency_key": string,"locale": string,"provider": string | null,"provider_message_id": string | null,"recipient_email": string,"recipient_user_id": string | null,"status": string,"template_key": string
@@ -465,13 +490,13 @@ isOneToOne: true
                   ]
                 },"event_registrations": {
                   Row: {
-                    "answers": NonNullable<Json>,"attendance_percent": number | null,"attendance_result": string | null,"cancelled_at": string | null,"cancelled_by": string | null,"created_at": string,"decided_at": string | null,"decided_by": string | null,"decision_note": string | null,"email_snapshot": string,"event_id": string,"full_name_snapshot": string,"id": string,"legacy_id": number | null,"notify_status": string,"status": string,"updated_at": string,"user_id": string | null,"was_member": boolean
+                    "answers": NonNullable<Json>,"attendance_percent": number | null,"attendance_result": string | null,"cancelled_at": string | null,"cancelled_by": string | null,"consent_at": string | null,"consent_version": string | null,"created_at": string,"decided_at": string | null,"decided_by": string | null,"decision_note": string | null,"email_snapshot": string,"event_id": string,"full_name_snapshot": string,"id": string,"legacy_id": number | null,"notify_status": string,"status": string,"updated_at": string,"user_id": string | null,"was_member": boolean
                   }
                   Insert: {
-                    "answers"?: NonNullable<Json>,"attendance_percent"?: number | null,"attendance_result"?: string | null,"cancelled_at"?: string | null,"cancelled_by"?: string | null,"created_at"?: string,"decided_at"?: string | null,"decided_by"?: string | null,"decision_note"?: string | null,"email_snapshot": string,"event_id": string,"full_name_snapshot": string,"id"?: string,"legacy_id"?: number | null,"notify_status"?: string,"status"?: string,"updated_at"?: string,"user_id"?: string | null,"was_member"?: boolean
+                    "answers"?: NonNullable<Json>,"attendance_percent"?: number | null,"attendance_result"?: string | null,"cancelled_at"?: string | null,"cancelled_by"?: string | null,"consent_at"?: string | null,"consent_version"?: string | null,"created_at"?: string,"decided_at"?: string | null,"decided_by"?: string | null,"decision_note"?: string | null,"email_snapshot": string,"event_id": string,"full_name_snapshot": string,"id"?: string,"legacy_id"?: number | null,"notify_status"?: string,"status"?: string,"updated_at"?: string,"user_id"?: string | null,"was_member"?: boolean
                   }
                   Update: {
-                    "answers"?: NonNullable<Json>,"attendance_percent"?: number | null,"attendance_result"?: string | null,"cancelled_at"?: string | null,"cancelled_by"?: string | null,"created_at"?: string,"decided_at"?: string | null,"decided_by"?: string | null,"decision_note"?: string | null,"email_snapshot"?: string,"event_id"?: string,"full_name_snapshot"?: string,"id"?: string,"legacy_id"?: number | null,"notify_status"?: string,"status"?: string,"updated_at"?: string,"user_id"?: string | null,"was_member"?: boolean
+                    "answers"?: NonNullable<Json>,"attendance_percent"?: number | null,"attendance_result"?: string | null,"cancelled_at"?: string | null,"cancelled_by"?: string | null,"consent_at"?: string | null,"consent_version"?: string | null,"created_at"?: string,"decided_at"?: string | null,"decided_by"?: string | null,"decision_note"?: string | null,"email_snapshot"?: string,"event_id"?: string,"full_name_snapshot"?: string,"id"?: string,"legacy_id"?: number | null,"notify_status"?: string,"status"?: string,"updated_at"?: string,"user_id"?: string | null,"was_member"?: boolean
                   }
                   Relationships: [
                     {
@@ -1469,11 +1494,17 @@ isOneToOne: false
               "id": string,"link": string,"name_ar": string,"name_en": string,"photo_path": string,"profile_id": string,"role": string,"sort_order": number,"title_ar": string,"title_en": string
             }[]
                            },
+"export_my_data":
+{ Args: Record<PropertyKey, never>; Returns: Json
+                           },
 "finalize_event_attendance":
 { Args: { "p_event": string }; Returns: Json
                            },
 "finalize_session":
 { Args: { "p_session": string }; Returns: Json
+                           },
+"handle_data_request":
+{ Args: { "p_decision": string,"p_id": string,"p_note"?: string }; Returns: Json
                            },
 "handover_head":
 { Args: { "p_at"?: string,"p_committee": string,"p_new_head": string }; Returns: string
@@ -1506,7 +1537,13 @@ isOneToOne: false
 { Args: { "p_answers"?: Json,"p_event": string }; Returns: Json
                            },
 "register_guest":
-{ Args: { "p_answers"?: Json,"p_elapsed_ms"?: number,"p_email": string,"p_event": string,"p_honeypot"?: string,"p_ip_hash"?: string,"p_name": string,"p_phone": string }; Returns: Json
+{ Args: { "p_answers"?: Json,"p_consent_version"?: string,"p_elapsed_ms"?: number,"p_email": string,"p_event": string,"p_honeypot"?: string,"p_ip_hash"?: string,"p_name": string,"p_phone": string }; Returns: Json
+                           },
+"request_account_deletion":
+{ Args: { "p_reason"?: string }; Returns: string
+                           },
+"run_retention":
+{ Args: { "p_dry"?: boolean }; Returns: Json
                            },
 "save_article":
 { Args: { "p": Json,"p_expected_updated_at"?: string,"p_id": string }; Returns: Json

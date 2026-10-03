@@ -82,3 +82,13 @@ Coverage is a signal, not a goal; untested authorization paths are blocking rega
 | Database | pgTAP (`supabase test db`) | `supabase/tests/` | Smoke tests + `todo` regression tests that document the legacy exposure (they flip to hard assertions in the containment/RBAC migration) |
 
 Visual-regression rules: threshold 0.1 % of pixels, animations disabled, copyright text masked, one retry; baselines change only in a PR that explicitly approves a redesign (D-009).
+
+## 8. Added in Sprint 12
+
+| Level | Tool | Location | State |
+| ----- | ---- | -------- | ----- |
+| Accessibility | `@axe-core/playwright` (WCAG 2.0/2.1 A and AA) | `tests/e2e/a11y.spec.ts` (public pages × ar/en × dark/light), `tests/auth/a11y-dashboard.spec.ts` (18 internal screens × ar/en × dark/light) | **Blocking**: serious/critical violations fail the build. `node scripts/axe-report.mjs <url>` prints findings with colours for triage |
+| Security headers | Playwright request tests | `tests/e2e/security-headers.spec.ts` | CSP and the other headers on every route class; no violation on the main pages |
+| Performance | Playwright + PerformanceObserver; `scripts/check-bundle.mjs` | `tests/e2e/perf.spec.ts`, `scripts/perf-budget.json` | LCP < 2.5 s and CLS < 0.1 on home, events and an event page (production build); client chunks within the gzip budget |
+| Privacy | pgTAP + Playwright | `supabase/tests/15_privacy.sql`, `tests/auth/privacy.spec.ts` | Consent stored, export, deletion request and handling, retention |
+| Restore | `scripts/restore-drill.mjs` | — | Dump → scratch restore → compare ([operations](../08-infrastructure/operations.md#7-implemented-in-sprint-12-sec-005)) |

@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import React from 'react';
 import { Link } from '@/i18n/navigation';
 
@@ -36,10 +37,14 @@ export default function HeroSection() {
           </div>
 
           <div className="sdc-hero-image-wrapper">
-            <img
+            <Image
               src={isDarkMode ? '/assets/hero-logo.png' : '/assets/light-mode.png'}
               alt={isEnglish ? 'Saudi Developer Community logo' : 'شعار المجتمع السعودي للمطورين'}
               className="sdc-hero-image"
+              width={isDarkMode ? 546 : 1504}
+              height={isDarkMode ? 380 : 1046}
+              sizes="(max-width: 768px) 90vw, 560px"
+              priority
             />
           </div>
         </div>

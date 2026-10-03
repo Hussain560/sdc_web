@@ -76,6 +76,7 @@ const ACCOUNT_LINKS = [
   },
   { href: '/account/roles', icon: BadgeCheck, label: { ar: 'مناصبي', en: 'My positions' } },
   { href: '/account/security', icon: ShieldCheck, label: { ar: 'الأمان', en: 'Security' } },
+  { href: '/account/privacy', icon: ShieldCheck, label: { ar: 'بياناتي', en: 'My data' } },
 ] as const;
 
 export type ShellUser = {

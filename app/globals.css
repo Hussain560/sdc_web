@@ -3,6 +3,7 @@
 @import '../src/styles/primitives.css';
 @import '../src/styles/tokens.css';
 @import '../src/styles/ui.css';
+@import '../src/styles/a11y.css';
 
 :root {
   --background: var(--c-050d09);

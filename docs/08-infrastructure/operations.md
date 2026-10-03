@@ -65,3 +65,27 @@ Limits change; verify on the providers' pricing pages at each milestone review. 
 | Supabase API/Auth logs | Plan-dependent | IPs/emails in Auth logs — access limited to project admins |
 | `audit_logs` | 3 years (Proposed) | Minimal |
 | `email_logs` | 1 year (Proposed) | Recipient email |
+
+## 7. Implemented in Sprint 12 (SEC-005)
+
+| Item | Where |
+| ---- | ----- |
+| Health endpoint | `GET /api/health` — 200 only when the database answers (`{status, db, ms}`), 503 otherwise; no secrets, no personal data |
+| Keep-alive and alert | `.github/workflows/keepalive.yml` — daily call to every URL in the repository variable `HEALTH_URLS`; a failing call fails the run, so GitHub notifies the maintainers |
+| Nightly backup | `.github/workflows/backup.yml` — `supabase db dump` (schema + data) → tar → AES-256 (`BACKUP_ENCRYPTION_KEY`) → artifact kept 30 days. Needs the `production` environment secrets `SUPABASE_DB_URL` and `BACKUP_ENCRYPTION_KEY` (owner action) |
+| Retention job | `GET /api/cron/retention` (Vercel Cron weekly, `CRON_SECRET`): anonymizes rejected/withdrawn applications after 2 years and registrations 3 years after the event, deletes e-mail log rows after 1 year; `?dry=1` only counts. The append-only audit log is not purged by the job |
+| Restore drill | `node scripts/restore-drill.mjs` (local) — see the record below |
+
+### Restore drill record (local rehearsal, 2026-10-03)
+
+`node scripts/restore-drill.mjs` dumps the `public`, `private` and `auth` schemas, restores them into a scratch database (the `extensions` schema is prepared first, as a hosted project already has it), compares row counts of eight key tables plus `auth.users`, the number of RLS policies (50) and the number of tables with RLS enabled (35), then drops the scratch database.
+
+| Step | Time |
+| ---- | ---- |
+| Dump (≈ 0.5 MB, local sample data) | 0.3 s |
+| Prepare scratch database | 0.3 s |
+| Restore | 1.4 s |
+| Verify counts, policies, RLS | 2.1 s |
+| **Result** | **Passed** — everything matched; two harmless restore warnings |
+
+This proves the procedure and the script, not the production timing: the same drill must be run against a real backup of the production project before `v1.0.0` (owner action, [Sprint 13](../99-project-management/sprints/sprint-13-launch/plan.md)). Expect the time to grow roughly with data size.

@@ -9,6 +9,7 @@ const tabs = [
   { href: '/account/profile', ar: 'ملفي الشخصي', en: 'My profile' },
   { href: '/account/roles', ar: 'مناصبي', en: 'My positions' },
   { href: '/account/security', ar: 'الأمان', en: 'Security' },
+  { href: '/account/privacy', ar: 'بياناتي', en: 'My data' },
 ] as const;
 
 export function AccountTabs() {

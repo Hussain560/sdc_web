@@ -1,0 +1,45 @@
+/*
+ * SEC-004 (WCAG 2.1 AA): contrast and focus fixes that stay inside the frozen palette (D-009). No new colour is
+ * introduced: the light theme's accent *text* moves to the darker green that already exists in the palette
+ * (--c-0a7a49, 5.7:1 on white), and a few muted greys use the darker grey that already exists.
+ */
+:root[data-theme='light'] .text-accent,
+:root[data-theme='light'] .sdc-login-link,
+:root[data-theme='light'] .sdc-filter-toggle-btn,
+:root[data-theme='light'] .sdc-x-icon,
+:root[data-theme='light'] a[title='LinkedIn'] > span,
+:root[data-theme='light'] .sdc-card-author,
+:root[data-theme='light'] .sdc-article-tag-pill {
+  color: var(--c-0a7a49) !important;
+}
+
+/* White text on the bright green button is 3.1:1; the dark text the other green buttons use passes. */
+:root .sdc-article-source-link {
+  color: var(--c-050d09) !important;
+}
+
+/* Footer text and links on the light surface. */
+:root[data-theme='light'] .sdc-footer-container .sdc-footer-text,
+:root[data-theme='light'] .sdc-footer-container .sdc-footer-member-link {
+  color: var(--c-4b635a) !important;
+}
+:root .sdc-footer-member-link {
+  opacity: 1;
+}
+
+/* The partner cards are white in both themes: their caption needs the darker grey. */
+:root .sdc-partner-text {
+  color: var(--c-6b7280);
+}
+
+/* A scrollable strip must be reachable by keyboard (A-1). */
+.sdc-partner-cards-list:focus-visible {
+  outline: 2px solid var(--c-0a7a49);
+  outline-offset: 2px;
+}
+
+/* Amber text on the white light surface is ~2:1: the warning *text* uses the normal text colour in the light theme;
+   the amber border and icon still carry the status. */
+:root[data-theme='light'] .text-warning {
+  color: var(--c-123b35) !important;
+}

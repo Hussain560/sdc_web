@@ -10,6 +10,7 @@ import { createClient } from '@/lib/supabase/server';
 import { isLang, type Lang } from '@/modules/auth/messages';
 import { getAccess } from '@/modules/access/queries';
 import { notifyRegistration } from '@/modules/notifications/registrations';
+import { PRIVACY_VERSION } from '@/modules/privacy/content';
 import { registrationCode, registrationMessage } from './messages';
 
 /**
@@ -153,6 +154,7 @@ const guestSchema = z.object({
   phone: z.string().trim().max(25),
   university: z.string().trim().max(120).optional(),
   honeypot: z.string().max(200).optional(),
+  consent: z.boolean().optional(),
   elapsedMs: z.number().int().min(0).max(86_400_000).optional(),
 });
 
@@ -185,6 +187,7 @@ export async function registerGuest(
     p_ip_hash: ipHash as string,
     p_honeypot: (v.honeypot ?? '') as string,
     p_elapsed_ms: (v.elapsedMs ?? null) as number,
+    p_consent_version: (v.consent ? PRIVACY_VERSION : '') as string,
   });
   if (error) return dbFailure(error, lang);
 

@@ -1,3 +1,4 @@
+import { PRIVACY_VERSION } from '@/modules/privacy/content';
 import type { Localized } from '@/modules/access/types';
 
 export const ACADEMIC_STATUSES = ['student', 'graduate', 'employee', 'other'] as const;
@@ -69,7 +70,7 @@ export const APPLICATION_STATUS_LABEL: Record<
 };
 
 /** Version of the privacy notice the applicant accepts (OPEN Q-031: final text pending). */
-export const CONSENT_VERSION = '2027-01-draft';
+export const CONSENT_VERSION = PRIVACY_VERSION;
 
 /** The public view of a published/completed cycle (`membership_cycle_phase`). */
 export type PublicCycle = {

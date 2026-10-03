@@ -47,6 +47,7 @@ export default function MembersSection({ partners = [] }: { partners?: PublicPar
                 background: 'rgba(255,255,255,0.08)',
                 color: '#ffffff',
               }}
+              role="img"
               aria-label={isEnglish ? 'Member' : 'عضو'}
             >
               <User size={22} strokeWidth={1.8} />
@@ -72,7 +73,13 @@ export default function MembersSection({ partners = [] }: { partners?: PublicPar
               <ChevronRight size={22} />
             </button>
 
-            <div className="sdc-partner-cards-list" ref={sliderRef}>
+            <div
+              className="sdc-partner-cards-list"
+              ref={sliderRef}
+              tabIndex={0}
+              role="region"
+              aria-label={isEnglish ? 'Partners' : 'الشركاء'}
+            >
               {partners.map((p) => {
                 const name = isEnglish ? (p.nameEn ?? p.nameAr) : p.nameAr;
                 const card = (

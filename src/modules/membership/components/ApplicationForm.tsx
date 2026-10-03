@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, useTransition } from 'react';
 import { CheckCircle2 } from 'lucide-react';
 import { Button, Chips, Field, Select, Stepper, Textarea, useToast } from '@/components/ui';
 import { useLanguage } from '@/context/LanguageContext';
+import { Link } from '@/i18n/navigation';
 import { applyForMembership } from '../actions';
 import {
   APPLICATION_STEPS,
@@ -500,9 +501,13 @@ export function ApplicationForm({
                 onChange={(e) => set('consent', e.target.checked)}
               />
               <span>
+                {ar ? 'قرأت ' : 'I have read the '}
+                <Link href="/privacy" target="_blank" className="text-accent underline">
+                  {ar ? 'سياسة الخصوصية' : 'privacy notice'}
+                </Link>
                 {ar
-                  ? 'قرأت سياسة الخصوصية وأوافق على معالجة بياناتي لغرض طلب العضوية *'
-                  : 'I have read the privacy notice and agree to my data being processed for this membership application *'}
+                  ? ' وأوافق على معالجة بياناتي لغرض طلب العضوية *'
+                  : ' and agree to my data being processed for this membership application *'}
               </span>
             </label>
             {err('consent') && (

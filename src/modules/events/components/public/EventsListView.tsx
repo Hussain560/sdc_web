@@ -65,7 +65,13 @@ export default function EventsListView({ events }: { events: PublicEventCard[] }
                       <span className={`sdc-card-status-badge ${statusTone(event.phase)}`}>
                         {statusLabel(event.phase, lang)}
                       </span>
-                      <img src={event.cover} alt={title} className="sdc-card-img" />
+                      <img
+                        src={event.cover}
+                        alt={title}
+                        className="sdc-card-img"
+                        loading="lazy"
+                        decoding="async"
+                      />
                     </div>
                     <div className="sdc-card-content">
                       <h3 className="sdc-card-event-title">{title}</h3>

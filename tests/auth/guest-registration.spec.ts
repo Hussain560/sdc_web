@@ -57,6 +57,10 @@ test('a visitor registers from the modal without an account', async ({ page, bro
     await dlg.getByLabel('Phone number').fill('+966 50 123 4567');
     await dlg.getByLabel(/University/).fill('King Saud University');
     await page.waitForTimeout(1800);
+    // consent is required: without it the form refuses
+    await dlg.getByRole('button', { name: 'Confirm registration' }).click();
+    await expect(dlg.getByText('You must accept the privacy notice.')).toBeVisible();
+    await dlg.getByRole('checkbox').check();
     await dlg.getByRole('button', { name: 'Confirm registration' }).click();
     await expect(dlg.getByText(/You are registered/)).toBeVisible();
     await dlg.getByRole('button', { name: 'OK' }).click();
@@ -78,6 +82,12 @@ test('a visitor registers from the modal without an account', async ({ page, bro
     expect(row!.user_id).toBeNull();
     expect(row!.status).toBe('accepted');
     expect(row!.answers.phone).toBe('+966 50 123 4567');
+    const [consent] = await sql<{ consent_version: string | null; consent_at: string | null }>(
+      `select consent_version, consent_at from public.event_registrations where event_id = $1 and email_snapshot = $2`,
+      [eventId, email],
+    );
+    expect(consent!.consent_version).toMatch(/draft/);
+    expect(consent!.consent_at).not.toBeNull();
 
     // Same e-mail again (device memory cleared): refused, not duplicated.
     await page.evaluate(() => localStorage.clear());
@@ -90,6 +100,7 @@ test('a visitor registers from the modal without an account', async ({ page, bro
     await dlg2.getByLabel('Full name').fill('Guest Visitor Person');
     await dlg2.getByLabel('E-mail').fill(email.toUpperCase());
     await dlg2.getByLabel('Phone number').fill('0501234567');
+    await dlg2.getByRole('checkbox').check();
     await page.waitForTimeout(1800);
     await dlg2.getByRole('button', { name: 'Confirm registration' }).click();
     await expect(dlg2.getByText('You are already registered for this event.')).toBeVisible();

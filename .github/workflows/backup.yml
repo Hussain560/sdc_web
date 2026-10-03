@@ -1,0 +1,46 @@
+name: backup
+
+# SEC-005 / NFR-REL-003: nightly encrypted logical backup of the PRODUCTION database (operations.md §1).
+# Needs the `production` environment secrets: SUPABASE_DB_URL (the pooler/direct connection string) and
+# BACKUP_ENCRYPTION_KEY (kept by two administrators). Artifacts are kept 30 days.
+on:
+  schedule:
+    - cron: '0 1 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+      - name: Dump schema and data
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          set -euo pipefail
+          stamp=$(date -u +%Y%m%dT%H%M%SZ)
+          supabase db dump --db-url "$SUPABASE_DB_URL" -f "schema-$stamp.sql"
+          supabase db dump --db-url "$SUPABASE_DB_URL" --data-only -f "data-$stamp.sql"
+          tar -czf "sdc-backup-$stamp.tar.gz" "schema-$stamp.sql" "data-$stamp.sql"
+          rm -f "schema-$stamp.sql" "data-$stamp.sql"
+          echo "STAMP=$stamp" >> "$GITHUB_ENV"
+      - name: Encrypt (AES-256, key never leaves the secret store)
+        env:
+          BACKUP_ENCRYPTION_KEY: ${{ secrets.BACKUP_ENCRYPTION_KEY }}
+        run: |
+          set -euo pipefail
+          openssl enc -aes-256-cbc -pbkdf2 -salt -pass env:BACKUP_ENCRYPTION_KEY \
+            -in "sdc-backup-$STAMP.tar.gz" -out "sdc-backup-$STAMP.tar.gz.enc"
+          rm -f "sdc-backup-$STAMP.tar.gz"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sdc-backup-${{ env.STAMP }}
+          path: sdc-backup-${{ env.STAMP }}.tar.gz.enc
+          retention-days: 30
+          if-no-files-found: error

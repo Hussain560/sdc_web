@@ -161,3 +161,13 @@ These are recommended **before** any feature work if the production project has 
 | C-3 | Open email relay | Set `verify_jwt = true`; in `send-status-email` restrict callers to the reviewer's user id; in `send-registration-email` send only to the caller's own email; escape HTML. Or disable the functions until Phase 3 |
 | C-4 | Account enumeration | Disable `check-email-exists`; make forgot-password always show the same success message |
 | C-5 | Credentials | Rotate the Gmail app password if there is any sign of abuse |
+
+## 17. Implemented headers (Sprint 12)
+
+`src/lib/security-headers.ts` builds the headers and `next.config.ts` sends them on **every** route. The Content-Security-Policy is **enforced**:
+
+`default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' <supabase origin> <supabase ws>; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; report-uri /api/csp-report` (plus `upgrade-insecure-requests` on the hosted https deployment and `'unsafe-eval'` only in development).
+
+Also `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy: strict-origin-when-cross-origin`, `Permissions-Policy: camera=(), microphone=(), geolocation=()` and HSTS (2 years, preload) in production builds. Violations are posted to `/api/csp-report`, which logs a trimmed line (no query strings) and answers 204.
+
+Recorded concessions (the plan's follow-ups): `script-src` keeps `'unsafe-inline'` because Next.js and the theme-init script emit inline scripts — a nonce-based policy needs per-request rendering; `img-src` allows any https host because administrators can set partner logos by link. `tests/e2e/security-headers.spec.ts` asserts the headers on public, auth, 404 and API routes and that the main pages run without a policy violation.

@@ -74,6 +74,7 @@ export type ErrorCode =
   | 'NOTHING_TO_RETRY'
   | 'NOT_REGISTERED'
   | 'TOO_FAST'
+  | 'ALREADY_REQUESTED'
   | 'REGISTRATION_CANCELLED'
   | 'INTERNAL';
 

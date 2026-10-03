@@ -1,4 +1,5 @@
 import type { NextConfig } from 'next';
+import { buildSecurityHeaders } from './src/lib/security-headers';
 
 // next-intl's `createNextIntlPlugin` loads a native SWC addon that fails on some Windows setups
 // (ACL check), so we register the request config alias it would have added ourselves.
@@ -21,6 +22,20 @@ const nextConfig: NextConfig = {
   // Next 16 blocks dev assets requested via 127.0.0.1 (used by the E2E suites) unless allowed.
   allowedDevOrigins: ['127.0.0.1'],
   // /committee (the old registrations review page) moved into the dashboard shell in Sprint 06.
+  // SEC-002: the same headers on every route (CSP enforced, nosniff, frame denial, referrer, permissions, HSTS in production).
+  async headers() {
+    return [
+      {
+        source: '/:path*',
+        headers: buildSecurityHeaders({
+          supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL,
+          production: process.env.NODE_ENV === 'production',
+          // Only on the real https host: a local production build runs on http and must keep working.
+          upgradeInsecure: !!process.env.VERCEL,
+        }),
+      },
+    ];
+  },
   async redirects() {
     return [
       { source: '/committee', destination: '/dashboard/registrations', permanent: true },
