@@ -43,3 +43,8 @@
 :root[data-theme='light'] .text-warning {
   color: var(--c-123b35) !important;
 }
+
+/* A fieldset defaults to min-content width, which pushes wide rows (tag chips, inputs) outside narrow pages. */
+fieldset {
+  min-width: 0;
+}
