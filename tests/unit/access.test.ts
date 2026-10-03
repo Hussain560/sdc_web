@@ -107,12 +107,13 @@ describe('sidebar per persona (role → view matrix)', () => {
       'committee-registrations',
       'committee-articles',
       'committee-members',
+      'committee-report',
     ]);
   });
 
   it('founder: read-only roles screen and the events pipeline, no users list', () => {
     expect(sidebarOf('founder').admin).toEqual(['admin-roles']);
-    expect(sidebarOf('founder').management).toEqual(['all-events', 'committees']);
+    expect(sidebarOf('founder').management).toEqual(['all-events', 'committees', 'reports']);
     expect(sidebarOf('founder').membership).toEqual(['members']);
   });
 
