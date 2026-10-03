@@ -140,7 +140,7 @@ Requirements: NFR-SEC-005/007/009/010, NFR-PRIV-001…006, NFR-PERF-001/003/005,
 ### Known Gaps
 | Gap | Notes / follow-up |
 | --- | ----------------- |
-| Visual baselines pending approval | The footer now links to the privacy notice and the logos use `next/image`, so every public baseline differs by about 3,400 px in the footer only. `e2e:update` needs the owner's approval (D-009 gate). |
+| Visual baselines (resolved 2026-10-03) | The owner approved a refresh; the footer now links to the privacy notice and the logos use `next/image`, so every public baseline differs by about 3,400 px in the footer only. Baselines were refreshed once with that approval. |
 | CSP is not nonce based | `script-src` keeps `'unsafe-inline'` and `img-src` allows any https; tighten after launch. |
 | Q-031 | Privacy wording and retention periods are a draft awaiting legal review. |
 | Owner actions | Backup secrets (`SUPABASE_DB_URL`, `BACKUP_ENCRYPTION_KEY`), `HEALTH_URLS`, staging project. |

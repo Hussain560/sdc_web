@@ -5,6 +5,8 @@
 | **Last Updated** | 2026-10-03 |
 | **Scope**        | Local development stack only. Never use these accounts or this password on a hosted project. |
 
+For the full event walkthrough (create, publish, register, check in, certificates) see the [event lifecycle test guide](event-lifecycle-test-guide.md).
+
 ## 1. Start everything
 
 ```bash
