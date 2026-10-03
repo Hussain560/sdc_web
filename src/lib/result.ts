@@ -72,6 +72,8 @@ export type ErrorCode =
   | 'ATTENDANCE_NOT_FINALIZED'
   | 'DATE_HAS_FINALIZED_SESSION'
   | 'NOTHING_TO_RETRY'
+  | 'NOT_REGISTERED'
+  | 'REGISTRATION_CANCELLED'
   | 'INTERNAL';
 
 export type Result<T = void> =

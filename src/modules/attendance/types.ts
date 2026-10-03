@@ -38,6 +38,7 @@ export type AttendanceOverview = {
 export type RosterRow = {
   registrationId: string;
   fullName: string;
+  email: string;
   wasMember: boolean;
   present: boolean;
   method: CheckInMethod | null;
@@ -76,3 +77,41 @@ export type CheckInContext = {
 
 export const eventTitleOf = (e: { titleAr: string; titleEn: string | null }, lang: Lang) =>
   (lang === 'en' ? e.titleEn : null) || e.titleAr;
+
+/** The public check-in page state (no sign-in): the event, the day and whether the session is open. */
+export type PublicCheckInContext = {
+  event: { slug: string; titleAr: string; titleEn: string | null };
+  session: {
+    id: string;
+    status: 'open' | 'closed' | 'finalized';
+    day: number;
+    date: string;
+    days: number;
+  };
+};
+
+/** Live numbers of one session for the organizer screens. */
+export type SessionLive = {
+  status: SessionStatus;
+  total: number;
+  present: number;
+  qr: number;
+  online: number;
+  manual: number;
+  recent: Array<{ name: string; at: string; method: CheckInMethod }>;
+};
+
+export type CertificateRow = {
+  registrationId: string;
+  fullName: string;
+  email: string;
+  percent: number | null;
+  attended: boolean;
+  eligible: boolean;
+  certificate: {
+    id: string;
+    status: 'pending' | 'generated' | 'sent' | 'failed';
+    sentAt: string | null;
+    attempts: number;
+  } | null;
+};

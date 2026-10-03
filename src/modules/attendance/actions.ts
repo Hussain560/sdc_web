@@ -6,8 +6,10 @@ import { fail, ok, type ErrorCode, type Result } from '@/lib/result';
 import { createClient } from '@/lib/supabase/server';
 import { getAccess } from '@/modules/access/queries';
 import { isLang, type Lang } from '@/modules/auth/messages';
-import { deliverEventCertificates } from './certificates';
+import { deliverCertificate, deliverEventCertificates } from './certificates';
+import type { Json } from '@/lib/supabase/database.types';
 import { attendanceCode, attendanceMessage } from './messages';
+import type { CheckInMethod, SessionLive } from './types';
 
 /**
  * Attendance Server Actions. Pattern (server-logic §3): authenticate → ONE database function that re-checks
@@ -90,15 +92,30 @@ export async function getQrToken(
   return ok({ token: r.token, expiresIn: r.expires_in });
 }
 
-/** Live counter of the QR screen (polled every 10 s). */
-export async function getLiveCount(
-  sessionId: string,
-): Promise<{ present: number; total: number } | null> {
+/** Live numbers of the QR screen and the attendance list (polled every few seconds while a session is open). */
+export async function getSessionLive(sessionId: string): Promise<SessionLive | null> {
   if (!(await getAccess()) || !uuid(sessionId)) return null;
   const supabase = await createClient();
-  const { data, error } = await supabase.rpc('session_roster', { p_session: sessionId });
-  if (error) return null;
-  return { present: (data ?? []).filter((r) => r.present).length, total: data?.length ?? 0 };
+  const { data, error } = await supabase.rpc('session_live', { p_session: sessionId });
+  if (error || !data || typeof data !== 'object' || Array.isArray(data)) return null;
+  const o = data as Record<string, Json>;
+  const n = (v: Json | undefined) => (typeof v === 'number' ? v : 0);
+  return {
+    status: String(o.status ?? 'open') as SessionLive['status'],
+    total: n(o.total),
+    present: n(o.present),
+    qr: n(o.qr),
+    online: n(o.online),
+    manual: n(o.manual),
+    recent: (Array.isArray(o.recent) ? o.recent : []).map((r) => {
+      const x = r as Record<string, Json>;
+      return {
+        name: String(x.name ?? ''),
+        at: String(x.at ?? ''),
+        method: String(x.method ?? 'qr') as CheckInMethod,
+      };
+    }),
+  };
 }
 
 export async function recordAttendance(
@@ -217,4 +234,50 @@ export async function checkIn(
   if (error) return dbFailure(error, lang);
   revalidatePath('/account/registrations');
   return ok({ status: data === 'already' ? 'already' : 'checked_in' });
+}
+
+/**
+ * Public check-in (no sign-in): the person types the e-mail they registered with. The QR token is required; the
+ * database matches the e-mail to an accepted registration and throttles guessing.
+ */
+export async function checkInByEmail(
+  input: { sessionId: string; token: string; email: string },
+  ctx: { lang: Lang },
+): Promise<Result<{ status: 'checked_in' | 'already'; name: string }>> {
+  const lang = langOf(ctx?.lang);
+  if (!uuid(String(input?.sessionId ?? ''))) return failCode('SESSION_NOT_OPEN', lang);
+  const supabase = await createClient();
+  const { data, error } = await supabase.rpc('check_in_by_email', {
+    p_session: input.sessionId,
+    p_token: input.token,
+    p_email: input.email,
+  });
+  if (error) return dbFailure(error, lang);
+  const o = (data ?? {}) as { ok?: boolean; code?: string; status?: string; name?: string };
+  if (!o.ok) return failCode((o.code ?? 'INTERNAL') as ErrorCode, lang);
+  revalidatePath('/dashboard/events', 'layout');
+  return ok({
+    status: o.status === 'already' ? 'already' : 'checked_in',
+    name: o.name ?? '',
+  });
+}
+
+/** Sends (or retries) one certificate. The organizer must be able to read it (events.complete in scope, via RLS). */
+export async function sendCertificate(
+  input: { certificateId: string; eventId: string },
+  ctx: { lang: Lang },
+): Promise<Result<{ outcome: 'sent' | 'failed' | 'skipped' }>> {
+  const lang = langOf(ctx?.lang);
+  if (!(await getAccess())) return failCode('UNAUTHENTICATED', lang);
+  if (!uuid(input.certificateId)) return failCode('NOT_FOUND', lang);
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from('certificates')
+    .select('id')
+    .eq('id', input.certificateId)
+    .maybeSingle();
+  if (!data) return failCode('NOT_FOUND', lang);
+  const outcome = await deliverCertificate(input.certificateId);
+  refresh(input.eventId);
+  return ok({ outcome });
 }

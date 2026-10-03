@@ -37,6 +37,7 @@ import { useTheme } from '@/context/ThemeContext';
 import { cn, useToast } from '@/components/ui';
 import type { NavGroupKey, NavIcon, VisibleNavGroup, VisibleNavItem } from '@/config/dashboard-nav';
 import { signOut } from '@/modules/auth/actions';
+import { CrumbsProvider, useCrumbs } from './Crumbs';
 
 const ICONS: Record<NavIcon, LucideIcon> = {
   dashboard: LayoutDashboard,
@@ -320,7 +321,19 @@ function SidebarContent({
   );
 }
 
-export function ShellFrame({
+export function ShellFrame(props: {
+  nav: VisibleNavGroup[];
+  user: ShellUser;
+  children: React.ReactNode;
+}) {
+  return (
+    <CrumbsProvider>
+      <ShellFrameInner {...props} />
+    </CrumbsProvider>
+  );
+}
+
+function ShellFrameInner({
   nav,
   user,
   children,
@@ -329,6 +342,7 @@ export function ShellFrame({
   user: ShellUser;
   children: React.ReactNode;
 }) {
+  const extra = useCrumbs();
   const pathname = usePathname();
   const router = useRouter();
   const { lang, toggleLanguage, isSwitching } = useLanguage();
@@ -436,8 +450,39 @@ export function ShellFrame({
                 /
               </li>
               <li className="min-w-0">
-                <h2 className="truncate text-[15px] font-semibold">{title}</h2>
+                {extra.length > 0 ? (
+                  <Link
+                    href={items.find((i) => i.key === active)?.href ?? '/dashboard'}
+                    className="truncate text-[15px] text-muted hover:text-text"
+                  >
+                    {title}
+                  </Link>
+                ) : (
+                  <h2 className="truncate text-[15px] font-semibold">{title}</h2>
+                )}
               </li>
+              {extra.map((c, i) => (
+                <li key={`${c.label}-${i}`} className="flex min-w-0 items-center gap-2">
+                  <span aria-hidden="true" className="text-muted">
+                    /
+                  </span>
+                  {i === extra.length - 1 || !c.href ? (
+                    <h2
+                      className="max-w-[16rem] truncate text-[15px] font-semibold"
+                      aria-current="page"
+                    >
+                      {c.label}
+                    </h2>
+                  ) : (
+                    <Link
+                      href={c.href}
+                      className="max-w-[12rem] truncate text-[15px] text-muted hover:text-text"
+                    >
+                      {c.label}
+                    </Link>
+                  )}
+                </li>
+              ))}
             </ol>
           </nav>
 

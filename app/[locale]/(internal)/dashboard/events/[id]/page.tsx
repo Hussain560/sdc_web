@@ -1,6 +1,7 @@
 import { Lock } from 'lucide-react';
 import { notFound } from 'next/navigation';
-import { Alert, Badge, Card, Tabs } from '@/components/ui';
+import { Alert, Badge, Card, StatCard, Tabs } from '@/components/ui';
+import { SetCrumbs } from '@/components/layout/DashboardShell/Crumbs';
 import { Link } from '@/i18n/navigation';
 import { can } from '@/lib/auth/permissions';
 import { requireUser } from '@/lib/auth/session';
@@ -8,7 +9,13 @@ import { todayInRiyadh } from '@/lib/time';
 import { formatDate, formatDateRange, formatRelative, formatTimeRange } from '@/lib/format';
 import { getAccess } from '@/modules/access/queries';
 import { getAttendanceOverview } from '@/modules/attendance/queries';
+import { getRegistrationCounts } from '@/modules/registrations/queries';
 import { EventActions } from '@/modules/events/components/EventActions';
+import {
+  AttendanceSection,
+  CertificatesSection,
+  RegistrationsSection,
+} from '@/modules/events/components/EventTabs';
 import { EventPreviewCard } from '@/modules/events/components/EventPreviewCard';
 import { Timeline } from '@/modules/events/components/Timeline';
 import { eventPerms } from '@/modules/events/permissions';
@@ -32,7 +39,7 @@ export default async function EventDetailPage({
   searchParams,
 }: {
   params: Promise<{ locale: string; id: string }>;
-  searchParams: Promise<{ tab?: string }>;
+  searchParams: Promise<Record<string, string | undefined>>;
 }) {
   const { locale, id } = await params;
   const lang = locale === 'en' ? 'en' : 'ar';
@@ -42,7 +49,6 @@ export default async function EventDetailPage({
   if (!access || !event) notFound();
 
   const sp = await searchParams;
-  const tab = sp.tab === 'history' ? 'history' : 'overview';
   const perms = eventPerms(access, event.committeeId);
   const f = event.form;
   const st = STATUS_LABEL[event.status];
@@ -51,16 +57,36 @@ export default async function EventDetailPage({
       ? (f.dates.at(-1) ?? null)
       : f.endDate || f.startDate || null;
   const hasEnded = lastDate !== null && lastDate < todayInRiyadh();
-  const history = tab === 'history' ? await getEventHistory(id) : [];
-  // Attendance belongs to events that are live or done, for the people who run it (registrations.attendance).
+
+  // Which tabs this person sees for this event (the database re-checks everything they do inside).
+  const regTab =
+    ['published', 'completed', 'cancelled'].includes(event.status) &&
+    can(access, 'registrations.review', event.committeeId);
   const attendanceTab =
     ['published', 'completed'].includes(event.status) &&
     can(access, 'registrations.attendance', event.committeeId);
-  const overview =
-    attendanceTab && event.status === 'published' ? await getAttendanceOverview(id) : null;
+  const overview = attendanceTab ? await getAttendanceOverview(id) : null;
+  const allDaysFinalized =
+    !!overview && overview.days.length > 0 && overview.days.every((d) => d.status === 'finalized');
+  const certTab =
+    !!overview && allDaysFinalized && can(access, 'events.complete', event.committeeId);
+
+  const wanted = sp.tab ?? 'overview';
+  const tab =
+    wanted === 'history' ||
+    (wanted === 'registrations' && regTab) ||
+    (wanted === 'attendance' && attendanceTab && overview) ||
+    (wanted === 'certificates' && certTab)
+      ? wanted
+      : 'overview';
+  const history = tab === 'history' ? await getEventHistory(id) : [];
   // Completion needs signed-off attendance as soon as any session exists (AT-6 / KFUCS F-36).
   const attendancePending =
-    !!overview && overview.days.some((d) => d.sessionId !== null) && !overview.event.finalizedAt;
+    !!overview &&
+    event.status === 'published' &&
+    overview.days.some((d) => d.sessionId !== null) &&
+    !overview.event.finalizedAt;
+  const regCounts = regTab ? await getRegistrationCounts(id) : {};
   const title = ar ? f.titleAr : f.titleEn || f.titleAr;
   const other = ar ? f.titleEn : f.titleAr;
 
@@ -100,9 +126,15 @@ export default async function EventDetailPage({
               </Badge>
             )}
           </h1>
-          <p className="mt-1 text-sm text-muted">
-            {other && <span dir={ar ? 'ltr' : 'rtl'}>{other} · </span>}
-            {event.committeeName[lang]} · {TYPE_LABEL[f.type][lang]}
+          <p className="mt-1 flex flex-wrap items-center gap-x-2 text-sm text-muted">
+            {other && (
+              <span dir={ar ? 'ltr' : 'rtl'} className="after:ms-2 after:content-['·']">
+                {other}
+              </span>
+            )}
+            <span>
+              {event.committeeName[lang]} · {TYPE_LABEL[f.type][lang]}
+            </span>
           </p>
         </div>
         <EventActions
@@ -114,15 +146,58 @@ export default async function EventDetailPage({
         />
       </div>
 
-      <Card className="mb-4">
-        <Timeline event={event} lang={lang} />
-        {event.status === 'pending_review' && event.submittedAt && (
-          <p className="mt-2 text-sm text-muted">
-            {ar ? 'بانتظار الاعتماد منذ ' : 'Waiting for approval since '}
-            {formatRelative(event.submittedAt, lang)}
-          </p>
-        )}
-      </Card>
+      {regTab && (tab === 'overview' || tab === 'registrations') && (
+        <div className="mb-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          <StatCard
+            label={ar ? 'التسجيلات' : 'Registrations'}
+            value={Object.values(regCounts).reduce((x, y) => x + y, 0)}
+            hint={
+              regCounts.waitlisted
+                ? ar
+                  ? `${regCounts.waitlisted} في قائمة الانتظار`
+                  : `${regCounts.waitlisted} waitlisted`
+                : undefined
+            }
+          />
+          <StatCard
+            label={ar ? 'المقبولون' : 'Accepted'}
+            value={regCounts.accepted ?? 0}
+            hint={f.seats ? (ar ? `من ${f.seats} مقعد` : `of ${f.seats} seats`) : undefined}
+          />
+          <StatCard
+            label={ar ? 'بانتظار القرار' : 'Awaiting a decision'}
+            value={regCounts.pending ?? 0}
+            hint={(regCounts.pending ?? 0) > 0 ? (ar ? 'يحتاج إجراء' : 'Needs action') : undefined}
+          />
+          <StatCard
+            label={ar ? 'متوسط الحضور' : 'Average attendance'}
+            value={
+              overview?.averagePercent === null || overview === null
+                ? '—'
+                : `${overview.averagePercent}%`
+            }
+            hint={
+              overview && !overview.event.finalizedAt
+                ? ar
+                  ? 'بعد اعتماد الحضور'
+                  : 'After sign-off'
+                : undefined
+            }
+          />
+        </div>
+      )}
+
+      {tab === 'overview' && (
+        <Card className="mb-4">
+          <Timeline event={event} lang={lang} />
+          {event.status === 'pending_review' && event.submittedAt && (
+            <p className="mt-2 text-sm text-muted">
+              {ar ? 'بانتظار الاعتماد منذ ' : 'Waiting for approval since '}
+              {formatRelative(event.submittedAt, lang)}
+            </p>
+          )}
+        </Card>
+      )}
 
       {event.status === 'changes_requested' && event.reviewNote && (
         <Alert tone="warning" className="mb-4">
@@ -142,17 +217,31 @@ export default async function EventDetailPage({
         </Alert>
       )}
 
+      <SetCrumbs items={[{ label: title }]} />
       <Tabs
         label={ar ? 'أقسام الفعالية' : 'Event sections'}
         active={tab}
         items={[
           { key: 'overview', label: ar ? 'نظرة عامة' : 'Overview', href: '?tab=overview' },
-          ...(attendanceTab
+          ...(regTab
             ? [
                 {
-                  key: 'attendance',
-                  label: ar ? 'الحضور' : 'Attendance',
-                  href: `/dashboard/events/${event.id}/attendance`,
+                  key: 'registrations',
+                  label: ar ? 'التسجيلات' : 'Registrations',
+                  href: '?tab=registrations',
+                  count: Object.values(regCounts).reduce((x, y) => x + y, 0),
+                },
+              ]
+            : []),
+          ...(attendanceTab
+            ? [{ key: 'attendance', label: ar ? 'الحضور' : 'Attendance', href: '?tab=attendance' }]
+            : []),
+          ...(certTab
+            ? [
+                {
+                  key: 'certificates',
+                  label: ar ? 'الشهادات' : 'Certificates',
+                  href: '?tab=certificates',
                 },
               ]
             : []),
@@ -160,7 +249,30 @@ export default async function EventDetailPage({
         ]}
       />
 
-      {tab === 'overview' ? (
+      {tab === 'registrations' ? (
+        <RegistrationsSection
+          eventId={event.id}
+          sp={sp}
+          counts={regCounts}
+          lang={lang}
+          canExport={can(access, 'registrations.export', event.committeeId)}
+        />
+      ) : tab === 'attendance' && overview ? (
+        <AttendanceSection
+          eventId={event.id}
+          slug={overview.event.slug}
+          title={title}
+          overview={overview}
+          sp={sp}
+          canComplete={can(access, 'events.complete', event.committeeId)}
+        />
+      ) : tab === 'certificates' && overview ? (
+        <CertificatesSection
+          eventId={event.id}
+          overview={overview}
+          canManageSettings={can(access, 'settings.manage')}
+        />
+      ) : tab === 'overview' ? (
         <div className="grid gap-6 lg:grid-cols-[320px_minmax(0,1fr)]">
           <div className="flex flex-col gap-4">
             <Card className="flex flex-col gap-3 text-sm">

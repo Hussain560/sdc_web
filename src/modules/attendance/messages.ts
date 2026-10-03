@@ -14,6 +14,10 @@ const CODES = [
   'SESSION_NOT_OPEN',
   'SESSIONS_NOT_FINALIZED',
   'NOT_ACCEPTED',
+  'NOT_REGISTERED',
+  'REGISTRATION_CANCELLED',
+  'RATE_LIMITED',
+  'VALIDATION_FAILED',
   'TOKEN_EXPIRED',
   'CERTIFICATES_DISABLED',
   'ATTENDANCE_NOT_FINALIZED',
@@ -39,12 +43,28 @@ const messages: Partial<Record<ErrorCode, Record<Lang, string>>> = {
     en: 'Finalize all sessions first (or remove a day that never ran from the schedule).',
   },
   NOT_ACCEPTED: {
-    ar: 'تسجيل الحضور متاح للمقبولين فقط.',
-    en: 'Check-in is for accepted participants only.',
+    ar: 'لم يُقبل تسجيلك بعد في هذه الفعالية.',
+    en: "Your registration hasn't been accepted for this event yet.",
   },
   TOKEN_EXPIRED: {
-    ar: 'انتهت صلاحية الرمز — امسح الرمز المعروض الآن.',
-    en: 'The code expired — scan the one on screen now.',
+    ar: 'انتهت مهلة المسح — امسح الرمز المعروض الآن من جديد.',
+    en: 'Scanner timeout — scan the code on screen again.',
+  },
+  NOT_REGISTERED: {
+    ar: 'لم نجد تسجيلًا بهذا البريد. استخدم نفس البريد الذي سجّلت به في الفعالية.',
+    en: 'No registration found for this e-mail. Use the exact e-mail you registered with.',
+  },
+  REGISTRATION_CANCELLED: {
+    ar: 'أُلغي تسجيلك في هذه الفعالية.',
+    en: 'Your registration for this event was cancelled.',
+  },
+  RATE_LIMITED: {
+    ar: 'محاولات كثيرة. انتظر دقيقة ثم حاول مجددًا.',
+    en: 'Too many attempts. Wait a minute and try again.',
+  },
+  VALIDATION_FAILED: {
+    ar: 'اكتب بريدًا إلكترونيًا صحيحًا.',
+    en: 'Enter a valid e-mail address.',
   },
   CERTIFICATES_DISABLED: { ar: 'الشهادات غير مفعّلة.', en: 'Certificates are not enabled.' },
   ATTENDANCE_NOT_FINALIZED: {

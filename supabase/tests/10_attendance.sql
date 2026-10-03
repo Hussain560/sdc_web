@@ -54,7 +54,11 @@ insert into public.event_registrations (id, event_id, user_id, status, full_name
   ('00000000-0000-0000-0000-00000000a013', '00000000-0000-0000-0000-0000000e0001', '00000000-0000-0000-0000-00000000f013', 'accepted', 'Participant Three Ten', 'p3@example.test'),
   ('00000000-0000-0000-0000-00000000a014', '00000000-0000-0000-0000-0000000e0001', '00000000-0000-0000-0000-00000000f014', 'accepted', 'Participant Four Ten',  'p4@example.test'),
   ('00000000-0000-0000-0000-00000000a015', '00000000-0000-0000-0000-0000000e0001', '00000000-0000-0000-0000-00000000f015', 'pending',  'Participant Five Ten',  'p5@example.test'),
-  ('00000000-0000-0000-0000-00000000b011', '00000000-0000-0000-0000-0000000e0002', '00000000-0000-0000-0000-00000000f011', 'accepted', 'Participant One Ten',   'p1@example.test');
+  ('00000000-0000-0000-0000-00000000b011', '00000000-0000-0000-0000-0000000e0002', '00000000-0000-0000-0000-00000000f011', 'accepted', 'Participant One Ten',   'p1@example.test'),
+  ('00000000-0000-0000-0000-00000000b013', '00000000-0000-0000-0000-0000000e0002', '00000000-0000-0000-0000-00000000f013', 'accepted', 'Participant Three Ten', 'p3@example.test'),
+  ('00000000-0000-0000-0000-00000000b014', '00000000-0000-0000-0000-0000000e0002', '00000000-0000-0000-0000-00000000f014', 'accepted', 'Participant Four Ten',  'p4@example.test'),
+  ('00000000-0000-0000-0000-00000000b015', '00000000-0000-0000-0000-0000000e0002', '00000000-0000-0000-0000-00000000f015', 'pending',  'Participant Five Ten',  'p5@example.test'),
+  ('00000000-0000-0000-0000-00000000b012', '00000000-0000-0000-0000-0000000e0002', '00000000-0000-0000-0000-00000000f012', 'cancelled','Participant Two Ten',   'p2@example.test');
 
 -- =============================================================================== settings defaults
 select is((select value from public.site_settings where key = 'certificate_threshold'), '70'::jsonb, 'the certificate threshold defaults to the KFUCS 70 %');
@@ -90,7 +94,7 @@ create temp table _t (tok text);
 grant select, insert on _t to authenticated;
 insert into _t select public.session_qr_token((select id from _s where k = 'd1')) ->> 'token';
 select is(char_length((select tok from _t)), 24, 'the QR token is 24 characters');
-select ok((public.session_qr_token((select id from _s where k = 'd1')) ->> 'expires_in')::int between 1 and 30, 'and rotates within 30 seconds');
+select ok((public.session_qr_token((select id from _s where k = 'd1')) ->> 'expires_in')::int between 1 and 120, 'and rotates within 120 seconds (KFUCS)');
 
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-00000000f011","role":"authenticated"}', true);
 select is(public.check_in((select id from _s where k = 'd1'), (select tok from _t)), 'checked_in', 'an accepted registrant checks in with a valid token');
@@ -113,6 +117,32 @@ select is(public.check_in((select id from _s where k = 'online'), null), 'checke
 select is((select method from public.attendance_records where session_id = (select id from _s where k = 'online')), 'online', 'recorded as online');
 select is((public.check_in_context('att-online', null) -> 'session' ->> 'status'), 'open', 'the check-in page finds today''s open session');
 select ok((public.check_in_context('att-online', null) ->> 'checked_in_at') is not null, 'and knows the caller already checked in');
+
+-- =============================================================================== public check-in by e-mail (no sign-in)
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-00000000f004","role":"authenticated"}', true);
+create temp table _t2 (tok text);
+grant select, insert on _t2 to authenticated, anon;
+insert into _t2 select public.session_qr_token((select id from _s where k = 'online')) ->> 'token';
+select is((public.session_live((select id from _s where k = 'online')) ->> 'present')::int, 1, 'live numbers: one person is in');
+select is((public.session_live((select id from _s where k = 'online')) ->> 'total')::int, 3, 'live numbers: three accepted registrants');
+select is((public.session_live((select id from _s where k = 'online')) -> 'recent' -> 0 ->> 'name'), 'Participant One Ten', 'live numbers: the latest check-in is named');
+select is((select email from public.session_roster((select id from _s where k = 'online')) where full_name = 'Participant Three Ten'), 'p3@example.test', 'the roster carries the e-mail');
+
+set local role anon;
+select is((public.check_in_public_context((select id from _s where k = 'online')) -> 'event' ->> 'slug'), 'att-online', 'the public context needs no sign-in');
+select is(public.check_in_public_context(gen_random_uuid()), null, 'and is empty for an unknown session');
+select throws_ok($$select public.session_live((select id from _s where k = 'online'))$$, '42501', null, 'anonymous visitors cannot read live numbers');
+select is((public.check_in_by_email((select id from _s where k = 'online'), 'wrong-token', 'p3@example.test') ->> 'code'), 'TOKEN_EXPIRED', 'a wrong code is refused');
+select is((public.check_in_by_email((select id from _s where k = 'online'), (select tok from _t2), 'nobody@example.test') ->> 'code'), 'NOT_REGISTERED', 'an unknown e-mail is not registered');
+select is((public.check_in_by_email((select id from _s where k = 'online'), (select tok from _t2), 'p5@example.test') ->> 'code'), 'NOT_ACCEPTED', 'a pending registration is not accepted');
+select is((public.check_in_by_email((select id from _s where k = 'online'), (select tok from _t2), 'p2@example.test') ->> 'code'), 'REGISTRATION_CANCELLED', 'a cancelled registration is told so');
+select is((public.check_in_by_email((select id from _s where k = 'online'), (select tok from _t2), 'not-an-email') ->> 'code'), 'VALIDATION_FAILED', 'a malformed e-mail is refused');
+select is((public.check_in_by_email((select id from _s where k = 'online'), (select tok from _t2), 'p3@example.test') ->> 'status'), 'checked_in', 'the registered e-mail checks in');
+select is((public.check_in_by_email((select id from _s where k = 'online'), (select tok from _t2), 'P3@Example.TEST') ->> 'status'), 'already', 'the e-mail match ignores case and a second check-in is idempotent');
+select is((public.check_in_by_email((select id from _s where k = 'online'), (select tok from _t2), ' p4@example.test ') ->> 'name'), 'Participant Four Ten', 'surrounding spaces are ignored and the name comes back');
+select is((select count(*)::int from (select public.check_in_by_email((select id from _s where k = 'online'), (select tok from _t2), 'guess' || g || '@example.test') from generate_series(1, 40) g) x), 40, 'guessing keeps answering');
+select is((public.check_in_by_email((select id from _s where k = 'online'), (select tok from _t2), 'p3@example.test') ->> 'code'), 'RATE_LIMITED', 'but after 30 failures a minute it is throttled');
+set local role authenticated;
 
 -- =============================================================================== manual marking, close, finalize
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-00000000f004","role":"authenticated"}', true);

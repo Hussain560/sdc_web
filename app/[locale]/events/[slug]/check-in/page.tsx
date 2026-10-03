@@ -1,12 +1,14 @@
 import { notFound } from 'next/navigation';
-import { redirect } from '@/i18n/navigation';
 import { getUser } from '@/lib/auth/session';
 import CheckInCard from '@/modules/attendance/components/public/CheckInCard';
-import { getCheckInContext } from '@/modules/attendance/queries';
+import { getCheckInContext, getPublicCheckInContext } from '@/modules/attendance/queries';
 
 export const dynamic = 'force-dynamic';
 
-/** PUB-003: /events/[slug]/check-in?s=<session>&t=<token>. Signed-out visitors sign in first; the code is kept. */
+/**
+ * PUB-003: /events/[slug]/check-in?s=<session>&t=<token>. Opens for everyone (no sign-in): a registered person types
+ * the e-mail they registered with. Someone already signed in with an accepted registration is checked in at once.
+ */
 export default async function CheckInPage({
   params,
   searchParams,
@@ -14,16 +16,17 @@ export default async function CheckInPage({
   params: Promise<{ locale: string; slug: string }>;
   searchParams: Promise<{ s?: string; t?: string }>;
 }) {
-  const { locale, slug } = await params;
+  const { slug } = await params;
   const { s, t } = await searchParams;
 
-  if (!(await getUser())) {
-    const query = new URLSearchParams({ ...(s ? { s } : {}), ...(t ? { t } : {}) }).toString();
-    const back = `/events/${slug}/check-in${query ? `?${query}` : ''}`;
-    redirect({ href: `/login?redirect=${encodeURIComponent(back)}`, locale });
-  }
+  const ctx = await getPublicCheckInContext(s);
+  if (!ctx || ctx.event.slug !== slug) notFound();
 
-  const ctx = await getCheckInContext(slug, s);
-  if (!ctx) notFound();
-  return <CheckInCard ctx={ctx} token={t ?? null} />;
+  // A signed-in participant skips the e-mail form.
+  let member: { accepted: boolean; checkedInAt: string | null } | null = null;
+  if (await getUser()) {
+    const mine = await getCheckInContext(slug, s);
+    member = mine ? { accepted: mine.accepted, checkedInAt: mine.checkedInAt } : null;
+  }
+  return <CheckInCard ctx={ctx} token={t ?? null} member={member} />;
 }

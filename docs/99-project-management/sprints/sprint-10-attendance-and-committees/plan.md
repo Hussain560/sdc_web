@@ -114,3 +114,6 @@ Requirements: FR-REG-006, FR-EVT-006, FR-CMT-001…005, FR-PUB-003; BR-REG-010, 
 | Public committee members | Only public positions (head, deputy) are shown: members' positions are not public (`is_public_position`) |
 | Rate limiting | Check-in relies on the unique record and the rotating token; no per-IP limit yet (Sprint 12 hardening) |
 | Certificate template review | The A4 template follows the light-theme palette; the owner has not reviewed it |
+
+### Revision after review (2026-10-03)
+Attendance, registrations and certificates moved into tabs of the event page with a public e-mail check-in and a 120-second QR, matching KFUCS — see [11-modules/attendance §17](../../../11-modules/attendance/README.md). The standalone `/dashboard/events/[id]/attendance/*` pages were removed.

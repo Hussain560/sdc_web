@@ -110,7 +110,10 @@ test.describe('registration', () => {
       await gotoReady(hpage, '/en/dashboard/registrations?status=pending');
       const row = hpage.getByRole('row', { name: /Reg Attendee Person/ });
       await row.getByRole('button', { name: 'Accept' }).click();
-      await expect(hpage.getByText('Decision applied to 1.')).toBeVisible();
+      const confirm = hpage.getByRole('dialog').filter({ hasText: 'Confirm acceptance' });
+      await expect(confirm).toContainText('Reg Attendee Person');
+      await confirm.getByRole('button', { name: 'Yes, accept' }).click();
+      await expect(hpage.getByText('1 registration accepted.')).toBeVisible();
 
       const confirmed = await waitForMail(user.email, { subject: /You're in/i });
       expect(confirmed.html).toContain(GROUP);

@@ -4,8 +4,9 @@ import { committeeId, sql } from './db';
 import { gotoReady, signInAndWait, waitForMail } from './helpers';
 import { persona, remove } from './personas';
 
-// Sprint 10 — REG-006, PUB-003, REG-008: a two-day event from the first session to the certificate PDF,
-// against the real local stack (QR token computed from the session secret, like a phone scanning the screen).
+// Sprints 10 + KFUCS parity: a two-day event from the first session to the certificate PDF through the event tabs
+// (Registrations, Attendance, Certificates), a public check-in with the registered e-mail (no sign-in), the QR screen
+// with live numbers, against the real local stack (the QR token is computed from the session secret, like a phone).
 const tag = Math.random().toString(36).slice(2, 7);
 const slug = `att-e2e-${tag}`;
 
@@ -29,12 +30,12 @@ test.afterAll(wipe);
 const qrToken = async (sessionId: string) =>
   (
     await sql<{ t: string }>(
-      `select private.qr_token(qr_secret, floor(extract(epoch from now()))::bigint / 30) as t from public.attendance_sessions where id = $1`,
+      `select private.qr_token(qr_secret, floor(extract(epoch from now()))::bigint / 120) as t from public.attendance_sessions where id = $1`,
       [sessionId],
     )
   )[0]!.t;
 
-test.describe('attendance: sessions, check-in, sign-off, certificates', () => {
+test.describe('attendance: tabs, public check-in, sign-off, certificates', () => {
   test('two days from the first session to the certificate PDF', async ({ page, browser }) => {
     const head = await persona('committee_head', {
       committeeSlug: 'ai',
@@ -48,10 +49,6 @@ test.describe('attendance: sessions, check-in, sign-off, certificates', () => {
     const p1 = await persona(null, { fullName: 'Attendee One Person' });
     const p2 = await persona(null, { fullName: 'Attendee Two Person' });
     const p3 = await persona(null, { fullName: 'Attendee Three Person' });
-    const other = await persona('committee_head', {
-      committeeSlug: 'cybersecurity',
-      fullName: 'Attend Other Head',
-    });
     try {
       await sql(
         `update public.site_settings set value = 'true'::jsonb where key = 'certificates_enabled'`,
@@ -73,15 +70,19 @@ test.describe('attendance: sessions, check-in, sign-off, certificates', () => {
 
       // ------------------------------------------------------------------ the member opens day 1 (late: confirmation)
       await signInAndWait(page, member.email, undefined, '/en/login');
-      await gotoReady(page, `/en/dashboard/events/${eventId}/attendance`);
-      await expect(page.getByRole('heading', { name: 'Sessions' })).toBeVisible();
-      await expect(page.getByText('Scheduled', { exact: true })).toHaveCount(2);
-      await page.getByRole('button', { name: 'Open session' }).first().click();
+      await gotoReady(page, `/en/dashboard/events/${eventId}?tab=attendance`);
+      // the breadcrumb names the event
+      await expect(page.getByRole('navigation', { name: 'Breadcrumb' })).toContainText(
+        `Attendance Camp ${tag}`,
+      );
+      await expect(page.getByRole('link', { name: /Day 1/ })).toBeVisible();
+      await expect(page.getByRole('link', { name: /Day 2/ })).toBeVisible();
+      await page.getByRole('button', { name: 'Open session' }).click();
       const dlg = page.getByRole('dialog');
       await expect(dlg).toContainText(/session.s day/);
       await dlg.getByRole('button', { name: 'Open the session' }).click();
       await expect(page.getByRole('status').filter({ hasText: 'Session opened' })).toBeVisible();
-      await expect(page.getByText('opened late')).toBeVisible();
+      await expect(page.getByText('Opened late')).toBeVisible();
 
       const day1 = (
         await sql<{ id: string }>(
@@ -91,40 +92,48 @@ test.describe('attendance: sessions, check-in, sign-off, certificates', () => {
         )
       )[0]!.id;
 
-      // The organizer QR screen draws a code.
-      await gotoReady(page, `/en/dashboard/events/${eventId}/attendance/${day1}/qr`);
+      // The QR display draws a code with its countdown, and the live numbers.
+      await page.getByRole('tab', { name: 'QR display' }).click();
       await expect(page.getByRole('img', { name: 'QR code for check-in' })).toBeVisible();
+      await expect(page.getByText(/refreshes in/)).toBeVisible();
+      await expect(page.getByLabel('Live numbers')).toContainText('Checked in');
 
-      // ------------------------------------------------------------------ participants check in
+      // ------------------------------------------------------------------ public check-in (no sign-in)
       const token = await qrToken(day1);
-      const pctx = await browser.newContext({ baseURL: 'http://127.0.0.1:3300' });
-      const ppage = await pctx.newPage();
-      await signInAndWait(ppage, p1.email, undefined, '/en/login');
-      await ppage.goto(`/en/events/${slug}/check-in?s=${day1}&t=nope`);
-      await expect(ppage.getByRole('heading', { name: /code expired/i })).toBeVisible();
-      await ppage.goto(`/en/events/${slug}/check-in?s=${day1}&t=${token}`);
-      await expect(ppage.getByRole('heading', { name: 'You are checked in' })).toBeVisible();
-      await ppage.goto(`/en/events/${slug}/check-in?s=${day1}&t=${token}`);
-      await expect(ppage.getByRole('heading', { name: /already recorded/i })).toBeVisible();
-      await ppage.goto(`/en/events/${slug}/check-in`);
-      await expect(ppage.getByRole('heading', { name: /already recorded/i })).toBeVisible();
+      const actx = await browser.newContext({ baseURL: 'http://127.0.0.1:3300' });
+      const anon = await actx.newPage();
+      await anon.goto(`/en/events/${slug}/check-in?s=${day1}&t=nope`);
+      await anon.getByLabel('E-mail address').fill(p1.email);
+      await anon.getByRole('button', { name: 'Verify and check in' }).click();
+      await expect(anon.getByText(/Scanner timeout/)).toBeVisible();
 
-      // Someone who never registered cannot check in.
-      const octx = await browser.newContext({ baseURL: 'http://127.0.0.1:3300' });
-      const opage = await octx.newPage();
-      await signInAndWait(opage, other.email, undefined, '/en/login');
-      await opage.goto(`/en/events/${slug}/check-in?s=${day1}&t=${token}`);
-      await expect(
-        opage.getByRole('heading', { name: /accepted participants only/i }),
-      ).toBeVisible();
-      await octx.close();
+      await anon.goto(`/en/events/${slug}/check-in?s=${day1}&t=${token}`);
+      await expect(anon.getByRole('heading', { name: `Attendance Camp ${tag}` })).toBeVisible();
+      await anon.getByLabel('E-mail address').fill('nobody@example.test');
+      await anon.getByRole('button', { name: 'Verify and check in' }).click();
+      await expect(anon.getByText(/No registration found/)).toBeVisible();
+      await anon.getByRole('button', { name: 'Try again' }).click();
+      await anon.getByLabel('E-mail address').fill(p1.email.toUpperCase());
+      await anon.getByRole('button', { name: 'Verify and check in' }).click();
+      await expect(anon.getByRole('heading', { name: 'Check-in successful' })).toBeVisible();
+      await anon.goto(`/en/events/${slug}/check-in?s=${day1}&t=${token}`);
+      await anon.getByLabel('E-mail address').fill(p1.email);
+      await anon.getByRole('button', { name: 'Verify and check in' }).click();
+      await expect(anon.getByRole('heading', { name: /already recorded/i })).toBeVisible();
+      expect((await anon.goto('/en/events/anything/check-in?s=abc&t=xyz'))?.status()).toBe(404);
+      await actx.close();
+
+      // The organizer screen follows the check-in live (polled every few seconds).
+      await expect(page.getByLabel('Live numbers').getByText('Attendee One Person')).toBeVisible({
+        timeout: 20_000,
+      });
 
       // ------------------------------------------------------------------ manual marking, close, finalize day 1
-      await gotoReady(page, `/en/dashboard/events/${eventId}/attendance/${day1}`);
+      await page.getByRole('tab', { name: 'Attendance list' }).click();
       const row2 = page.getByRole('row').filter({ hasText: 'Attendee Two Person' });
+      await expect(row2).toContainText(p2.email);
       await row2.getByRole('button', { name: 'Mark present' }).click();
       await expect(page.getByRole('status').filter({ hasText: 'marked present' })).toBeVisible();
-      await expect(page.getByText(/2 present/)).toBeVisible();
       await page.getByRole('button', { name: 'Close session' }).click();
       await expect(page.getByRole('status').filter({ hasText: 'Session closed' })).toBeVisible();
       await page.getByRole('button', { name: 'Finalize session' }).click();
@@ -132,27 +141,13 @@ test.describe('attendance: sessions, check-in, sign-off, certificates', () => {
       await page.getByRole('dialog').getByRole('button', { name: 'Finalize', exact: true }).click();
       await expect(page.getByRole('status').filter({ hasText: 'Session finalized' })).toBeVisible();
       await expect(page.getByRole('note')).toContainText('finalized');
-
-      // A member cannot correct a finalized session; checking in again is refused.
       await expect(page.getByRole('button', { name: /Correct/ })).toHaveCount(0);
-      await ppage.goto(`/en/events/${slug}/check-in?s=${day1}&t=${token}`);
-      await expect(
-        ppage.getByRole('heading', { name: /already recorded|not open/i }),
-      ).toBeVisible();
 
       // ------------------------------------------------------------------ day 2
-      await gotoReady(page, `/en/dashboard/events/${eventId}/attendance`);
+      await gotoReady(page, `/en/dashboard/events/${eventId}?tab=attendance`);
       await page.getByRole('button', { name: 'Open session' }).click();
       await page.getByRole('dialog').getByRole('button', { name: 'Open the session' }).click();
       await expect(page.getByRole('status').filter({ hasText: 'Session opened' })).toBeVisible();
-      const day2 = (
-        await sql<{ id: string }>(
-          `select s.id from public.attendance_sessions s join public.event_dates d on d.id = s.event_date_id
-            where s.event_id = $1 order by d.event_date desc limit 1`,
-          [eventId],
-        )
-      )[0]!.id;
-      await gotoReady(page, `/en/dashboard/events/${eventId}/attendance/${day2}`);
       for (const name of ['Attendee One Person', 'Attendee Two Person']) {
         await page
           .getByRole('row')
@@ -170,8 +165,11 @@ test.describe('attendance: sessions, check-in, sign-off, certificates', () => {
       await expect(page.getByRole('status').filter({ hasText: 'Session finalized' })).toBeVisible();
 
       // ------------------------------------------------------------------ the event sign-off needs the head
-      await gotoReady(page, `/en/dashboard/events/${eventId}/attendance`);
+      await gotoReady(page, `/en/dashboard/events/${eventId}?tab=attendance`);
       await expect(page.getByRole('button', { name: 'Finalize event attendance' })).toHaveCount(0);
+      // a member has no Certificates tab
+      await expect(page.getByRole('link', { name: 'Certificates' })).toHaveCount(0);
+
       const hctx = await browser.newContext({ baseURL: 'http://127.0.0.1:3300' });
       const hpage = await hctx.newPage();
       await signInAndWait(hpage, head.email, undefined, '/en/login');
@@ -180,7 +178,7 @@ test.describe('attendance: sessions, check-in, sign-off, certificates', () => {
       await gotoReady(hpage, `/en/dashboard/events/${eventId}`);
       await expect(hpage.getByRole('button', { name: 'Complete' })).toBeDisabled();
 
-      await gotoReady(hpage, `/en/dashboard/events/${eventId}/attendance`);
+      await gotoReady(hpage, `/en/dashboard/events/${eventId}?tab=attendance`);
       await hpage.getByRole('button', { name: 'Finalize event attendance' }).click();
       await hpage
         .getByRole('dialog')
@@ -203,8 +201,28 @@ test.describe('attendance: sessions, check-in, sign-off, certificates', () => {
       expect(by[p3.email]!.attendance_percent).toBe(0);
       expect(by[p3.email]!.attendance_result).toBe('absent');
 
-      // ------------------------------------------------------------------ certificates
-      await hpage.getByRole('button', { name: 'Issue certificates' }).click();
+      // ------------------------------------------------------------------ registrations tab: table, modal, percentage
+      await gotoReady(hpage, `/en/dashboard/events/${eventId}?tab=registrations`);
+      await expect(hpage.getByRole('row').filter({ hasText: 'Attendee One Person' })).toContainText(
+        '100%',
+      );
+      await hpage.getByRole('button', { name: 'Attendee One Person' }).click();
+      const info = hpage.getByRole('dialog').filter({ hasText: 'Registered at' });
+      await expect(info).toContainText(p1.email);
+      await expect(info).toContainText('100%');
+      await expect(info.getByRole('button', { name: 'Cancel registration' })).toBeVisible();
+      await info.getByRole('button', { name: 'Close' }).click();
+
+      // ------------------------------------------------------------------ certificates tab
+      await hpage.getByRole('link', { name: 'Certificates' }).click();
+      await expect(hpage.getByRole('row').filter({ hasText: 'Attendee One Person' })).toContainText(
+        'Eligible',
+      );
+      await expect(
+        hpage.getByRole('row').filter({ hasText: 'Attendee Three Person' }),
+      ).toContainText('Absent');
+      await hpage.getByRole('button', { name: /Issue and send certificates \(2\)/ }).click();
+      await hpage.getByRole('dialog').getByRole('button', { name: 'Issue and send' }).click();
       await expect(
         hpage.getByRole('status').filter({ hasText: '2 certificates issued' }),
       ).toBeVisible();
@@ -231,6 +249,9 @@ test.describe('attendance: sessions, check-in, sign-off, certificates', () => {
       )[0]!.id;
 
       // The owner downloads a real PDF; anyone verifies by id; strangers cannot download.
+      const pctx = await browser.newContext({ baseURL: 'http://127.0.0.1:3300' });
+      const ppage = await pctx.newPage();
+      await signInAndWait(ppage, p1.email, undefined, '/en/login');
       const pdf = await ppage.request.get(`/api/certificates/${certId}/pdf`);
       expect(pdf.status()).toBe(200);
       expect(pdf.headers()['content-type']).toContain('application/pdf');
@@ -266,16 +287,7 @@ test.describe('attendance: sessions, check-in, sign-off, certificates', () => {
       await pctx.close();
     } finally {
       await wipe();
-      await remove(head, member, p1, p2, p3, other);
+      await remove(head, member, p1, p2, p3);
     }
-  });
-
-  test('the check-in page sends signed-out visitors to sign in and keeps the code', async ({
-    page,
-  }) => {
-    await page.goto('/en/events/anything/check-in?s=abc&t=xyz');
-    await expect(page).toHaveURL(
-      /\/en\/login\?redirect=%2Fevents%2Fanything%2Fcheck-in%3Fs%3Dabc%26t%3Dxyz/,
-    );
   });
 });

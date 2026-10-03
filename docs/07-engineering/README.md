@@ -17,6 +17,7 @@ Professional engineering discipline sized for a volunteer, non-profit team. Adap
 | [versioning-and-releases.md](./versioning-and-releases.md) | SemVer, tags, changelog, release notes, release process, version plan |
 | [coding-standards.md](./coding-standards.md) | TypeScript, React/Next.js patterns, naming, styling, i18n, errors, lint/format, dependencies |
 | [ai-agent-skills.md](./ai-agent-skills.md) | Installed agent skills (design, React, Supabase, accessibility) and the frozen-identity guardrail (D-009) |
+| [local-demo-guide.md](./local-demo-guide.md) | Local URLs, services and demo accounts for trying every screen |
 | [documentation-standards.md](./documentation-standards.md) | How docs are written, maintained, and reviewed; ADR process |
 
 Related: [Definition of Ready](../99-project-management/definition-of-ready.md) · [Definition of Done](../99-project-management/definition-of-done.md) · [CI/CD](../08-infrastructure/ci-cd.md) · [Testing strategy](../09-quality/testing-strategy.md)

@@ -300,6 +300,25 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"check_in_failures": {
+                  Row: {
+                    "at": string,"id": number,"session_id": string
+                  }
+                  Insert: {
+                    "at"?: string,"id"?: never,"session_id": string
+                  }
+                  Update: {
+                    "at"?: string,"id"?: never,"session_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "check_in_failures_session_id_fkey"
+      columns: ["session_id"]
+isOneToOne: false
+      referencedRelation: "attendance_sessions"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"committees": {
                   Row: {
                     "contact_email": string | null,"created_at": string,"created_by": string | null,"description_ar": string | null,"description_en": string | null,"display_order": number,"id": string,"name_ar": string,"name_en": string | null,"slug": string,"status": string,"updated_at": string
@@ -1308,8 +1327,14 @@ isOneToOne: false
 "check_in":
 { Args: { "p_session": string,"p_token"?: string }; Returns: string
                            },
+"check_in_by_email":
+{ Args: { "p_email": string,"p_session": string,"p_token": string }; Returns: Json
+                           },
 "check_in_context":
 { Args: { "p_session"?: string,"p_slug": string }; Returns: Json
+                           },
+"check_in_public_context":
+{ Args: { "p_session": string }; Returns: Json
                            },
 "claim_legacy_member":
 { Args: { "p_token": string }; Returns: string
@@ -1449,12 +1474,15 @@ isOneToOne: false
               "full_name_ar": string,"full_name_en": string,"id": string
             }[]
                            },
+"session_live":
+{ Args: { "p_session": string }; Returns: Json
+                           },
 "session_qr_token":
 { Args: { "p_session": string }; Returns: Json
                            },
 "session_roster":
 { Args: { "p_session": string }; Returns: {
-              "checked_in_at": string,"full_name": string,"method": string,"present": boolean,"registration_id": string,"was_member": boolean
+              "checked_in_at": string,"email": string,"full_name": string,"method": string,"present": boolean,"registration_id": string,"was_member": boolean
             }[]
                            },
 "set_committee_status":

@@ -253,3 +253,15 @@ src/modules/attendance/
 ## 16. Open questions
 
 Q-020 (issue certificates? threshold?), Q-008 (attendance metrics in reports).
+
+## 17. Revision — KFUCS parity (2026-10-03)
+
+The first Sprint 10 screens split attendance across separate pages and asked participants to sign in. They now follow KFUCS:
+
+- **One event page, tabs:** *Overview · Registrations · Attendance · Certificates · History* on `/dashboard/events/[id]?tab=…`. The breadcrumb shows the event name in the active language. *Certificates* appears once every session is finalized.
+- **Registrations tab:** the event's registrants as a table (search, status tabs, pagination, CSV). A row opens a dialog (contact e-mail, registered/decided dates, attendance % after sign-off, e-mail state, resend, cancel with reason). Accept / waitlist / reject always ask for confirmation and report the outcome (also on the global `/dashboard/registrations`).
+- **Attendance tab:** a day selector, the selected day's live numbers (checked in, remaining, daily rate, event overall, method split), then *Attendance list* (manual marking by the committee or presenter, with e-mails) or *QR display*.
+- **QR display:** the code rotates every **120 seconds** (the database accepts this and the previous window), countdown bar, copy link, projector (full-screen) mode, live counters and the latest check-ins, polled every 4 s; the list refreshes itself when a check-in arrives.
+- **Public check-in, no sign-in:** the QR opens `/events/[slug]/check-in?s=…&t=…`. The person types the e-mail they registered with (`check_in_by_email`: token required, e-mail matched case-insensitively to an *accepted* registration, expected failures answered with a code and throttled to 30 per session per minute). Signed-in participants with an accepted registration are checked in on arrival.
+- **Certificates tab:** KPI cards, a table with each registrant's final percentage, eligibility and certificate state (not issued / waiting / sent / failed), *Issue and send*, per-row *Send / Retry* and *Resend failed*.
+- **Database:** `20270314000000_event_ops.sql` — `session_qr_token` and `check_in` on 120 s windows, `check_in_public_context`, `check_in_by_email`, `check_in_failures`, `session_live`, `session_roster` with e-mail.
