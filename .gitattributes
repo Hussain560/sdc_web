@@ -1,2 +1,7 @@
-# Auto detect text files and perform LF normalization
-* text=auto
+# Always LF in the working tree, on every OS (Prettier requires it; Windows checkouts used to produce CRLF).
+* text=auto eol=lf
+*.png binary
+*.ttf binary
+*.woff2 binary
+*.jpg binary
+*.ico binary
