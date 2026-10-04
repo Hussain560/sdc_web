@@ -39,7 +39,7 @@ become `main`/production, for these reasons:
 
 1. Repository `sdc-saudi/SDC_website`: default branch `main`; create `develop` from the pushed branch.
 2. Branch protection for `main` and `develop`: pull request required, one review, branches up to date, no force push, no deletion.
-3. Required status checks: `Lint · types · unit tests`, `Build`, `E2E + visual regression`, `Auth E2E (local Supabase)`, `Database policy tests (pgTAP)`, `Conventional Commits (PR title)`.
+3. Required status checks: `Lint · types · unit tests`, `Build`, `Database policy tests (pgTAP)`, `Conventional Commits (PR title)`.
 4. Replace the placeholder team handles in `.github/CODEOWNERS`.
 5. Environments `staging` and `production` (required reviewers for production); add the secrets listed in [environment variables](../08-infrastructure/environment-variables.md).
 6. Enable Dependabot alerts and secret scanning.

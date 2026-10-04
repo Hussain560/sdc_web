@@ -54,7 +54,7 @@ Inspired by the Innosoft *Standards Gate* (tools produce evidence → gate evalu
 | Build succeeds | ✅ | ✅ |
 | PR title is a Conventional Commit | ✅ | ✅ |
 | `npm audit` no high/critical in production deps | ⚠️ warn | ✅ |
-| E2E smoke | optional (label `e2e`) | ✅ |
+| Browser e2e (visual + authenticated) | local before a release; on demand in CI (`E2E (manual)`) | local before a release |
 | Coverage thresholds | ⚠️ warn (report) | ⚠️ warn — becomes blocking in Phase 5 |
 | Accessibility (axe) on key pages | ⚠️ warn | ✅ from Phase 5 |
 
@@ -68,7 +68,8 @@ GitHub Actions minutes are free for public repositories and limited for private 
 
 | File | Purpose |
 | ---- | ------- |
-| `.github/workflows/ci.yml` | Jobs: `quality` (format · lint · typecheck · unit), `build`, `e2e` (Playwright visual regression, report uploaded on failure), `db` (pgTAP + generated-types drift), `commits` (PR title is a Conventional Commit) |
+| `.github/workflows/ci.yml` | Fast gate: `quality` (format · lint · typecheck · unit), `build`, `db` (pgTAP + generated-types drift), `commits` (PR title is a Conventional Commit) |
+| `.github/workflows/e2e.yml` | `E2E (manual)`: the Playwright visual and authenticated suites, started by hand from the Actions tab; not a required check |
 | `.github/workflows/release-please.yml` | SemVer release PRs, tags, `CHANGELOG.md` from `main`, and the sync PR `main` → `develop` |
 | `.github/workflows/deploy-database.yml` | Applies migrations to the Dev project (from `develop`, `release/**`) or production (from `production`) |
 | `scripts/smoke.mjs` (`npm run smoke -- <url>`) | Read-only remote smoke test of a deployed site |

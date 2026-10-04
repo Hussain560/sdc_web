@@ -81,6 +81,8 @@ Coverage is a signal, not a goal; untested authorization paths are blocking rega
 | E2E + visual | Playwright (Chromium) | `tests/e2e/` | 13 public pages × ar/en × dark/light × desktop/mobile = 104 baselines + locale and shell tests; since Sprint 06 the suite runs against the local Supabase stack (server-rendered event pages read `public_events`; the six legacy events are seeded by migration). Browser-side calls that remain are still mocked (`tests/e2e/fixtures.ts`) |
 | Database | pgTAP (`supabase test db`) | `supabase/tests/` | Smoke tests + `todo` regression tests that document the legacy exposure (they flip to hard assertions in the containment/RBAC migration) |
 
+> **Where the browser suites run (decision 2026-10-05):** the visual and authenticated Playwright suites take 15 minutes or more, so they are not part of the pull-request gate. Run `npx supabase db reset && npm run e2e` and `npm run e2e:auth` locally before every release, or start the `E2E (manual)` workflow from the GitHub Actions tab. The gate that blocks merges is format, lint, types, unit tests, build, pgTAP and the PR title.
+
 Visual-regression rules: threshold 0.1 % of pixels, animations disabled, copyright text masked, one retry; baselines change only in a PR that explicitly approves a redesign (D-009).
 
 ## 8. Added in Sprint 12

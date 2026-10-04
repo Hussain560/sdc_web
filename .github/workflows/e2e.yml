@@ -1,0 +1,59 @@
+# Slow browser suites, run ON DEMAND only (Actions tab -> "E2E (manual)" -> Run workflow, pick the branch).
+# They are not required checks: they take 15 minutes or more. The same suites run locally with
+# `npx supabase db reset && npm run e2e` and `npm run e2e:auth` (docs/07-engineering/push-and-release-checklist.md).
+# Visual baselines were produced on Windows; if the visual job differs on this Linux runner, regenerate them with the
+# owner's approval, from a freshly seeded database.
+name: E2E (manual)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  NEXT_PUBLIC_SUPABASE_URL: http://127.0.0.1:54321
+  NEXT_PUBLIC_SUPABASE_ANON_KEY: test-anon-key
+
+jobs:
+  e2e:
+    name: E2E + visual regression
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version-file: .nvmrc, cache: npm }
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      # Public event pages read the database on the server, so the visual suite needs the local stack
+      # (its migrations seed the six legacy events the baselines show).
+      - uses: supabase/setup-cli@v1
+        with: { version: latest }
+      - run: supabase start -x studio,imgproxy,vector,logflare,edge-runtime
+      - run: npm run e2e
+        env:
+          CI: 'true'
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 7
+
+  e2e-auth:
+    name: Auth E2E (local Supabase)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version-file: .nvmrc, cache: npm }
+      - uses: supabase/setup-cli@v1
+        with: { version: latest }
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: supabase start -x studio,imgproxy,vector,logflare,edge-runtime
+      - run: npm run e2e:auth
+        env:
+          CI: 'true'

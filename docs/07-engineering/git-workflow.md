@@ -155,7 +155,7 @@ requests can only judge changes that arrive through pull requests, so the protec
 For `develop`, `release/*`, `main`, `production` (and `version/*`):
 
 - Require a pull request; required approvals as in §4; dismiss stale approvals on new commits.
-- Required status checks: `Lint · types · unit tests`, `Build`, `E2E + visual regression`, `Auth E2E (local Supabase)`, `Database policy tests (pgTAP)`, `Conventional Commits (PR title)`.
+- Required status checks: `Lint · types · unit tests`, `Build`, `Database policy tests (pgTAP)`, `Conventional Commits (PR title)`. The slow browser suites are not required checks: they run locally before a release and on demand in CI (workflow `E2E (manual)`).
 - Require branches to be up to date; block force pushes and deletions; allowed to push: **no one**.
 - `CODEOWNERS`: `supabase/**` and `src/lib/auth/**` need a maintainer with security responsibility.
 - Rollout is progressive: a new check starts as a warning and becomes required once the team is ready ([CI/CD §4](../08-infrastructure/ci-cd.md)).
