@@ -26,7 +26,20 @@ Dev and Staging share one Supabase project (the free plan allows two active proj
    - **Project ref** (the short id in the project URL).
    - **API URL** (`https://<ref>.supabase.co`), **anon (publishable) key**, **service role key** (API settings).
    - **Database password** (the one you just set) and, under *Connect*, the **Session pooler** connection string.
-4. Account → **Access Tokens** → create a token named `sdc-ci` (used by GitHub Actions to push migrations).
+4. Account → **Access Tokens** → **Generate token** named `sdc-ci-dev` (used by the CLI and by GitHub Actions to push migrations). Least privilege, set in the form:
+
+   | Part of the form | Setting |
+   | ---------------- | ------- |
+   | Scope | **Project**, only `sdc-dev` (never production, never the whole organisation) |
+   | Project → Project Settings | Read |
+   | Database → Migrations | Write |
+   | Database → Database | Write |
+   | Database → Connection Pooling | Read (only if the test below needs it) |
+   | Everything else (Application services, Infrastructure and delivery, Account and organization) | None |
+   | Expiry | 90 days, with a calendar reminder to renew |
+
+   If `supabase link` later says the project cannot be found, raise **Projects (account-wide)** to Read (low risk). The token is shown **once**: put it in the password manager.
+5. Keep the token **outside git**: on a developer machine as the user environment variable `SUPABASE_ACCESS_TOKEN` (PowerShell: `[Environment]::SetEnvironmentVariable('SUPABASE_ACCESS_TOKEN','<token>','User')`, then open a new terminal; the Supabase CLI reads it by itself), and in GitHub as the secret `SUPABASE_ACCESS_TOKEN` of the `dev` environment. Never paste it in chat, issues, docs or commits. If it is ever exposed, delete it in the dashboard and generate a new one. Production gets its own separate token scoped to the production project.
 
 ### A2. Push the schema to it
 
