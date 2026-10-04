@@ -45,7 +45,7 @@ The older Edge Function secrets (`GMAIL_USER`, `GMAIL_APP_PASSWORD`) belong to t
 | `EMAIL_WEBHOOK_SECRET` | **Server only** | — | provider secret | provider secret | Verifies delivery webhooks |
 | `LOG_LEVEL` | Server | `debug` | `info` | `info` | Logger verbosity |
 
-CI-only secrets (GitHub Actions environments `staging` and `production`): `SUPABASE_ACCESS_TOKEN`, `SUPABASE_PROJECT_REF`, `SUPABASE_DB_PASSWORD`, `VERCEL_TOKEN`, `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID`, `BACKUP_ENCRYPTION_KEY`.
+CI-only secrets (GitHub Actions environments `staging` and `production`): `SUPABASE_DB_URL` (Session pooler connection string; replaces the access token, project ref and password for migrations), `VERCEL_TOKEN`, `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID`, `BACKUP_ENCRYPTION_KEY`.
 
 Supabase Auth SMTP credentials are set in each hosted project's Auth settings (or `config.toml` via `env(...)` substitution), never committed.
 

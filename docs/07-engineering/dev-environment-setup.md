@@ -26,30 +26,17 @@ Dev and Staging share one Supabase project (the free plan allows two active proj
    - **Project ref** (the short id in the project URL).
    - **API URL** (`https://<ref>.supabase.co`), **anon (publishable) key**, **service role key** (API settings).
    - **Database password** (the one you just set) and, under *Connect*, the **Session pooler** connection string.
-4. Account → **Access Tokens** → **Generate token** named `sdc-ci-dev` (used by the CLI and by GitHub Actions to push migrations). Least privilege, set in the form:
-
-   | Part of the form | Setting |
-   | ---------------- | ------- |
-   | Scope | **Project**, only `sdc-dev` (never production, never the whole organisation) |
-   | Project → Project Settings | Read |
-   | Database → Migrations | Write |
-   | Database → Database | Write |
-   | Database → Connection Pooling | Read (only if the test below needs it) |
-   | Everything else (Application services, Infrastructure and delivery, Account and organization) | None |
-   | Expiry | 90 days, with a calendar reminder to renew |
-
-   If `supabase link` later says the project cannot be found, raise **Projects (account-wide)** to Read (low risk). The token is shown **once**: put it in the password manager.
-5. Keep the token **outside git**: on a developer machine as the user environment variable `SUPABASE_ACCESS_TOKEN` (PowerShell: `[Environment]::SetEnvironmentVariable('SUPABASE_ACCESS_TOKEN','<token>','User')`, then open a new terminal; the Supabase CLI reads it by itself), and in GitHub as the secret `SUPABASE_ACCESS_TOKEN` of the `dev` environment. Never paste it in chat, issues, docs or commits. If it is ever exposed, delete it in the dashboard and generate a new one. Production gets its own separate token scoped to the production project.
+4. **No access token is needed.** The CLI and GitHub Actions connect to the database directly with the **Session pooler connection string** (Dashboard → **Connect** → **Session pooler**, copy the URI and put your database password in it). A management-API token is optional and only needed for `supabase link`; a least-privilege token still failed that call ("account does not have the necessary privileges"), so we do not use `link`.
+5. Keep the connection string **outside git**: in the password manager, and in GitHub as the secret `SUPABASE_DB_URL` of the `dev` environment (production gets its own, later). Never paste it in chat, issues, docs or commits. If it is exposed, reset the database password in Project Settings → Database and update the secret.
 
 ### A2. Push the schema to it
 
 From the repository, on the `develop` branch:
 
 ```bash
-npx supabase login
-npx supabase link --project-ref <DEV_PROJECT_REF>
-npx supabase db push --dry-run     # lists the migrations that will run
-npx supabase db push               # applies them (about 28 files)
+# the Session pooler URI from A1, with the password inside, in quotes
+npx supabase db push --db-url "<SESSION_POOLER_URI>" --dry-run   # lists the migrations that will run
+npx supabase db push --db-url "<SESSION_POOLER_URI>"             # applies them (about 28 files)
 ```
 
 The seed file is local-only demo data and is **not** pushed. For a usable dev site:
@@ -107,7 +94,7 @@ Create a Mailtrap (or similar) sandbox inbox and copy its SMTP URL. The app read
 ### A6. GitHub
 
 1. **Settings → Secrets and variables → Actions → Environments**: create `dev` and `production` (production with required reviewers = the production owner).
-2. In each environment add the secrets `SUPABASE_ACCESS_TOKEN`, `SUPABASE_PROJECT_REF`, `SUPABASE_DB_PASSWORD` (dev values in `dev`, production values in `production`). The *Deploy database* workflow then applies migrations by itself when `develop` or `release/*` (dev) or `production` changes.
+2. In each environment add the one secret `SUPABASE_DB_URL` (the dev pooler URI in `dev`, the production one in `production`). The *Deploy database* workflow then applies migrations by itself when `develop` or `release/*` (dev) or `production` changes.
 3. **Settings → Actions → General**: tick *Allow GitHub Actions to create and approve pull requests* (needed by the release and sync workflows).
 4. **Settings → Branches**: protect `develop`, `release/**`, `main`, `production` as in [git workflow §6](git-workflow.md).
 5. Repository variable `HEALTH_URLS` = the Dev health URL (and later the production one) for the keep-alive workflow.
