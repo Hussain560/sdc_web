@@ -5,6 +5,8 @@
 | **Last Updated** | 2026-10-04                                                                              |
 | **Status**       | Prepared locally. **Nothing has been pushed**: the origin push URL is disabled on purpose (owner rule) |
 
+Remotes: `origin` = `Hussain560/sdc_web` (working repository, branches and `v1.0.0-rc.1` already pushed), `upstream` = `sdc-saudi/SDC_website` (official; waiting for write access). Hosted dev environment: [dev environment setup](dev-environment-setup.md).
+
 Standards followed: [git workflow](git-workflow.md) (branches, Conventional Commits), [CI/CD](../08-infrastructure/ci-cd.md)
 (quality gates), [versioning and releases](versioning-and-releases.md), [cutover runbook](../08-infrastructure/cutover-runbook.md).
 
@@ -12,6 +14,7 @@ Standards followed: [git workflow](git-workflow.md) (branches, Conventional Comm
 
 | Branch | Content |
 | ------ | ------- |
+| `production` | (to create) what Vercel serves live; moved only by a reviewed PR from `main` ([git workflow](git-workflow.md)) |
 | `main` | Still the two "initial commit" baseline commits from the remote. Production only, tags only |
 | `develop` | `main` plus the whole platform rebuild, merged from `chore/platform-foundation` with one merge commit (the local equivalent of the PR) |
 | `release/v1.0.0` | Cut from `develop` for stabilization; carries the release candidate tag `v1.0.0-rc.1` (local) |
