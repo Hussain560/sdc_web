@@ -17,37 +17,44 @@ Local (Docker)  ──►  Dev site (develop)  ──►  Staging (release/*)   
 
 Dev and Staging share one Supabase project. Test data only; **production data never goes to dev** (NFR-PRIV-006).
 
-## Two accounts, two environments
+## Repositories and environments
 
-The platform runs in two completely separate setups, owned by different accounts, so developing and testing never touches the community's live system:
+One repository is **canonical** (the one that releases and tags). Today that is the repository you can administer; when the community grants access it moves to `sdc-saudi/SDC_website`. The pipeline does not depend on the repository name: what a repository does is decided by three repository **variables** and by which secrets it holds.
 
-| | **Dev / Staging** | **Production** |
-| - | ----------------- | -------------- |
-| Owner | The developer's own accounts | The SDC community's accounts |
-| GitHub repository | Personal mirror (`origin`, `Hussain560/sdc_web`) | Official repository (`upstream`, `sdc-saudi/SDC_website`) |
-| Vercel project | Personal; **Production Branch = `develop`**, so the dev site is the stable "production" deployment of that project; `release/*` branches are previews (Staging) | SDC team; **Production Branch = `production`**; every other branch is skipped (Ignored Build Step) |
-| Supabase project | `sdc-dev` (free tier, test data only) | The SDC production project |
+| Setting (Settings → Secrets and variables → Actions) | Where | Effect |
+| ---------------------------------------------------- | ----- | ------ |
+| Variable `RELEASE_AUTOMATION` = `true` | Only the canonical repository | Enables `release-please` (version, tag, `CHANGELOG.md`, GitHub Release) and the `main` → `develop` sync PR. Never set it in two repositories: they would create competing tags |
+| Variable `PRODUCTION_BACKUPS` = `true` | Only the repository that owns the production secrets | Enables the nightly backup workflow |
+| Variable `HEALTH_URLS` | Any repository | Keep-alive checks (stops the free Supabase project from pausing) |
+| Environment `dev` with secret `SUPABASE_DB_URL` | Repository that deploys the dev site | `develop` and `release/**` apply migrations to the dev database |
+| Environment `production` with secret `SUPABASE_DB_URL` (required reviewers) | Repository that owns production | `production` applies migrations to the live database. Not created until the production Supabase exists |
+
+### Environments
+
+| | **Dev / Staging (now)** | **Production (later)** |
+| - | ----------------------- | ---------------------- |
+| Vercel | Developer's project; **Production Branch = `develop`**, so `https://develop-sdc-web.vercel.app/` is its stable deployment; `release/*` branches are previews (Staging) | The SDC team's project; **Production Branch = `production`**; every other branch is skipped (Ignored Build Step) |
+| Supabase | `sdc-dev` (free tier, test data only) | The SDC production project |
 | Mail | Mailtrap sandbox (nothing reaches real people) | The verified SDC mail provider and domain |
-| Triggered by | Pushing `develop` or `release/*` to the personal repository | Merging `main` into `production` in the official repository (reviewed pull request) |
-| Database migrations | `deploy-database.yml` job **dev** (secret `SUPABASE_DB_URL` of the `dev` environment, set only in the personal repository) | `deploy-database.yml` job **production** (secret `SUPABASE_DB_URL` of the `production` environment with required reviewers, set only in the official repository) |
+| Triggered by | Merging into `develop` (or pushing `release/*`) | Merging `main` into `production` through a reviewed pull request |
+| Database migrations | `deploy-database.yml` job **dev** | `deploy-database.yml` job **production** (protected environment) |
 
-The workflow files are identical in both repositories and decide by themselves what to do: release automation and backups run only in the official repository (`github.repository == 'sdc-saudi/SDC_website'`), and a database job without its secret is skipped with a warning.
+Release cycle with this setup: `feat/*` → pull request into `develop` (the dev Vercel site and dev Supabase update, test there) → `release/vX.Y.Z` with `rc` tags (staging) → pull request into `main` (release-please opens the release PR: version, tag, `CHANGELOG.md`; the sync PR returns `main` to `develop`) → pull request `main` → `production` (live Vercel deploy and production database job, once the production accounts exist).
 
-### Keeping the two repositories in sync
+### Where the dev Vercel project gets its code
 
-Work flows `feat/*` → `develop` → `release/*` → `main` → `production` as in the [git workflow](git-workflow.md). The official repository is canonical; the personal one is a sandbox that receives the same branches so they can be tested on the dev stack:
+Vercel deploys from the repository its Git integration is connected to.
 
-```bash
-git remote add upstream https://github.com/sdc-saudi/SDC_website.git     # once
-# 1. develop and test: push to the personal repository, Vercel deploys the dev site, the dev database updates
-git push origin develop
-# 2. when the work is accepted, open the pull request in the OFFICIAL repository (feat/* -> develop, later release/* -> main -> production)
-git push upstream feat/my-change
-# 3. bring the official branches back into the personal mirror so the dev site follows them
-git fetch upstream && git checkout develop && git merge upstream/develop && git push origin develop
-```
+1. **Connect Vercel to the canonical repository** (Project → Settings → Git → Connect Git Repository). This needs the Vercel GitHub app to be allowed on that organisation by an owner, and Vercel's free plan restricts deploying private organisation repositories. If it works, nothing else is needed.
+2. **If it cannot be connected**, keep Vercel on the developer's repository and push every branch to both repositories. Configure it once so one command does both:
 
-Until write access to the official repository is granted, only step 1 applies and the official repository receives the code later in one reviewed pull request.
+   ```bash
+   git remote set-url --add --push origin https://github.com/sdc-saudi/SDC_website.git
+   git remote set-url --add --push origin https://github.com/Hussain560/sdc_web.git
+   git push origin develop        # now updates both
+   ```
+
+   Pull requests, branch protection and releases live in the canonical repository; the other one is only a deployment mirror (it has no `RELEASE_AUTOMATION` variable).
 
 ## Part A. What you do (about 30 minutes)
 
@@ -110,7 +117,7 @@ Create a Mailtrap (or similar) sandbox inbox and copy its SMTP URL. The app read
 ### A5. Vercel
 
 1. <https://vercel.com> → **Add New → Project** → import the GitHub repository (`Hussain560/sdc_web` today; the organisation repository later).
-2. **Settings → Git → Production Branch**: in the **developer's** Vercel project set it to **`develop`**, so the dev site is that project's stable deployment and takes the *Production* environment variables (pointing at the dev Supabase). In the **SDC** Vercel project set it to **`production`** (create the branch first, see Part B) and add the Ignored Build Step `[ "$VERCEL_GIT_COMMIT_REF" != "production" ]` under *Settings → Git → Ignored Build Step*, so no other branch is ever built there.
+2. **Settings → Git → Production Branch**: in the **developer's** Vercel project set it to **`develop`**, so the dev site is that project's stable deployment and takes the *Production* environment variables (pointing at the dev Supabase). In the production Vercel project (created later) set it to **`production`** (create the branch first, see Part B) and add the Ignored Build Step `[ "$VERCEL_GIT_COMMIT_REF" != "production" ]` under *Settings → Git → Ignored Build Step*, so no other branch is ever built there.
 3. **Settings → Domains**: give the `develop` branch a stable domain (for example `dev.<your-domain>`, or use the generated `…-git-develop-…vercel.app` address) and optionally one for `release/*`.
 4. **Settings → Environment Variables** (never prefix secrets with `NEXT_PUBLIC_`):
 
@@ -127,8 +134,8 @@ Create a Mailtrap (or similar) sandbox inbox and copy its SMTP URL. The app read
 
 ### A6. GitHub
 
-1. **Settings → Secrets and variables → Actions → Environments**: create `dev` and `production` (production with required reviewers = the production owner).
-2. In each environment add the one secret `SUPABASE_DB_URL` (the dev pooler URI in `dev`, the production one in `production`). The *Deploy database* workflow then applies migrations by itself when `develop` or `release/*` (dev) or `production` changes.
+1. **Settings → Secrets and variables → Actions → Environments**: create `dev` now. Create `production` later, when the production Supabase exists (with required reviewers = the production owner). **Variables** tab: set `RELEASE_AUTOMATION` = `true` in the canonical repository only (never in two repositories).
+2. In each environment add the one secret `SUPABASE_DB_URL` (the dev Session pooler URI in `dev`, the production one in `production`). The *Deploy database* workflow then applies migrations by itself when `develop` or `release/*` (dev) or `production` changes.
 3. **Settings → Actions → General**: tick *Allow GitHub Actions to create and approve pull requests* (needed by the release and sync workflows).
 4. **Settings → Branches**: protect `develop`, `release/**`, `main`, `production` as in [git workflow §6](git-workflow.md).
 5. Repository variable `HEALTH_URLS` = the Dev health URL (and later the production one) for the keep-alive workflow.

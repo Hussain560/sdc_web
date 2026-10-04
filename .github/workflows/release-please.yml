@@ -3,6 +3,7 @@
 #    package.json and prepends CHANGELOG.md. Merging that PR creates the tag vX.Y.Z and the GitHub Release.
 # 2. sync-develop opens a PR main -> develop so the release commit and tag reach develop (Innosoft "sync main").
 # The first release (v1.0.0) is tagged by the owner at the cutover; the manifest already says 1.0.0.
+# Enable it in exactly one repository: Settings -> Secrets and variables -> Actions -> Variables -> RELEASE_AUTOMATION = true.
 # Repository setting needed: Settings -> Actions -> General -> "Allow GitHub Actions to create and approve pull requests".
 name: Release
 
@@ -16,8 +17,8 @@ permissions:
 
 jobs:
   release-please:
-    # Releases, tags and the changelog are made only in the official repository, not in a dev mirror.
-    if: github.repository == 'sdc-saudi/SDC_website'
+    # Releases, tags and the changelog are made by ONE repository: the one where the variable RELEASE_AUTOMATION is 'true'.
+    if: vars.RELEASE_AUTOMATION == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: googleapis/release-please-action@v4
@@ -27,7 +28,7 @@ jobs:
 
   sync-develop:
     name: Sync main into develop
-    if: github.repository == 'sdc-saudi/SDC_website'
+    if: vars.RELEASE_AUTOMATION == 'true'
     runs-on: ubuntu-latest
     needs: release-please
     steps:
