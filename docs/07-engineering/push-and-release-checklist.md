@@ -5,6 +5,8 @@
 | **Last Updated** | 2026-10-04                                                                              |
 | **Status**       | Prepared locally. **Nothing has been pushed**: the origin push URL is disabled on purpose (owner rule) |
 
+Remotes: `origin` = `Hussain560/sdc_web` (where the dev Vercel and dev Supabase are connected today), `upstream` = `sdc-saudi/SDC_website` (the target canonical repository). Which repository does what is described in [dev environment setup](dev-environment-setup.md#repositories-and-environments). Hosted dev environment: [dev environment setup](dev-environment-setup.md).
+
 Standards followed: [git workflow](git-workflow.md) (branches, Conventional Commits), [CI/CD](../08-infrastructure/ci-cd.md)
 (quality gates), [versioning and releases](versioning-and-releases.md), [cutover runbook](../08-infrastructure/cutover-runbook.md).
 
@@ -12,6 +14,7 @@ Standards followed: [git workflow](git-workflow.md) (branches, Conventional Comm
 
 | Branch | Content |
 | ------ | ------- |
+| `production` | (to create) what Vercel serves live; moved only by a reviewed PR from `main` ([git workflow](git-workflow.md)) |
 | `main` | Still the two "initial commit" baseline commits from the remote. Production only, tags only |
 | `develop` | `main` plus the whole platform rebuild, merged from `chore/platform-foundation` with one merge commit (the local equivalent of the PR) |
 | `release/v1.0.0` | Cut from `develop` for stabilization; carries the release candidate tag `v1.0.0-rc.1` (local) |
@@ -36,7 +39,7 @@ become `main`/production, for these reasons:
 
 1. Repository `sdc-saudi/SDC_website`: default branch `main`; create `develop` from the pushed branch.
 2. Branch protection for `main` and `develop`: pull request required, one review, branches up to date, no force push, no deletion.
-3. Required status checks: `Lint · types · unit tests`, `Build`, `E2E + visual regression`, `Auth E2E (local Supabase)`, `Database policy tests (pgTAP)`, `Conventional Commits (PR title)`.
+3. Required status checks: `Lint · types · unit tests`, `Build`, `Database policy tests (pgTAP)`, `Conventional Commits (PR title)`.
 4. Replace the placeholder team handles in `.github/CODEOWNERS`.
 5. Environments `staging` and `production` (required reviewers for production); add the secrets listed in [environment variables](../08-infrastructure/environment-variables.md).
 6. Enable Dependabot alerts and secret scanning.
@@ -63,7 +66,13 @@ The AGENTS.md rule "never push" and the disabled push URL are owner decisions: c
 4. Fill in `docs/99-project-management/releases/v1.0.0.md` and announce.
 5. Hotfixes follow the git workflow: `fix/…` from `main`, tag `v1.0.1`, merge back to `develop`.
 
-## 6. Pre-push verification (done locally on the release branch)
+## 6. Visual baselines need a freshly seeded database
+
+The home, events and join pages show database content, so their screenshots only match a database in the state
+`supabase db reset` leaves (the auth e2e suite adds test events). Run `npx supabase db reset` before `npm run e2e` or
+`npm run e2e:update`; CI always starts from a fresh seed.
+
+## 7. Pre-push verification (done locally on the release branch)
 
 `npm run check`, `npx supabase test db`, `npm run e2e`, `npm run e2e:auth`, `node scripts/check-bundle.mjs`
 (after `npm run build`), `node scripts/restore-drill.mjs`, `node scripts/cutover-rehearsal.mjs`.

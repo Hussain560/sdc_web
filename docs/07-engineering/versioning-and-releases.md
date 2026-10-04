@@ -15,7 +15,7 @@
 | MINOR | New capabilities (`feat`); during 0.x also breaking changes |
 | PATCH | Fixes, performance, internal changes |
 
-Pre-releases: `vX.Y.Z-rc.N` from `release/*` when a stabilization round is needed. The `package.json` `version` matches the latest tag.
+Pre-releases: `vX.Y.Z-rc.N` from `release/*` for every candidate sent to Staging (tagged by hand, see [git workflow §2.1](./git-workflow.md)). The `package.json` `version` matches the latest tag.
 
 **0.x phase**: the platform is under transformation; `v1.0.0` marks the point where the new platform fully replaces the current one in production (all **Must** requirements delivered, Phase 6 exit).
 
@@ -42,7 +42,9 @@ Pre-releases: `vX.Y.Z-rc.N` from `release/*` when a stabilization round is neede
 | Release notes (ar/en, short) | Written by the release owner for user-visible changes | Leadership and community |
 | `docs/99-project-management/releases/vX.Y.Z.md` | Release record from the [template](../99-project-management/releases/_template.md): scope, checks, sign-off, rollback plan | Project record |
 
-Tooling (**Proposed**): `release-please` GitHub Action on `main` opens a release PR that bumps `package.json`, updates `CHANGELOG.md` and creates the tag + GitHub Release on merge. This mirrors the Innosoft automated release pipeline using GitHub-native tooling. Until it is configured, the same steps are done manually by the release owner.
+Tooling (**Configured**, `release-please-config.json`, `.release-please-manifest.json`, `.github/workflows/release-please.yml`): on every push to `main`, release-please opens a release PR that bumps `package.json` and prepends `CHANGELOG.md`; merging it creates the tag and the GitHub Release. The same workflow then opens the `main` → `develop` sync PR. This mirrors the Innosoft automated release pipeline (version from commits, tag, changelog, sync main) using GitHub-native tooling. The first release `v1.0.0` is tagged by hand at the cutover; the manifest already holds `1.0.0`.
+
+Commit type → version and changelog section (same table as Innosoft): `feat` → minor, Features; `fix`/`perf` → patch, Fixes; `refactor`/`revert` → Maintenance; `docs` → Documentation; `chore`, `style`, `test`, `ci`, `build` are kept out of the changelog and do not create a release by themselves. A breaking change (`feat!:` or a `BREAKING CHANGE:` footer) adds a **Breaking Changes** section and bumps major (minor while below 1.0.0).
 
 ## 4. Release process
 
@@ -79,5 +81,5 @@ Release checklist (copied into each release record):
 
 - Never deploy untagged code to production (Innosoft tag standard).
 - Never modify or delete tags; keep all tags.
-- Hotfixes produce a PATCH tag on `main` (see [git workflow §7](./git-workflow.md#7-hotfixes)).
+- Hotfixes produce a PATCH tag on `main` (see [git workflow §2.2](./git-workflow.md#22-hotfix)).
 - The **release owner** for each release is named in the release record (default: tech lead).

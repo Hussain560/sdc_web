@@ -1,0 +1,77 @@
+# Applies supabase/migrations to the hosted database that matches the branch (docs/07-engineering/git-workflow.md §2).
+#
+# Two separate environments, owned by different accounts (docs/07-engineering/dev-environment-setup.md):
+#   develop, release/**  -> job "dev"        -> GitHub environment "dev"        -> the DEV Supabase project (developer account)
+#   production           -> job "production" -> GitHub environment "production" -> the LIVE SDC Supabase project (SDC account)
+#
+# Each environment holds ONE secret: SUPABASE_DB_URL, the Session pooler connection string of its project
+# (Dashboard -> Connect -> Session pooler), with the database password inside. No access token is needed.
+# A job whose secret is not set in the current repository is skipped with a warning, so the same file is safe in the
+# developer's repository (which only has the "dev" secret) and in the official SDC repository (which only has "production").
+# Migrations follow expand/migrate/contract, so the previous app version keeps working while this runs.
+name: Deploy database
+
+on:
+  push:
+    branches: [develop, 'release/**', production]
+    paths: ['supabase/migrations/**']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  dev:
+    name: Apply migrations (dev project)
+    if: github.ref_name != 'production'
+    runs-on: ubuntu-latest
+    environment: dev
+    concurrency:
+      group: deploy-database-dev
+      cancel-in-progress: false
+    env:
+      SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: supabase/setup-cli@v1
+        with: { version: latest }
+      - name: Skip when this repository has no dev database
+        run: |
+          if [ -z "$SUPABASE_DB_URL" ]; then
+            echo "::warning::SUPABASE_DB_URL is not set in the dev environment; nothing applied."
+            echo "SKIP=1" >> "$GITHUB_ENV"
+          fi
+      - name: Show pending migrations
+        if: env.SKIP != '1'
+        run: supabase db push --db-url "$SUPABASE_DB_URL" --dry-run
+      - name: Apply migrations
+        if: env.SKIP != '1'
+        run: supabase db push --db-url "$SUPABASE_DB_URL"
+
+  production:
+    name: Apply migrations (production project)
+    if: github.ref_name == 'production'
+    runs-on: ubuntu-latest
+    # Protect this environment with required reviewers: the production owner approves every run.
+    environment: production
+    concurrency:
+      group: deploy-database-production
+      cancel-in-progress: false
+    env:
+      SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: supabase/setup-cli@v1
+        with: { version: latest }
+      - name: Skip when this repository has no production database
+        run: |
+          if [ -z "$SUPABASE_DB_URL" ]; then
+            echo "::warning::SUPABASE_DB_URL is not set in the production environment; nothing applied."
+            echo "SKIP=1" >> "$GITHUB_ENV"
+          fi
+      - name: Show pending migrations
+        if: env.SKIP != '1'
+        run: supabase db push --db-url "$SUPABASE_DB_URL" --dry-run
+      - name: Apply migrations
+        if: env.SKIP != '1'
+        run: supabase db push --db-url "$SUPABASE_DB_URL"

@@ -3,7 +3,7 @@
 All notable changes to the SDC platform. Versions follow `docs/07-engineering/versioning-and-releases.md`.
 `v1.0.0` is tagged by the owner after the production cutover.
 
-## [Unreleased] — toward v1.0.0
+## [1.0.0] — unreleased (date it when the owner tags v1.0.0 after the cutover)
 
 ### Added
 - Events like KFUCS: tabs for details, registrations, attendance (QR every 120 s, live numbers) and certificates.

@@ -13,6 +13,8 @@ permissions:
 
 jobs:
   backup:
+    # Runs only where the variable PRODUCTION_BACKUPS is 'true' (the repository that owns the production secrets).
+    if: vars.PRODUCTION_BACKUPS == 'true'
     runs-on: ubuntu-latest
     environment: production
     steps:
