@@ -35,7 +35,7 @@ flowchart TB
 | Workflow | Trigger | Jobs |
 | -------- | ------- | ---- |
 | `ci.yml` | `pull_request`, `push` to `develop`, `release/**`, `main`, `production` | install, lint, typecheck, unit, db (migrations + pgTAP + types check), build, e2e-smoke (conditional), audit, commitlint |
-| `deploy-database.yml` | `push` to `develop`/`release/**` (environment `dev`) or `production` (environment `production`, required reviewers); paths `supabase/migrations/**` | `supabase link`, `db push --dry-run`, `db push` |
+| `deploy-database.yml` | `push` to `develop`/`release/**` (job `dev`, environment `dev`) or `production` (job `production`, environment `production`, required reviewers); paths `supabase/migrations/**`. A job without `SUPABASE_DB_URL` in that repository is skipped | `db push --dry-run`, `db push --db-url` |
 | `release-please.yml` | `push` to `main` | `release-please` (release PR with version bump and CHANGELOG, tag and GitHub Release on merge) and `sync-develop` (PR `main` → `develop`) |
 | Vercel Git integration | `push` to `production` (the Vercel Production Branch) | production build and deploy; other branches are previews. The matching database migration runs in `deploy-database.yml` (protected environment). Backup and smoke steps are in the [cutover runbook](./cutover-runbook.md) |
 | `backup.yml` | Nightly schedule | Encrypted logical dump of production, retained 30 days ([operations](./operations.md#1-backups)) |

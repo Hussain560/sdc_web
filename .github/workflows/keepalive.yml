@@ -20,7 +20,7 @@ jobs:
           HEALTH_URLS: ${{ vars.HEALTH_URLS }}
         run: |
           set -u
-          if [ -z "${HEALTH_URLS:-}" ]; then echo "HEALTH_URLS is not set"; exit 1; fi
+          if [ -z "${HEALTH_URLS:-}" ]; then echo "::notice::HEALTH_URLS is not set for this repository; nothing to check."; exit 0; fi
           failed=0
           for url in $HEALTH_URLS; do
             code=$(curl -s -o /tmp/health.json -w '%{http_code}' --max-time 20 "$url" || echo 000)

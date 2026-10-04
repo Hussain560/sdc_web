@@ -9,11 +9,12 @@ Companions: [versioning and releases](versioning-and-releases.md) · [CI/CD](../
 [environments](../08-infrastructure/environments.md) · [dev environment setup](dev-environment-setup.md) ·
 [push and release checklist](push-and-release-checklist.md).
 
-## 1. Repository
+## 1. Repositories
 
-- Official repository: `sdc-saudi/SDC_website` (remote name `upstream` while write access is pending).
-- Working repository today: `Hussain560/sdc_web` (remote `origin`). Both hold the same branches; when the organisation grants access, push the same branches and tags to it (`git push upstream --all --follow-tags`) and make it the canonical remote.
-- At least two organisation owners (bus factor). Direct pushes to the protected branches below are not allowed for anyone.
+- **Official:** `sdc-saudi/SDC_website` (remote `upstream`). It holds the production secrets, runs release automation and backups, and is the only place `production` is merged.
+- **Developer sandbox:** `Hussain560/sdc_web` (remote `origin`). It receives the same branches, deploys the dev site and updates the dev database.
+- The two-account model, what each account owns and how to keep them in sync are in [dev environment setup](dev-environment-setup.md#two-accounts-two-environments).
+- At least two organisation owners (bus factor). Direct pushes to the protected branches below are not allowed for anyone in the official repository.
 
 ## 2. The flow in one picture
 
@@ -29,10 +30,10 @@ docs/* ─┘      │             │  (rc tags)   │       │
 | Branch | Purpose | Created from | Merges into | Vercel | Supabase |
 | ------ | ------- | ------------ | ----------- | ------ | -------- |
 | `feat/<scope>-<desc>` · `fix/…` · `docs/…` · `chore/…` · `refactor/…` · `test/…` · `ci/…` | One change | `develop` | `develop` (squash PR) | Preview | Dev project |
-| `develop` | Integration of finished work; always deployable | `main` (once) | `release/*` | Preview on the stable `develop` branch domain (**Dev site**) | **Dev project** |
-| `release/vX.Y.Z` | Stabilisation, release candidates (`vX.Y.Z-rc.N` tags) | `develop` | `main` **and** back to `develop` | Preview (**Staging / UAT**) | Dev project |
-| `main` | Released code. Every stable tag `vX.Y.Z` is on `main` | `develop` once | `production` | Preview only (never live) | none |
-| `production` | **What Vercel serves live.** A push here is a deploy | `main` | none | **Production branch** | **Production project** |
+| `develop` | Integration of finished work; always deployable | `main` (once) | `release/*` | **Dev site** (developer's Vercel, whose production branch is `develop`) | **Dev project** |
+| `release/vX.Y.Z` | Stabilisation, release candidates (`vX.Y.Z-rc.N` tags) | `develop` | `main` **and** back to `develop` | Preview in the developer's Vercel (**Staging / UAT**) | Dev project |
+| `main` | Released code. Every stable tag `vX.Y.Z` is on `main` | `develop` once | `production` | not built in the SDC Vercel project | none |
+| `production` | **What the SDC Vercel project serves live.** Merging here (official repository) is the deploy | `main` | none | **Production branch of the SDC Vercel project** | **SDC production project** |
 | `version/<major>` | Optional: patches for an old major | last stable tag of that major | itself | Preview | Dev project |
 
 All long-lived branches (`develop`, `release/*`, `main`, `production`, `version/*`) are **protected**: pull request only, required checks,

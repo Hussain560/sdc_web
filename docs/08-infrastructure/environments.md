@@ -35,6 +35,8 @@ flowchart LR
 | **Staging** | Vercel, `develop` branch (stable alias, e.g., `staging.<domain>`) | `sdc-staging` | Synthetic, production-like volume | Provider with recipient allow-list | Team, acceptance testing |
 | **Production** | Vercel production (`main`), custom domain | `sdc-production` | Real | Provider, verified domain | Community |
 
+**Two accounts:** Dev/Staging (personal Vercel, `sdc-dev`, Mailtrap, personal repository) and Production (SDC's Vercel, Supabase and mail, official repository) are separate; see [dev environment setup](../07-engineering/dev-environment-setup.md#two-accounts-two-environments).
+
 Setup steps for the hosted dev/staging project (named `sdc-dev`), Vercel and GitHub are in [dev environment setup](../07-engineering/dev-environment-setup.md); the branch to environment mapping is in [git workflow §2](../07-engineering/git-workflow.md). Vercel serves **only the `production` branch** live.
 
 Why previews share the staging database: Supabase Free allows only two active projects and branching is a paid feature. Schema changes in a PR are therefore validated in **CI against an ephemeral local stack** ([CI/CD](./ci-cd.md)), not on the preview. A preview of a PR whose UI depends on unmerged migrations will show errors — acceptable; reviewers use the CI result for schema review.

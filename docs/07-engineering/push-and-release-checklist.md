@@ -5,7 +5,7 @@
 | **Last Updated** | 2026-10-04                                                                              |
 | **Status**       | Prepared locally. **Nothing has been pushed**: the origin push URL is disabled on purpose (owner rule) |
 
-Remotes: `origin` = `Hussain560/sdc_web` (working repository, branches and `v1.0.0-rc.1` already pushed), `upstream` = `sdc-saudi/SDC_website` (official; waiting for write access). Hosted dev environment: [dev environment setup](dev-environment-setup.md).
+Remotes: `origin` = `Hussain560/sdc_web` (developer sandbox: dev Vercel, dev Supabase), `upstream` = `sdc-saudi/SDC_website` (official: production; waiting for write access). The two-account model is described in [dev environment setup](dev-environment-setup.md#two-accounts-two-environments). Hosted dev environment: [dev environment setup](dev-environment-setup.md).
 
 Standards followed: [git workflow](git-workflow.md) (branches, Conventional Commits), [CI/CD](../08-infrastructure/ci-cd.md)
 (quality gates), [versioning and releases](versioning-and-releases.md), [cutover runbook](../08-infrastructure/cutover-runbook.md).

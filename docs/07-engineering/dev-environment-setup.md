@@ -10,11 +10,44 @@ database, so nobody tests on the production project. This document sets up that 
 [git workflow](git-workflow.md) and [environments](../08-infrastructure/environments.md).
 
 ```text
-Local (Docker)  ──►  Dev site (Vercel preview of `develop`)  ──►  Staging (Vercel preview of `release/*`)  ──►  Production (`production` branch)
-   local Supabase        Supabase project "sdc-dev"                 same "sdc-dev" project                      Supabase project "sdc-members" (production)
+Local (Docker)  ──►  Dev site (develop)  ──►  Staging (release/*)       ┐   developer's Vercel + Supabase "sdc-dev" + Mailtrap
+                                                                          │
+                              main ──► production (reviewed PR)  ──►  Live site   SDC's Vercel + SDC's Supabase + SDC's mail
 ```
 
-Dev and Staging share one Supabase project (the free plan allows two active projects: production plus this one). Test data only; **production data never goes to dev** (NFR-PRIV-006).
+Dev and Staging share one Supabase project. Test data only; **production data never goes to dev** (NFR-PRIV-006).
+
+## Two accounts, two environments
+
+The platform runs in two completely separate setups, owned by different accounts, so developing and testing never touches the community's live system:
+
+| | **Dev / Staging** | **Production** |
+| - | ----------------- | -------------- |
+| Owner | The developer's own accounts | The SDC community's accounts |
+| GitHub repository | Personal mirror (`origin`, `Hussain560/sdc_web`) | Official repository (`upstream`, `sdc-saudi/SDC_website`) |
+| Vercel project | Personal; **Production Branch = `develop`**, so the dev site is the stable "production" deployment of that project; `release/*` branches are previews (Staging) | SDC team; **Production Branch = `production`**; every other branch is skipped (Ignored Build Step) |
+| Supabase project | `sdc-dev` (free tier, test data only) | The SDC production project |
+| Mail | Mailtrap sandbox (nothing reaches real people) | The verified SDC mail provider and domain |
+| Triggered by | Pushing `develop` or `release/*` to the personal repository | Merging `main` into `production` in the official repository (reviewed pull request) |
+| Database migrations | `deploy-database.yml` job **dev** (secret `SUPABASE_DB_URL` of the `dev` environment, set only in the personal repository) | `deploy-database.yml` job **production** (secret `SUPABASE_DB_URL` of the `production` environment with required reviewers, set only in the official repository) |
+
+The workflow files are identical in both repositories and decide by themselves what to do: release automation and backups run only in the official repository (`github.repository == 'sdc-saudi/SDC_website'`), and a database job without its secret is skipped with a warning.
+
+### Keeping the two repositories in sync
+
+Work flows `feat/*` → `develop` → `release/*` → `main` → `production` as in the [git workflow](git-workflow.md). The official repository is canonical; the personal one is a sandbox that receives the same branches so they can be tested on the dev stack:
+
+```bash
+git remote add upstream https://github.com/sdc-saudi/SDC_website.git     # once
+# 1. develop and test: push to the personal repository, Vercel deploys the dev site, the dev database updates
+git push origin develop
+# 2. when the work is accepted, open the pull request in the OFFICIAL repository (feat/* -> develop, later release/* -> main -> production)
+git push upstream feat/my-change
+# 3. bring the official branches back into the personal mirror so the dev site follows them
+git fetch upstream && git checkout develop && git merge upstream/develop && git push origin develop
+```
+
+Until write access to the official repository is granted, only step 1 applies and the official repository receives the code later in one reviewed pull request.
 
 ## Part A. What you do (about 30 minutes)
 
@@ -77,12 +110,12 @@ Create a Mailtrap (or similar) sandbox inbox and copy its SMTP URL. The app read
 ### A5. Vercel
 
 1. <https://vercel.com> → **Add New → Project** → import the GitHub repository (`Hussain560/sdc_web` today; the organisation repository later).
-2. **Settings → Git → Production Branch = `production`** (create the branch first, see Part B). Pushes to `develop` and `release/*` then become *Preview* deployments, never live.
+2. **Settings → Git → Production Branch**: in the **developer's** Vercel project set it to **`develop`**, so the dev site is that project's stable deployment and takes the *Production* environment variables (pointing at the dev Supabase). In the **SDC** Vercel project set it to **`production`** (create the branch first, see Part B) and add the Ignored Build Step `[ "$VERCEL_GIT_COMMIT_REF" != "production" ]` under *Settings → Git → Ignored Build Step*, so no other branch is ever built there.
 3. **Settings → Domains**: give the `develop` branch a stable domain (for example `dev.<your-domain>`, or use the generated `…-git-develop-…vercel.app` address) and optionally one for `release/*`.
 4. **Settings → Environment Variables** (never prefix secrets with `NEXT_PUBLIC_`):
 
-| Variable | Preview (Dev and Staging) | Production |
-| -------- | ------------------------- | ---------- |
+| Variable | Developer's Vercel (Production and Preview scope, same values) | SDC's Vercel (Production scope) |
+| -------- | -------------------------------------------------------------- | ------------------------------- |
 | `NEXT_PUBLIC_SUPABASE_URL` | dev project URL | production project URL |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | dev anon key | production anon key |
 | `SUPABASE_SERVICE_ROLE_KEY` | dev service key | production service key |

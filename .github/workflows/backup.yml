@@ -13,6 +13,8 @@ permissions:
 
 jobs:
   backup:
+    # Only the official SDC repository holds the production secrets; a personal dev mirror never runs this.
+    if: github.repository == 'sdc-saudi/SDC_website'
     runs-on: ubuntu-latest
     environment: production
     steps:

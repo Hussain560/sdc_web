@@ -16,6 +16,8 @@ permissions:
 
 jobs:
   release-please:
+    # Releases, tags and the changelog are made only in the official repository, not in a dev mirror.
+    if: github.repository == 'sdc-saudi/SDC_website'
     runs-on: ubuntu-latest
     steps:
       - uses: googleapis/release-please-action@v4
@@ -25,6 +27,7 @@ jobs:
 
   sync-develop:
     name: Sync main into develop
+    if: github.repository == 'sdc-saudi/SDC_website'
     runs-on: ubuntu-latest
     needs: release-please
     steps:
