@@ -67,4 +67,7 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version-file: .nvmrc, cache: npm }
       - run: npm ci
-      - run: echo "${{ github.event.pull_request.title }}" | npx commitlint
+      - run: |
+          TITLE="${{ github.event.pull_request.title }}"
+          NORMALIZED_TITLE="$(printf '%s' "$TITLE" | sed -E 's#^([a-z]+)/(.+)$#\1: \2#')"
+          printf '%s\n' "$NORMALIZED_TITLE" | npx commitlint
