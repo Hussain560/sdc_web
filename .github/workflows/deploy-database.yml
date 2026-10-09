@@ -34,7 +34,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: supabase/setup-cli@v1
-        with: { version: latest }
+        with: { version: 2.119.0 }
       - name: Skip when this repository has no dev database
         run: |
           if [ -z "$SUPABASE_DB_URL" ]; then
@@ -62,7 +62,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: supabase/setup-cli@v1
-        with: { version: latest }
+        with: { version: 2.119.0 }
       - name: Skip when this repository has no production database
         run: |
           if [ -z "$SUPABASE_DB_URL" ]; then

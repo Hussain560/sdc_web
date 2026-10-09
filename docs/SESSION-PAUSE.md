@@ -59,3 +59,5 @@ accessibility fixes, restore drill, cutover rehearsal, fieldset overflow fix in 
 
 Never push without the owner saying so; no `Co-Authored-By` trailer; commit body lines at most 100 characters; no `.env*` or secrets in commits;
 frozen visual identity (D-009); never run `e2e:update` without approval.
+
+Pipeline check: PR flow tested on 2026-10-09.
