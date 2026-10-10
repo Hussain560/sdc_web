@@ -1,23 +1,36 @@
 'use client';
 
-import { CircleCheck, CircleX, Clock, LoaderCircle, RotateCw, UserCheck } from 'lucide-react';
-import { useEffect, useRef, useState, useTransition } from 'react';
-import { SiteFooter as Footer } from '@/components/layout/SiteFooter';
-import { SiteHeader as Header } from '@/components/layout/SiteHeader';
+import { CircleCheck, CircleX, Clock, Info, RotateCw, UserCheck } from 'lucide-react';
+import Image from 'next/image';
+import { useEffect, useRef, useState } from 'react';
+import { SiteFooter } from '@/components/layout/SiteFooter';
+import { SiteHeader } from '@/components/layout/SiteHeader';
+import { Alert } from '@/components/ui/Alert';
+import { Button } from '@/components/ui/Button';
+import { Field } from '@/components/ui/Field';
+import { Progress } from '@/components/ui/Progress';
+import { TextLink } from '@/components/ui/TextLink';
 import { useLanguage } from '@/context/LanguageContext';
-import { Link } from '@/i18n/navigation';
+import { withMinimumDuration } from '@/lib/min-duration';
 import { checkIn, checkInByEmail } from '../../actions';
 import { eventTitleOf, type PublicCheckInContext } from '../../types';
-import '@/styles/legacy-login.css';
 
 type View =
   | { kind: 'done'; status: 'checked_in' | 'already'; name: string }
   | { kind: 'error'; code: string; message: string };
 
+const TONE = {
+  success: 'bg-success-soft text-success',
+  info: 'bg-info-soft text-info',
+  warning: 'bg-warning-soft text-warning',
+  danger: 'bg-danger-soft text-danger',
+} as const;
+
 /**
- * The public check-in card (KFUCS parity): opened from the QR code, no sign-in. The person types the e-mail they
- * registered with and gets an immediate answer. A signed-in participant with an accepted registration is checked in
- * on arrival. The code on screen changes every two minutes; an old link answers "scan again".
+ * The public check-in page (event page §6): a focused card under the site header, opened from the QR code, no
+ * sign-in. The person types the e-mail they registered with; the answer shows after the same 1.5 s floor as the
+ * registration so the work is visible. A signed-in accepted participant is checked in on arrival (never on a plain
+ * GET, so link previews are harmless). The code on screen changes every two minutes: an old link says "scan again".
  */
 export default function CheckInCard({
   ctx,
@@ -29,146 +42,173 @@ export default function CheckInCard({
   member: { accepted: boolean; checkedInAt: string | null } | null;
 }) {
   const { lang } = useLanguage();
-  const ar = lang === 'ar';
-  const L = (a: string, e: string) => (ar ? a : e);
+  const L = (a: string, e: string) => (lang === 'ar' ? a : e);
   const title = eventTitleOf(ctx.event, lang);
   const { session } = ctx;
   const open = session.status === 'open';
-  const dayLine = L(
-    `اليوم ${session.day} من ${session.days}`,
-    `Day ${session.day} of ${session.days}`,
-  );
+  const dayLine = L(`اليوم ${session.day} من ${session.days}`, `Day ${session.day} of ${session.days}`);
 
   const [view, setView] = useState<View | null>(
     member?.checkedInAt ? { kind: 'done', status: 'already', name: '' } : null,
   );
   const [email, setEmail] = useState('');
-  const [busy, startTransition] = useTransition();
+  const [busy, setBusy] = useState(false);
   const [cooldown, setCooldown] = useState(false);
-  const started = useRef(false);
+  const lock = useRef(false);
+  const titleRef = useRef<HTMLHeadingElement>(null);
 
-  // Signed-in and accepted: check in as soon as the page opens (never on a plain GET, so link previews are harmless).
-  useEffect(() => {
-    if (started.current || !member?.accepted || !open || !token || member.checkedInAt) return;
-    started.current = true;
-    startTransition(async () => {
-      const r = await checkIn({ sessionId: session.id, token }, { lang });
+  async function run(call: () => ReturnType<typeof checkIn>, floor = true) {
+    if (lock.current) return;
+    lock.current = true;
+    setBusy(true);
+    try {
+      const r = floor ? await withMinimumDuration(call()) : await call();
       setView(
         r.ok
-          ? { kind: 'done', status: r.data.status, name: '' }
+          ? {
+              kind: 'done',
+              status: r.data.status,
+              name: 'name' in r.data ? String((r.data as { name?: string }).name ?? '') : '',
+            }
           : { kind: 'error', code: r.code, message: r.message },
       );
-    });
+    } catch {
+      setView({
+        kind: 'error',
+        code: 'INTERNAL',
+        message: L('حدث خطأ غير متوقع، حاول مرة أخرى.', 'Something went wrong. Please try again.'),
+      });
+    }
+    lock.current = false;
+    setBusy(false);
+  }
+
+  // Signed in and accepted: check in as soon as the page opens.
+  useEffect(() => {
+    if (!member?.accepted || !open || !token || member.checkedInAt) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- starts the request once on arrival
+    void run(() => checkIn({ sessionId: session.id, token }, { lang }));
     // eslint-disable-next-line react-hooks/exhaustive-deps -- run once with the initial props
   }, []);
 
-  const submit = (e: React.FormEvent) => {
+  useEffect(() => {
+    if (view) titleRef.current?.focus();
+  }, [view]);
+
+  function submit(e: React.FormEvent) {
     e.preventDefault();
     if (cooldown || busy || !token) return;
     setCooldown(true);
     setTimeout(() => setCooldown(false), 2000);
-    startTransition(async () => {
-      const r = await checkInByEmail({ sessionId: session.id, token, email }, { lang });
-      setView(
-        r.ok
-          ? { kind: 'done', status: r.data.status, name: r.data.name }
-          : { kind: 'error', code: r.code, message: r.message },
-      );
-    });
-  };
+    void run(() =>
+      checkInByEmail({ sessionId: session.id, token, email }, { lang }),
+    );
+  }
 
-  let icon = <UserCheck size={48} color="#00E676" aria-hidden="true" />;
-  let heading = '';
+  let tone: keyof typeof TONE = 'info';
+  let Icon = UserCheck;
+  let heading = title;
   let text = '';
   let form = false;
   let retry = false;
 
-  if (busy && !view) {
-    icon = <LoaderCircle size={48} color="#00E676" aria-hidden="true" className="animate-spin" />;
+  if (busy) {
     heading = L('جارٍ التحقق من تسجيلك…', 'Verifying your registration…');
   } else if (view?.kind === 'done') {
     const first = view.status === 'checked_in';
-    icon = <CircleCheck size={48} color={first ? '#00E676' : '#9ca3af'} aria-hidden="true" />;
+    tone = first ? 'success' : 'info';
+    Icon = first ? CircleCheck : Info;
     heading = first
       ? L('تم تسجيل حضورك بنجاح', 'Check-in successful')
       : L('حضورك مسجّل مسبقًا', 'Your attendance is already recorded');
-    text = `${view.name ? `${view.name} — ` : ''}${title} — ${dayLine}`;
+    text = `${view.name ? `${view.name} · ` : ''}${title} · ${dayLine}`;
   } else if (!open) {
-    icon = <Clock size={48} color="#f59e0b" aria-hidden="true" />;
+    tone = 'warning';
+    Icon = Clock;
     heading = L('تسجيل الحضور غير مفتوح الآن', 'Check-in is not open right now');
     text = L(
-      'أغلق المنظم هذه الجلسة أو لم يفتحها بعد.',
-      'The organizer has closed this session or has not opened it yet.',
+      'يفتح المنظّم تسجيل الحضور وقت الفعالية.',
+      'The organizer opens check-in when the event runs.',
     );
   } else if (!token) {
-    icon = <RotateCw size={48} color="#f59e0b" aria-hidden="true" />;
+    tone = 'warning';
+    Icon = RotateCw;
     heading = L('امسح الرمز المعروض على الشاشة', 'Scan the code on the screen');
     text = L(
       'هذا الرابط ناقص. امسح رمز QR من شاشة العرض.',
       'This link is incomplete. Scan the QR code from the display.',
     );
   } else if (view?.kind === 'error') {
-    icon =
-      view.code === 'TOKEN_EXPIRED' ? (
-        <RotateCw size={48} color="#f59e0b" aria-hidden="true" />
-      ) : (
-        <CircleX size={48} color="#ef4444" aria-hidden="true" />
-      );
-    heading = L('تعذّر تسجيل الحضور', 'Check-in failed');
+    const expired = view.code === 'TOKEN_EXPIRED';
+    tone = expired ? 'warning' : view.code === 'NOT_ACCEPTED' ? 'info' : 'danger';
+    Icon = expired ? RotateCw : view.code === 'NOT_ACCEPTED' ? Info : CircleX;
+    heading = expired
+      ? L('انتهت صلاحية الرمز', 'This code expired')
+      : L('تعذّر تسجيل الحضور', 'Check-in failed');
     text = view.message;
-    retry = view.code !== 'TOKEN_EXPIRED' && view.code !== 'SESSION_NOT_OPEN';
+    retry = !expired && view.code !== 'SESSION_NOT_OPEN';
   } else {
-    heading = title;
-    text = `${dayLine} — ${L('اكتب البريد الذي سجّلت به في الفعالية.', 'enter the e-mail you registered with.')}`;
     form = true;
+    text = `${dayLine} · ${L('اكتب البريد الذي سجّلت به في الفعالية.', 'enter the e-mail you registered with.')}`;
   }
 
   return (
-    <div className="sdc-login-page-wrapper">
-      <Header />
-      <main id="main" className="sdc-login-main">
-        <div className="sdc-login-card" style={{ textAlign: 'center' }}>
-          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 16 }}>{icon}</div>
-          <div aria-live="polite">
-            <h1 className="sdc-login-title">{heading}</h1>
-            {text && <p className="sdc-login-subtitle">{text}</p>}
+    <>
+      <SiteHeader />
+      <main id="main" className="mx-auto flex w-full max-w-(--container-tight) flex-col items-center px-4 py-12">
+        <div className="flex w-full flex-col items-center gap-5 rounded-shape-xl border border-line bg-surface p-6 text-center md:p-8">
+          {form ? (
+            <Image src="/assets/sdc-logo-mark.svg" alt="" width={48} height={48} className="size-12" />
+          ) : (
+            <span
+              aria-hidden="true"
+              className={`flex size-[72px] items-center justify-center rounded-full ${TONE[tone]}`}
+            >
+              <Icon className="size-10" />
+            </span>
+          )}
+          <div role="status" aria-live="polite" className="flex flex-col gap-2">
+            <h1 ref={titleRef} tabIndex={-1} className="t-h3 focus-visible:outline-none">
+              {heading}
+            </h1>
+            {text && <p className="t-body text-muted">{text}</p>}
           </div>
-          <div style={{ marginTop: 20, display: 'flex', flexDirection: 'column', gap: 12 }}>
-            {form && (
-              <form onSubmit={submit} className="sdc-login-form">
-                <div className="sdc-form-group">
-                <input
-                  type="email"
-                  required
-                  autoComplete="email"
-                  inputMode="email"
-                  dir="ltr"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  disabled={busy}
-                  placeholder="name@example.com"
-                  aria-label={L('البريد الإلكتروني', 'E-mail address')}
-                  />
-                </div>
-                <button type="submit" className="sdc-login-submit-btn" disabled={busy || cooldown}>
-                  {busy
-                    ? L('جارٍ التحقق…', 'Verifying…')
-                    : L('تحقق وسجّل الحضور', 'Verify and check in')}
-                </button>
-              </form>
-            )}
-            {retry && (
-              <button type="button" className="sdc-login-submit-btn" onClick={() => setView(null)}>
-                {L('حاول مرة أخرى', 'Try again')}
-              </button>
-            )}
-            <Link href={`/events/${ctx.event.slug}`} className="sdc-login-link">
-              {L('العودة لصفحة الفعالية', 'Back to the event page')}
-            </Link>
-          </div>
+          {busy && <Progress className="w-full" label={L('جارٍ التحقق…', 'Verifying…')} />}
+
+          {form && (
+            <form onSubmit={submit} className="flex w-full flex-col gap-4 text-start">
+              <Field
+                label={L('البريد الإلكتروني', 'E-mail address')}
+                type="email"
+                required
+                autoComplete="email"
+                inputMode="email"
+                value={email}
+                disabled={busy}
+                placeholder="name@example.com"
+                onChange={(e) => setEmail(e.target.value)}
+              />
+              <Button type="submit" size="lg" fullWidth loading={busy} disabled={cooldown}>
+                {busy ? L('جارٍ التحقق…', 'Verifying…') : L('تحقق وسجّل الحضور', 'Verify and check in')}
+              </Button>
+            </form>
+          )}
+          {retry && (
+            <Button size="lg" fullWidth onClick={() => setView(null)}>
+              {L('حاول مرة أخرى', 'Try again')}
+            </Button>
+          )}
+          {view?.kind === 'error' && view.code === 'RATE_LIMITED' && (
+            <Alert tone="warning" className="w-full text-start">
+              {L('انتظر قليلاً ثم حاول مرة أخرى.', 'Please wait a moment and try again.')}
+            </Alert>
+          )}
+          <TextLink href={`/events/${ctx.event.slug}`} variant="standalone" className="min-h-11">
+            {L('العودة لصفحة الفعالية', 'Back to the event page')}
+          </TextLink>
         </div>
       </main>
-      <Footer />
-    </div>
+      <SiteFooter />
+    </>
   );
 }
