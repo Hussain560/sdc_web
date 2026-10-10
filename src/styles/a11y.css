@@ -38,12 +38,6 @@
   outline-offset: 2px;
 }
 
-/* Amber text on the white light surface is ~2:1: the warning *text* uses the normal text colour in the light theme;
-   the amber border and icon still carry the status. */
-:root[data-theme='light'] .text-warning {
-  color: var(--c-123b35) !important;
-}
-
 /* A fieldset defaults to min-content width, which pushes wide rows (tag chips, inputs) outside narrow pages. */
 fieldset {
   min-width: 0;

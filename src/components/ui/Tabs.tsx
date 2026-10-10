@@ -45,7 +45,7 @@ export function Tabs({
               className={cn(
                 'rounded-full px-2 text-xs tabular-nums',
                 t.tone === 'warning' && t.count > 0
-                  ? 'bg-warning text-[var(--c-08090c)]'
+                  ? 'bg-warning-soft text-warning'
                   : 'bg-surface-raised text-muted',
               )}
             >

@@ -187,7 +187,7 @@ export function QrPanel({
             >
               <div
                 className={`h-full rounded-full transition-all duration-1000 ease-linear ${
-                  percent > 30 ? 'bg-accent' : percent > 10 ? 'bg-warning' : 'bg-danger'
+                  percent > 30 ? 'bg-accent' : percent > 10 ? 'bg-warning' : 'bg-danger-fill'
                 }`}
                 style={{ width: `${percent}%` }}
               />

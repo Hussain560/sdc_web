@@ -48,7 +48,7 @@ export function Timeline({ event, lang }: { event: EventDetail; lang: 'ar' | 'en
               <span
                 className={cn(
                   'flex size-7 shrink-0 items-center justify-center rounded-full border text-xs',
-                  danger && 'border-danger bg-danger text-text',
+                  danger && 'border-danger-fill bg-danger-fill text-on-danger-fill',
                   !danger && done && !current && 'border-accent bg-accent text-on-accent',
                   !danger && current && 'border-accent ring-2 ring-accent/40',
                   !danger && !done && !current && 'border-line text-muted',

@@ -1,0 +1,42 @@
+{
+  "_comment": "Legacy files that still hold colour literals (file -> literals today). The list only shrinks; see scripts/check-tokens.mjs. Sprint 15/16 delete these files.",
+  "legacy": {
+    "src/components/ArticlesSection/ArticlesSection.css": 18,
+    "src/components/CommunitySections/CommunitySections.css": 6,
+    "src/components/Footer/Footer.css": 2,
+    "src/components/Header/Header.css": 9,
+    "src/components/HeroSection/HeroSection.css": 4,
+    "src/components/markdown/markdown.css": 3,
+    "src/components/MembersSection/MembersSection.css": 8,
+    "src/components/MembersSection/MembersSection.tsx": 2,
+    "src/components/NotFound/NotFound.css": 2,
+    "src/modules/articles/components/public/all-articles.css": 12,
+    "src/modules/articles/components/public/article-details.css": 11,
+    "src/modules/articles/components/public/ArticleDetailView.tsx": 1,
+    "src/modules/articles/components/public/ArticlesListView.tsx": 1,
+    "src/modules/attendance/components/public/CertificateView.tsx": 1,
+    "src/modules/attendance/components/public/CheckInCard.tsx": 8,
+    "src/modules/committees/components/public/CommitteeView.tsx": 1,
+    "src/modules/events/components/public/all-events.css": 9,
+    "src/modules/events/components/public/event-details.css": 17,
+    "src/modules/events/components/public/EventDetailView.tsx": 1,
+    "src/modules/events/components/public/EventsListView.tsx": 3,
+    "src/modules/registrations/components/GuestRegisterDialog.tsx": 2,
+    "src/modules/registrations/components/useRegistrationFlow.tsx": 1,
+    "app/[locale]/about/about.css": 10,
+    "app/[locale]/about/page.tsx": 1,
+    "app/[locale]/forgot-password/ForgotPasswordForm.tsx": 4,
+    "app/[locale]/login/login.css": 8,
+    "app/[locale]/members/all/all-members.css": 27,
+    "app/[locale]/members/members.css": 24,
+    "app/[locale]/members/page.tsx": 3,
+    "app/[locale]/members/[id]/details.css": 16,
+    "app/[locale]/members/[id]/page.tsx": 5,
+    "app/[locale]/page.tsx": 1,
+    "app/[locale]/reset-password/ResetPasswordForm.tsx": 5
+  },
+  "exempt": {
+    "src/lib/email/templates.ts": "E-mail clients need inline hex values (light only).",
+    "src/modules/attendance/pdf/CertificateDocument.tsx": "@react-pdf renders outside CSS: it needs literal colours."
+  }
+}

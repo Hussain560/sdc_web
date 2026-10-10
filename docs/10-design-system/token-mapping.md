@@ -171,11 +171,14 @@ Add them to `tokens.css` under `:root` (theme-independent) and expose them in `@
 | ----- | ------ | ---- |
 | Type | `--font-sans`, `--font-mono`, `--text-display` … `--text-badge` (size, line-height pairs) | [typography](./foundations/typography.md#2-type-scale) |
 | Space | `--space-0-5` … `--space-30`, `--section-gap` | [layout §3](./foundations/layout-and-shape.md#3-spacing-4-px-base) |
-| Radius | `--radius-xs` … `--radius-2xl`, `--radius-full` | [layout §4](./foundations/layout-and-shape.md#4-radius) |
+| Radius | `--shape-xs` … `--shape-2xl`, `--shape-full` (implemented name; see the note below) | [layout §4](./foundations/layout-and-shape.md#4-radius) |
 | Elevation | `--elev-0` … `--elev-3` (per theme, via `color-mix`) | [layout §5](./foundations/layout-and-shape.md#5-elevation) |
 | Layers | `--z-sticky` … `--z-skip` | [layout §6](./foundations/layout-and-shape.md#6-z-index) |
 | Motion | `--duration-*`, `--ease-*` | [motion](./foundations/motion-icons-focus.md#11-tokens) |
 | Containers | `--container`, `--container-wide`, `--container-narrow`, `--container-reading`, `--container-tight` | [layout §2](./foundations/layout-and-shape.md#2-grid) |
+
+> **Implementation note (RDS-001, 2026-10-10).** `--radius-*` is Tailwind's own theme namespace. Redefining it would silently change every `rounded-*` utility in the dashboard (about 150 uses), which the impact table does not list. The v2 radius scale is therefore implemented as `--shape-xs … --shape-full` and exposed to Tailwind as `rounded-shape-xs … rounded-shape-2xl`. The values are unchanged. Everywhere the other docs say `--radius-xl`, read `--shape-xl`.
+> `--ease-out/in/standard` do replace Tailwind's two built-in easing curves (one existing use, `ease-in`), and `--font-sans`/`--font-mono` arrive with RDS-002 (`next/font`).
 
 ## 5. Rules for changing a token
 

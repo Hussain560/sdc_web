@@ -79,4 +79,16 @@
   --c-f8fcf9: #f8fcf9;
   --c-ffab00: #ffab00;
   --c-ffffff: #ffffff;
+  /* v2 status colours (ADR-014, token-mapping §1): warning, danger and info that pass AA in both themes. */
+  --c-0c1a2e: #0c1a2e;
+  --c-1d4ed8: #1d4ed8;
+  --c-2a1013: #2a1013;
+  --c-2a1f05: #2a1f05;
+  --c-60a5fa: #60a5fa;
+  --c-7a4f00: #7a4f00;
+  --c-b91c1c: #b91c1c;
+  --c-e8f0fe: #e8f0fe;
+  --c-f87171: #f87171;
+  --c-fdecec: #fdecec;
+  --c-fff4dc: #fff4dc;
 }
