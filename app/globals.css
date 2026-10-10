@@ -2,6 +2,7 @@
 @import '../src/styles/primitives.css';
 @import '../src/styles/tokens.css';
 @import '../src/styles/type.css';
+@import '../src/styles/motif.css';
 @import '../src/styles/ui.css';
 @import '../src/styles/a11y.css';
 

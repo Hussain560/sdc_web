@@ -1,0 +1,10 @@
+/* The SDC dot-grid motif (layout-and-shape §8): a quiet grid of dots drawn with the current text colour, so it needs
+ * no colour value of its own. Used as the empty ground of image fallbacks and as a section accent. */
+.motif-dots {
+  background-image: radial-gradient(
+    circle at center,
+    color-mix(in srgb, currentColor 22%, transparent) 1.25px,
+    transparent 1.5px
+  );
+  background-size: 16px 16px;
+}
