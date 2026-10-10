@@ -31,7 +31,7 @@ test.describe('locale routing (ADR-010)', () => {
   test('language toggle keeps the page and switches the URL', async ({ page, setup }) => {
     await setup();
     await page.goto('/events');
-    await page.getByRole('button', { name: 'English' }).click();
+    await page.getByRole('banner').getByRole('button', { name: 'English' }).click();
     await expect(page).toHaveURL(/\/en\/events$/);
     await expect(page.locator('html')).toHaveAttribute('dir', 'ltr');
   });
