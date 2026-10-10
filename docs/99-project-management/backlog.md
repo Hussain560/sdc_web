@@ -151,3 +151,37 @@ Story ids: `<EPIC>-<nnn>`. Sprint assignment: see each [sprint plan](./sprints/R
 | LCH-003 | Production env, domain, e-mail domain verification, monitoring/keep-alive | P0 |
 | LCH-004 | Handover: two system admins trained; runbooks; access inventory updated | P0 |
 | LCH-005 | Launch announcement (ar/en) and release notes | P1 |
+
+### EP-RDS — Public redesign on Design System v2 (Phase 7, [ADR-014](../90-decisions/ADR-014-public-redesign-design-system-v2.md))
+
+Specs: [design system](../10-design-system/README.md), [page specs](../10-design-system/PUBLIC-SCREENS-V2/README.md).
+
+| ID | Story | Priority |
+| -- | ----- | -------- |
+| RDS-001 | v2 tokens, new primitives, Tailwind theme, contrast and hex checks in CI | P0 — Sprint 14 |
+| RDS-002 | One font stack via `next/font`, type scale utilities | P0 — Sprint 14 |
+| RDS-003 | Actions and labels components | P0 — Sprint 14 |
+| RDS-004 | Form components | P0 — Sprint 14 |
+| RDS-005 | Containers and feedback components (incl. ResultDialog, Progress) | P0 — Sprint 14 |
+| RDS-006 | In-page navigation components | P1 — Sprint 14 |
+| RDS-007 | SiteHeader, SiteFooter, Logo, locale and theme switches | P0 — Sprint 14 |
+| RDS-008 | Auth route layout without header and footer | P0 — Sprint 14 |
+| RDS-010 | Chrome roll-out on every public route | P0 — Sprint 15 |
+| RDS-011 | Event data additions (per-day place, what to bring, public certificate settings, presenters view) | P0 — Sprint 15 |
+| RDS-012 | Home page v2 | P0 — Sprint 15 |
+| RDS-013 | Event page v2, all states | P0 — Sprint 15 |
+| RDS-014 | Registration dialog v2 with the 1.5 s minimum progress and result dialogs | P0 — Sprint 15 |
+| RDS-015 | Add to calendar (.ics) | P1 — Sprint 15 |
+| RDS-016 | Check-in page v2 and venue QR card | P1 — Sprint 15 |
+| RDS-017 | Public stats view ⛔ Q-H2 | P1 — Sprint 15 |
+| RDS-020 | Directory consent model (per-field, photo, participation) | P0 — Sprint 16 |
+| RDS-021 | Members directory v2 | P0 — Sprint 16 |
+| RDS-022 | Member profile v2 | P0 — Sprint 16 |
+| RDS-023 | Events list v2 | P0 — Sprint 16 |
+| RDS-024 | Articles list and reading page v2 | P1 — Sprint 16 |
+| RDS-025 | Committees index and committee page v2 | P1 — Sprint 16 |
+| RDS-026 | About v2 ⛔ Q-A1 | P1 — Sprint 16 |
+| RDS-027 | Join v2 | P0 — Sprint 16 |
+| RDS-028 | Certificate verification v2 | P1 — Sprint 16 |
+| RDS-029 | Privacy and 404 v2; delete legacy public CSS; release `v1.1.0` | P0 — Sprint 16 |
+| RDS-030 | Suggested additions marked *later* ([20-suggested-additions](../10-design-system/PUBLIC-SCREENS-V2/20-suggested-additions.md)) | P2 — unscheduled |

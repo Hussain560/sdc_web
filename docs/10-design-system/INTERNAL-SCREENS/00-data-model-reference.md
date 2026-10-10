@@ -2,7 +2,7 @@
 
 > The reconciled field set every internal screen draws from: which fields are **inputs** vs **read-only**, validation, **badge palettes**, and **allowed actions per status**. Database definitions live in [`05-database/entities`](../../05-database/entity-model.md); this file adds the UI view. If they disagree, the entity docs win and this file is corrected.
 
-Badge tones map to semantic tokens ([colors §2](../foundations/colors.md#2-semantic-tokens-target)): **neutral** (`--color-text-secondary` on `--color-surface-field`), **accent** (`--color-accent` on `--color-accent-soft`), **success**, **warning**, **danger**, **info**. Every badge carries text — color is never the only signal.
+Badge tones map to semantic tokens ([colors §2](../foundations/colors.md#3-semantic-tokens-v2)): **neutral** (`--color-text-secondary` on `--color-surface-field`), **accent** (`--color-accent` on `--color-accent-soft`), **success**, **warning**, **danger**, **info**. Every badge carries text — color is never the only signal.
 
 ---
 

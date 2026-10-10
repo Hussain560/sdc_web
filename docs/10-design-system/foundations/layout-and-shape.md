@@ -1,93 +1,120 @@
-# Layout, Spacing, Shape, Elevation and Motion
+# Layout, Spacing, Shape and Elevation
 
 | Field            | Value      |
 | ---------------- | ---------- |
-| **Last Updated** | 2026-10-02 |
-| **Status**       | Draft      |
+| **Last Updated** | 2026-10-10 |
+| **Status**       | Design System v2, approved 2026-10-10 ([ADR-014](../../90-decisions/ADR-014-public-redesign-design-system-v2.md)) |
 
-## 1. Containers
+## 1. Breakpoints (mobile-first, `min-width`)
 
-| Observed (CURRENT) | Count | Target token |
-| ------------------ | ----- | ------------ |
-| `max-width: 1440px` | 13 | `--container-wide: 1440px` (full-bleed sections' inner width) |
-| `max-width: 1280px` | 2 (header) | `--container: 1280px` (default page container) |
-| `max-width: 1200px` | 9 | merged into `--container` |
-| 992 / 900 / 768 px | 17 | `--container-narrow: 768px` (forms, articles) |
-| 640 / 600 / 480 / 440 px | 12 | `--container-tight: 440px` (auth card, dialogs) |
+| Name | Min width | Typical device | Tailwind |
+| ---- | --------- | -------------- | -------- |
+| base | 0 (designed at **360**) | Phones | — |
+| `sm` | 640 px | Large phones, landscape | `sm:` |
+| `md` | 768 px | Tablets portrait | `md:` |
+| `lg` | 1024 px | Tablets landscape, small laptops | `lg:` |
+| `xl` | 1280 px | Laptops | `xl:` |
+| `2xl` | 1440 px | Desktops (designed at **1440**) | `2xl:` |
 
-Gutters: 24 px desktop, 16 px mobile (`--gutter`).
+## 2. Grid
 
-Full-bleed banners currently use the `100vw` + negative margin trick (`margin-left/right: calc(-50vw + 50%)`), which causes horizontal overflow when a scrollbar is present — replace with full-width section wrappers.
+| Range | Columns | Gutter (page edge) | Column gap | Notes |
+| ----- | ------- | ------------------ | ---------- | ----- |
+| 360–639 | 4 | **16 px** | 16 px | One card per row; two for compact chips/stat tiles |
+| 640–1023 | 8 | 24 px | 20 px | Two cards per row |
+| 1024–1279 | 12 | 32 px | 24 px | Three cards per row; side panel appears at `lg` |
+| ≥ 1280 | 12 | auto (centred container) | 24 px | Container capped; extra width becomes margin |
 
-## 2. Breakpoints
+Containers (token → max inline size, padding = the gutter above):
 
-| Observed (CURRENT) | Target |
-| ------------------ | ------ |
-| 400, 480, 600, 640, 768, 900, 992, 1024 (all `max-width`) | Mobile-first `min-width` scale: `sm 640px` · `md 768px` · `lg 1024px` · `xl 1280px` |
+| Token | Max width | Use |
+| ----- | --------- | --- |
+| `--container` | 1280 px | Default page content |
+| `--container-wide` | 1440 px | Full-bleed bands' inner content, the floating header |
+| `--container-narrow` | 768 px | Forms, join flow, certificate page |
+| `--container-reading` | 720 px | Article body (≈ 68ch) |
+| `--container-tight` | 440 px | The auth form column, small dialogs |
 
-## 3. Grid
+**Card grids** use `grid-template-columns: repeat(auto-fill, minmax(min(100%, 288px), 1fr))`. The `min(100%, …)` keeps a single card from overflowing at 360 px.
 
-| Pattern | Current | Target |
-| ------- | ------- | ------ |
-| Card grids | `display: grid` with ad-hoc columns per page | `repeat(auto-fill, minmax(280px, 1fr))` with `gap: var(--space-5)` |
-| Leadership spotlight | 2-column grid (`.sdc-grid-2col`) | Same, collapses to 1 column below `md` |
-| Detail + sidebar | Two-column content grid (event detail) | `minmax(0, 1fr) 340px` at `lg`, stacked below |
+**Detail + side panel** (the event page): `grid-template-columns: minmax(0, 1fr) 360px` from `lg`, with a 48 px gap; stacked below `lg`.
 
-## 4. Spacing scale
+### No sideways scrolling (hard rule)
 
-4 px base. Observed paddings/gaps cluster at 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 28, 32, 40 px.
+- Content never causes horizontal page scroll at any width from 320 px up.
+- No `100vw` widths and no negative-margin "full-bleed" tricks. A full-bleed band is a normal block child of `<main>` with its own inner container.
+- Long tokens wrap: `overflow-wrap: anywhere` on user-generated text (names, e-mails, URLs, titles).
+- Media is `max-inline-size: 100%`. Tables and code blocks scroll inside their own `overflow-x: auto` box, which is keyboard focusable (`tabindex="0"`, labelled).
+- A horizontal strip (the partner marquee, chip rows) scrolls inside its container, never the page.
+- CI: a Playwright check at 360 px asserts `document.documentElement.scrollWidth <= innerWidth` on every public route.
+
+## 3. Spacing (4 px base)
 
 | Token | Value | Typical use |
 | ----- | ----- | ----------- |
-| `--space-1` | 4px | Icon gaps |
-| `--space-2` | 8px | Inline gaps, small paddings |
-| `--space-3` | 12px | Card internal gaps, input padding-block |
-| `--space-4` | 16px | Card padding (compact), mobile gutter |
-| `--space-5` | 20px | Card padding, grid gaps |
-| `--space-6` | 24px | Section inner padding, desktop gutter |
-| `--space-8` | 32px | Auth card padding |
-| `--space-10` | 40px | Section spacing (mobile) |
-| `--space-16` | 64px | Section spacing (desktop) |
+| `--space-0-5` | 2 px | Hairline offsets |
+| `--space-1` | 4 px | Icon-to-text in badges |
+| `--space-2` | 8 px | Inline gaps, chip gaps |
+| `--space-3` | 12 px | Field label gap, meta row gap |
+| `--space-4` | 16 px | Phone gutter, compact card padding, form row gap |
+| `--space-5` | 20 px | Grid gap (tablet), card body padding (phone) |
+| `--space-6` | 24 px | Card padding, grid gap (desktop), gutter (tablet) |
+| `--space-8` | 32 px | Section header → content, dialog padding (desktop), gutter (laptop) |
+| `--space-10` | 40 px | Hero inner padding (phone) |
+| `--space-12` | 48 px | Detail grid gap, band padding (tablet) |
+| `--space-16` | 64 px | **Section rhythm (phone)**, band padding (desktop) |
+| `--space-24` | 96 px | **Section rhythm (tablet)** |
+| `--space-30` | 120 px | **Section rhythm (desktop)** |
 
-## 5. Radii
+**Section rhythm** = `--section-gap: clamp(4rem, 2.833rem + 5.185vw, 7.5rem)` (64 → 120 px). Sections are separated by this gap, never by borders. A tinted band (`--band`, `--radius-2xl`) adds `--space-16` of inner padding (desktop), `--space-10` (phone).
 
-| Observed | Used for | Target token |
-| -------- | -------- | ------------ |
-| 6px | Status badges, category tags, small buttons | `--radius-sm: 6px` |
-| 8px | Dialog buttons, skeletons, alerts | `--radius-sm` (merge) |
-| 10–12px | Inputs, secondary card buttons | `--radius-md: 12px` |
-| 16px | Dialogs | `--radius-lg: 16px` |
-| 18–20px | Cards, auth card | `--radius-xl: 20px` |
-| 50px / 999px / 9999px | Capsule buttons, pills | `--radius-full: 9999px` |
-| 50% | Avatars | `--radius-full` |
+**Inside a section:** header (title + lede) → `--space-8` → content. Card padding `--space-6` (desktop) / `--space-5` (phone).
 
-**PROBLEM** — action buttons use three radii today (capsule 50 px in most places, 8 px in dialog confirm/cancel, 12 px for "professional info"). **TARGET** — all buttons are capsules (`--radius-full`); inputs use `--radius-md`.
+## 4. Radius
 
-## 6. Elevation
+| Token | Value | Use |
+| ----- | ----- | --- |
+| `--radius-xs` | 6 px | Code chips, focus-ring radius on small items |
+| `--radius-sm` | 10 px | Checkbox, tooltip, image inside a small card |
+| `--radius-md` | 12 px | Inputs, selects, textarea, alerts |
+| `--radius-lg` | 16 px | Accordion items, list cards, dropdown menus, inner image of a card |
+| `--radius-xl` | 24 px | Cards, dialogs, the floating header, hero card |
+| `--radius-2xl` | 32 px | Section bands, the auth brand panel |
+| `--radius-full` | 9999 px | **All buttons**, pills, badges, chips, avatars, the segmented toggle |
 
-The system uses **borders + tinted glows**, not dark drop shadows.
+**Nested radius rule:** inner radius = outer radius − padding (min `--radius-sm`). A card (`xl`, 24) with 8 px of padding around its image gives the image `lg` (16).
+
+## 5. Elevation
+
+v2 separates surfaces by **tone and hairlines**. Shadows are rare and green-tinted in dark.
 
 | Token | Dark | Light | Use |
 | ----- | ---- | ----- | --- |
-| `--shadow-sm` | `0 4px 14px rgb(0 230 118 / 0.15)` | `2px 4px 12px rgb(22 167 101 / 0.10)` | Avatars, hovered chips |
-| `--shadow-md` | `0 8px 25px rgb(0 230 118 / 0.15)` | `0 8px 25px rgb(22 167 101 / 0.12)` | Hovered cards |
-| `--shadow-lg` | `0 10px 30px rgb(0 0 0 / 0.5)` | `0 10px 30px rgb(18 59 53 / 0.08)` | Auth card, dialogs |
+| `--elev-0` | none | none | Cards at rest (border only) |
+| `--elev-1` | `0 8px 24px` signal at 12% | `0 8px 24px` forest at 8% | Hovered interactive card, hovered directory card |
+| `--elev-2` | `0 16px 40px` black at 50% | `0 16px 40px` forest at 12% | Dialogs, bottom sheets, menus, the floating header after scroll |
+| `--elev-3` | `0 24px 64px` black at 60% | `0 24px 64px` forest at 16% | Toasts (they sit above dialogs) |
 
-## 7. Motion
+All shadow colours are `color-mix()` of a token (`--signal`, `--c-000000`, `--text`), never a literal.
 
-| Observed | Target token |
-| -------- | ------------ |
-| `transition: all 0.2s ease` (20×), color 0.2s (10×) | `--duration-fast: 150ms`, `--duration: 200ms`, `--ease: cubic-bezier(0.2, 0, 0, 1)` |
-| Card hover 0.25s (transform/box-shadow/border) | `--duration-slow: 250ms` |
-| Skeleton shimmer 1.4s infinite | Keep |
-| Dialog/backdrop blur 4px | Keep |
+## 6. Z-index
 
-Rules: animate `transform`, `opacity`, `color`, `background-color`, `border-color`, `box-shadow` only (not `all`); respect `prefers-reduced-motion: reduce` (disable shimmer and hover lifts) — **not handled today**.
+| Token | Value | Layer |
+| ----- | ----- | ----- |
+| `--z-sticky` | 10 | Sticky in-page elements (filter bar, mobile action bar) |
+| `--z-header` | 100 | Floating header |
+| `--z-overlay` | 1000 | Dialog, sheet and scrim (native `<dialog>` uses the top layer anyway) |
+| `--z-toast` | 1100 | Toast region |
+| `--z-skip` | 1200 | Skip link when focused |
 
-## 8. Z-index
+## 7. Motif: "the crossing"
 
-| Layer | Value (current) | Token |
-| ----- | --------------- | ----- |
-| Sticky header | 1000 | `--z-header: 100` |
-| Dialog/scrim | 1000 (same as header — conflict) | `--z-overlay: 1000` |
-| Toasts | — | `--z-toast: 1100` |
+SDC's own graphic language comes from its mark: **two crossing capsules and two dots**. It replaces the reference sites' square motif.
+
+| Element | Built from | Use |
+| ------- | ---------- | --- |
+| **Signal dots** | Two 8 px circles in `--signal`, 4 px apart | Before a section title (decorative, `aria-hidden`), on the active nav item |
+| **Capsule pair** | Two `--radius-full` bars at ±35°, `--brand` and `--signal` | Behind the hero art, the auth brand panel, empty states, the 404 |
+| **Dot grid** | 4 px dots on a 24 px pitch in `--border` | Quiet texture on bands and the brand panel (≤ 30% of the area) |
+
+Rules: shapes, never pictures. A maximum of one motif per section. Never under text. Always `aria-hidden="true"`. Never redraw or recolour the SDC mark itself (use the files in `public/assets/`).
