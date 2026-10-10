@@ -15,6 +15,10 @@ import { ArticleCard } from '@/modules/articles/components/ArticleCard';
 import { EventCard } from '@/modules/events/components/EventCard';
 import { eventTitle } from '@/modules/events/public-types';
 import { PILL_LABEL } from '@/modules/events/status-labels';
+import { Accordion } from '@/components/ui/Accordion';
+import { MemberCard } from '@/modules/members/components/MemberCard';
+import { WhyJoin } from './WhyJoin';
+import type { HomeMember } from './data';
 import { HOME_COPY } from './copy';
 import { SignedInOnly, SignedOutOnly } from './SignedOutOnly';
 import type { HomeSections, IntakeState } from './sections';
@@ -29,6 +33,7 @@ export function HomeView({
   sections,
   intake,
   partners,
+  members,
   settings,
   now,
 }: {
@@ -36,6 +41,7 @@ export function HomeView({
   sections: HomeSections;
   intake: IntakeState;
   partners: PublicPartner[];
+  members: HomeMember[];
   settings: PublicSettings;
   now: number;
 }) {
@@ -169,6 +175,20 @@ export function HomeView({
           </section>
         )}
 
+        {sections.whyJoin && (
+          <SignedOutOnly>
+            <section
+              aria-labelledby="home-why"
+              className="mt-(--section-gap) bg-band py-12 md:py-16"
+            >
+              <div className={wrap}>
+                <SectionHeader headingId="home-why" title={t.whyTitle} lede={t.whyLede} />
+                <WhyJoin lang={lang} applyLabel={t.apply} headingId="home-why" />
+              </div>
+            </section>
+          </SignedOutOnly>
+        )}
+
         {sections.articles.length > 0 && (
           <section aria-labelledby="home-articles" className={`${wrap} mt-(--section-gap)`}>
             <SectionHeader
@@ -186,6 +206,34 @@ export function HomeView({
               {sections.articles.map((a) => (
                 <li key={a.id}>
                   <ArticleCard article={a} lang={lang} />
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+        {sections.members && (
+          <section aria-labelledby="home-members" className={`${wrap} mt-(--section-gap)`}>
+            <SectionHeader
+              headingId="home-members"
+              title={t.membersTitle}
+              lede={t.membersLede}
+              action={
+                <TextLink href="/members" variant="standalone" className="min-h-11">
+                  {t.membersAll}
+                  <Arrow aria-hidden="true" className="size-4" />
+                </TextLink>
+              }
+            />
+            <ul className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+              {members.map((m) => (
+                <li key={m.id}>
+                  <MemberCard
+                    id={m.id}
+                    lang={lang}
+                    name={lang === 'en' ? m.nameEn : m.nameAr}
+                    track={lang === 'en' ? (m.trackEn ?? m.trackAr) : m.trackAr}
+                  />
                 </li>
               ))}
             </ul>
@@ -272,6 +320,18 @@ export function HomeView({
             />
           </div>
         </SignedOutOnly>
+        {sections.faq && (
+          <section
+            aria-labelledby="home-faq"
+            className={`${wrap} mt-(--section-gap) max-w-(--container-narrow)`}
+          >
+            <SectionHeader headingId="home-faq" title={t.faqTitle} className="text-center" />
+            <Accordion
+              headingLevel={3}
+              items={t.faq.map(([question, answer], i) => ({ id: `q${i}`, question, answer }))}
+            />
+          </section>
+        )}
       </main>
       <SiteFooter />
     </>

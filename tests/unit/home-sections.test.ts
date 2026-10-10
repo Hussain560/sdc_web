@@ -163,7 +163,8 @@ describe('intakeState', () => {
 });
 
 describe('homeSections', () => {
-  const base = { events: [], articles: [], partnerCount: 0, stats: null, today: TODAY };
+  const off = { whyJoin: false, faq: false };
+  const base = { events: [], articles: [], partnerCount: 0, stats: null, today: TODAY, flags: off };
 
   it('an empty site shows only the always-on blocks', () => {
     const s = homeSections(base);
@@ -184,6 +185,7 @@ describe('homeSections', () => {
 
   it('copy-dependent sections stay hidden by default and follow the flags', () => {
     expect(homeSections(base).whyJoin).toBe(false);
+    expect(homeSections({ ...base, flags: undefined }).whyJoin).toBe(true);
     const on = homeSections({ ...base, articles: [art(1)], flags: { whyJoin: true, faq: true } });
     expect(on.whyJoin).toBe(true);
     expect(on.faq).toBe(true);

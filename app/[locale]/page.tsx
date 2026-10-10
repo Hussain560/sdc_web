@@ -3,6 +3,7 @@ import { todayInRiyadh } from '@/lib/time';
 import { listPublicArticles } from '@/modules/articles/public';
 import { listPublicPartners } from '@/modules/admin/public';
 import { listPublicEvents } from '@/modules/events/public';
+import { getPublicStats, listHomeMembers } from '@/modules/home/data';
 import { HomeView } from '@/modules/home/HomeView';
 import { homeSections, intakeState } from '@/modules/home/sections';
 import { getJoinCycle } from '@/modules/membership/queries';
@@ -19,19 +20,22 @@ const clock = () => {
 export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   const lang = locale === 'en' ? 'en' : 'ar';
-  const [events, articles, partners, cycle, settings] = await Promise.all([
+  const [events, articles, partners, cycle, settings, stats, members] = await Promise.all([
     listPublicEvents(),
     listPublicArticles(4),
     listPublicPartners(),
     getJoinCycle().catch(() => null),
     getPublicSettings(),
+    getPublicStats(),
+    listHomeMembers(4),
   ]);
   const { now, today } = clock();
   const sections = homeSections({
     events,
     articles,
     partnerCount: partners.filter((p) => p.logoUrl).length,
-    stats: null, // RDS-017: the public_stats view arrives once the owner approves the figures (Q-H2)
+    memberCount: members.length,
+    stats,
     today,
   });
   return (
@@ -40,6 +44,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
       sections={sections}
       intake={intakeState(cycle)}
       partners={partners}
+      members={members}
       settings={settings}
       now={now}
     />

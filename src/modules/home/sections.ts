@@ -7,8 +7,8 @@ import type { PublicCycle } from '@/modules/membership/types';
  * "a section with no data is hidden" and "never two bands in a row" are unit tested.
  */
 
-/** Sections that need owner copy stay off until it is supplied (Q-H3 benefits, Q-H4 FAQ). No placeholder ships. */
-export const HOME_FLAGS = { whyJoin: false, faq: false } as const;
+/** Why-join and FAQ copy is drafted (Q-H3, Q-H4): the owner reviews the wording, the sections ship on. */
+export const HOME_FLAGS = { whyJoin: true, faq: true } as const;
 
 export type PublicStats = {
   events?: number;
@@ -95,6 +95,7 @@ export type HomeSections = {
   articles: PublicArticleCard[];
   partners: boolean;
   faq: boolean;
+  members: boolean;
   /** Bands (tinted full-width blocks) never touch each other. */
   bands: { whyJoin: boolean; partners: boolean };
 };
@@ -103,6 +104,7 @@ export function homeSections(input: {
   events: PublicEventCard[];
   articles: PublicArticleCard[];
   partnerCount: number;
+  memberCount?: number;
   stats: PublicStats | null;
   today: string;
   flags?: { whyJoin: boolean; faq: boolean };
@@ -119,6 +121,7 @@ export function homeSections(input: {
     articles,
     partners: input.partnerCount > 0,
     faq: flags.faq,
+    members: (input.memberCount ?? 0) > 0,
     bands: { whyJoin: flags.whyJoin && articles.length > 0, partners: input.partnerCount > 0 },
   };
 }

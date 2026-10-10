@@ -1390,6 +1390,13 @@ isOneToOne: false
       referencedColumns: ["committee_id"]
     }
                   ]
+                },"public_stats": {
+                  Row: {
+                    "certificates_issued": number | null,"committees_active": number | null,"events_held": number | null,"members_listed": number | null
+                  }
+                  Relationships: [
+                    
+                  ]
                 }
           }
           Functions: {

@@ -25,7 +25,8 @@
     "smoke": "node scripts/smoke.mjs",
     "preflight": "node scripts/preflight-production.mjs",
     "db:gen-rbac-test": "node scripts/gen-rbac-matrix-test.mjs",
-    "dev:local": "node scripts/dev-local.mjs"
+    "dev:local": "node scripts/dev-local.mjs",
+    "db:demo": "docker exec -i supabase_db_sdc_web psql -U postgres -d postgres -v ON_ERROR_STOP=1 -f - < supabase/demo-seed.sql"
   },
   "dependencies": {
     "@react-pdf/renderer": "^4.9.0",
