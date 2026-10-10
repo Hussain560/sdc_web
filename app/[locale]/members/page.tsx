@@ -2,8 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { Link } from '@/i18n/navigation';
-import Header from '@/components/Header/Header';
-import Footer from '@/components/Footer/Footer';
+import { SiteHeader as Header } from '@/components/layout/SiteHeader';
+import { SiteFooter as Footer } from '@/components/layout/SiteFooter';
 import { useSearch } from '@/context/SearchContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { supabase } from '@/lib/supabase';
@@ -385,7 +385,7 @@ export default function MembersPage() {
     <div className="sdc-members-page-wrapper">
       <Header />
 
-      <main className="sdc-members-main">
+      <main id="main" className="sdc-members-main">
         <section className="sdc-members-hero">
           <div className="sdc-members-hero-container">
             <div className="sdc-members-banner-box">

@@ -3,8 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from '@/i18n/navigation';
 import { useParams } from 'next/navigation';
-import Header from '@/components/Header/Header';
-import Footer from '@/components/Footer/Footer';
+import { SiteHeader as Header } from '@/components/layout/SiteHeader';
+import { SiteFooter as Footer } from '@/components/layout/SiteFooter';
 import { useLanguage } from '@/context/LanguageContext';
 import { supabase } from '@/lib/supabase';
 import type { Localized } from '@/types/content';
@@ -117,7 +117,7 @@ export default function MemberDetailsPage() {
     return (
       <div className="sdc-details-page-wrapper">
         <Header />
-        <main className="sdc-details-main">
+        <main id="main" className="sdc-details-main">
           <p style={{ color: '#9CA3AF', textAlign: 'center', padding: '60px 0' }}>
             {isEnglish ? 'Loading member...' : 'جاري تحميل بيانات العضو...'}
           </p>
@@ -131,7 +131,7 @@ export default function MemberDetailsPage() {
     return (
       <div className="sdc-details-page-wrapper">
         <Header />
-        <main className="sdc-details-main">
+        <main id="main" className="sdc-details-main">
           <p style={{ color: '#9CA3AF', textAlign: 'center', padding: '60px 0' }}>
             {isEnglish ? 'Member not found.' : 'العضو غير موجود.'}
           </p>
@@ -154,7 +154,7 @@ export default function MemberDetailsPage() {
     <div className="sdc-details-page-wrapper">
       <Header />
 
-      <main className="sdc-details-main">
+      <main id="main" className="sdc-details-main">
         <section className="sdc-member-hero-banner">
           <div className="sdc-member-hero-container">
             <nav className="sdc-member-breadcrumb">

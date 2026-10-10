@@ -3,8 +3,6 @@
   "legacy": {
     "src/components/ArticlesSection/ArticlesSection.css": 18,
     "src/components/CommunitySections/CommunitySections.css": 6,
-    "src/components/Footer/Footer.css": 2,
-    "src/components/Header/Header.css": 9,
     "src/components/HeroSection/HeroSection.css": 4,
     "src/components/markdown/markdown.css": 3,
     "src/components/MembersSection/MembersSection.css": 8,

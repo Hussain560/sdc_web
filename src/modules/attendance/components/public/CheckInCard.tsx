@@ -2,8 +2,8 @@
 
 import { CircleCheck, CircleX, Clock, LoaderCircle, RotateCw, UserCheck } from 'lucide-react';
 import { useEffect, useRef, useState, useTransition } from 'react';
-import Footer from '@/components/Footer/Footer';
-import Header from '@/components/Header/Header';
+import { SiteFooter as Footer } from '@/components/layout/SiteFooter';
+import { SiteHeader as Header } from '@/components/layout/SiteHeader';
 import { useLanguage } from '@/context/LanguageContext';
 import { Link } from '@/i18n/navigation';
 import { checkIn, checkInByEmail } from '../../actions';
@@ -126,7 +126,7 @@ export default function CheckInCard({
   return (
     <div className="sdc-login-page-wrapper">
       <Header />
-      <main className="sdc-login-main">
+      <main id="main" className="sdc-login-main">
         <div className="sdc-login-card" style={{ textAlign: 'center' }}>
           <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 16 }}>{icon}</div>
           <div aria-live="polite">

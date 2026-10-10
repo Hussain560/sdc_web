@@ -3,8 +3,8 @@
 import React from 'react';
 import { MapPin, Calendar } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
-import Header from '@/components/Header/Header';
-import Footer from '@/components/Footer/Footer';
+import { SiteHeader as Header } from '@/components/layout/SiteHeader';
+import { SiteFooter as Footer } from '@/components/layout/SiteFooter';
 import { useSearch } from '@/context/SearchContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { useRegistrationFlow } from '@/modules/registrations/components/useRegistrationFlow';
@@ -34,7 +34,7 @@ export default function EventsListView({ events }: { events: PublicEventCard[] }
   return (
     <div className="sdc-all-events-wrapper">
       <Header />
-      <main className="sdc-all-events-main">
+      <main id="main" className="sdc-all-events-main">
         <section className="sdc-events-hero-banner">
           <div className="sdc-events-hero-container">
             <nav className="sdc-events-breadcrumb">

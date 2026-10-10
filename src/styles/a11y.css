@@ -18,15 +18,6 @@
   color: var(--c-050d09) !important;
 }
 
-/* Footer text and links on the light surface. */
-:root[data-theme='light'] .sdc-footer-container .sdc-footer-text,
-:root[data-theme='light'] .sdc-footer-container .sdc-footer-member-link {
-  color: var(--c-4b635a) !important;
-}
-:root .sdc-footer-member-link {
-  opacity: 1;
-}
-
 /* The partner cards are white in both themes: their caption needs the darker grey. */
 :root .sdc-partner-text {
   color: var(--c-6b7280);

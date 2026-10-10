@@ -3,8 +3,8 @@
 import React from 'react';
 import { User, MapPin, Calendar, Clock, Trophy, ExternalLink, Phone, Mail } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
-import Header from '@/components/Header/Header';
-import Footer from '@/components/Footer/Footer';
+import { SiteHeader as Header } from '@/components/layout/SiteHeader';
+import { SiteFooter as Footer } from '@/components/layout/SiteFooter';
 import { useLanguage } from '@/context/LanguageContext';
 import { useRegistrationFlow } from '@/modules/registrations/components/useRegistrationFlow';
 import {
@@ -54,7 +54,7 @@ export default function EventDetailView({ event }: { event: PublicEventDetail })
     <div className="sdc-event-detail-wrapper">
       <Header />
 
-      <main className="sdc-event-detail-main">
+      <main id="main" className="sdc-event-detail-main">
         <section className="sdc-event-hero-banner">
           <div className="sdc-hero-overlay">
             <div className="sdc-hero-top-row">

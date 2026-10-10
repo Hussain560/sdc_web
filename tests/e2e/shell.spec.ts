@@ -4,7 +4,10 @@ test('theme toggle persists the choice', async ({ page, setup }) => {
   await setup();
   await page.goto('/');
   const initial = await page.locator('html').getAttribute('data-theme');
-  await page.locator('button.sdc-icon-btn').first().click();
+  await page
+    .getByRole('button', { name: /light mode|الوضع الفاتح|dark mode|الوضع الداكن/ })
+    .first()
+    .click();
   await expect(page.locator('html')).not.toHaveAttribute('data-theme', initial ?? '');
 });
 

@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
-import Footer from '@/components/Footer/Footer';
-import Header from '@/components/Header/Header';
+import { SiteFooter as Footer } from '@/components/layout/SiteFooter';
+import { SiteHeader as Header } from '@/components/layout/SiteHeader';
 import { MarkdownRenderer } from '@/components/markdown/MarkdownRenderer';
 import { Link } from '@/i18n/navigation';
 import { getPublicSettings } from '@/lib/site-settings';
@@ -35,7 +35,7 @@ export default async function PrivacyPage({ params }: { params: Promise<{ locale
   return (
     <div className="flex min-h-screen flex-col bg-canvas text-text">
       <Header />
-      <main className="flex-1">
+      <main id="main" className="flex-1">
         <section className="border-b border-line bg-surface-raised">
           <div className="mx-auto max-w-5xl px-4 py-10">
             <nav

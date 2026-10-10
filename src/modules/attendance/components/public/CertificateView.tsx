@@ -1,8 +1,8 @@
 'use client';
 
 import { CircleCheck, Download } from 'lucide-react';
-import Footer from '@/components/Footer/Footer';
-import Header from '@/components/Header/Header';
+import { SiteFooter as Footer } from '@/components/layout/SiteFooter';
+import { SiteHeader as Header } from '@/components/layout/SiteHeader';
 import { useLanguage } from '@/context/LanguageContext';
 import { Link } from '@/i18n/navigation';
 import { formatDateRange } from '@/lib/format';
@@ -32,7 +32,7 @@ export default function CertificateView({
   return (
     <div className="sdc-article-detail-wrapper">
       <Header />
-      <main className="sdc-article-detail-main">
+      <main id="main" className="sdc-article-detail-main">
         <section className="sdc-article-hero-banner">
           <div className="sdc-article-hero-container">
             <nav className="sdc-article-breadcrumb">

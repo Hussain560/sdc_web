@@ -2,8 +2,8 @@
 
 import React from 'react';
 import { Link } from '@/i18n/navigation';
-import Header from '../Header/Header';
-import Footer from '../Footer/Footer';
+import { SiteHeader as Header } from '@/components/layout/SiteHeader';
+import { SiteFooter as Footer } from '@/components/layout/SiteFooter';
 import './NotFound.css';
 
 export default function NotFound() {
@@ -11,7 +11,7 @@ export default function NotFound() {
     <div className="sdc-notfound-page-wrapper">
       <Header />
 
-      <main className="sdc-notfound-main">
+      <main id="main" className="sdc-notfound-main">
         <div className="sdc-notfound-container">
           {/* البوكس المحدد في الفيجما مع الأيقونات المبعثرة بمقاسات مختلفة */}
           <div className="sdc-notfound-graphic-wrapper">

@@ -3,8 +3,8 @@
 import React from 'react';
 import { Link } from '@/i18n/navigation';
 import { Calendar, Clock, User } from 'lucide-react';
-import Header from '@/components/Header/Header';
-import Footer from '@/components/Footer/Footer';
+import { SiteHeader as Header } from '@/components/layout/SiteHeader';
+import { SiteFooter as Footer } from '@/components/layout/SiteFooter';
 import { MarkdownRenderer } from '@/components/markdown/MarkdownRenderer';
 import { useLanguage } from '@/context/LanguageContext';
 import {
@@ -29,7 +29,7 @@ export default function ArticleDetailView({ article }: { article: PublicArticle 
     <div className="sdc-article-detail-wrapper">
       <Header />
 
-      <main className="sdc-article-detail-main">
+      <main id="main" className="sdc-article-detail-main">
         <section className="sdc-article-hero-banner">
           <div className="sdc-article-hero-container">
             <nav className="sdc-article-breadcrumb">

@@ -2,8 +2,8 @@
 
 import React from 'react';
 import { Link } from '@/i18n/navigation';
-import Header from '@/components/Header/Header';
-import Footer from '@/components/Footer/Footer';
+import { SiteHeader as Header } from '@/components/layout/SiteHeader';
+import { SiteFooter as Footer } from '@/components/layout/SiteFooter';
 import { useLanguage } from '@/context/LanguageContext';
 import './about.css';
 
@@ -15,7 +15,7 @@ export default function AboutPage() {
     <div className="sdc-about-wrapper">
       <Header />
 
-      <main className="sdc-about-main-content">
+      <main id="main" className="sdc-about-main-content">
         <section className="sdc-about-hero-banner">
           <div className="sdc-about-hero-overlay">
             <nav className="sdc-about-breadcrumb">

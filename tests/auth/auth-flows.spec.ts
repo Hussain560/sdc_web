@@ -222,13 +222,10 @@ test.describe('account area', () => {
       await expect(page).toHaveURL((u) => u.pathname === '/account');
       await gotoReady(page, '/');
       await expectHeaderName(page, /./);
-      await page
-        .locator(
-          'header.sdc-header button[aria-label="Logout"], header.sdc-header button[aria-label="تسجيل الخروج"]',
-        )
-        .click();
+      await page.getByRole('button', { name: /Account menu|قائمة الحساب/ }).click();
+      await page.getByRole('button', { name: /Sign out|تسجيل الخروج/ }).click();
       // Wait for the server action to finish before navigating away.
-      await expect(page.locator('header.sdc-header')).toContainText(/Join us|انضم إلينا/);
+      await expect(page.getByRole('link', { name: /Join us|انضم إلينا/ }).first()).toBeVisible();
       await gotoReady(page, '/account');
       await expect(page).toHaveURL(/\/login\?redirect=%2Faccount/);
     } finally {

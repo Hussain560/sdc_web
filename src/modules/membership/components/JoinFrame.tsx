@@ -1,5 +1,5 @@
-import Header from '@/components/Header/Header';
-import Footer from '@/components/Footer/Footer';
+import { SiteHeader as Header } from '@/components/layout/SiteHeader';
+import { SiteFooter as Footer } from '@/components/layout/SiteFooter';
 import { Link } from '@/i18n/navigation';
 
 /** Public chrome of /join: the existing Header and Footer, a page banner with breadcrumb and a card (max 720px). */
@@ -7,7 +7,7 @@ export function JoinFrame({ ar, children }: { ar: boolean; children: React.React
   return (
     <div className="flex min-h-screen flex-col bg-canvas text-text">
       <Header />
-      <main className="flex-1">
+      <main id="main" className="flex-1">
         <section className="border-b border-line bg-surface-raised">
           <div className="mx-auto max-w-5xl px-4 py-10">
             <nav

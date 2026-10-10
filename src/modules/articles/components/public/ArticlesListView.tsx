@@ -3,8 +3,8 @@
 import React from 'react';
 import { BookOpen, Clock, Calendar } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
-import Header from '@/components/Header/Header';
-import Footer from '@/components/Footer/Footer';
+import { SiteHeader as Header } from '@/components/layout/SiteHeader';
+import { SiteFooter as Footer } from '@/components/layout/SiteFooter';
 import { useSearch } from '@/context/SearchContext';
 import { useLanguage } from '@/context/LanguageContext';
 import {
@@ -36,7 +36,7 @@ export default function ArticlesListView({ articles }: { articles: PublicArticle
     <div className="sdc-all-articles-wrapper">
       <Header />
 
-      <main className="sdc-all-articles-main">
+      <main id="main" className="sdc-all-articles-main">
         <section className="sdc-articles-hero-banner">
           <div className="sdc-articles-hero-container">
             <nav className="sdc-articles-breadcrumb">
