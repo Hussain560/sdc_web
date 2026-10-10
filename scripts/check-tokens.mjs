@@ -3,7 +3,7 @@
 // Legacy files that still hold literals are listed in scripts/token-allowlist.json with the number of literals they
 // hold TODAY. The list only shrinks: a file may not gain literals, and a file that no longer has any must be removed
 // from the list (so the check keeps getting stricter). New files are never allowed to have literals.
-import { readFileSync, readdirSync, statSync } from 'node:fs';
+import { readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
 import { join, relative, sep } from 'node:path';
 
 const root = new URL('..', import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1');
@@ -42,6 +42,21 @@ for (const dir of ['src', 'app']) {
 if (process.argv.includes('--counts')) {
   console.log(JSON.stringify(counts, null, 2));
   process.exit(0);
+}
+
+// --prune: lower or drop allowlist entries that shrank (the list only goes down). Never adds files or raises counts.
+if (process.argv.includes('--prune')) {
+  for (const [file, max] of Object.entries(legacy)) {
+    const n = counts[file] ?? 0;
+    if (n === 0) delete legacy[file];
+    else if (n < max) legacy[file] = n;
+  }
+  writeFileSync(
+    join(root, 'scripts/token-allowlist.json'),
+    `${JSON.stringify(allow, null, 2)}
+`,
+  );
+  console.log('Allowlist pruned');
 }
 
 const problems = [];

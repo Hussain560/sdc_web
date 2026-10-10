@@ -47,6 +47,7 @@ import {
   type EventStatus,
 } from '@/components/ui';
 import { useLanguage } from '@/context/LanguageContext';
+import { PILL_LABEL } from '@/modules/events/status-labels';
 import { LocaleSwitch } from '@/components/layout/LocaleSwitch';
 import { SiteFooter } from '@/components/layout/SiteFooter';
 import { SiteHeader } from '@/components/layout/SiteHeader';
@@ -240,6 +241,11 @@ const Row = ({ children }: { children: ReactNode }) => (
 );
 
 const STATUSES: EventStatus[] = [
+  'full',
+  'closed',
+  'members-only',
+  'under-review',
+  'on-waitlist',
   'registration-open',
   'closes-soon',
   'full-waitlist',
@@ -262,16 +268,7 @@ export function Gallery() {
   const [dialog, setDialog] = useState<'none' | 'plain' | 'busy' | 'sheet' | 'result'>('none');
   const [step, setStep] = useState(2);
   const [chip, setChip] = useState(true);
-  const statusLabel: Record<EventStatus, string> = {
-    'registration-open': s.open,
-    'closes-soon': s.soon,
-    'full-waitlist': s.waitlist,
-    registered: s.registered,
-    'running-now': s.running,
-    finished: s.finished,
-    cancelled: s.cancelled,
-    'opens-soon': s.opensSoon,
-  };
+  const statusLabel = (st: EventStatus) => PILL_LABEL[st][lang];
 
   return (
     <>
@@ -362,7 +359,7 @@ export function Gallery() {
           </Row>
           <Row>
             {STATUSES.map((st) => (
-              <StatusPill key={st} status={st} label={statusLabel[st]} />
+              <StatusPill key={st} status={st} label={statusLabel(st)} />
             ))}
           </Row>
           <Row>

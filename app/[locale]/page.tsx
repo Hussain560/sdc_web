@@ -1,31 +1,47 @@
-import React from 'react';
-import { SiteHeader as Header } from '@/components/layout/SiteHeader';
-import HeroSection from '@/components/HeroSection/HeroSection';
-import CommunitySections from '@/components/CommunitySections/CommunitySections';
-import ArticlesSection from '@//components/ArticlesSection/ArticlesSection';
-import MembersSection from '@//components/MembersSection/MembersSection';
+import { getPublicSettings } from '@/lib/site-settings';
+import { todayInRiyadh } from '@/lib/time';
 import { listPublicArticles } from '@/modules/articles/public';
-import { listPublicEvents } from '@/modules/events/public';
 import { listPublicPartners } from '@/modules/admin/public';
-import { SiteFooter as Footer } from '@/components/layout/SiteFooter';
+import { listPublicEvents } from '@/modules/events/public';
+import { HomeView } from '@/modules/home/HomeView';
+import { homeSections, intakeState } from '@/modules/home/sections';
+import { getJoinCycle } from '@/modules/membership/queries';
 
-// The events and threads blocks read the same public data as /events and /articles (revalidated every minute).
+// The events and articles blocks read the same public data as /events and /articles (revalidated every minute).
 export const revalidate = 60;
 
-export default async function Home() {
-  const [events, articles, partners] = await Promise.all([
-    listPublicEvents(3),
-    listPublicArticles(6),
+/** Reads the clock outside the component, so rendering stays pure. */
+const clock = () => {
+  const now = Date.now();
+  return { now, today: todayInRiyadh(now) };
+};
+
+export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  const lang = locale === 'en' ? 'en' : 'ar';
+  const [events, articles, partners, cycle, settings] = await Promise.all([
+    listPublicEvents(),
+    listPublicArticles(4),
     listPublicPartners(),
+    getJoinCycle().catch(() => null),
+    getPublicSettings(),
   ]);
+  const { now, today } = clock();
+  const sections = homeSections({
+    events,
+    articles,
+    partnerCount: partners.length,
+    stats: null, // RDS-017: the public_stats view arrives once the owner approves the figures (Q-H2)
+    today,
+  });
   return (
-    <main id="main" style={{ backgroundColor: '#0D0E12', minHeight: '100vh' }}>
-      <Header />
-      <HeroSection />
-      <ArticlesSection events={events} articles={articles} />
-      <CommunitySections />
-      <MembersSection partners={partners} />
-      <Footer />
-    </main>
+    <HomeView
+      lang={lang}
+      sections={sections}
+      intake={intakeState(cycle)}
+      partners={partners}
+      settings={settings}
+      now={now}
+    />
   );
 }

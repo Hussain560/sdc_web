@@ -1,12 +1,7 @@
 {
   "_comment": "Legacy files that still hold colour literals (file -> literals today). The list only shrinks; see scripts/check-tokens.mjs. Sprint 15/16 delete these files.",
   "legacy": {
-    "src/components/ArticlesSection/ArticlesSection.css": 18,
-    "src/components/CommunitySections/CommunitySections.css": 6,
-    "src/components/HeroSection/HeroSection.css": 4,
     "src/components/markdown/markdown.css": 3,
-    "src/components/MembersSection/MembersSection.css": 8,
-    "src/components/MembersSection/MembersSection.tsx": 2,
     "src/components/NotFound/NotFound.css": 2,
     "src/modules/articles/components/public/all-articles.css": 12,
     "src/modules/articles/components/public/article-details.css": 11,
@@ -28,7 +23,6 @@
     "app/[locale]/members/page.tsx": 3,
     "app/[locale]/members/[id]/details.css": 16,
     "app/[locale]/members/[id]/page.tsx": 5,
-    "app/[locale]/page.tsx": 1,
     "src/styles/legacy-login.css": 8
   },
   "exempt": {
