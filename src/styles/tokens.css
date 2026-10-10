@@ -91,6 +91,11 @@
 
 /* Non-colour tokens (theme independent). Spec: docs/10-design-system/foundations/*. */
 :root {
+  /* Families (typography §1). Rubik first so Latin text and digits keep the brand face inside Arabic sentences;
+   * Arabic letters fall through to IBM Plex Sans Arabic. Both come from next/font (app/[locale]/layout.tsx). */
+  --font-sans: var(--font-rubik), var(--font-plex-arabic), system-ui, -apple-system, sans-serif;
+  --font-mono: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+
   /* Type scale: fluid between a 360 px and a 1440 px viewport (typography §2). Line heights differ per script. */
   --text-display: clamp(2.5rem, 1.833rem + 2.963vw, 4.5rem);
   --text-h1: clamp(2rem, 1.5rem + 2.222vw, 3.5rem);

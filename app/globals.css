@@ -1,7 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
 @import 'tailwindcss';
 @import '../src/styles/primitives.css';
 @import '../src/styles/tokens.css';
+@import '../src/styles/type.css';
 @import '../src/styles/ui.css';
 @import '../src/styles/a11y.css';
 
@@ -17,30 +17,7 @@
 html {
   background-color: var(--background);
   color: var(--foreground);
-  font-family:
-    'Rubik',
-    'IBM Plex Sans Arabic',
-    system-ui,
-    -apple-system,
-    sans-serif;
-}
-
-:lang(ar) {
-  font-family:
-    'IBM Plex Sans Arabic',
-    'Rubik',
-    system-ui,
-    -apple-system,
-    sans-serif;
-}
-
-:lang(en) {
-  font-family:
-    'Rubik',
-    'IBM Plex Sans Arabic',
-    system-ui,
-    -apple-system,
-    sans-serif;
+  font-family: var(--font-sans);
 }
 
 html[dir='rtl'] {
