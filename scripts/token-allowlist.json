@@ -9,10 +9,6 @@
     "src/modules/articles/components/public/ArticlesListView.tsx": 1,
     "src/modules/attendance/components/public/CertificateView.tsx": 1,
     "src/modules/committees/components/public/CommitteeView.tsx": 1,
-    "src/modules/events/components/public/all-events.css": 9,
-    "src/modules/events/components/public/EventsListView.tsx": 3,
-    "src/modules/registrations/components/GuestRegisterDialog.tsx": 2,
-    "src/modules/registrations/components/useRegistrationFlow.tsx": 1,
     "app/[locale]/about/about.css": 10,
     "app/[locale]/about/page.tsx": 1,
     "src/styles/legacy-login.css": 8
