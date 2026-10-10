@@ -8,7 +8,7 @@ import { useLanguage } from '@/context/LanguageContext';
 import { Link } from '@/i18n/navigation';
 import { checkIn, checkInByEmail } from '../../actions';
 import { eventTitleOf, type PublicCheckInContext } from '../../types';
-import '../../../../../app/[locale]/login/login.css';
+import '@/styles/legacy-login.css';
 
 type View =
   | { kind: 'done'; status: 'checked_in' | 'already'; name: string }

@@ -28,12 +28,12 @@ for (const lang of ['ar', 'en'] as const) {
         page.getByRole('link', { name: /create a new account|إنشاء حساب جديد/i }),
       ).toHaveCount(0);
       await expect(
-        page.getByRole('link', { name: /apply to join|قدّم طلب الانضمام/i }),
+        page.getByRole('link', { name: /apply for membership|قدّم طلب العضوية/i }),
       ).toBeVisible();
-      // the public header invites visitors to join, not to log in
-      await expect(page.locator('header.sdc-header')).toContainText(
-        lang === 'en' ? 'Join us' : 'انضم إلينا',
-      );
+      // v2 auth layout: the page has no site header and no footer (ADR-014)
+      await expect(page.locator('header.sdc-header')).toHaveCount(0);
+      await expect(page.locator('footer')).toHaveCount(0);
+      await expect(page.getByRole('banner')).toHaveCount(0);
     });
 
     test('sign in returns to the page I came from', async ({ page }) => {

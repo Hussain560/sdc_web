@@ -6,7 +6,7 @@ import { useLanguage } from '@/context/LanguageContext';
 import { Link } from '@/i18n/navigation';
 import { eventTitle, type PublicEventCard } from '@/modules/events/public-types';
 import { registerGuest, type RegistrationStatus } from '../actions';
-import '../../../../app/[locale]/login/login.css';
+import '@/styles/legacy-login.css';
 
 type Errors = Partial<Record<'name' | 'email' | 'phone' | 'consent', string>>;
 

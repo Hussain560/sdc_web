@@ -85,7 +85,7 @@ describe('DateChip', () => {
     const { container } = render(<DateChip date="2026-10-14" lang="en" variant="block" />);
     const time = container.querySelector('time')!;
     expect(time).toHaveAttribute('datetime', '2026-10-14');
-    expect(time.getAttribute('aria-label')).toContain('2026');
+    expect(time.querySelector('.sr-only')?.textContent).toContain('2026');
   });
 
   it('inline variant shows a time range with Western digits in Arabic', () => {

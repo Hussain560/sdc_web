@@ -37,7 +37,6 @@ export function DateChip({ date, lang, start, end, variant = 'inline', className
     return (
       <time
         dateTime={date}
-        aria-label={p.long}
         className={cn(
           'inline-flex h-16 w-14 shrink-0 flex-col items-center justify-center rounded-shape-lg bg-surface-raised',
           className,
@@ -49,6 +48,7 @@ export function DateChip({ date, lang, start, end, variant = 'inline', className
         <span aria-hidden="true" className="t-caption text-muted">
           {p.month}
         </span>
+        <span className="sr-only">{p.long}</span>
       </time>
     );
   }

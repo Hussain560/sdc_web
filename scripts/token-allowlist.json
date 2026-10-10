@@ -25,15 +25,13 @@
     "src/modules/registrations/components/useRegistrationFlow.tsx": 1,
     "app/[locale]/about/about.css": 10,
     "app/[locale]/about/page.tsx": 1,
-    "app/[locale]/forgot-password/ForgotPasswordForm.tsx": 4,
-    "app/[locale]/login/login.css": 8,
     "app/[locale]/members/all/all-members.css": 27,
     "app/[locale]/members/members.css": 24,
     "app/[locale]/members/page.tsx": 3,
     "app/[locale]/members/[id]/details.css": 16,
     "app/[locale]/members/[id]/page.tsx": 5,
     "app/[locale]/page.tsx": 1,
-    "app/[locale]/reset-password/ResetPasswordForm.tsx": 5
+    "src/styles/legacy-login.css": 8
   },
   "exempt": {
     "src/lib/email/templates.ts": "E-mail clients need inline hex values (light only).",
