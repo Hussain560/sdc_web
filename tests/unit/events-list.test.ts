@@ -21,6 +21,8 @@ const ev = (o: Partial<EventListItem>): EventListItem => ({
   phase: 'registration_open',
   cover: '/x',
   seatsLeft: 5,
+  access: 'public',
+  waitlistEnabled: false,
   type: 'workshop',
   mode: 'in_person',
   committeeSlug: 'tech',

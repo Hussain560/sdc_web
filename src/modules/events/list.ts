@@ -44,6 +44,8 @@ export async function listEventsForList(): Promise<EventListItem[]> {
             phase: (r.phase ?? 'announced') as EventPhase,
             cover: coverSrc(r.cover_image_path),
             seatsLeft: r.seats_left,
+            access: r.audience === 'members_only' ? 'members_only' : 'public',
+            waitlistEnabled: !!r.waitlist_enabled,
             type: r.type ?? 'workshop',
             mode: (r.location_mode ?? 'in_person') as EventListItem['mode'],
             committeeSlug: r.committee_slug,

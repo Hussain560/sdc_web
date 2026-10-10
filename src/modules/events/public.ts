@@ -2,11 +2,14 @@ import { createPublicClient } from '@/lib/supabase/public';
 import type { Database, Json } from '@/lib/supabase/database.types';
 import { clientEnv } from '@/lib/env';
 import type { EventPhase } from './types';
-import type { ListBlock, PublicEventCard, PublicEventDetail } from './public-types';
+import {
+  FALLBACK_COVER,
+  type ListBlock,
+  type PublicEventCard,
+  type PublicEventDetail,
+} from './public-types';
 
 type Row = Database['public']['Views']['public_events']['Row'];
-
-const FALLBACK_COVER = '/assets/event-card.png';
 
 /** A path starting with "/" is a static asset of the site; anything else lives in the public-media bucket. */
 export function coverSrc(path: string | null): string {
@@ -16,7 +19,7 @@ export function coverSrc(path: string | null): string {
 }
 
 const CARD_COLUMNS =
-  'id, slug, title_ar, title_en, location_ar, location_en, start_date, end_date, start_time, end_time, phase, cover_image_path, seats_left';
+  'id, slug, title_ar, title_en, location_ar, location_en, start_date, end_date, start_time, end_time, phase, cover_image_path, seats_left, audience, waitlist_enabled';
 
 function toCard(r: Row): PublicEventCard {
   return {
@@ -33,6 +36,8 @@ function toCard(r: Row): PublicEventCard {
     phase: (r.phase ?? 'announced') as EventPhase,
     cover: coverSrc(r.cover_image_path),
     seatsLeft: r.seats_left,
+    access: r.audience === 'members_only' ? 'members_only' : 'public',
+    waitlistEnabled: !!r.waitlist_enabled,
   };
 }
 
