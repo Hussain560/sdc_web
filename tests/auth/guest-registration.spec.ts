@@ -41,32 +41,32 @@ test('a visitor registers from the modal without an account', async ({ page, bro
       .getByRole('button', { name: /register/i })
       .first()
       .click();
-    const dlg = page.getByRole('dialog', { name: 'Register for the event' });
+    const dlg = page.getByRole('dialog', { name: /Register for Guest Workshop/ });
     await expect(dlg).toBeVisible();
     await expect(page).toHaveURL(new RegExp(`/en/events/${slug}$`));
 
     // Empty submission: inline errors, nothing is sent.
-    await dlg.getByRole('button', { name: 'Confirm registration' }).click();
-    await expect(dlg.getByText('Enter your full name.')).toBeVisible();
-    await expect(dlg.getByText('Enter a valid e-mail address.')).toBeVisible();
-    await expect(dlg.getByText('Enter a valid phone number.')).toBeVisible();
+    await dlg.getByRole('button', { name: 'Register' }).click();
+    await expect(dlg.locator('#g-name-error')).toBeVisible();
+    await expect(dlg.locator('#g-email-error')).toBeVisible();
+    await expect(dlg.locator('#g-phone-error')).toBeVisible();
 
     // A form sent in under 1.5 seconds is refused (scripted submissions), the person may retry.
     await dlg.getByLabel('Full name').fill('Guest Visitor Person');
     await dlg.getByLabel('E-mail').fill(email);
-    await dlg.getByLabel('Phone number').fill('+966 50 123 4567');
+    await dlg.getByLabel(/Mobile/).fill('+966 50 123 4567');
     await dlg.getByLabel(/University/).fill('King Saud University');
     await page.waitForTimeout(1800);
     // consent is required: without it the form refuses
-    await dlg.getByRole('button', { name: 'Confirm registration' }).click();
-    await expect(dlg.getByText('You must accept the privacy notice.')).toBeVisible();
-    await dlg.getByRole('checkbox').check();
-    await dlg.getByRole('button', { name: 'Confirm registration' }).click();
-    await expect(dlg.getByText(/You are registered/)).toBeVisible();
-    await dlg.getByRole('button', { name: 'OK' }).click();
+    await dlg.getByRole('button', { name: 'Register' }).click();
+    await expect(dlg.locator('#g-consent-error')).toBeVisible();
+    await dlg.getByRole('checkbox').check({ force: true });
+    await dlg.getByRole('button', { name: 'Register' }).click();
+    await expect(page.getByRole('heading', { name: /You.re registered/ })).toBeVisible();
+    await page.getByRole('button', { name: 'Done' }).click();
 
     // The button now reads "Registered" and the e-mail arrives.
-    await expect(page.locator('.sdc-hero-btn-register')).toBeDisabled();
+    await expect(page.getByText("You're registered").first()).toBeVisible();
     const mail = await waitForMail(email, { subject: /registration|registered|in/i });
     expect(mail.html).toContain(`Guest Workshop ${tag}`);
 
@@ -96,14 +96,14 @@ test('a visitor registers from the modal without an account', async ({ page, bro
       .getByRole('button', { name: /register/i })
       .first()
       .click();
-    const dlg2 = page.getByRole('dialog', { name: 'Register for the event' });
+    const dlg2 = page.getByRole('dialog', { name: /Register for Guest Workshop/ });
     await dlg2.getByLabel('Full name').fill('Guest Visitor Person');
     await dlg2.getByLabel('E-mail').fill(email.toUpperCase());
-    await dlg2.getByLabel('Phone number').fill('0501234567');
-    await dlg2.getByRole('checkbox').check();
+    await dlg2.getByLabel(/Mobile/).fill('0501234567');
+    await dlg2.getByRole('checkbox').check({ force: true });
     await page.waitForTimeout(1800);
-    await dlg2.getByRole('button', { name: 'Confirm registration' }).click();
-    await expect(dlg2.getByText('You are already registered for this event.')).toBeVisible();
+    await dlg2.getByRole('button', { name: 'Register' }).click();
+    await expect(page.getByRole('heading', { name: /already registered/ })).toBeVisible();
     const [count] = await sql<{ n: string }>(
       `select count(*)::text as n from public.event_registrations where event_id = $1`,
       [eventId],

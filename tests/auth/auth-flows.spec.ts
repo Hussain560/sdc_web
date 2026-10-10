@@ -225,6 +225,10 @@ test.describe('account area', () => {
       await page.getByRole('button', { name: /Account menu|قائمة الحساب/ }).click();
       await page.getByRole('button', { name: /Sign out|تسجيل الخروج/ }).click();
       // Wait for the server action to finish before navigating away.
+      // The header flips as soon as the client signs out; wait until the server action cleared the cookie.
+      await expect
+        .poll(async () => (await page.context().cookies()).some((c) => /auth-token/.test(c.name)))
+        .toBe(false);
       await expect(page.getByRole('link', { name: /Join us|انضم إلينا/ }).first()).toBeVisible();
       await gotoReady(page, '/account');
       await expect(page).toHaveURL(/\/login\?redirect=%2Faccount/);

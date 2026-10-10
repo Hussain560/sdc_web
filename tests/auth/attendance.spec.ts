@@ -261,7 +261,9 @@ test.describe('attendance: tabs, public check-in, sign-off, certificates', () =>
       writeFileSync('test-results/certificate-sample.pdf', bytes);
 
       await ppage.goto(`/en/certificates/${certId}`);
-      await expect(ppage.getByText('Valid certificate of attendance')).toBeVisible();
+      await expect(
+        ppage.getByText('Valid certificate issued by the Saudi Developer Community'),
+      ).toBeVisible();
       await expect(ppage.getByRole('main').getByText('Attendee One Person')).toBeVisible();
       await expect(ppage.getByRole('link', { name: 'Download the PDF' })).toBeVisible();
       const stranger = await browser.newContext({ baseURL: 'http://127.0.0.1:3300' });
