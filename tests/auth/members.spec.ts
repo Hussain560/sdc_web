@@ -187,8 +187,8 @@ test.describe('legacy claim flow', () => {
       await signInAndWait(lpage, legacy.email, undefined, '/en/login');
       await gotoReady(lpage, `/en${path}`);
       await expect(lpage.getByRole('heading', { name: 'Is this your profile?' })).toBeVisible();
-      await lpage.getByRole('button', { name: 'Yes, this is my profile' }).click();
-      await expect(lpage.getByText('Your profile is linked to your account')).toBeVisible();
+      await lpage.getByRole('button', { name: 'Link this profile to my account' }).click();
+      await expect(lpage.getByText('Your profile is linked')).toBeVisible();
 
       const linked = await sql<{ user_id: string }>(
         `select user_id from public.members where id = $1`,

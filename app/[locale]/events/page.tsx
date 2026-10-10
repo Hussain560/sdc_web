@@ -1,10 +1,47 @@
-import EventsListView from '@/modules/events/components/public/EventsListView';
-import { listPublicEvents } from '@/modules/events/public';
+import { EventsListView } from '@/modules/events/components/public/EventsListView';
+import { committeeOptions, filterEvents, listEventsForList } from '@/modules/events/list';
 
-// Public data, cookie-less read: cached and refreshed every minute (and on every event change via revalidatePath).
-export const revalidate = 60;
+type SP = {
+  tab?: string;
+  q?: string;
+  type?: string;
+  mode?: string;
+  committee?: string;
+  page?: string;
+};
 
-export default async function AllEventsPage() {
-  const events = await listPublicEvents();
-  return <EventsListView events={events} />;
+/** Reads the clock outside the component, so rendering stays pure. */
+const clock = () => Date.now();
+
+/** /events: segments and filters live in the URL and render on the server (back button and reload keep them). */
+export default async function AllEventsPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ locale: string }>;
+  searchParams: Promise<SP>;
+}) {
+  const { locale } = await params;
+  const lang = locale === 'en' ? 'en' : 'ar';
+  const sp = await searchParams;
+  const query = {
+    tab: sp.tab === 'past' ? ('past' as const) : ('upcoming' as const),
+    q: (sp.q ?? '').slice(0, 80),
+    type: (sp.type ?? '').slice(0, 20),
+    mode: (sp.mode ?? '').slice(0, 20),
+    committee: (sp.committee ?? '').slice(0, 80),
+    page: Math.min(Math.max(Number(sp.page) || 1, 1), 40),
+  };
+  const all = await listEventsForList();
+  const { total, items } = filterEvents(all, query);
+  return (
+    <EventsListView
+      lang={lang}
+      items={items}
+      total={total}
+      committees={committeeOptions(all, lang)}
+      query={query}
+      now={clock()}
+    />
+  );
 }

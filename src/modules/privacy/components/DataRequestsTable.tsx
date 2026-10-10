@@ -63,14 +63,14 @@ export function DataRequestsTable({ rows }: { rows: DataRequestRow[] }) {
 
   if (rows.length === 0)
     return (
-      <p className="rounded-2xl border border-dashed border-line bg-surface p-8 text-center text-muted">
+      <p className="rounded-shape-xl border border-dashed border-line bg-surface p-8 text-center text-muted">
         {L('لا توجد طلبات.', 'No requests.')}
       </p>
     );
 
   return (
     <>
-      <div className="overflow-x-auto rounded-2xl border border-line bg-surface">
+      <div className="overflow-x-auto rounded-shape-xl border border-line bg-surface">
         <table className="w-full min-w-[640px] text-sm">
           <thead className="border-b border-line text-xs text-muted">
             <tr>

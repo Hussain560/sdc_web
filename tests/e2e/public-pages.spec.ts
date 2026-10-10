@@ -29,7 +29,7 @@ for (const lang of ['ar', 'en'] as const) {
       await settle(page);
       await expect(page).toHaveScreenshot(`${route.name}-${lang}.png`, {
         fullPage: true,
-        mask: [page.locator('[data-visual-mask]'), page.locator('.sdc-footer-text')],
+        mask: [page.locator('[data-visual-mask]'), page.locator('footer p')],
       });
     });
   }

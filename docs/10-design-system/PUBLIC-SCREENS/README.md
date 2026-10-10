@@ -2,6 +2,7 @@
 
 > **Surface:** Every page a visitor can open without the dashboard: home, about, events, articles, members, auth pages, 404, plus the new public pages that later phases add.
 > **Rule:** These blueprints record the **current design exactly as it renders today** (captured from the running app on 2026-10-02 at 1440px and 375px). The look is **frozen** ([D-009](../../90-decisions/README.md#2-decision-log)). When a page moves from hardcoded data to the database, it must render pixel-equivalently; only data sources, states and accessibility fixes change.
+> **Superseded as the target (2026-10-10):** the redesign specs live in [`../PUBLIC-SCREENS-V2/`](../PUBLIC-SCREENS-V2/README.md) (ADR-014). This folder remains the record of the v1 pages and of the data rules they document.
 > **Status:** Design hand-off package, the companion of [`../INTERNAL-SCREENS/`](../INTERNAL-SCREENS/README.md)
 > **Last updated:** 2026-10-02
 

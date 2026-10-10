@@ -133,7 +133,7 @@ export function CycleForm({
       }}
       method="post"
     >
-      <section className="flex flex-col gap-4 rounded-2xl border border-line bg-surface p-5">
+      <section className="flex flex-col gap-4 rounded-shape-xl border border-line bg-surface p-5">
         <h2 className="font-bold">{ar ? 'الاسم والوصف' : 'Name & description'}</h2>
         <Field
           id="field-nameAr"
@@ -173,7 +173,7 @@ export function CycleForm({
         />
       </section>
 
-      <section className="flex flex-col gap-4 rounded-2xl border border-line bg-surface p-5">
+      <section className="flex flex-col gap-4 rounded-shape-xl border border-line bg-surface p-5">
         <h2 className="font-bold">{ar ? 'الفترة' : 'Window'}</h2>
         <p className="text-xs text-muted">
           {ar ? 'التوقيت بتوقيت السعودية (UTC+3).' : 'Saudi time (UTC+3).'}
@@ -228,7 +228,7 @@ export function CycleForm({
         </div>
       </section>
 
-      <section className="flex flex-col gap-4 rounded-2xl border border-line bg-surface p-5">
+      <section className="flex flex-col gap-4 rounded-shape-xl border border-line bg-surface p-5">
         <div className="flex items-center justify-between gap-3">
           <h2 className="font-bold">
             {ar ? 'أسئلة إضافية (اختياري)' : 'Extra questions (optional)'}

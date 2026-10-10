@@ -17,14 +17,13 @@
   line-height: 1.4;
   font-weight: 700;
 }
-.sdc-md h1 {
-  font-size: 1.5em;
-}
+.sdc-md h1,
 .sdc-md h2 {
-  font-size: 1.3em;
+  font-size: var(--text-h3);
 }
-.sdc-md h3 {
-  font-size: 1.15em;
+.sdc-md h3,
+.sdc-md h4 {
+  font-size: var(--text-h4);
 }
 .sdc-md ul,
 .sdc-md ol {
@@ -41,18 +40,19 @@
 }
 .sdc-md blockquote {
   padding-inline-start: 1em;
-  border-inline-start: 3px solid var(--accent, currentColor);
-  opacity: 0.9;
+  border-inline-start: 3px solid var(--border-accent);
+  color: var(--text-muted);
 }
 .sdc-md a {
-  color: var(--accent, inherit);
+  color: var(--accent-text);
   text-decoration: underline;
+  text-underline-offset: 3px;
 }
 .sdc-md code {
   padding: 0.1em 0.35em;
   border-radius: 6px;
-  background: rgb(127 127 127 / 0.16);
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  background: var(--surface-raised);
+  font-family: var(--font-mono);
   font-size: 0.9em;
   direction: ltr;
   unicode-bidi: isolate;
@@ -61,7 +61,7 @@
   overflow-x: auto;
   padding: 1em;
   border-radius: 10px;
-  background: rgb(127 127 127 / 0.16);
+  background: var(--surface-raised);
   direction: ltr;
   text-align: left;
 }
@@ -71,5 +71,5 @@
 }
 .sdc-md hr {
   border: none;
-  border-top: 1px solid rgb(127 127 127 / 0.3);
+  border-top: 1px solid var(--border);
 }

@@ -28,12 +28,12 @@ for (const lang of ['ar', 'en'] as const) {
         page.getByRole('link', { name: /create a new account|إنشاء حساب جديد/i }),
       ).toHaveCount(0);
       await expect(
-        page.getByRole('link', { name: /apply to join|قدّم طلب الانضمام/i }),
+        page.getByRole('link', { name: /apply for membership|قدّم طلب العضوية/i }),
       ).toBeVisible();
-      // the public header invites visitors to join, not to log in
-      await expect(page.locator('header.sdc-header')).toContainText(
-        lang === 'en' ? 'Join us' : 'انضم إلينا',
-      );
+      // v2 auth layout: the page has no site header and no footer (ADR-014)
+      await expect(page.locator('header.sdc-header')).toHaveCount(0);
+      await expect(page.locator('footer')).toHaveCount(0);
+      await expect(page.getByRole('banner')).toHaveCount(0);
     });
 
     test('sign in returns to the page I came from', async ({ page }) => {
@@ -222,13 +222,14 @@ test.describe('account area', () => {
       await expect(page).toHaveURL((u) => u.pathname === '/account');
       await gotoReady(page, '/');
       await expectHeaderName(page, /./);
-      await page
-        .locator(
-          'header.sdc-header button[aria-label="Logout"], header.sdc-header button[aria-label="تسجيل الخروج"]',
-        )
-        .click();
+      await page.getByRole('button', { name: /Account menu|قائمة الحساب/ }).click();
+      await page.getByRole('button', { name: /Sign out|تسجيل الخروج/ }).click();
       // Wait for the server action to finish before navigating away.
-      await expect(page.locator('header.sdc-header')).toContainText(/Join us|انضم إلينا/);
+      // The header flips as soon as the client signs out; wait until the server action cleared the cookie.
+      await expect
+        .poll(async () => (await page.context().cookies()).some((c) => /auth-token/.test(c.name)))
+        .toBe(false);
+      await expect(page.getByRole('link', { name: /Join us|انضم إلينا/ }).first()).toBeVisible();
       await gotoReady(page, '/account');
       await expect(page).toHaveURL(/\/login\?redirect=%2Faccount/);
     } finally {

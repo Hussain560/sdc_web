@@ -82,9 +82,9 @@ export async function signInViaUi(page: Page, email: string, password = PASSWORD
 }
 
 export async function expectHeaderName(page: Page, name: string | RegExp) {
-  // A signed-in visitor sees the dashboard button; the name itself is shown on the account pages.
+  // A signed-in visitor sees the account menu in the header; the name itself is shown on the account pages.
   void name;
-  await expect(page.locator('header.sdc-header')).toContainText(/Dashboard|لوحة التحكم/, {
+  await expect(page.getByRole('button', { name: /Account menu|قائمة الحساب/ })).toBeVisible({
     timeout: 15_000,
   });
 }

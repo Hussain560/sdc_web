@@ -56,7 +56,7 @@ export function ExportButton({ href, filename }: { href: string; filename: strin
       aria-busy={busy || undefined}
       className={cn(
         'inline-flex min-h-10 items-center justify-center gap-2 rounded-full border border-line-accent px-5 text-sm font-semibold text-accent transition-colors hover:bg-surface-raised',
-        'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent',
+        'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring',
         'disabled:cursor-wait disabled:opacity-60',
       )}
     >

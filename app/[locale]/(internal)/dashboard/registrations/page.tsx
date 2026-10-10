@@ -119,7 +119,7 @@ export default async function RegistrationsPage({
             name="q"
             defaultValue={sp.q ?? ''}
             placeholder={ar ? 'ابحث بالاسم أو البريد' : 'Search by name or e-mail'}
-            className="h-9 w-64 rounded-lg border border-line bg-surface ps-9 pe-3 text-sm text-text placeholder:text-muted focus-visible:outline-2 focus-visible:outline-accent"
+            className="h-9 w-64 rounded-lg border border-line bg-surface ps-9 pe-3 text-sm text-text placeholder:text-muted focus-visible:outline-2 focus-visible:outline-focus-ring"
           />
         </label>
         <label>
@@ -127,7 +127,7 @@ export default async function RegistrationsPage({
           <select
             name="event"
             defaultValue={sp.event ?? ''}
-            className="h-9 max-w-64 rounded-lg border border-line bg-surface px-3 text-sm text-text focus-visible:outline-2 focus-visible:outline-accent"
+            className="h-9 max-w-64 rounded-lg border border-line bg-surface px-3 text-sm text-text focus-visible:outline-2 focus-visible:outline-focus-ring"
           >
             <option value="">{ar ? 'كل الفعاليات' : 'All events'}</option>
             {events.map((e) => (
@@ -139,7 +139,7 @@ export default async function RegistrationsPage({
         </label>
         <button
           type="submit"
-          className="inline-flex h-9 items-center gap-2 rounded-full border border-line-accent px-4 text-sm font-semibold text-accent hover:bg-surface-raised focus-visible:outline-2 focus-visible:outline-accent"
+          className="inline-flex h-9 items-center gap-2 rounded-full border border-line-accent px-4 text-sm font-semibold text-accent hover:bg-surface-raised focus-visible:outline-2 focus-visible:outline-focus-ring"
         >
           <ListFilter size={15} aria-hidden="true" />
           {ar ? 'تطبيق' : 'Apply'}

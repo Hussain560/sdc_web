@@ -45,6 +45,11 @@ export async function getMyMember(): Promise<MyMember | null> {
       linkedinUrl: s(data.linkedin_url),
       xUrl: s(data.x_url),
       isDirectoryVisible: data.is_directory_visible,
+      showUniversity: data.show_university,
+      showTrack: data.show_track,
+      showLinks: data.show_links,
+      showPhoto: data.show_photo,
+      showParticipation: data.show_participation,
     },
   };
 }

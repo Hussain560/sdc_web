@@ -68,7 +68,7 @@ select throws_ok($$select public.save_site_settings('[]'::jsonb)$$, 'P0001', 'VA
 select lives_ok($$select public.save_site_settings('{"contact_email":"hello@sdc.example.test","certificates_enabled":true,"certificate_threshold":80}'::jsonb)$$, 'valid settings are saved');
 select is((select value from public.site_settings where key = 'contact_email'), '"hello@sdc.example.test"'::jsonb, 'the e-mail is stored');
 select is((select is_public from public.site_settings where key = 'contact_email'), true, 'contact e-mail is public');
-select is((select is_public from public.site_settings where key = 'certificate_threshold'), false, 'the threshold stays private');
+select is((select is_public from public.site_settings where key = 'certificate_threshold'), true, 'the threshold is public (the event page shows the rule, RDS-011)');
 select is((select value from public.site_settings where key = 'certificate_threshold'), '80'::jsonb, 'the threshold is stored');
 select is((select jsonb_array_length(public.list_audit_logs(p_action => 'settings.update') -> 'rows' -> 0 -> 'summary' -> 'keys')), 3, 'the audit row names the three keys changed');
 select lives_ok($$select public.save_site_settings('{"contact_email":"hello@sdc.example.test"}'::jsonb)$$, 'saving an unchanged value is accepted');

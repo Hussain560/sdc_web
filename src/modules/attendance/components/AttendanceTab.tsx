@@ -36,7 +36,7 @@ import {
 import { QrPanel } from './QrPanel';
 
 type Filter = 'all' | 'present' | 'absent';
-type Dlg = null | 'finalize' | 'event' | 'open-late';
+type Dlg = null | 'finalize' | 'event' | 'open-late' | 'close';
 
 /**
  * The Attendance tab of an event (KFUCS parity): a day selector, the live numbers of the selected day, then either
@@ -236,16 +236,7 @@ export function AttendanceTab({
             </Button>
           )}
           {publishedEvent && status === 'open' && sessionId && (
-            <Button
-              variant="secondary"
-              loading={busy}
-              onClick={() =>
-                run(
-                  () => closeSession({ sessionId, eventId }, { lang }),
-                  L('أُغلقت الجلسة.', 'Session closed.'),
-                )
-              }
-            >
+            <Button variant="secondary" loading={busy} onClick={() => setDialog('close')}>
               {L('إغلاق الجلسة', 'Close session')}
             </Button>
           )}
@@ -390,13 +381,13 @@ export function AttendanceTab({
                   onChange={(e) => setQ(e.target.value)}
                   placeholder={L('ابحث بالاسم أو البريد…', 'Search by name or e-mail…')}
                   aria-label={L('بحث', 'Search')}
-                  className="h-9 w-60 rounded-lg border border-line bg-surface px-3 text-sm text-text placeholder:text-muted focus-visible:outline-2 focus-visible:outline-accent"
+                  className="h-9 w-60 rounded-lg border border-line bg-surface px-3 text-sm text-text placeholder:text-muted focus-visible:outline-2 focus-visible:outline-focus-ring"
                 />
                 <select
                   value={filter}
                   onChange={(e) => setFilter(e.target.value as Filter)}
                   aria-label={L('تصفية الحالة', 'Filter by state')}
-                  className="h-9 rounded-lg border border-line bg-surface px-3 text-sm text-text focus-visible:outline-2 focus-visible:outline-accent"
+                  className="h-9 rounded-lg border border-line bg-surface px-3 text-sm text-text focus-visible:outline-2 focus-visible:outline-focus-ring"
                 >
                   <option value="all">{L('الكل', 'All')}</option>
                   <option value="present">{L('الحاضرون', 'Present')}</option>
@@ -635,6 +626,39 @@ export function AttendanceTab({
             </Button>
             <Button loading={busy} onClick={() => openDay(true)}>
               {L('فتح الجلسة', 'Open the session')}
+            </Button>
+          </div>
+        </div>
+      </Dialog>
+
+      <Dialog
+        open={dialog === 'close'}
+        onClose={() => !busy && setDialog(null)}
+        title={L('إغلاق الجلسة؟', 'Close this session?')}
+      >
+        <div className="flex flex-col gap-4">
+          <p className="text-sm text-muted">
+            {L(
+              `سيتوقف رمز QR ولن يتمكّن أحد من تسجيل حضوره بعد الآن. الحاضرون حتى الآن: ${present} من ${total}. يمكنك إعادة فتح الجلسة أو اعتمادها بعد الإغلاق.`,
+              `The QR code stops working and nobody can check in after this. Present so far: ${present} of ${total}. You can reopen or finalize the session afterwards.`,
+            )}
+          </p>
+          <div className="flex justify-end gap-2">
+            <Button variant="ghost" onClick={() => setDialog(null)} disabled={busy}>
+              {L('تراجع', 'Back')}
+            </Button>
+            <Button
+              variant="destructive"
+              loading={busy}
+              onClick={() =>
+                sessionId &&
+                run(
+                  () => closeSession({ sessionId, eventId }, { lang }),
+                  L('أُغلقت الجلسة.', 'Session closed.'),
+                )
+              }
+            >
+              {L('نعم، أغلق الجلسة', 'Yes, close the session')}
             </Button>
           </div>
         </div>

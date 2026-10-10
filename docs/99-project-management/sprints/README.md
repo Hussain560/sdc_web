@@ -38,6 +38,9 @@ Dates are indicative (2-week sprints starting Sundays, Saudi work week) and will
 | [Sprint 11](./sprint-11-reports-audit-settings/plan.md) | Reports, audit log, exports, settings | 2027-02-28 → 03-13 | 4 | M6 · `v0.7.0` | 20 | ✅ Local scope complete |
 | [Sprint 12](./sprint-12-hardening/plan.md) | Quality & security hardening | 2027-03-14 → 03-27 | 5 | M7 · `v0.8.0` | 24 | ✅ Done locally (visual baseline approval pending) |
 | [Sprint 13](./sprint-13-launch/plan.md) | Production readiness & launch | 2027-03-28 → 04-10 | 6 | M8 · `v1.0.0` 🚀 | 16 | 🔄 Local work done; production actions with owners |
+| [Sprint 14](./sprint-14-design-system-v2-foundation/plan.md) | Public redesign I — Design System v2 tokens, components, chrome, auth layout | 2027-04-11 → 04-24 | 7 | M9 | 27 | ⬜ Planned (dates indicative, Q-S2) |
+| [Sprint 15](./sprint-15-home-and-event-page/plan.md) | Public redesign II — chrome roll-out, home, event page, registration dialog | 2027-04-25 → 05-08 | 7 | M9 | 28 | ⬜ Planned |
+| [Sprint 16](./sprint-16-members-and-remaining-pages/plan.md) | Public redesign III — members (privacy first) and the remaining pages | 2027-05-09 → 05-22 | 7 | M9 · `v1.1.0` | 27 | ⬜ Planned |
 
 Each sprint folder gets `notes.md` when it starts and `report.md` when it ends (from [`_template/`](./_template/plan.md)).
 

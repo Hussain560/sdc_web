@@ -1,28 +1,40 @@
-import type { HTMLAttributes } from 'react';
+import type { HTMLAttributes, ReactNode } from 'react';
 import { cn } from './cn';
 
-type Tone = 'neutral' | 'accent' | 'warning' | 'danger';
+export type BadgeTone = 'neutral' | 'accent' | 'success' | 'warning' | 'danger' | 'info';
 
-const tones: Record<Tone, string> = {
-  neutral: 'border-line text-muted',
-  accent: 'border-line-accent text-accent',
-  warning: 'border-warning text-warning',
-  danger: 'border-danger text-danger',
+/** Soft filled tones (components §2.1). Every fill/text pair is in the contrast gate. */
+export const badgeTones: Record<BadgeTone, string> = {
+  neutral: 'bg-surface-raised text-muted',
+  accent: 'bg-accent-soft text-on-accent-soft',
+  success: 'bg-success-soft text-success',
+  warning: 'bg-warning-soft text-warning',
+  danger: 'bg-danger-soft text-danger',
+  info: 'bg-info-soft text-info',
 };
 
 export function Badge({
   tone = 'neutral',
+  icon,
   className,
+  children,
   ...rest
-}: HTMLAttributes<HTMLSpanElement> & { tone?: Tone }) {
+}: HTMLAttributes<HTMLSpanElement> & { tone?: BadgeTone; icon?: ReactNode }) {
   return (
     <span
       {...rest}
       className={cn(
-        'inline-flex h-6 items-center whitespace-nowrap rounded-full border px-3 text-xs font-medium',
-        tones[tone],
+        't-badge inline-flex h-6 items-center gap-1 whitespace-nowrap rounded-full px-2.5 tabular-nums',
+        badgeTones[tone],
         className,
       )}
-    />
+    >
+      {icon && (
+        <span aria-hidden="true" className="inline-flex size-3.5 shrink-0 items-center">
+          {icon}
+        </span>
+      )}
+      {children}
+    </span>
   );
 }

@@ -1,6 +1,10 @@
 import { notFound, permanentRedirect } from 'next/navigation';
 import ArticleDetailView from '@/modules/articles/components/public/ArticleDetailView';
-import { getPublicArticle, slugForLegacyArticleId } from '@/modules/articles/public';
+import {
+  getPublicArticle,
+  listPublicArticles,
+  slugForLegacyArticleId,
+} from '@/modules/articles/public';
 
 export const revalidate = 60;
 
@@ -20,5 +24,12 @@ export default async function ArticleDetailPage({
 
   const article = await getPublicArticle(slug);
   if (!article) notFound();
-  return <ArticleDetailView article={article} />;
+  // Related: other articles that share a tag (up to three).
+  const tags = new Set(article.tags.map((t) => t.slug));
+  const related = (await listPublicArticles())
+    .filter((a) => a.slug !== slug && a.tags.some((t) => tags.has(t.slug)))
+    .slice(0, 3);
+  return (
+    <ArticleDetailView article={article} related={related} lang={locale === 'en' ? 'en' : 'ar'} />
+  );
 }

@@ -1,0 +1,89 @@
+/* Type utilities t-display … t-badge (typography §2). Sizes come from the fluid tokens in tokens.css; the line
+ * height differs per script, so the Arabic value is the default and :lang(en) swaps it. Weight 700 on headings
+ * because IBM Plex Sans Arabic stops at 700. No letter-spacing anywhere (it breaks Arabic joining). */
+@utility t-display {
+  font-size: var(--text-display);
+  line-height: var(--leading-display-ar);
+  font-weight: 700;
+  &:lang(en) {
+    line-height: var(--leading-display-en);
+  }
+}
+@utility t-h1 {
+  font-size: var(--text-h1);
+  line-height: var(--leading-h1-ar);
+  font-weight: 700;
+  &:lang(en) {
+    line-height: var(--leading-h1-en);
+  }
+}
+@utility t-h2 {
+  font-size: var(--text-h2);
+  line-height: var(--leading-h2-ar);
+  font-weight: 700;
+  &:lang(en) {
+    line-height: var(--leading-h2-en);
+  }
+}
+@utility t-h3 {
+  font-size: var(--text-h3);
+  line-height: var(--leading-h3-ar);
+  font-weight: 700;
+  &:lang(en) {
+    line-height: var(--leading-h3-en);
+  }
+}
+@utility t-h4 {
+  font-size: var(--text-h4);
+  line-height: var(--leading-h4-ar);
+  font-weight: 700;
+  &:lang(en) {
+    line-height: var(--leading-h4-en);
+  }
+}
+@utility t-stat {
+  font-size: var(--text-stat);
+  line-height: var(--leading-stat);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+@utility t-lede {
+  font-size: var(--text-lede);
+  line-height: var(--leading-lede-ar);
+  font-weight: 400;
+  max-inline-size: 60ch;
+  &:lang(en) {
+    line-height: var(--leading-lede-en);
+  }
+}
+@utility t-body {
+  font-size: var(--text-body);
+  line-height: var(--leading-body-ar);
+  font-weight: 400;
+  &:lang(en) {
+    line-height: var(--leading-body-en);
+  }
+}
+@utility t-body-sm {
+  font-size: var(--text-body-sm);
+  line-height: var(--leading-body-sm-ar);
+  font-weight: 400;
+  &:lang(en) {
+    line-height: var(--leading-body-sm-en);
+  }
+}
+@utility t-label {
+  font-size: var(--text-label);
+  line-height: var(--leading-label);
+  font-weight: 600;
+}
+@utility t-caption {
+  font-size: var(--text-caption);
+  line-height: var(--leading-caption);
+  font-weight: 500;
+}
+@utility t-badge {
+  font-size: var(--text-badge);
+  line-height: var(--leading-badge);
+  font-weight: 600;
+}

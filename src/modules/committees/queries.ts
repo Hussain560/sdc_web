@@ -177,3 +177,51 @@ export async function listCommunityLeadership(): Promise<Leader[]> {
         : null,
   }));
 }
+
+export type PublicCommitteeCard = {
+  slug: string;
+  nameAr: string;
+  nameEn: string | null;
+  descriptionAr: string | null;
+  descriptionEn: string | null;
+  leadAr: string | null;
+  leadEn: string | null;
+  events: number;
+};
+
+/** Active committees for /committees: public columns, the head from public positions, and the event count. */
+export async function listPublicCommittees(): Promise<PublicCommitteeCard[]> {
+  const db = createPublicClient();
+  const [{ data: committees }, { data: heads }, { data: events }] = await Promise.all([
+    db
+      .from('committees')
+      .select('slug, name_ar, name_en, description_ar, description_en, display_order')
+      .eq('status', 'active')
+      .order('display_order'),
+    db
+      .from('current_positions')
+      .select('person_name_ar, person_name_en, role_key, committee_name_ar')
+      .eq('role_key', 'committee_head'),
+    db.from('public_events').select('committee_slug'),
+  ]);
+  const counts = new Map<string, number>();
+  for (const e of events ?? [])
+    if (e.committee_slug) counts.set(e.committee_slug, (counts.get(e.committee_slug) ?? 0) + 1);
+  const headByName = new Map<string, { ar: string | null; en: string | null }>();
+  for (const h of heads ?? [])
+    if (h.committee_name_ar)
+      headByName.set(h.committee_name_ar, { ar: h.person_name_ar, en: h.person_name_en });
+  return (committees ?? []).map((c) => {
+    const head = headByName.get(c.name_ar);
+    return {
+      slug: c.slug,
+      nameAr: c.name_ar,
+      nameEn: c.name_en,
+      descriptionAr: c.description_ar,
+      descriptionEn: c.description_en,
+      leadAr: head?.ar ?? null,
+      leadEn: head?.en ?? head?.ar ?? null,
+      events: counts.get(c.slug) ?? 0,
+    };
+  });
+}

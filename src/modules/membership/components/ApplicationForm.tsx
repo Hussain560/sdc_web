@@ -5,6 +5,7 @@ import { CheckCircle2 } from 'lucide-react';
 import { Button, Chips, Field, Select, Stepper, Textarea, useToast } from '@/components/ui';
 import { useLanguage } from '@/context/LanguageContext';
 import { Link } from '@/i18n/navigation';
+import { withMinimumDuration } from '@/lib/min-duration';
 import { applyForMembership } from '../actions';
 import {
   APPLICATION_STEPS,
@@ -132,10 +133,23 @@ export function ApplicationForm({
       return;
     }
     startTransition(async () => {
-      const r = await applyForMembership(
-        { cycleId: cycle.id, values, honeypot, elapsedMs: Date.now() - openedAt },
-        { lang },
-      );
+      // The answer shows after the same 1.5 s floor as the registration, so the work is visible.
+      let r: Awaited<ReturnType<typeof applyForMembership>>;
+      try {
+        r = await withMinimumDuration(
+          applyForMembership(
+            { cycleId: cycle.id, values, honeypot, elapsedMs: Date.now() - openedAt },
+            { lang },
+          ),
+        );
+      } catch {
+        toast.error(
+          ar
+            ? 'تعذّر إرسال الطلب. حاول مرة أخرى.'
+            : "We couldn't send your application. Try again.",
+        );
+        return;
+      }
       if (!r.ok) {
         toast.error(r.message);
         if (r.fieldErrors) setErrors(r.fieldErrors);
@@ -153,12 +167,17 @@ export function ApplicationForm({
 
   if (done) {
     return (
-      <div className="flex flex-col items-center gap-4 py-6 text-center" role="status">
-        <CheckCircle2 size={44} className="text-accent" aria-hidden="true" />
-        <h2 className="text-xl font-extrabold">
-          {ar ? 'تم استلام طلبك ✓' : 'Application received ✓'}
+      <div className="flex flex-col items-start gap-4 py-6" role="status">
+        <span
+          aria-hidden="true"
+          className="flex size-[72px] items-center justify-center rounded-full bg-success-soft text-success"
+        >
+          <CheckCircle2 className="size-10" />
+        </span>
+        <h2 className="t-h3" tabIndex={-1} ref={(el) => el?.focus()}>
+          {ar ? 'استلمنا طلبك' : 'We received your application'}
         </h2>
-        <p className="max-w-md text-muted">
+        <p className="t-body max-w-md text-muted">
           {ar
             ? `سنراجع الطلبات بعد إغلاق باب التقديم. إذا قُبل طلبك فسنراسلك على ${values.email} برسالة فيها رابط لتفعيل حسابك في بوابة الأعضاء.`
             : `We review applications once the window closes. If you are accepted we will e-mail ${values.email} with a link to activate your account in the members portal.`}

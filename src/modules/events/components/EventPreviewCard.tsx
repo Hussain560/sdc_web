@@ -36,7 +36,7 @@ export function EventPreviewCard({
 
   return (
     <article
-      className="overflow-hidden rounded-2xl border border-line bg-surface"
+      className="overflow-hidden rounded-shape-xl border border-line bg-surface"
       aria-label={ar ? 'معاينة البطاقة' : 'Card preview'}
     >
       <div className="relative aspect-video bg-surface-raised">

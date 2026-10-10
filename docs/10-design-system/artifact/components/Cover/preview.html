@@ -1,0 +1,38 @@
+<!-- @dsCard height=300 -->
+<div class="cover" dir="ltr">
+  <style>
+    .cover { position: relative; inline-size: 960px; block-size: 300px; background: var(--canvas); overflow: hidden; font-family: var(--font-sans); }
+    .cover svg { position: absolute; inset: 0; }
+    .cover .brand { fill: var(--brand); }
+    .cover .signal { fill: var(--signal); }
+    .cover .frame { fill: var(--border-accent); }
+    .cover .slab { rx: var(--radius-xl); }
+    .cover .text { position: absolute; inset-inline-start: 48px; inset-block-end: 40px; max-inline-size: 440px; }
+    .cover h1 { margin: 0; font-size: 72px; line-height: 0.95; font-weight: 700; color: var(--text); }
+    .cover p { margin: 16px 0 0; font-size: 14px; line-height: 1.5; color: var(--text-muted); }
+  </style>
+  <svg viewBox="0 0 960 300" width="960" height="300" aria-hidden="true">
+    <!--
+      blocks: brand slab 192x248 (space-24 x 2 + space-14), signal capsule 344x72 (radius-full), border-accent disc r=64
+      arrangement: one tall brand slab bleeding off the top, the signal capsule bleeding off the right edge across its foot, a border-accent disc as the one satellite (a surface-raised slab vanished on the light canvas, so it was dropped)
+      pattern: "a literal motif" row — SDC's signal dots (pairs of 8px dots, 4px apart) on a 24px (space-6) pitch inside the brand slab; chosen because the mark's two dots are the brand's most specific shape
+      steps and radii: space-6 (24) pitch and gutters, space-12 (48) margins; radius-xl (24) slabs, radius-full capsule, disc
+    -->
+    <rect class="brand slab" x="536" y="-24" width="192" height="248"/>
+    <rect class="signal" x="616" y="196" width="344" height="72" rx="36"/>
+    <circle class="frame" cx="856" cy="96" r="64"/>
+    <g class="signal">
+      <circle cx="572" cy="20" r="4"/><circle cx="584" cy="20" r="4"/>
+      <circle cx="620" cy="44" r="4"/><circle cx="632" cy="44" r="4"/>
+      <circle cx="668" cy="68" r="4"/><circle cx="680" cy="68" r="4"/>
+      <circle cx="572" cy="92" r="4"/><circle cx="584" cy="92" r="4"/>
+      <circle cx="620" cy="116" r="4"/><circle cx="632" cy="116" r="4"/>
+      <circle cx="668" cy="140" r="4"/><circle cx="680" cy="140" r="4"/>
+      <circle cx="572" cy="164" r="4"/><circle cx="584" cy="164" r="4"/>
+    </g>
+  </svg>
+  <div class="text">
+    <h1>SDC Design<br>System</h1>
+    <p>Green signal on deep night, set large. Arabic first, dark first.</p>
+  </div>
+</div>

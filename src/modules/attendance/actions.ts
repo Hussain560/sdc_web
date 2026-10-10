@@ -1,6 +1,8 @@
 'use server';
 
+import { createHmac } from 'node:crypto';
 import { revalidatePath } from 'next/cache';
+import { headers } from 'next/headers';
 import { after } from 'next/server';
 import { fail, ok, type ErrorCode, type Result } from '@/lib/result';
 import { createClient } from '@/lib/supabase/server';
@@ -243,22 +245,35 @@ export async function checkIn(
 export async function checkInByEmail(
   input: { sessionId: string; token: string; email: string },
   ctx: { lang: Lang },
-): Promise<Result<{ status: 'checked_in' | 'already'; name: string }>> {
+): Promise<Result<{ status: 'checked_in' | 'already'; name: string; checkedInAt: string | null }>> {
   const lang = langOf(ctx?.lang);
   if (!uuid(String(input?.sessionId ?? ''))) return failCode('SESSION_NOT_OPEN', lang);
+  // The database throttles per hashed IP, per e-mail and per session; the IP never leaves this function in clear.
+  const h = await headers();
+  const ip = (h.get('x-forwarded-for')?.split(',')[0] ?? h.get('x-real-ip') ?? '').trim();
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY ?? 'dev-only-key';
+  const ipHash = ip ? createHmac('sha256', key).update(ip).digest('hex') : null;
   const supabase = await createClient();
   const { data, error } = await supabase.rpc('check_in_by_email', {
     p_session: input.sessionId,
-    p_token: input.token,
-    p_email: input.email,
+    p_token: String(input.token ?? '').slice(0, 64),
+    p_email: String(input.email ?? '').slice(0, 254),
+    p_ip_hash: ipHash as string,
   });
   if (error) return dbFailure(error, lang);
-  const o = (data ?? {}) as { ok?: boolean; code?: string; status?: string; name?: string };
+  const o = (data ?? {}) as {
+    ok?: boolean;
+    code?: string;
+    status?: string;
+    name?: string;
+    checked_in_at?: string | null;
+  };
   if (!o.ok) return failCode((o.code ?? 'INTERNAL') as ErrorCode, lang);
   revalidatePath('/dashboard/events', 'layout');
   return ok({
     status: o.status === 'already' ? 'already' : 'checked_in',
     name: o.name ?? '',
+    checkedInAt: o.checked_in_at ?? null,
   });
 }
 

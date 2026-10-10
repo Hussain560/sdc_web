@@ -10,7 +10,7 @@ export function PeriodPicker({ base, period, ar }: { base: string; period: Perio
     ['month', ar ? 'هذا الشهر' : 'This month'],
   ];
   const input =
-    'min-h-10 rounded-xl border border-line bg-surface px-3 text-sm text-text focus-visible:outline-2 focus-visible:outline-accent';
+    'min-h-10 rounded-xl border border-line bg-surface px-3 text-sm text-text focus-visible:outline-2 focus-visible:outline-focus-ring';
   return (
     <div className="mb-5 flex flex-wrap items-end gap-3">
       <nav aria-label={ar ? 'الفترة' : 'Period'} className="flex flex-wrap gap-2">

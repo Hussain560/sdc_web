@@ -23,6 +23,8 @@ const sb = localSupabase();
 const testEnv = {
   NEXT_PUBLIC_SUPABASE_URL: sb.API_URL ?? 'http://127.0.0.1:54321',
   NEXT_PUBLIC_SUPABASE_ANON_KEY: sb.ANON_KEY ?? '',
+  // Lets the developer-only /design-gallery render in the production build the suite runs against.
+  DESIGN_GALLERY: '1',
 };
 
 const themes = ['dark', 'light'] as const;

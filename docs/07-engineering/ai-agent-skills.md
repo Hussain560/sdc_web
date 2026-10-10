@@ -33,6 +33,8 @@ npx skills add addyosmani/web-quality-skills --skill accessibility -y
 
 ## 2. Design guardrail — the identity is frozen (D-009)
 
+> **Public pages (2026-10-10):** [ADR-014](../90-decisions/ADR-014-public-redesign-design-system-v2.md) replaces this guardrail for public pages with Design System v2: use its tokens, components and page specs ([PUBLIC-SCREENS-V2](../10-design-system/PUBLIC-SCREENS-V2/README.md)) and never invent new colours outside `primitives.css`. The table below still applies to the **dashboard**.
+
 `frontend-design` is written for designers creating a *new* identity, so by default it encourages bold, distinctive palettes and typefaces. SDC already has an identity ([design system §2](../10-design-system/README.md#2-character)). The skill itself says that the brief's own words always win, and this is SDC's brief:
 
 | Frozen — never change | Free to improve |

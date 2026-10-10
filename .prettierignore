@@ -13,3 +13,7 @@ public
 supabase/templates
 supabase/migrations
 .next-auth
+
+# Design System v2 exports and reference screenshots are read-only inputs (not formatted)
+docs/10-design-system/artifact
+docs/10-design-system/reference-images

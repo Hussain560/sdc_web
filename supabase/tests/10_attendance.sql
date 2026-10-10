@@ -93,8 +93,8 @@ select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-0000000
 create temp table _t (tok text);
 grant select, insert on _t to authenticated;
 insert into _t select public.session_qr_token((select id from _s where k = 'd1')) ->> 'token';
-select is(char_length((select tok from _t)), 24, 'the QR token is 24 characters');
-select ok((public.session_qr_token((select id from _s where k = 'd1')) ->> 'expires_in')::int between 1 and 120, 'and rotates within 120 seconds (KFUCS)');
+select matches((select tok from _t), '^[0-9]{10}\.[0-9a-f]{24}$', 'the QR token is the issue time and a 24-character signature');
+select is((public.session_qr_token((select id from _s where k = 'd1')) ->> 'expires_in')::int, 120, 'a code is good for exactly 120 seconds (the panel always starts at 120)');
 
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-00000000f011","role":"authenticated"}', true);
 select is(public.check_in((select id from _s where k = 'd1'), (select tok from _t)), 'checked_in', 'an accepted registrant checks in with a valid token');
@@ -123,6 +123,14 @@ select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-0000000
 create temp table _t2 (tok text);
 grant select, insert on _t2 to authenticated, anon;
 insert into _t2 select public.session_qr_token((select id from _s where k = 'online')) ->> 'token';
+-- A correctly signed code that is 200 seconds old (forged here with the session secret, like a phone that scanned it).
+reset role;
+create temp table _old (tok text);
+grant select on _old to authenticated, anon;
+insert into _old
+  select (floor(extract(epoch from now()))::bigint - 200)::text || '.' || private.qr_token(qr_secret, floor(extract(epoch from now()))::bigint - 200)
+  from public.attendance_sessions where id = (select id from _s where k = 'online');
+set local role authenticated;
 select is((public.session_live((select id from _s where k = 'online')) ->> 'present')::int, 1, 'live numbers: one person is in');
 select is((public.session_live((select id from _s where k = 'online')) ->> 'total')::int, 3, 'live numbers: three accepted registrants');
 select is((public.session_live((select id from _s where k = 'online')) -> 'recent' -> 0 ->> 'name'), 'Participant One Ten', 'live numbers: the latest check-in is named');
@@ -133,6 +141,12 @@ select is((public.check_in_public_context((select id from _s where k = 'online')
 select is(public.check_in_public_context(gen_random_uuid()), null, 'and is empty for an unknown session');
 select throws_ok($$select public.session_live((select id from _s where k = 'online'))$$, '42501', null, 'anonymous visitors cannot read live numbers');
 select is((public.check_in_by_email((select id from _s where k = 'online'), 'wrong-token', 'p3@example.test') ->> 'code'), 'TOKEN_EXPIRED', 'a wrong code is refused');
+select is((public.check_in_by_email((select id from _s where k = 'online'), (select tok from _old), 'p3@example.test') ->> 'code'), 'TOKEN_EXPIRED', 'a signed code older than 120 seconds is refused');
+select is(public.check_in_token_status((select id from _s where k = 'online'), (select tok from _t2)), 'valid', 'the page sees a fresh code as valid');
+select is(public.check_in_token_status((select id from _s where k = 'online'), (select tok from _old)), 'expired', 'an old link is "expired" the moment it opens');
+select is(public.check_in_token_status((select id from _s where k = 'online'), 'nope'), 'expired', 'an unreadable code is "expired" too');
+select is(public.check_in_token_status((select id from _s where k = 'online'), null), 'missing', 'a link without a code is "missing"');
+select is(public.check_in_token_status(gen_random_uuid(), (select tok from _t2)), 'missing', 'and an unknown session is "missing"');
 select is((public.check_in_by_email((select id from _s where k = 'online'), (select tok from _t2), 'nobody@example.test') ->> 'code'), 'NOT_REGISTERED', 'an unknown e-mail is not registered');
 select is((public.check_in_by_email((select id from _s where k = 'online'), (select tok from _t2), 'p5@example.test') ->> 'code'), 'NOT_ACCEPTED', 'a pending registration is not accepted');
 select is((public.check_in_by_email((select id from _s where k = 'online'), (select tok from _t2), 'p2@example.test') ->> 'code'), 'REGISTRATION_CANCELLED', 'a cancelled registration is told so');
@@ -140,8 +154,14 @@ select is((public.check_in_by_email((select id from _s where k = 'online'), (sel
 select is((public.check_in_by_email((select id from _s where k = 'online'), (select tok from _t2), 'p3@example.test') ->> 'status'), 'checked_in', 'the registered e-mail checks in');
 select is((public.check_in_by_email((select id from _s where k = 'online'), (select tok from _t2), 'P3@Example.TEST') ->> 'status'), 'already', 'the e-mail match ignores case and a second check-in is idempotent');
 select is((public.check_in_by_email((select id from _s where k = 'online'), (select tok from _t2), ' p4@example.test ') ->> 'name'), 'Participant Four Ten', 'surrounding spaces are ignored and the name comes back');
-select is((select count(*)::int from (select public.check_in_by_email((select id from _s where k = 'online'), (select tok from _t2), 'guess' || g || '@example.test') from generate_series(1, 40) g) x), 40, 'guessing keeps answering');
-select is((public.check_in_by_email((select id from _s where k = 'online'), (select tok from _t2), 'p3@example.test') ->> 'code'), 'RATE_LIMITED', 'but after 30 failures a minute it is throttled');
+select is((select count(*)::int from (select public.check_in_by_email((select id from _s where k = 'online'), (select tok from _t2), 'guess' || g || '@example.test') from generate_series(1, 20) g) x), 20, 'guessing different e-mails keeps answering at first');
+select is((select count(*)::int from (select public.check_in_by_email((select id from _s where k = 'online'), (select tok from _t2), 'victim@example.test') from generate_series(1, 5) g) x), 5, 'the same e-mail is answered five times');
+select is((public.check_in_by_email((select id from _s where k = 'online'), (select tok from _t2), 'victim@example.test') ->> 'code'), 'RATE_LIMITED', 'then that e-mail is throttled on this session');
+select is((select count(*)::int from (select public.check_in_by_email((select id from _s where k = 'online'), (select tok from _t2), 'ip' || g || '@example.test', 'hashed-ip-1') from generate_series(1, 12) g) x), 12, 'one IP gets twelve refused attempts');
+select is((public.check_in_by_email((select id from _s where k = 'online'), (select tok from _t2), 'p3@example.test', 'hashed-ip-1') ->> 'code'), 'RATE_LIMITED', 'then that IP is throttled even for a real e-mail');
+select is((public.check_in_by_email((select id from _s where k = 'online'), (select tok from _t2), 'p3@example.test', 'hashed-ip-2') ->> 'status'), 'already', 'another IP is not affected');
+select is((select count(*)::int from (select public.check_in_by_email((select id from _s where k = 'online'), (select tok from _t2), 'flood' || g || '@example.test') from generate_series(1, 30) g) x), 30, 'a flood from many places keeps answering');
+select is((public.check_in_by_email((select id from _s where k = 'online'), (select tok from _t2), 'p4@example.test') ->> 'code'), 'RATE_LIMITED', 'but the session circuit breaker stops it after 60 refused attempts a minute');
 set local role authenticated;
 
 -- =============================================================================== manual marking, close, finalize

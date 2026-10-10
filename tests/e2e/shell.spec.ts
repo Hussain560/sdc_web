@@ -4,7 +4,10 @@ test('theme toggle persists the choice', async ({ page, setup }) => {
   await setup();
   await page.goto('/');
   const initial = await page.locator('html').getAttribute('data-theme');
-  await page.locator('button.sdc-icon-btn').first().click();
+  await page
+    .getByRole('button', { name: /light mode|الوضع الفاتح|dark mode|الوضع الداكن/ })
+    .first()
+    .click();
   await expect(page.locator('html')).not.toHaveAttribute('data-theme', initial ?? '');
 });
 
@@ -28,7 +31,7 @@ test.describe('locale routing (ADR-010)', () => {
   test('language toggle keeps the page and switches the URL', async ({ page, setup }) => {
     await setup();
     await page.goto('/events');
-    await page.getByRole('button', { name: 'English' }).click();
+    await page.getByRole('banner').getByRole('button', { name: 'English' }).click();
     await expect(page).toHaveURL(/\/en\/events$/);
     await expect(page.locator('html')).toHaveAttribute('dir', 'ltr');
   });
