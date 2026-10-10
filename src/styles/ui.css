@@ -79,3 +79,23 @@
 html {
   scroll-padding-block-start: 88px;
 }
+
+/* Print (certificate verification): a plain page, system colours so no colour value is needed here. */
+@media print {
+  :root {
+    color-scheme: light;
+  }
+  html,
+  body {
+    background: Canvas !important;
+    color: CanvasText !important;
+  }
+  .certificate-card {
+    background: Canvas;
+    color: CanvasText;
+    border-color: CanvasText;
+  }
+  .certificate-card * {
+    color: CanvasText !important;
+  }
+}

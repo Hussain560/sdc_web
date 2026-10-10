@@ -1,99 +1,61 @@
 'use client';
 
-import React from 'react';
-import { Link } from '@/i18n/navigation';
-import { SiteHeader as Header } from '@/components/layout/SiteHeader';
-import { SiteFooter as Footer } from '@/components/layout/SiteFooter';
-import './NotFound.css';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
+import { SiteFooter } from '@/components/layout/SiteFooter';
+import { SiteHeader } from '@/components/layout/SiteHeader';
+import { LinkButton } from '@/components/ui/Button';
+import { TextLink } from '@/components/ui/TextLink';
+import { useLanguage } from '@/context/LanguageContext';
 
+const COPY = {
+  ar: {
+    title: 'لم نجد هذه الصفحة',
+    lede: 'ربما نُقلت أو لم تعد متاحة.',
+    home: 'العودة إلى الرئيسية',
+    events: 'تصفّح الفعاليات',
+  },
+  en: {
+    title: "We couldn't find this page",
+    lede: 'It may have moved or is no longer available.',
+    home: 'Back to home',
+    events: 'Browse events',
+  },
+} as const;
+
+/**
+ * The 404 (11-privacy-and-not-found §2): the same page for unknown, unpublished and hidden things, so it never
+ * reveals what exists. The motif is CSS and a numeral, no image files.
+ */
 export default function NotFound() {
+  const { lang } = useLanguage();
+  const t = COPY[lang];
+  const Arrow = lang === 'ar' ? ArrowLeft : ArrowRight;
   return (
-    <div className="sdc-notfound-page-wrapper">
-      <Header />
-
-      <main id="main" className="sdc-notfound-main">
-        <div className="sdc-notfound-container">
-          {/* البوكس المحدد في الفيجما مع الأيقونات المبعثرة بمقاسات مختلفة */}
-          <div className="sdc-notfound-graphic-wrapper">
-            {/* أيقونات كبيرة ووسط وصغيرة مكررة وموزعة */}
-            <img
-              src="/assets/cancel-02.png"
-              alt="icon"
-              className="sdc-floating-img icon-lg pos-top-center"
-            />
-            <img
-              src="/assets/search-remove.png"
-              alt="icon"
-              className="sdc-floating-img icon-sm pos-top-left-1"
-            />
-            <img
-              src="/assets/cancel-circle.png"
-              alt="icon"
-              className="sdc-floating-img icon-md pos-top-right-1"
-            />
-            <img
-              src="/assets/unavailable.png"
-              alt="icon"
-              className="sdc-floating-img icon-lg pos-top-right-2"
-            />
-            <img
-              src="/assets/alert-02.png"
-              alt="icon"
-              className="sdc-floating-img icon-sm pos-mid-right"
-            />
-
-            <img
-              src="/assets/cancel-02.png"
-              alt="icon"
-              className="sdc-floating-img icon-md pos-mid-left-far"
-            />
-            <img
-              src="/assets/search-remove.png"
-              alt="icon"
-              className="sdc-floating-img icon-lg pos-mid-left-near"
-            />
-            <img
-              src="/assets/cancel-circle.png"
-              alt="icon"
-              className="sdc-floating-img icon-sm pos-bottom-right-far"
-            />
-            <img
-              src="/assets/alert-02.png"
-              alt="icon"
-              className="sdc-floating-img icon-md pos-bottom-right-near"
-            />
-
-            <img
-              src="/assets/unavailable.png"
-              alt="icon"
-              className="sdc-floating-img icon-lg pos-bottom-center"
-            />
-            <img
-              src="/assets/cancel-circle.png"
-              alt="icon"
-              className="sdc-floating-img icon-md pos-bottom-left-1"
-            />
-            <img
-              src="/assets/cancel-02.png"
-              alt="icon"
-              className="sdc-floating-img icon-sm pos-bottom-left-2"
-            />
-
-            {/* رقم 404 مطبق بلون الفيجما والفوتر */}
-            <h1 className="sdc-404-number">404</h1>
-          </div>
-
-          {/* النصوص والزر */}
-          <h2 className="sdc-notfound-title">حدث خطأ</h2>
-          <p className="sdc-notfound-desc">عذراً، لم نستطع إيجاد الصفحة التي تبحث عنها</p>
-
-          <Link href="/" className="sdc-back-home-btn">
-            الرجوع للرئيسية
-          </Link>
+    <>
+      <SiteHeader />
+      <main
+        id="main"
+        className="mx-auto flex min-h-[60vh] w-full max-w-(--container-narrow) flex-col items-center justify-center gap-5 px-4 py-16 text-center"
+      >
+        <p
+          aria-hidden="true"
+          className="sdc-404-number t-display motif-dots rounded-shape-2xl px-10 py-6 text-signal tabular-nums"
+        >
+          404
+        </p>
+        <h1 className="t-h1">{t.title}</h1>
+        <p className="t-lede text-muted">{t.lede}</p>
+        <div className="mt-2 flex flex-wrap items-center justify-center gap-x-6 gap-y-3">
+          <LinkButton href="/" size="lg">
+            {t.home}
+          </LinkButton>
+          <TextLink href="/events" variant="standalone" className="min-h-11">
+            {t.events}
+            <Arrow aria-hidden="true" className="size-4" />
+          </TextLink>
         </div>
       </main>
-
-      <Footer />
-    </div>
+      <SiteFooter />
+    </>
   );
 }
