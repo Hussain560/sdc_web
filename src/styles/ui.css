@@ -68,3 +68,14 @@
     opacity: 0.5;
   }
 }
+
+/* Theme-aware logo (layout/Logo.tsx): both rasters are rendered and the theme picks one, so there is no flash. */
+:root[data-theme='light'] .logo-on-dark,
+:root:not([data-theme='light']) .logo-on-light {
+  display: none;
+}
+
+/* Focused anchors and headings must clear the floating header (00-chrome accessibility). */
+html {
+  scroll-padding-block-start: 88px;
+}
