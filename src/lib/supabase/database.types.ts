@@ -409,13 +409,13 @@ isOneToOne: false
                   ]
                 },"event_dates": {
                   Row: {
-                    "ends_at": string | null,"event_date": string,"event_id": string,"id": string,"starts_at": string | null
+                    "ends_at": string | null,"event_date": string,"event_id": string,"id": string,"location_ar": string | null,"location_en": string | null,"starts_at": string | null
                   }
                   Insert: {
-                    "ends_at"?: string | null,"event_date": string,"event_id": string,"id"?: string,"starts_at"?: string | null
+                    "ends_at"?: string | null,"event_date": string,"event_id": string,"id"?: string,"location_ar"?: string | null,"location_en"?: string | null,"starts_at"?: string | null
                   }
                   Update: {
-                    "ends_at"?: string | null,"event_date"?: string,"event_id"?: string,"id"?: string,"starts_at"?: string | null
+                    "ends_at"?: string | null,"event_date"?: string,"event_id"?: string,"id"?: string,"location_ar"?: string | null,"location_en"?: string | null,"starts_at"?: string | null
                   }
                   Relationships: [
                     {
@@ -1490,6 +1490,9 @@ isOneToOne: false
                            },
 "event_attendance_overview":
 { Args: { "p_event": string }; Returns: Json
+                           },
+"event_checkin_open":
+{ Args: { "p_slug": string }; Returns: boolean
                            },
 "event_history":
 { Args: { "p_id": string }; Returns: {

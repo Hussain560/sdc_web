@@ -134,8 +134,8 @@ describe('visibleStats', () => {
       visibleStats({ members: 10, events: 5, committees: 4, certificates: undefined }),
     ).toHaveLength(3);
   });
-  it('a zero is a real figure; NaN and negatives are not', () => {
-    expect(visibleStats({ members: 0, events: 0, committees: 0 })).toHaveLength(3);
+  it('zero, NaN and negatives are not shown', () => {
+    expect(visibleStats({ members: 0, events: 0, committees: 0 })).toEqual([]);
     expect(visibleStats({ members: NaN, events: -1, committees: 1 })).toEqual([]);
   });
 });

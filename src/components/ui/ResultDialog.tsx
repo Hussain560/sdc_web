@@ -24,6 +24,7 @@ export function ResultDialog({
   open,
   onClose,
   tone,
+  icon,
   title,
   description,
   actions,
@@ -32,6 +33,8 @@ export function ResultDialog({
   open: boolean;
   onClose: () => void;
   tone: Tone;
+  /** Overrides the default icon of the tone (e.g. a clock for "under review"). */
+  icon?: LucideIcon;
   title: string;
   description?: string;
   actions?: ReactNode;
@@ -40,7 +43,8 @@ export function ResultDialog({
   const ref = useModal(open);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const titleId = useId();
-  const { circle, Icon } = TONES[tone];
+  const { circle, Icon: ToneIcon } = TONES[tone];
+  const Icon = icon ?? ToneIcon;
 
   useEffect(() => {
     if (open) titleRef.current?.focus();

@@ -28,7 +28,9 @@ export function Chips<T extends string>({
   const segmented = appearance === 'segmented';
   return (
     <fieldset id={id} disabled={disabled} className="flex flex-col gap-2">
-      <legend className="mb-1 text-sm font-medium text-text">{label}</legend>
+      <legend className={cn('text-sm font-medium text-text', segmented ? 'sr-only' : 'mb-1')}>
+        {label}
+      </legend>
       <div
         className={
           segmented

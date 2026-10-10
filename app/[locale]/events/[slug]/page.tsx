@@ -1,8 +1,12 @@
 import { notFound, permanentRedirect } from 'next/navigation';
-import EventDetailView from '@/modules/events/components/public/EventDetailView';
-import { getPublicEvent, slugForLegacyId } from '@/modules/events/public';
+import { EventPageView } from '@/modules/events/components/page/EventPageView';
+import { getEventPage } from '@/modules/events/page-data';
+import { slugForLegacyId } from '@/modules/events/public';
 
 export const revalidate = 60;
+
+/** Reads the clock outside the component, so rendering stays pure. */
+const clock = () => Date.now();
 
 export default async function EventDetailPage({
   params,
@@ -18,7 +22,7 @@ export default async function EventDetailPage({
     notFound();
   }
 
-  const event = await getPublicEvent(slug);
-  if (!event) notFound();
-  return <EventDetailView event={event} />;
+  const data = await getEventPage(slug);
+  if (!data) notFound();
+  return <EventPageView data={data} lang={locale === 'en' ? 'en' : 'ar'} now={clock()} />;
 }

@@ -20,12 +20,12 @@ export type PublicStats = {
 export type StatKey = keyof PublicStats;
 const STAT_ORDER: StatKey[] = ['members', 'events', 'committees', 'certificates'];
 
-/** Figures the row may show: only real numbers, and the row needs at least three (Q-H2). */
+/** Figures the row may show: only real, non-zero numbers (a "0" reads as broken), and the row needs at least three (Q-H2). */
 export function visibleStats(stats: PublicStats | null | undefined): Array<[StatKey, number]> {
   if (!stats) return [];
   const list = STAT_ORDER.flatMap((k) => {
     const v = stats[k];
-    return typeof v === 'number' && Number.isFinite(v) && v >= 0
+    return typeof v === 'number' && Number.isFinite(v) && v > 0
       ? [[k, v] as [StatKey, number]]
       : [];
   });
