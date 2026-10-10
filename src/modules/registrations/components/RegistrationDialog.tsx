@@ -337,7 +337,8 @@ export function RegistrationDialog({
     <>
       <Dialog
         open={open && phase !== 'result'}
-        onClose={handleClose}
+        // Swapping to the result closes this dialog programmatically; that must not count as the user closing it.
+        onClose={() => phase !== 'result' && handleClose()}
         title={member ? t.confirmTitle(event.title) : t.title(event.title)}
         description={event.meta}
         closeLabel={t.close}

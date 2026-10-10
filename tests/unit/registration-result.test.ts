@@ -44,7 +44,7 @@ describe('registration results', () => {
 
   it('puts the e-mail into the sentence', () => {
     expect(resultFor('accepted', 'ar', 'sara@x.sa').bodyText).toBe(
-      'أرسلنا التفاصيل إلى sara@x.sa.',
+      'أرسلنا التفاصيل إلى ⁦sara@x.sa⁩.',
     );
     expect(resultFor('pending', 'en', 'sara@x.sa').bodyText).toContain('sara@x.sa');
   });

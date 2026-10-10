@@ -222,6 +222,7 @@ export function resultFor(outcome: ResultOutcome, lang: Lang, email?: string) {
   return {
     ...r,
     titleText: r.title[lang],
-    bodyText: r.body[lang].replace('{email}', email ?? ''),
+    // An isolate keeps the left-to-right address in order inside an Arabic sentence.
+    bodyText: r.body[lang].replace('{email}', email ? `⁦${email}⁩` : ''),
   };
 }
