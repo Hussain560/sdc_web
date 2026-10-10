@@ -94,7 +94,13 @@ export function PasswordField({
           dir="ltr"
           aria-invalid={error ? true : undefined}
           aria-describedby={describedBy(inputId, { hint, error, success })}
-          className={cn('min-h-12 pe-12 text-start', controlClasses(!!error, !!success), className)}
+          className={cn(
+            controlClasses(!!error, !!success),
+            // The text stays LTR (passwords are Latin) but the field follows the page: the eye sits at the
+            // inline-end, so the padding goes on that physical side and the text hugs the start edge.
+            'min-h-12 pr-12 text-left [[dir=rtl]_&]:pr-4 [[dir=rtl]_&]:pl-12 [[dir=rtl]_&]:text-right',
+            className,
+          )}
         />
         <button
           type="button"

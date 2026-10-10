@@ -135,7 +135,7 @@ export function SiteHeader() {
   return (
     <header
       className={cn(
-        'sticky top-0 z-(--z-header) lg:top-3 lg:px-4',
+        'sticky top-0 z-(--z-header) lg:top-3 lg:mb-5 lg:px-4',
         'transition-transform duration-(--duration-base) ease-(--ease-standard) motion-reduce:transition-none',
         hidden && '-translate-y-[calc(100%+1rem)]',
       )}
@@ -182,9 +182,14 @@ export function SiteHeader() {
             <AccountMenu />
           ) : (
             !loading && (
-              <LinkButton href="/join" size="md" className="ms-2">
-                {s.join}
-              </LinkButton>
+              <>
+                <LinkButton href="/login" variant="ghost" size="md" className="ms-2">
+                  {s.signIn}
+                </LinkButton>
+                <LinkButton href="/join" size="md">
+                  {s.join}
+                </LinkButton>
+              </>
             )
           )}
         </div>

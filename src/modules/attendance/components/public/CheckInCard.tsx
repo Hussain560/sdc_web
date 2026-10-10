@@ -3,8 +3,10 @@
 import { CircleCheck, CircleX, Clock, Info, RotateCw, UserCheck } from 'lucide-react';
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
-import { SiteFooter } from '@/components/layout/SiteFooter';
-import { SiteHeader } from '@/components/layout/SiteHeader';
+import { CHROME } from '@/components/layout/chrome-strings';
+import { LocaleSwitch } from '@/components/layout/LocaleSwitch';
+import { Logo } from '@/components/layout/Logo';
+import { ThemeSwitch } from '@/components/layout/ThemeSwitch';
 import { Alert } from '@/components/ui/Alert';
 import { Button } from '@/components/ui/Button';
 import { Field } from '@/components/ui/Field';
@@ -152,31 +154,42 @@ export default function CheckInCard({
     text = `${dayLine} · ${L('اكتب البريد الذي سجّلت به في الفعالية.', 'enter the e-mail you registered with.')}`;
   }
 
+  const chrome = CHROME[lang];
   return (
-    <>
-      <SiteHeader />
-      <main id="main" className="mx-auto flex w-full max-w-(--container-tight) flex-col items-center px-4 py-12">
-        <div className="flex w-full flex-col items-center gap-5 rounded-shape-xl border border-line bg-surface p-6 text-center md:p-8">
+    <div className="flex min-h-dvh flex-col">
+      {/* No site header or footer: just the way home and the language and theme switches. */}
+      <header className="mx-auto flex h-16 w-full max-w-(--container) items-center justify-between px-4 md:px-8">
+        <Logo label={chrome.logoHome} alt={chrome.logoAlt} priority />
+        <div className="flex items-center gap-1">
+          <LocaleSwitch />
+          <ThemeSwitch />
+        </div>
+      </header>
+      <main
+        id="main"
+        className="mx-auto flex w-full max-w-[36rem] flex-1 flex-col items-center justify-center gap-6 px-4 py-8 md:py-12"
+      >
+        <div className="flex w-full flex-col items-center gap-7 rounded-shape-2xl border border-line bg-surface px-6 py-10 text-center md:px-10 md:py-14">
           {form ? (
-            <Image src="/assets/sdc-logo-mark.svg" alt="" width={48} height={48} className="size-12" />
+            <Image src="/assets/sdc-logo-mark.svg" alt="" width={72} height={72} className="size-[72px]" />
           ) : (
             <span
               aria-hidden="true"
-              className={`flex size-[72px] items-center justify-center rounded-full ${TONE[tone]}`}
+              className={`flex size-28 items-center justify-center rounded-full ${TONE[tone]}`}
             >
-              <Icon className="size-10" />
+              <Icon className="size-14" />
             </span>
           )}
-          <div role="status" aria-live="polite" className="flex flex-col gap-2">
-            <h1 ref={titleRef} tabIndex={-1} className="t-h3 focus-visible:outline-none">
+          <div role="status" aria-live="polite" className="flex flex-col gap-3">
+            <h1 ref={titleRef} tabIndex={-1} className="t-h3 focus-visible:outline-none md:text-[2rem]">
               {heading}
             </h1>
-            {text && <p className="t-body text-muted">{text}</p>}
+            {text && <p className="t-lede text-muted">{text}</p>}
           </div>
           {busy && <Progress className="w-full" label={L('جارٍ التحقق…', 'Verifying…')} />}
 
           {form && (
-            <form onSubmit={submit} className="flex w-full flex-col gap-4 text-start">
+            <form onSubmit={submit} className="flex w-full flex-col gap-5 text-start">
               <Field
                 label={L('البريد الإلكتروني', 'E-mail address')}
                 type="email"
@@ -203,12 +216,19 @@ export default function CheckInCard({
               {L('انتظر قليلاً ثم حاول مرة أخرى.', 'Please wait a moment and try again.')}
             </Alert>
           )}
-          <TextLink href={`/events/${ctx.event.slug}`} variant="standalone" className="min-h-11">
-            {L('العودة لصفحة الفعالية', 'Back to the event page')}
-          </TextLink>
         </div>
+        <nav
+          aria-label={L('روابط التنقل', 'Navigation')}
+          className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2"
+        >
+          <TextLink href="/" variant="standalone" className="min-h-11">
+            {L('العودة إلى الرئيسية', 'Back to home')}
+          </TextLink>
+          <TextLink href={`/events/${ctx.event.slug}`} variant="standalone" className="min-h-11">
+            {L('صفحة الفعالية', 'Event page')}
+          </TextLink>
+        </nav>
       </main>
-      <SiteFooter />
-    </>
+    </div>
   );
 }
