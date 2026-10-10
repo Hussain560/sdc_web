@@ -11,17 +11,20 @@ export function MemberCard({
   id,
   name,
   track,
+  photo,
   lang,
 }: {
   id: string;
   name: string;
   track: string | null;
+  /** Only passed when the member opted in to a public photo. */
+  photo?: string | null;
   lang: 'ar' | 'en';
 }) {
   const Arrow = lang === 'ar' ? ArrowLeft : ArrowRight;
   return (
     <Card variant="surface" interactive className="flex flex-col items-center gap-3 text-center">
-      <Avatar name={name} size={72} />
+      <Avatar name={name} src={photo} size={72} />
       <h3 className="t-h4 line-clamp-2">
         <CardLink href={`/members/${id}`}>{name}</CardLink>
       </h3>

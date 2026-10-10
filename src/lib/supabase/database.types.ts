@@ -639,19 +639,25 @@ isOneToOne: false
       foreignKeyName: "member_claim_tokens_member_id_fkey"
       columns: ["member_id"]
 isOneToOne: false
+      referencedRelation: "member_public_articles"
+      referencedColumns: ["member_id"]
+    },{
+      foreignKeyName: "member_claim_tokens_member_id_fkey"
+      columns: ["member_id"]
+isOneToOne: false
       referencedRelation: "members"
       referencedColumns: ["id"]
     }
                   ]
                 },"members": {
                   Row: {
-                    "academic_status": string | null,"application_id": string | null,"bio_ar": string | null,"bio_en": string | null,"created_at": string,"ended_at": string | null,"first_name_ar": string,"first_name_en": string | null,"github_url": string | null,"id": string,"is_directory_visible": boolean,"joined_at": string,"joined_cycle_id": string | null,"joined_via": string,"last_name_ar": string,"last_name_en": string | null,"legacy_claim_email": string | null,"legacy_id": number | null,"linkedin_url": string | null,"major_id": number | null,"portfolio_url": string | null,"status": string,"status_reason": string | null,"sub_major_id": number | null,"track_id": number | null,"university_id": number | null,"updated_at": string,"user_id": string | null,"x_url": string | null
+                    "academic_status": string | null,"application_id": string | null,"bio_ar": string | null,"bio_en": string | null,"created_at": string,"ended_at": string | null,"first_name_ar": string,"first_name_en": string | null,"github_url": string | null,"id": string,"is_directory_visible": boolean,"joined_at": string,"joined_cycle_id": string | null,"joined_via": string,"last_name_ar": string,"last_name_en": string | null,"legacy_claim_email": string | null,"legacy_id": number | null,"linkedin_url": string | null,"major_id": number | null,"photo_path": string | null,"portfolio_url": string | null,"show_links": boolean,"show_participation": boolean,"show_photo": boolean,"show_track": boolean,"show_university": boolean,"status": string,"status_reason": string | null,"sub_major_id": number | null,"track_id": number | null,"university_id": number | null,"updated_at": string,"user_id": string | null,"x_url": string | null
                   }
                   Insert: {
-                    "academic_status"?: string | null,"application_id"?: string | null,"bio_ar"?: string | null,"bio_en"?: string | null,"created_at"?: string,"ended_at"?: string | null,"first_name_ar": string,"first_name_en"?: string | null,"github_url"?: string | null,"id"?: string,"is_directory_visible"?: boolean,"joined_at"?: string,"joined_cycle_id"?: string | null,"joined_via": string,"last_name_ar"?: string,"last_name_en"?: string | null,"legacy_claim_email"?: string | null,"legacy_id"?: number | null,"linkedin_url"?: string | null,"major_id"?: number | null,"portfolio_url"?: string | null,"status"?: string,"status_reason"?: string | null,"sub_major_id"?: number | null,"track_id"?: number | null,"university_id"?: number | null,"updated_at"?: string,"user_id"?: string | null,"x_url"?: string | null
+                    "academic_status"?: string | null,"application_id"?: string | null,"bio_ar"?: string | null,"bio_en"?: string | null,"created_at"?: string,"ended_at"?: string | null,"first_name_ar": string,"first_name_en"?: string | null,"github_url"?: string | null,"id"?: string,"is_directory_visible"?: boolean,"joined_at"?: string,"joined_cycle_id"?: string | null,"joined_via": string,"last_name_ar"?: string,"last_name_en"?: string | null,"legacy_claim_email"?: string | null,"legacy_id"?: number | null,"linkedin_url"?: string | null,"major_id"?: number | null,"photo_path"?: string | null,"portfolio_url"?: string | null,"show_links"?: boolean,"show_participation"?: boolean,"show_photo"?: boolean,"show_track"?: boolean,"show_university"?: boolean,"status"?: string,"status_reason"?: string | null,"sub_major_id"?: number | null,"track_id"?: number | null,"university_id"?: number | null,"updated_at"?: string,"user_id"?: string | null,"x_url"?: string | null
                   }
                   Update: {
-                    "academic_status"?: string | null,"application_id"?: string | null,"bio_ar"?: string | null,"bio_en"?: string | null,"created_at"?: string,"ended_at"?: string | null,"first_name_ar"?: string,"first_name_en"?: string | null,"github_url"?: string | null,"id"?: string,"is_directory_visible"?: boolean,"joined_at"?: string,"joined_cycle_id"?: string | null,"joined_via"?: string,"last_name_ar"?: string,"last_name_en"?: string | null,"legacy_claim_email"?: string | null,"legacy_id"?: number | null,"linkedin_url"?: string | null,"major_id"?: number | null,"portfolio_url"?: string | null,"status"?: string,"status_reason"?: string | null,"sub_major_id"?: number | null,"track_id"?: number | null,"university_id"?: number | null,"updated_at"?: string,"user_id"?: string | null,"x_url"?: string | null
+                    "academic_status"?: string | null,"application_id"?: string | null,"bio_ar"?: string | null,"bio_en"?: string | null,"created_at"?: string,"ended_at"?: string | null,"first_name_ar"?: string,"first_name_en"?: string | null,"github_url"?: string | null,"id"?: string,"is_directory_visible"?: boolean,"joined_at"?: string,"joined_cycle_id"?: string | null,"joined_via"?: string,"last_name_ar"?: string,"last_name_en"?: string | null,"legacy_claim_email"?: string | null,"legacy_id"?: number | null,"linkedin_url"?: string | null,"major_id"?: number | null,"photo_path"?: string | null,"portfolio_url"?: string | null,"show_links"?: boolean,"show_participation"?: boolean,"show_photo"?: boolean,"show_track"?: boolean,"show_university"?: boolean,"status"?: string,"status_reason"?: string | null,"sub_major_id"?: number | null,"track_id"?: number | null,"university_id"?: number | null,"updated_at"?: string,"user_id"?: string | null,"x_url"?: string | null
                   }
                   Relationships: [
                     {
@@ -1168,10 +1174,35 @@ isOneToOne: false
                   ]
                 },"member_directory": {
                   Row: {
-                    "bio": string | null,"bio_en": string | null,"first_name": string | null,"first_name_en": string | null,"github_url": string | null,"id": string | null,"joined_at": string | null,"last_name": string | null,"last_name_en": string | null,"legacy_id": number | null,"linkedin_url": string | null,"major": string | null,"major_en": string | null,"portfolio_url": string | null,"status": string | null,"status_en": string | null,"sub_major": string | null,"sub_major_en": string | null,"track": string | null,"track_en": string | null,"university": string | null,"university_en": string | null,"x_url": string | null
+                    "bio": string | null,"bio_en": string | null,"first_name": string | null,"first_name_en": string | null,"github_url": string | null,"id": string | null,"joined_at": string | null,"last_name": string | null,"last_name_en": string | null,"legacy_id": number | null,"linkedin_url": string | null,"major": string | null,"major_en": string | null,"photo_path": string | null,"portfolio_url": string | null,"status": string | null,"status_en": string | null,"sub_major": string | null,"sub_major_en": string | null,"track": string | null,"track_en": string | null,"university": string | null,"university_en": string | null,"x_url": string | null
                   }
                   Relationships: [
                     
+                  ]
+                },"member_public_articles": {
+                  Row: {
+                    "article_id": string | null,"member_id": string | null
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "article_authors_article_id_fkey"
+      columns: ["article_id"]
+isOneToOne: false
+      referencedRelation: "articles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "article_authors_article_id_fkey"
+      columns: ["article_id"]
+isOneToOne: false
+      referencedRelation: "dashboard_articles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "article_authors_article_id_fkey"
+      columns: ["article_id"]
+isOneToOne: false
+      referencedRelation: "public_articles"
+      referencedColumns: ["id"]
+    }
                   ]
                 },"membership_cycle_counts": {
                   Row: {

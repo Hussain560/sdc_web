@@ -8,7 +8,6 @@
     "src/modules/articles/components/public/ArticleDetailView.tsx": 1,
     "src/modules/articles/components/public/ArticlesListView.tsx": 1,
     "src/modules/attendance/components/public/CertificateView.tsx": 1,
-    "src/modules/attendance/components/public/CheckInCard.tsx": 8,
     "src/modules/committees/components/public/CommitteeView.tsx": 1,
     "src/modules/events/components/public/all-events.css": 9,
     "src/modules/events/components/public/EventsListView.tsx": 3,
@@ -16,11 +15,6 @@
     "src/modules/registrations/components/useRegistrationFlow.tsx": 1,
     "app/[locale]/about/about.css": 10,
     "app/[locale]/about/page.tsx": 1,
-    "app/[locale]/members/all/all-members.css": 27,
-    "app/[locale]/members/members.css": 24,
-    "app/[locale]/members/page.tsx": 3,
-    "app/[locale]/members/[id]/details.css": 16,
-    "app/[locale]/members/[id]/page.tsx": 5,
     "src/styles/legacy-login.css": 8
   },
   "exempt": {

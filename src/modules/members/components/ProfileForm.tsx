@@ -103,6 +103,82 @@ export function ProfileForm({
             ? 'عند الإخفاء يختفي ملفك من الدليل ويعيد رابطه صفحة غير موجودة.'
             : 'When hidden, your profile disappears from the directory and its link shows a not-found page.'}
         </p>
+        {v.isDirectoryVisible && (
+          <div className="flex flex-col gap-3 border-t border-line pt-4">
+            <p className="text-sm font-medium">
+              {ar ? 'ما الذي يظهر على بطاقتك العامة' : 'What your public card shows'}
+            </p>
+            <Switch
+              label={ar ? 'إظهار جامعتي' : 'Show my university'}
+              checked={v.showUniversity}
+              onChange={(c) => set('showUniversity', c)}
+            />
+            <Switch
+              label={ar ? 'إظهار مساري' : 'Show my track'}
+              checked={v.showTrack}
+              onChange={(c) => set('showTrack', c)}
+            />
+            <Switch
+              label={
+                ar
+                  ? 'إظهار روابطي (LinkedIn وGitHub وغيرها)'
+                  : 'Show my links (LinkedIn, GitHub, …)'
+              }
+              checked={v.showLinks}
+              onChange={(c) => set('showLinks', c)}
+            />
+            <Switch
+              label={ar ? 'إظهار صورتي' : 'Show my photo'}
+              hint={
+                ar
+                  ? 'الصور غير مفعّلة بعد؛ يظهر الاسم بالأحرف الأولى.'
+                  : 'Photos are not available yet; initials are shown.'
+              }
+              checked={v.showPhoto}
+              onChange={(c) => set('showPhoto', c)}
+            />
+            <Switch
+              label={ar ? 'إظهار الفعاليات التي شاركت فيها' : 'Show the events I took part in'}
+              hint={ar ? 'مغلق افتراضياً.' : 'Off by default.'}
+              checked={v.showParticipation}
+              onChange={(c) => set('showParticipation', c)}
+            />
+            <div
+              aria-label={ar ? 'معاينة بطاقتك العامة' : 'Preview of your public card'}
+              className="mt-2 flex items-center gap-3 rounded-xl bg-surface-raised p-4"
+            >
+              <span className="flex size-12 items-center justify-center rounded-full bg-accent-soft font-semibold text-on-accent-soft">
+                {(ar ? v.firstNameAr : v.firstNameEn || v.firstNameAr)
+                  .trim()
+                  .charAt(0)
+                  .toUpperCase()}
+              </span>
+              <div className="flex flex-col text-sm">
+                <span className="font-semibold">
+                  {[
+                    ar ? v.firstNameAr : v.firstNameEn || v.firstNameAr,
+                    ar ? v.lastNameAr : v.lastNameEn || v.lastNameAr,
+                  ]
+                    .join(' ')
+                    .trim()}
+                </span>
+                <span className="text-muted">
+                  {[
+                    v.showTrack && v.trackId ? (ar ? 'المسار' : 'Track') : null,
+                    v.showUniversity && v.universityId ? (ar ? 'الجامعة' : 'University') : null,
+                    v.showLinks && (v.githubUrl || v.linkedinUrl || v.xUrl || v.portfolioUrl)
+                      ? ar
+                        ? 'الروابط'
+                        : 'Links'
+                      : null,
+                  ]
+                    .filter(Boolean)
+                    .join(' · ') || (ar ? 'الاسم فقط' : 'Name only')}
+                </span>
+              </div>
+            </div>
+          </div>
+        )}
       </section>
 
       <section className="flex flex-col gap-4 rounded-2xl border border-line bg-surface p-5">

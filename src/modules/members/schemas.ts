@@ -19,6 +19,11 @@ export type ProfileValues = {
   linkedinUrl: string;
   xUrl: string;
   isDirectoryVisible: boolean;
+  showUniversity: boolean;
+  showTrack: boolean;
+  showLinks: boolean;
+  showPhoto: boolean;
+  showParticipation: boolean;
 };
 
 const m = {
@@ -68,6 +73,11 @@ export function toProfilePayload(v: ProfileValues) {
     linkedin_url: v.linkedinUrl.trim(),
     x_url: v.xUrl.trim(),
     is_directory_visible: v.isDirectoryVisible,
+    show_university: v.showUniversity,
+    show_track: v.showTrack,
+    show_links: v.showLinks,
+    show_photo: v.showPhoto,
+    show_participation: v.showParticipation,
   };
 }
 
@@ -88,6 +98,11 @@ export const emptyProfile = (): ProfileValues => ({
   linkedinUrl: '',
   xUrl: '',
   isDirectoryVisible: false,
+  showUniversity: true,
+  showTrack: true,
+  showLinks: true,
+  showPhoto: false,
+  showParticipation: false,
 });
 
 export const MEMBER_STATUSES = ['active', 'inactive', 'suspended'] as const;
