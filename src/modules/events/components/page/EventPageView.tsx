@@ -149,7 +149,8 @@ export function EventPageView({
     registrationEndAt: e.registrationEndAt,
   };
   // Seats are public only when the organiser turned `show_seats_remaining` on.
-  const seatsShown = e.show.seats && !!e.seats && e.seatsLeft !== null;
+  const seatsShown =
+    e.show.seats && e.phase === 'registration_open' && !!e.seats && e.seatsLeft !== null;
   const seatsLow = seatsShown && e.seatsLeft! <= CLOSES_SOON_SEATS(e.seats!);
   const seatsPct = seatsShown ? Math.round(((e.seats! - e.seatsLeft!) / e.seats!) * 100) : 0;
   const mapOk = !!e.mapUrl && e.mapUrl.startsWith('https://');
@@ -557,11 +558,7 @@ export function EventPageView({
       {/* Phone: fixed action bar (never covers content: <main> has bottom padding). Seats left, or the date. */}
       <div className="fixed inset-x-0 bottom-0 z-(--z-sticky) flex min-h-16 items-center justify-between gap-3 border-t border-line bg-surface/95 px-4 pt-2.5 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur-md lg:hidden">
         <p className="font-bold tabular-nums">
-          {seatsShown && e.phase === 'registration_open'
-            ? e.seatsLeft === 0
-              ? t.seatsFull
-              : t.seatsLeft(e.seatsLeft!)
-            : dateLine}
+          {seatsShown ? (e.seatsLeft === 0 ? t.seatsFull : t.seatsLeft(e.seatsLeft!)) : dateLine}
         </p>
         <PrimaryAction eventSlug={e.slug} size="md" />
       </div>

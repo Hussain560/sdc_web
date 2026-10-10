@@ -77,3 +77,67 @@ from public.events e,
           ('خالد الدوسري', 'Khalid Al Dossary', 'مرشد تقني', 'Technical mentor', 'mentor', 1)) as v(n_ar, n_en, t_ar, t_en, role, ord)
 where e.slug = 'demo-open'
   and not exists (select 1 from public.event_presenters p where p.event_id = e.id);
+
+-- The remaining states of the event page canvas (S1, S4, S5, S6, S9, S12) and filled seats, so the seats bar and the
+-- full and waiting-list states are real. S8 (registered, under review, on the waiting list) needs a signed-in member:
+-- sign in locally and register for demo-open (or demo-waitlist for the waiting list).
+do $$
+declare
+  c uuid := (select id from public.committees where status = 'active' order by display_order limit 1);
+  d date := current_date;
+begin
+  insert into public.events
+    (slug, committee_id, type, status, title_ar, title_en, summary_ar, summary_en,
+     schedule_type, start_date, end_date, start_time, end_time, location_mode, location_ar, location_en, seats,
+     registration_start_at, registration_end_at, requires_approval, waitlist_enabled, audience, certificate_available,
+     published_at, cancelled_at, cancel_reason)
+  values
+    ('demo-opens-soon', c, 'workshop', 'published', 'ورشة تفتح للتسجيل قريباً', 'Workshop opening soon',
+     'التسجيل لم يبدأ بعد.', 'Registration has not started yet.',
+     'single_day', d + 25, d + 25, '17:00', '19:00', 'in_person', 'الدمام', 'Dammam', 40,
+     now() + interval '3 days', now() + interval '20 days', false, false, 'public', true, now(), null, null),
+    ('demo-full', c, 'meetup', 'published', 'لقاء اكتمل عدده', 'A meetup that is full',
+     'اكتملت المقاعد ولا توجد قائمة انتظار.', 'Every seat is taken and there is no waiting list.',
+     'single_day', d + 9, d + 9, '19:00', '21:00', 'online', null, null, 2,
+     now() - interval '6 days', now() + interval '6 days', false, false, 'public', false, now(), null, null),
+    ('demo-closed', c, 'talk', 'published', 'محاضرة أُغلق التسجيل فيها', 'A talk with registration closed',
+     'انتهت فترة التسجيل.', 'The registration period has ended.',
+     'single_day', d + 5, d + 5, '18:00', '19:30', 'online', null, null, 80,
+     now() - interval '12 days', now() - interval '1 day', false, false, 'public', false, now(), null, null),
+    ('demo-checkin', c, 'workshop', 'published', 'ورشة جارية وتسجيل الحضور مفتوح', 'Workshop running, check-in open',
+     'يمكن للحاضرين تسجيل حضورهم الآن.', 'Attendees can check in now.',
+     'consecutive_range', d - 1, d + 1, '09:00', '23:00', 'in_person', 'الأحساء', 'Al-Ahsa', 50,
+     now() - interval '15 days', now() - interval '2 days', false, false, 'public', true, now(), null, null),
+    ('demo-cancelled', c, 'workshop', 'cancelled', 'ورشة أُلغيت', 'A cancelled workshop',
+     'ورشة ملغاة.', 'A cancelled workshop.',
+     'single_day', d + 14, d + 14, '18:00', '20:00', 'in_person', 'الرياض', 'Riyadh', 30,
+     now() - interval '8 days', now() + interval '10 days', false, false, 'public', false, now() - interval '9 days',
+     now() - interval '1 day', 'تعذّر حضور المدرّب، وسنعلن موعداً بديلاً قريباً.')
+  on conflict (slug) do nothing;
+
+  update public.events set display_config = display_config || '{"show_seats_remaining": true}'::jsonb
+  where slug in ('demo-opens-soon', 'demo-full', 'demo-closed', 'demo-checkin', 'demo-cancelled');
+
+  -- Full events only stay "open" (S4 waiting list, S5 full) when auto-close is off; with it on they read as closed.
+  update public.events set display_config = display_config || '{"auto_close_registration": false}'::jsonb
+  where slug in ('demo-waitlist', 'demo-full');
+
+  -- Fill seats with guest registrations: demo-open 48/60 (12 left), demo-waitlist 1/1 (full, waiting list), demo-full 2/2.
+  insert into public.event_registrations (event_id, status, full_name_snapshot, email_snapshot)
+  select e.id, 'accepted', 'Demo guest ' || n, 'demo-' || e.slug || '-' || n || '@example.test'
+  from public.events e
+  join (values ('demo-open', 48), ('demo-waitlist', 1), ('demo-full', 2)) as f(slug, cnt) on f.slug = e.slug
+  cross join lateral generate_series(1, f.cnt) as n
+  where not exists (
+    select 1 from public.event_registrations r
+    where r.event_id = e.id and r.email_snapshot = 'demo-' || e.slug || '-' || n || '@example.test'
+  );
+
+  -- An open check-in session for today on demo-checkin (S9); demo-running has none (S10).
+  insert into public.attendance_sessions (event_id, event_date_id, status)
+  select ed.event_id, ed.id, 'open'
+  from public.event_dates ed
+  join public.events e on e.id = ed.event_id
+  where e.slug = 'demo-checkin' and ed.event_date = d
+    and not exists (select 1 from public.attendance_sessions s where s.event_date_id = ed.id);
+end $$;
