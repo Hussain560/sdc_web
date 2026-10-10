@@ -2,6 +2,7 @@
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
+import type { CalendarEventInfo } from '../../calendar-links';
 import { Button, LinkButton, buttonClasses, type ButtonSize } from '@/components/ui/Button';
 import { Dialog } from '@/components/ui/Dialog';
 import { StatusPill } from '@/components/ui/StatusPill';
@@ -64,7 +65,13 @@ export function EventActionsProvider({
   now,
   children,
 }: {
-  event: { id: string; slug: string; title: string; meta: string };
+  event: {
+    id: string;
+    slug: string;
+    title: string;
+    meta: string;
+    calendar?: CalendarEventInfo | null;
+  };
   input: EventViewInput;
   checkinOpen: boolean;
   now: number;
@@ -148,7 +155,13 @@ export function EventActionsProvider({
       <RegistrationDialog
         open={dialog}
         onClose={() => setDialog(false)}
-        event={{ id: event.id, slug: event.slug, title: event.title, meta: event.meta }}
+        event={{
+          id: event.id,
+          slug: event.slug,
+          title: event.title,
+          meta: event.meta,
+          calendar: event.calendar,
+        }}
         waitlist={view.id === 'S4'}
         member={
           isLoggedIn && user

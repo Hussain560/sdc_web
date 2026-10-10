@@ -32,6 +32,8 @@ const eslintConfig = defineConfig([
       'src/modules/articles/components/public/**/*.tsx',
       // PDF colours cannot be CSS variables: the certificate uses the documented light-theme values.
       'src/modules/attendance/pdf/**/*.tsx',
+      // Third-party logos (Google) keep their official colours.
+      'src/components/ui/BrandIcons.tsx',
       'src/modules/attendance/components/public/**/*.tsx',
       'src/modules/committees/components/public/**/*.tsx',
       'src/modules/registrations/components/useRegistrationFlow.tsx',

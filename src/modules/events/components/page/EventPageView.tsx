@@ -170,7 +170,24 @@ export function EventPageView({
 
   return (
     <EventActionsProvider
-      event={{ id: e.id, slug: e.slug, title, meta }}
+      event={{
+        id: e.id,
+        slug: e.slug,
+        title,
+        meta,
+        calendar: e.startDate
+          ? {
+              title,
+              startDate: e.startDate,
+              endDate: e.endDate,
+              startTime: e.startTime,
+              endTime: e.endTime,
+              place: e.locationMode === 'online' ? null : place,
+              description: summary || null,
+              url: `${lang === 'en' ? '/en' : ''}/events/${e.slug}`,
+            }
+          : null,
+      }}
       input={input}
       checkinOpen={checkinOpen}
       now={now}

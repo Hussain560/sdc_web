@@ -29,6 +29,8 @@ export {
 } from './Skeleton';
 export { cn } from './cn';
 export { Select, type SelectProps } from './Select';
+export { PhoneField } from './PhoneField';
+export { AppleIcon, GoogleIcon } from './BrandIcons';
 export { Pagination } from './Pagination';
 export { Textarea, type TextareaProps } from './Textarea';
 export { Switch } from './Switch';

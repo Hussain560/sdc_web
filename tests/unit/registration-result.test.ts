@@ -37,15 +37,14 @@ describe('registration results', () => {
     for (const r of Object.values(RESULTS)) {
       expect(r.title.ar.length).toBeGreaterThan(0);
       expect(r.title.en.length).toBeGreaterThan(0);
+      if (r === RESULTS.accepted) continue; // the success dialog has no sentence
       expect(r.body.ar.length).toBeGreaterThan(0);
       expect(r.body.en.length).toBeGreaterThan(0);
     }
   });
 
-  it('puts the e-mail into the sentence', () => {
-    expect(resultFor('accepted', 'ar', 'sara@x.sa').bodyText).toBe(
-      'أرسلنا التفاصيل إلى ⁦sara@x.sa⁩.',
-    );
+  it('keeps the e-mail out of the success dialog and in the review sentence', () => {
+    expect(resultFor('accepted', 'ar', 'sara@x.sa').bodyText).toBe('');
     expect(resultFor('pending', 'en', 'sara@x.sa').bodyText).toContain('sara@x.sa');
   });
 

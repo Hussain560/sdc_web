@@ -126,7 +126,7 @@ function AccountMenu() {
  */
 export function SiteHeader() {
   const { lang } = useLanguage();
-  const { isLoggedIn, loading } = useAuth();
+  const { isLoggedIn, loading, hasPosition } = useAuth();
   const pathname = usePathname();
   const s = CHROME[lang];
   const { elevated, hidden } = useHeaderScroll();
@@ -179,7 +179,15 @@ export function SiteHeader() {
           <LocaleSwitch />
           <ThemeSwitch />
           {isLoggedIn ? (
-            <AccountMenu />
+            hasPosition ? (
+              // People who hold a position get one button into the internal system (account and sign-out live there).
+              <LinkButton href="/dashboard" size="md" className="ms-2">
+                <LayoutDashboard aria-hidden="true" className="size-5" />
+                {s.dashboard}
+              </LinkButton>
+            ) : (
+              <AccountMenu />
+            )
           ) : (
             !loading && (
               <>

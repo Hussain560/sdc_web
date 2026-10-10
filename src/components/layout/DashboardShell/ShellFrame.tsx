@@ -16,7 +16,8 @@ import {
   LogOut,
   Mail,
   Menu,
-  PanelLeft,
+  PanelLeftClose,
+  PanelLeftOpen,
   Moon,
   ScrollText,
   Settings,
@@ -108,10 +109,13 @@ function NavItem({
   item,
   active,
   onNavigate,
+  collapsed,
 }: {
   item: VisibleNavItem;
   active: boolean;
   onNavigate: () => void;
+  /** Icon-only rail: the label stays for screen readers and as a tooltip. */
+  collapsed?: boolean;
 }) {
   const { lang } = useLanguage();
   const Icon = ICONS[item.icon];
@@ -120,8 +124,10 @@ function NavItem({
       href={item.href}
       onClick={onNavigate}
       aria-current={active ? 'page' : undefined}
+      title={collapsed ? item.label[lang] : undefined}
       className={cn(
         'group flex min-h-10 items-center gap-2.5 rounded-shape-md px-3 text-[13.5px] transition-colors duration-(--duration-fast)',
+        collapsed && 'justify-center px-0',
         'focus-visible:outline-2 focus-visible:outline-focus-ring',
         active
           ? 'bg-accent-soft font-semibold text-on-accent-soft'
@@ -136,7 +142,7 @@ function NavItem({
           active ? 'text-on-accent-soft' : 'text-muted group-hover:text-text',
         )}
       />
-      <span className="truncate">{item.label[lang]}</span>
+      <span className={cn('truncate', collapsed && 'sr-only')}>{item.label[lang]}</span>
     </Link>
   );
 }
@@ -148,16 +154,40 @@ function NavSection({
   open,
   onToggle,
   onNavigate,
+  collapsed,
+  onExpand,
 }: {
   group: VisibleNavGroup;
   activeItem: string | null;
   open: boolean;
   onToggle: () => void;
   onNavigate: () => void;
+  collapsed?: boolean;
+  /** Rail: opening a section widens the sidebar and unfolds it. */
+  onExpand?: () => void;
 }) {
   const { lang } = useLanguage();
   const Icon = GROUP_ICONS[group.key] ?? Briefcase;
   const id = `nav-section-${group.key}`;
+  if (collapsed) {
+    const holdsActive = group.items.some((i) => i.key === activeItem);
+    return (
+      <button
+        type="button"
+        title={group.label[lang]}
+        aria-label={group.label[lang]}
+        onClick={onExpand}
+        className={cn(
+          'flex min-h-10 w-full items-center justify-center rounded-shape-md text-muted transition-colors',
+          'hover:bg-surface-raised hover:text-text focus-visible:outline-2 focus-visible:outline-focus-ring',
+          holdsActive &&
+            'bg-accent-soft text-on-accent-soft hover:bg-accent-soft hover:text-on-accent-soft',
+        )}
+      >
+        <Icon size={18} aria-hidden="true" />
+      </button>
+    );
+  }
   return (
     <div>
       <button
@@ -206,10 +236,16 @@ function SidebarContent({
   nav,
   activeItem,
   onNavigate,
+  collapsed = false,
+  onToggleCollapse,
 }: {
   nav: VisibleNavGroup[];
   activeItem: string | null;
   onNavigate: () => void;
+  /** Desktop rail (icons only). The mobile drawer never collapses. */
+  collapsed?: boolean;
+  /** Present on the desktop sidebar: the close/open button at its end. */
+  onToggleCollapse?: () => void;
 }) {
   const { lang } = useLanguage();
   const ar = lang === 'ar';
@@ -241,7 +277,7 @@ function SidebarContent({
 
   return (
     <div className="flex h-full flex-col">
-      <div className="flex h-14 items-center px-4">
+      <div className={cn('flex h-14 items-center px-4', collapsed && 'justify-center px-0')}>
         <Link
           href={home}
           onClick={onNavigate}
@@ -257,7 +293,7 @@ function SidebarContent({
             height={37}
             style={{ height: 34, width: 'auto' }}
           />
-          <span className="flex flex-col leading-tight">
+          <span className={cn('flex flex-col leading-tight', collapsed && 'sr-only')}>
             <span className="text-[15px] font-extrabold">
               {ar ? 'المجتمع السعودي' : 'Saudi Developer'}
             </span>
@@ -269,13 +305,18 @@ function SidebarContent({
       </div>
       <nav
         aria-label={ar ? 'التنقل الداخلي' : 'Internal navigation'}
-        className="flex-1 overflow-y-auto px-3 pb-4"
+        className={cn('flex-1 overflow-y-auto px-3 pb-4', collapsed && 'px-2')}
       >
         {flat.length > 0 && (
           <ul className="flex flex-col gap-0.5">
             {flat.map((item) => (
               <li key={item.key}>
-                <NavItem item={item} active={item.key === activeItem} onNavigate={onNavigate} />
+                <NavItem
+                  item={item}
+                  active={item.key === activeItem}
+                  onNavigate={onNavigate}
+                  collapsed={collapsed}
+                />
               </li>
             ))}
           </ul>
@@ -292,19 +333,57 @@ function SidebarContent({
                 open={open}
                 onToggle={() => toggle(group.key, open)}
                 onNavigate={onNavigate}
+                collapsed={collapsed}
+                onExpand={() => {
+                  // Unfold this section, then widen the sidebar.
+                  if (!open) toggle(group.key, false);
+                  onToggleCollapse?.();
+                }}
               />
             );
           })}
         </div>
       </nav>
-      <div className="flex flex-col gap-1 border-t border-line p-3">
+      <div className={cn('flex flex-col gap-1 border-t border-line p-3', collapsed && 'px-2')}>
         <Link
           href="/"
-          className="flex min-h-9 items-center gap-2.5 rounded-lg px-3 text-[13.5px] font-medium text-muted hover:bg-surface-raised hover:text-text"
+          title={collapsed ? (ar ? 'الموقع العام' : 'Public site') : undefined}
+          className={cn(
+            'flex min-h-9 items-center gap-2.5 rounded-lg px-3 text-[13.5px] font-medium text-muted hover:bg-surface-raised hover:text-text',
+            collapsed && 'justify-center px-0',
+          )}
         >
           <ExternalLink size={17} aria-hidden="true" />
-          {ar ? 'الموقع العام' : 'Public site'}
+          <span className={cn(collapsed && 'sr-only')}>{ar ? 'الموقع العام' : 'Public site'}</span>
         </Link>
+        {onToggleCollapse && (
+          <button
+            type="button"
+            onClick={onToggleCollapse}
+            aria-expanded={!collapsed}
+            title={collapsed ? (ar ? 'فتح الشريط الجانبي' : 'Open sidebar') : undefined}
+            className={cn(
+              'flex min-h-9 items-center gap-2.5 rounded-lg px-3 text-[13.5px] font-medium text-muted hover:bg-surface-raised hover:text-text',
+              'focus-visible:outline-2 focus-visible:outline-focus-ring',
+              collapsed && 'justify-center px-0',
+            )}
+          >
+            {collapsed ? (
+              <PanelLeftOpen size={17} aria-hidden="true" className="rtl:-scale-x-100" />
+            ) : (
+              <PanelLeftClose size={17} aria-hidden="true" className="rtl:-scale-x-100" />
+            )}
+            <span className={cn(collapsed && 'sr-only')}>
+              {collapsed
+                ? ar
+                  ? 'فتح الشريط الجانبي'
+                  : 'Open sidebar'
+                : ar
+                  ? 'إغلاق الشريط الجانبي'
+                  : 'Close sidebar'}
+            </span>
+          </button>
+        )}
       </div>
     </div>
   );
@@ -395,17 +474,19 @@ function ShellFrameInner({
     <div
       className={cn(
         'sdc-inter min-h-dvh bg-canvas text-text lg:grid',
-        collapsed ? 'lg:grid-cols-[minmax(0,1fr)]' : 'lg:grid-cols-[240px_minmax(0,1fr)]',
+        'transition-[grid-template-columns] duration-200 motion-reduce:transition-none',
+        collapsed ? 'lg:grid-cols-[72px_minmax(0,1fr)]' : 'lg:grid-cols-[240px_minmax(0,1fr)]',
       )}
     >
       {/* Desktop sidebar (first in DOM → inline-start in both directions) */}
-      <aside
-        className={cn(
-          'sticky top-0 hidden h-dvh border-e border-line bg-surface',
-          collapsed ? 'lg:hidden' : 'lg:block',
-        )}
-      >
-        <SidebarContent nav={nav} activeItem={active} onNavigate={() => undefined} />
+      <aside className="sticky top-0 hidden h-dvh overflow-x-hidden border-e border-line bg-surface lg:block">
+        <SidebarContent
+          nav={nav}
+          activeItem={active}
+          onNavigate={() => undefined}
+          collapsed={collapsed}
+          onToggleCollapse={toggleSidebar}
+        />
       </aside>
 
       {/* Mobile drawer */}
@@ -445,23 +526,6 @@ function ShellFrameInner({
             onClick={() => setDrawer(true)}
           >
             <Menu size={20} />
-          </button>
-          <button
-            type="button"
-            className="hidden rounded-full p-2 text-muted hover:text-text lg:block"
-            aria-label={
-              collapsed
-                ? ar
-                  ? 'فتح الشريط الجانبي'
-                  : 'Open sidebar'
-                : ar
-                  ? 'إغلاق الشريط الجانبي'
-                  : 'Close sidebar'
-            }
-            aria-expanded={!collapsed}
-            onClick={toggleSidebar}
-          >
-            <PanelLeft size={20} className="rtl:-scale-x-100" aria-hidden="true" />
           </button>
           <nav aria-label={ar ? 'مسار الصفحة' : 'Breadcrumb'} className="min-w-0 flex-1">
             <ol className="flex min-w-0 items-center gap-2 text-sm">
