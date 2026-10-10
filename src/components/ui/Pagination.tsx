@@ -38,7 +38,8 @@ export function Pagination({
   // The chevrons point along the reading direction in both languages.
   const Prev = ar ? ChevronRight : ChevronLeft;
   const Next = ar ? ChevronLeft : ChevronRight;
-  const step = 'flex size-9 items-center justify-center rounded-full border border-line text-sm';
+  const step =
+    'flex size-11 items-center justify-center rounded-full text-sm focus-visible:outline-2 focus-visible:outline-focus-ring';
   const hrefPage = (p: number) => hrefFor(searchParams, { page: p === 1 ? undefined : p });
 
   return (
@@ -70,7 +71,7 @@ export function Pagination({
               className={cn(
                 'rounded-full px-2.5 py-1 tabular-nums',
                 s === size
-                  ? 'bg-surface-raised font-semibold text-accent'
+                  ? 'bg-accent-soft font-semibold text-on-accent-soft'
                   : 'text-muted hover:text-text',
               )}
             >
@@ -80,13 +81,13 @@ export function Pagination({
         </div>
 
         {totalPages > 1 && (
-          <ul className="flex items-center gap-1">
+          <ul className="flex items-center gap-1 max-sm:[&>li:has([aria-current=page])~li:not(:last-child)]:hidden">
             <li>
               {page > 1 ? (
                 <Link
                   href={hrefPage(page - 1)}
                   aria-label={ar ? 'الصفحة السابقة' : 'Previous page'}
-                  className={cn(step, 'hover:bg-surface-raised')}
+                  className={cn(step, 'text-text hover:bg-surface-raised')}
                   rel="prev"
                 >
                   <Prev size={16} aria-hidden="true" />
@@ -112,7 +113,7 @@ export function Pagination({
                       step,
                       'tabular-nums',
                       p === page
-                        ? 'border-line-accent bg-surface-raised font-semibold text-accent'
+                        ? 'bg-accent-soft font-semibold text-on-accent-soft'
                         : 'text-muted hover:bg-surface-raised hover:text-text',
                     )}
                   >
@@ -126,7 +127,7 @@ export function Pagination({
                 <Link
                   href={hrefPage(page + 1)}
                   aria-label={ar ? 'الصفحة التالية' : 'Next page'}
-                  className={cn(step, 'hover:bg-surface-raised')}
+                  className={cn(step, 'text-text hover:bg-surface-raised')}
                   rel="next"
                 >
                   <Next size={16} aria-hidden="true" />

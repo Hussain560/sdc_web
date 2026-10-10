@@ -24,7 +24,7 @@ export function Tabs({
   return (
     <nav
       aria-label={label}
-      className={cn('mb-4 flex flex-wrap gap-x-1 border-b border-line', className)}
+      className={cn('mb-4 flex gap-x-1 overflow-x-auto border-b border-line', className)}
     >
       {items.map((t) => (
         <Link
@@ -32,8 +32,8 @@ export function Tabs({
           href={t.href}
           aria-current={t.key === active ? 'page' : undefined}
           className={cn(
-            '-mb-px inline-flex items-center gap-2 border-b-2 px-3 py-2.5 text-sm transition-colors',
-            'focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-accent',
+            '-mb-px inline-flex min-h-11 shrink-0 items-center gap-2 border-b-[3px] px-4 py-2.5 text-base whitespace-nowrap transition-colors duration-(--duration-fast) ease-(--ease-standard)',
+            'focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-focus-ring',
             t.key === active
               ? 'border-accent font-semibold text-text'
               : 'border-transparent text-muted hover:text-text',

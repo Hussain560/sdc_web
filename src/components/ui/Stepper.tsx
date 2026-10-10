@@ -1,7 +1,7 @@
 import { Check } from 'lucide-react';
 import { cn } from './cn';
 
-export type StepperStep = { label: string; warning?: boolean };
+export type StepperStep = { label: string; warning?: boolean; error?: boolean };
 
 /**
  * Wizard progress (KFUCS style): numbered circles, completed steps show a check and are clickable,
@@ -13,6 +13,7 @@ export function Stepper({
   onSelect,
   maxReached,
   labelOf,
+  navLabel = 'Progress',
 }: {
   steps: StepperStep[];
   /** 1-based current step. */
@@ -22,9 +23,11 @@ export function Stepper({
   maxReached: number;
   /** "Step {n} of {total}" text for the compact (mobile) view. */
   labelOf: (n: number, total: number, label: string) => string;
+  /** Translated accessible name of the step list. */
+  navLabel?: string;
 }) {
   return (
-    <nav aria-label="Progress">
+    <nav aria-label={navLabel}>
       <p className="mb-2 text-sm text-muted md:hidden">
         {labelOf(current, steps.length, steps[current - 1]?.label ?? '')}
       </p>
@@ -50,18 +53,19 @@ export function Stepper({
                 className={cn(
                   'flex items-center gap-2 rounded-full py-1 pe-3 text-sm',
                   clickable ? 'cursor-pointer' : 'cursor-default',
-                  active ? 'font-semibold text-text' : done ? 'text-accent' : 'text-muted',
+                  active ? 'font-semibold text-text' : done ? 'text-accent-text' : 'text-muted',
                 )}
               >
                 <span
                   className={cn(
                     'relative flex size-8 items-center justify-center rounded-full border text-sm font-semibold',
-                    active && 'border-accent ring-2 ring-accent/40',
-                    done && !active && 'border-accent bg-accent text-on-accent',
-                    !done && !active && 'border-line',
+                    active && 'border-accent bg-accent text-on-accent',
+                    done && !active && 'border-transparent bg-accent-soft text-on-accent-soft',
+                    !done && !active && 'border-line-strong text-muted',
+                    s.error && 'border-danger bg-transparent text-danger',
                   )}
                 >
-                  {done && !active ? <Check size={16} aria-hidden="true" /> : n}
+                  {s.error ? '!' : done && !active ? <Check size={16} aria-hidden="true" /> : n}
                   {s.warning && (
                     <span
                       aria-hidden="true"
