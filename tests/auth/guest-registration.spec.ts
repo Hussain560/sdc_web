@@ -66,7 +66,8 @@ test('a visitor registers from the modal without an account', async ({ page, bro
     await page.getByRole('button', { name: 'Done' }).click();
 
     // The button now reads "Registered" and the e-mail arrives.
-    await expect(page.getByText("You're registered").first()).toBeVisible();
+    // The confirmation sits in the hero below lg and in the side panel from lg up: pick the visible one.
+    await expect(page.getByText("You're registered").locator('visible=true').first()).toBeVisible();
     const mail = await waitForMail(email, { subject: /registration|registered|in/i });
     expect(mail.html).toContain(`Guest Workshop ${tag}`);
 

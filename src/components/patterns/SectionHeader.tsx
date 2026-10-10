@@ -10,12 +10,15 @@ export function SectionHeader({
   lede,
   action,
   headingId,
+  dots,
   className,
 }: {
   title: string;
   lede?: string;
   action?: ReactNode;
   headingId?: string;
+  /** Lead the title with the two signal dots. */
+  dots?: boolean;
   className?: string;
 }) {
   return (
@@ -26,7 +29,8 @@ export function SectionHeader({
       )}
     >
       <div className="flex flex-col gap-2">
-        <h2 id={headingId} className="t-h2">
+        <h2 id={headingId} className={cn('t-h2', dots && 'flex items-center gap-3')}>
+          {dots && <span aria-hidden="true" className="signal-dots" />}
           {title}
         </h2>
         {lede && <p className="t-lede text-muted">{lede}</p>}

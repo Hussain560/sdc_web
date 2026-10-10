@@ -5,6 +5,7 @@ import { Media } from '@/components/ui/Media';
 import { StatusPill } from '@/components/ui/StatusPill';
 import { cn } from '@/components/ui/cn';
 import { PILL_LABEL, cardPill } from '../status-labels';
+import { EVENT_COPY } from '../page-copy';
 import { eventLocation, eventTitle, type PublicEventCard } from '../public-types';
 
 type Lang = 'ar' | 'en';
@@ -12,10 +13,9 @@ type Lang = 'ar' | 'en';
 const TEXT = {
   ar: {
     details: 'التفاصيل',
-    seats: (n: number) => `متبقي ${n} مقعداً`,
     tbd: 'يُعلن الموعد قريباً',
   },
-  en: { details: 'Details', seats: (n: number) => `${n} seats left`, tbd: 'Date to be announced' },
+  en: { details: 'Details', tbd: 'Date to be announced' },
 } as const;
 
 /**
@@ -64,7 +64,7 @@ export function EventCard({
       </p>
       <div className="mt-auto flex items-center justify-between gap-3 pt-2">
         <span className="t-caption tabular-nums text-muted">
-          {showSeats ? t.seats(event.seatsLeft!) : ''}
+          {showSeats ? EVENT_COPY[lang].seatsLeft(event.seatsLeft!) : ''}
         </span>
         <span
           aria-hidden="true"

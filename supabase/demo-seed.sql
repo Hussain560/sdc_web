@@ -44,3 +44,36 @@ begin
      now() - interval '40 days', now() - interval '31 days', false, false, 'public', true, now() - interval '35 days', null, null)
   on conflict (slug) do nothing;
 end $$;
+
+-- Fuller content so every section of the event page shows: seats bar, goals, audience, what to bring, FAQ, details
+-- and presenters. The FAQ item with an empty question and the "None." entries are kept on purpose: the page leaves
+-- them out. Re-running resets these demo rows to the same values.
+update public.events
+set display_config = display_config || '{"show_seats_remaining": true, "show_presenters": true, "show_goals": true}'::jsonb
+where slug like 'demo-%';
+
+update public.events
+set goals = '{"ar": ["تقسيم الواجهة إلى مكوّنات قابلة لإعادة الاستخدام.", "بناء تخطيط متجاوب يعمل من الجوال إلى الشاشات الكبيرة."], "en": ["Split an interface into reusable components.", "Build a layout that responds from phones to large screens."]}'::jsonb,
+    details = '{
+      "target_audience": {"ar": ["طلاب، خريجون، موظفون", "من لديه معرفة أساسية بـ HTML وCSS"], "en": ["Students, graduates, employees", "Anyone with basic HTML and CSS"]},
+      "what_to_bring": {"ar": ["حاسوب محمول مثبّت عليه Node.js", "حساب على GitHub"], "en": ["A laptop with Node.js installed", "A GitHub account"]},
+      "responsibilities": {"ar": ["الحضور والالتزام بوقت الورشة.", "المشاركة الفعالة أثناء التطبيق العملي."], "en": ["Arrive on time.", "Take part in the hands-on session."]},
+      "deliverables": {"ar": ["واجهة متجاوبة منشورة على رابط عام."], "en": ["A responsive interface published at a public link."]},
+      "requirements": {"ar": ["لا يوجد."], "en": ["None."]},
+      "benefits": {"ar": ["لا يوجد."], "en": ["None."]}
+    }'::jsonb,
+    faq = '[
+      {"q_ar": "هل أحتاج إلى حساب في الموقع للتسجيل؟", "q_en": "Do I need an account to register?", "a_ar": "لا. يكفي الاسم والبريد الإلكتروني ورقم الجوال، ويصلك التأكيد على بريدك.", "a_en": "No. Your name, e-mail and mobile number are enough; the confirmation arrives by e-mail."},
+      {"q_ar": "", "q_en": "", "a_ar": "إجابة بلا سؤال، لا تظهر في الصفحة.", "a_en": "An answer with no question; it does not show on the page."}
+    ]'::jsonb,
+    map_url = 'https://maps.google.com/?q=King+Faisal+University',
+    contact_email = 'events@example.com'
+where slug = 'demo-open';
+
+insert into public.event_presenters (event_id, guest_name_ar, guest_name_en, guest_title_ar, guest_title_en, role, sort_order)
+select e.id, v.n_ar, v.n_en, v.t_ar, v.t_en, v.role, v.ord
+from public.events e,
+  (values ('سارة العتيبي', 'Sara Al Otaibi', 'مهندسة واجهات', 'Front-end engineer', 'presenter', 0),
+          ('خالد الدوسري', 'Khalid Al Dossary', 'مرشد تقني', 'Technical mentor', 'mentor', 1)) as v(n_ar, n_en, t_ar, t_en, role, ord)
+where e.slug = 'demo-open'
+  and not exists (select 1 from public.event_presenters p where p.event_id = e.id);

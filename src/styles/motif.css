@@ -8,3 +8,18 @@
   );
   background-size: 16px 16px;
 }
+
+/* The two signal dots that lead a section title (design system v2). Pure CSS so it follows the theme. */
+.signal-dots {
+  display: inline-flex;
+  gap: 4px;
+  vertical-align: middle;
+}
+.signal-dots::before,
+.signal-dots::after {
+  content: '';
+  inline-size: 8px;
+  block-size: 8px;
+  border-radius: 9999px;
+  background: var(--signal);
+}

@@ -11,7 +11,7 @@ export function SectionNav({
   items,
   label,
 }: {
-  items: ReadonlyArray<{ id: string; label: string }>;
+  items: ReadonlyArray<{ id: string; label: string; hideAt?: 'lg' }>;
   label: string;
 }) {
   const [current, setCurrent] = useState(items[0]?.id);
@@ -38,20 +38,22 @@ export function SectionNav({
   return (
     <nav
       aria-label={label}
-      className="sticky top-14 z-(--z-sticky) -mx-4 overflow-x-auto border-b border-line bg-canvas/90 px-4 backdrop-blur-md lg:top-24 lg:mx-0 lg:px-0"
+      className="sticky top-14 z-(--z-sticky) -mx-4 overflow-x-auto bg-canvas/90 px-4 backdrop-blur-md lg:top-24 lg:mx-0 lg:border-b lg:border-line lg:px-0"
     >
-      <ul className="flex gap-1 whitespace-nowrap">
+      <ul className="flex gap-2 whitespace-nowrap max-lg:py-2 lg:gap-7">
         {items.map((i) => (
-          <li key={i.id}>
+          <li key={i.id} className={i.hideAt === 'lg' ? 'lg:hidden' : undefined}>
             <a
               href={`#${i.id}`}
               aria-current={current === i.id ? 'location' : undefined}
               className={cn(
-                'inline-flex min-h-11 items-center border-b-[3px] px-4 font-semibold transition-colors',
+                // Phones: chips (accent-soft when current). Desktop: tabs with an accent underline.
+                'inline-flex min-h-11 items-center font-semibold transition-colors',
                 'focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-focus-ring',
+                'max-lg:rounded-full max-lg:border max-lg:px-4 lg:border-b-[3px]',
                 current === i.id
-                  ? 'border-accent text-text'
-                  : 'border-transparent text-muted hover:text-text',
+                  ? 'text-text max-lg:border-transparent max-lg:bg-accent-soft max-lg:text-on-accent-soft lg:border-accent'
+                  : 'text-muted hover:text-text max-lg:border-line lg:border-transparent',
               )}
             >
               {i.label}
