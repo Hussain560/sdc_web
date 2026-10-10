@@ -16,6 +16,7 @@ export { TextLink, type TextLinkProps } from './TextLink';
 export { Card, CardLink, type CardProps, type CardVariant } from './Card';
 export { Media } from './Media';
 export { Dialog, type DialogProps } from './Dialog';
+export { ResultDialog } from './ResultDialog';
 export { Field, PasswordField, type FieldProps, type PasswordFieldProps } from './Field';
 export { ErrorSummary, type ErrorSummaryItem } from './ErrorSummary';
 export {
