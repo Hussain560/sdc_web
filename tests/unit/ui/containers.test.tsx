@@ -18,9 +18,9 @@ vi.mock('@/i18n/navigation', () => ({
 }));
 
 describe('Card', () => {
-  it('plain keeps the original dashboard look', () => {
+  it('plain is the dashboard card (24 px radius, 20 px padding)', () => {
     const { container } = render(<Card>x</Card>);
-    expect(container.firstChild).toHaveClass('rounded-2xl', 'p-5');
+    expect(container.firstChild).toHaveClass('rounded-shape-xl', 'p-5');
   });
 
   it('interactive card has one stretched link', () => {
