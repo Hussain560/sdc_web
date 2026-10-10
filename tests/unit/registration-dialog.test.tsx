@@ -254,8 +254,11 @@ describe('registration dialog: student or employee', () => {
     await u.click(employee);
     expect(screen.queryByLabelText(/University/)).toBeNull();
     expect(screen.getByLabelText(/Employer/)).toBeInTheDocument();
-    await u.click(employee); // a second click clears the choice
+    await u.click(screen.getByRole('button', { name: 'Other' }));
     expect(screen.queryByLabelText(/Employer/)).toBeNull();
+    expect(screen.getByLabelText(/Please specify/)).toBeInTheDocument();
+    await u.click(screen.getByRole('button', { name: 'Other' })); // a second click clears the choice
+    expect(screen.queryByLabelText(/Please specify/)).toBeNull();
   });
 
   it('sends the occupation and only its own detail', async () => {

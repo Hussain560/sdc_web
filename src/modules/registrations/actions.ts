@@ -163,9 +163,10 @@ const guestSchema = z.object({
   /** International (E.164) number; the form builds it from the country and the national digits. */
   phone: z.string().trim().max(25),
   phoneCountry: z.string().trim().max(2).optional(),
-  occupation: z.enum(['student', 'employee']).optional(),
+  occupation: z.enum(['student', 'employee', 'other']).optional(),
   university: z.string().trim().max(120).optional(),
   employer: z.string().trim().max(120).optional(),
+  occupationOther: z.string().trim().max(120).optional(),
   honeypot: z.string().max(200).optional(),
   consent: z.boolean().optional(),
   elapsedMs: z.number().int().min(0).max(86_400_000).optional(),
@@ -232,6 +233,9 @@ export async function registerGuest(
       // Only the field that belongs to the chosen occupation is kept.
       ...(v.occupation === 'student' && v.university ? { university: v.university } : {}),
       ...(v.occupation === 'employee' && v.employer ? { employer: v.employer } : {}),
+      ...(v.occupation === 'other' && v.occupationOther
+        ? { occupation_other: v.occupationOther }
+        : {}),
     } as never,
     p_ip_hash: ipHash as string,
     p_honeypot: (v.honeypot ?? '') as string,

@@ -68,6 +68,8 @@ const TEXT = {
     occupationLabel: 'أنت',
     student: 'طالب جامعي',
     employee: 'موظف',
+    other: 'أخرى',
+    otherField: 'حدّد',
     required: 'مطلوب',
     optional: 'اختياري',
     consent: 'أوافق على',
@@ -118,6 +120,8 @@ const TEXT = {
     occupationLabel: 'You are',
     student: 'University student',
     employee: 'Employee',
+    other: 'Other',
+    otherField: 'Please specify',
     required: 'required',
     optional: 'optional',
     consent: 'I agree to the',
@@ -200,9 +204,10 @@ export function RegistrationDialog({
   const [email, setEmail] = useState('');
   const [country, setCountry] = useState<PhoneCountry>(DEFAULT_PHONE_COUNTRY);
   const [phone, setPhone] = useState('');
-  const [occupation, setOccupation] = useState<'student' | 'employee' | null>(null);
+  const [occupation, setOccupation] = useState<'student' | 'employee' | 'other' | null>(null);
   const [university, setUniversity] = useState('');
   const [employer, setEmployer] = useState('');
+  const [occupationOther, setOccupationOther] = useState('');
   const [honeypot, setHoneypot] = useState('');
   const [consent, setConsent] = useState(false);
   const [errors, setErrors] = useState<Errors>({});
@@ -280,6 +285,8 @@ export function RegistrationDialog({
               occupation: occupation ?? undefined,
               university: occupation === 'student' ? university.trim() || undefined : undefined,
               employer: occupation === 'employee' ? employer.trim() || undefined : undefined,
+              occupationOther:
+                occupation === 'other' ? occupationOther.trim() || undefined : undefined,
               honeypot,
               consent,
               elapsedMs: Date.now() - openedAt.current,
@@ -580,7 +587,7 @@ export function RegistrationDialog({
                   {t.occupationLabel} <span className="font-normal text-muted">({t.optional})</span>
                 </legend>
                 <div className="flex flex-wrap gap-2">
-                  {(['student', 'employee'] as const).map((o) => (
+                  {(['student', 'employee', 'other'] as const).map((o) => (
                     <button
                       key={o}
                       type="button"
@@ -591,7 +598,7 @@ export function RegistrationDialog({
                         size: 'md',
                       })}
                     >
-                      {o === 'student' ? t.student : t.employee}
+                      {o === 'student' ? t.student : o === 'employee' ? t.employee : t.other}
                     </button>
                   ))}
                 </div>
@@ -604,6 +611,17 @@ export function RegistrationDialog({
                     maxLength={120}
                     value={university}
                     onChange={(e) => setUniversity(e.target.value)}
+                  />
+                )}
+                {occupation === 'other' && (
+                  <Field
+                    id="g-occupation-other"
+                    label={t.otherField}
+                    optionalLabel={t.optional}
+                    readOnly={sending}
+                    maxLength={120}
+                    value={occupationOther}
+                    onChange={(e) => setOccupationOther(e.target.value)}
                   />
                 )}
                 {occupation === 'employee' && (
