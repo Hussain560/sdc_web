@@ -200,39 +200,41 @@ export function HomeView({
             <div className={wrap}>
               <SectionHeader headingId="home-partners" title={t.partnersTitle} />
               <ul className="flex flex-wrap items-center justify-center gap-4 md:gap-6">
-                {partners.map((p) => {
-                  const name = lang === 'en' && p.nameEn ? p.nameEn : p.nameAr;
-                  const logo = (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={p.logoUrl ?? ''}
-                      alt={name}
-                      loading="lazy"
-                      decoding="async"
-                      className="max-h-12 w-auto max-w-32 object-contain"
-                    />
-                  );
-                  return (
-                    <li
-                      key={p.id}
-                      className="flex h-20 min-w-32 items-center justify-center rounded-shape-lg bg-qr-ground px-5"
-                    >
-                      {p.websiteUrl ? (
-                        <a
-                          href={p.websiteUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          aria-label={`${name} ${t.newTab}`}
-                          className="focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-focus-ring"
-                        >
-                          {logo}
-                        </a>
-                      ) : (
-                        logo
-                      )}
-                    </li>
-                  );
-                })}
+                {partners
+                  .filter((p) => p.logoUrl)
+                  .map((p) => {
+                    const name = lang === 'en' && p.nameEn ? p.nameEn : p.nameAr;
+                    const logo = (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={p.logoUrl ?? ''}
+                        alt={name}
+                        loading="lazy"
+                        decoding="async"
+                        className="max-h-12 w-auto max-w-32 object-contain"
+                      />
+                    );
+                    return (
+                      <li
+                        key={p.id}
+                        className="flex h-20 min-w-32 items-center justify-center rounded-shape-lg bg-qr-ground px-5"
+                      >
+                        {p.websiteUrl ? (
+                          <a
+                            href={p.websiteUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            aria-label={`${name} ${t.newTab}`}
+                            className="focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-focus-ring"
+                          >
+                            {logo}
+                          </a>
+                        ) : (
+                          logo
+                        )}
+                      </li>
+                    );
+                  })}
               </ul>
             </div>
           </section>

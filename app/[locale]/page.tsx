@@ -30,7 +30,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
   const sections = homeSections({
     events,
     articles,
-    partnerCount: partners.length,
+    partnerCount: partners.filter((p) => p.logoUrl).length,
     stats: null, // RDS-017: the public_stats view arrives once the owner approves the figures (Q-H2)
     today,
   });

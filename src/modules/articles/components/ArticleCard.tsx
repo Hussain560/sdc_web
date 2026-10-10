@@ -7,7 +7,16 @@ import { articleTitle, type PublicArticleCard } from '../types';
 type Lang = 'ar' | 'en';
 
 const TEXT = {
-  ar: { min: (n: number) => `${n} دقائق قراءة` },
+  ar: {
+    min: (n: number) =>
+      n <= 1
+        ? 'دقيقة قراءة'
+        : n === 2
+          ? 'دقيقتا قراءة'
+          : n <= 10
+            ? `${n} دقائق قراءة`
+            : `${n} دقيقة قراءة`,
+  },
   en: { min: (n: number) => `${n} min read` },
 } as const;
 
