@@ -141,3 +141,47 @@ begin
   where e.slug = 'demo-checkin' and ed.event_date = d
     and not exists (select 1 from public.attendance_sessions s where s.event_date_id = ed.id);
 end $$;
+
+-- Attendance states on demo-checkin (the event with today's check-in session open):
+-- 4 accepted and checked in today (QR, online and manual), 3 accepted and not yet checked in, 1 pending and
+-- 1 on the waiting list (they cannot check in). Re-running adds nothing new.
+do $$
+declare
+  ev uuid := (select id from public.events where slug = 'demo-checkin');
+  today date := current_date;
+  sess uuid := (
+    select s.id from public.attendance_sessions s
+    join public.event_dates d on d.id = s.event_date_id
+    where s.event_id = (select id from public.events where slug = 'demo-checkin') and d.event_date = today
+    limit 1
+  );
+  r record;
+begin
+  for r in
+    select * from (values
+      ('attend-1', 'سارة العتيبي', 'accepted', 'qr'),
+      ('attend-2', 'خالد الدوسري', 'accepted', 'qr'),
+      ('attend-3', 'نورة القحطاني', 'accepted', 'online'),
+      ('attend-4', 'عبدالله الشمري', 'accepted', 'manual'),
+      ('wait-1', 'ريم الحربي', 'accepted', null),
+      ('wait-2', 'فهد المطيري', 'accepted', null),
+      ('wait-3', 'لمى العنزي', 'accepted', null),
+      ('pending-1', 'يوسف الزهراني', 'pending', null),
+      ('waitlist-1', 'هند السبيعي', 'waitlisted', null)
+    ) as v(tag, name, st, method)
+  loop
+    insert into public.event_registrations (event_id, status, full_name_snapshot, email_snapshot)
+    select ev, r.st, r.name, 'demo-' || r.tag || '@example.test'
+    where not exists (
+      select 1 from public.event_registrations x where x.event_id = ev and x.email_snapshot = 'demo-' || r.tag || '@example.test'
+    );
+
+    if r.method is not null and sess is not null then
+      insert into public.attendance_records (session_id, registration_id, method, checked_in_at)
+      select sess, x.id, r.method, now() - interval '20 minutes'
+      from public.event_registrations x
+      where x.event_id = ev and x.email_snapshot = 'demo-' || r.tag || '@example.test'
+        and not exists (select 1 from public.attendance_records a where a.session_id = sess and a.registration_id = x.id);
+    end if;
+  end loop;
+end $$;
