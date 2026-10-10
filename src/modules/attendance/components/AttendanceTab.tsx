@@ -390,13 +390,13 @@ export function AttendanceTab({
                   onChange={(e) => setQ(e.target.value)}
                   placeholder={L('ابحث بالاسم أو البريد…', 'Search by name or e-mail…')}
                   aria-label={L('بحث', 'Search')}
-                  className="h-9 w-60 rounded-lg border border-line bg-surface px-3 text-sm text-text placeholder:text-muted focus-visible:outline-2 focus-visible:outline-accent"
+                  className="h-9 w-60 rounded-lg border border-line bg-surface px-3 text-sm text-text placeholder:text-muted focus-visible:outline-2 focus-visible:outline-focus-ring"
                 />
                 <select
                   value={filter}
                   onChange={(e) => setFilter(e.target.value as Filter)}
                   aria-label={L('تصفية الحالة', 'Filter by state')}
-                  className="h-9 rounded-lg border border-line bg-surface px-3 text-sm text-text focus-visible:outline-2 focus-visible:outline-accent"
+                  className="h-9 rounded-lg border border-line bg-surface px-3 text-sm text-text focus-visible:outline-2 focus-visible:outline-focus-ring"
                 >
                   <option value="all">{L('الكل', 'All')}</option>
                   <option value="present">{L('الحاضرون', 'Present')}</option>

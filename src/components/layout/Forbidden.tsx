@@ -11,7 +11,7 @@ export async function Forbidden() {
   return (
     <section
       role="alert"
-      className="mx-auto mt-16 flex max-w-xl flex-col items-center gap-4 rounded-2xl border border-line bg-surface p-10 text-center"
+      className="mx-auto mt-16 flex max-w-xl flex-col items-center gap-4 rounded-shape-xl border border-line bg-surface p-10 text-center"
     >
       <ShieldAlert size={40} className="text-accent" aria-hidden="true" />
       <h1 className="text-xl font-bold">

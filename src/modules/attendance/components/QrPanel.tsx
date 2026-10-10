@@ -113,7 +113,7 @@ export function QrPanel({
       className={
         full
           ? 'flex min-h-dvh flex-col items-center justify-center gap-6 bg-white p-8 text-center text-black'
-          : 'grid gap-6 rounded-2xl border border-line bg-surface p-5 lg:grid-cols-[minmax(0,1fr)_320px]'
+          : 'grid gap-6 rounded-shape-xl border border-line bg-surface p-5 lg:grid-cols-[minmax(0,1fr)_320px]'
       }
     >
       <div className="flex flex-col items-center gap-4 text-center">
@@ -163,14 +163,14 @@ export function QrPanel({
           <div
             role="img"
             aria-label={L('رمز QR لتسجيل الحضور', 'QR code for check-in')}
-            className={`rounded-2xl bg-white p-4 shadow-sm [&>svg]:size-full ${
+            className={`rounded-shape-xl bg-white p-4 shadow-sm [&>svg]:size-full ${
               full ? 'aspect-square w-[min(62vmin,34rem)]' : 'aspect-square w-[min(80vw,19rem)]'
             }`}
             dangerouslySetInnerHTML={{ __html: svg }}
           />
         ) : (
           <div
-            className="aspect-square w-[min(80vw,19rem)] animate-pulse rounded-2xl bg-surface-raised"
+            className="aspect-square w-[min(80vw,19rem)] animate-pulse rounded-shape-xl bg-surface-raised"
             aria-busy="true"
           />
         )}

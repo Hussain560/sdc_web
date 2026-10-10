@@ -10,7 +10,7 @@ export type CardVariant =
   'plain' | 'surface' | 'feature' | 'feature-alt' | 'cta' | 'stat' | 'poster';
 
 const variants: Record<CardVariant, string> = {
-  plain: 'rounded-2xl border border-line bg-surface p-5 text-text',
+  plain: 'rounded-shape-xl border border-line bg-surface p-5 text-text',
   surface: 'rounded-shape-xl border border-line bg-surface p-5 text-text md:p-6',
   feature: 'rounded-shape-xl border border-line bg-surface p-5 text-text md:p-6',
   'feature-alt': 'rounded-shape-xl border border-line bg-surface-raised p-5 text-text md:p-6',

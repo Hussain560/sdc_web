@@ -87,7 +87,7 @@ export function ProfileForm({
         save();
       }}
     >
-      <section className="flex flex-col gap-4 rounded-2xl border border-line bg-surface p-5">
+      <section className="flex flex-col gap-4 rounded-shape-xl border border-line bg-surface p-5">
         <h2 className="font-bold">{ar ? 'الظهور في الدليل' : 'Directory visibility'}</h2>
         <Switch
           label={
@@ -181,7 +181,7 @@ export function ProfileForm({
         )}
       </section>
 
-      <section className="flex flex-col gap-4 rounded-2xl border border-line bg-surface p-5">
+      <section className="flex flex-col gap-4 rounded-shape-xl border border-line bg-surface p-5">
         <h2 className="font-bold">{ar ? 'البيانات الشخصية' : 'Personal details'}</h2>
         <div className="grid gap-4 sm:grid-cols-2">
           <Field
@@ -270,7 +270,7 @@ export function ProfileForm({
         </div>
       </section>
 
-      <section className="flex flex-col gap-4 rounded-2xl border border-line bg-surface p-5">
+      <section className="flex flex-col gap-4 rounded-shape-xl border border-line bg-surface p-5">
         <h2 className="font-bold">{ar ? 'نبذة وروابط' : 'Bio & links'}</h2>
         <Textarea
           label={ar ? 'نبذة (عربي)' : 'Bio (Arabic)'}

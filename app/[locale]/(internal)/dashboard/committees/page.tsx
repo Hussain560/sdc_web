@@ -34,7 +34,7 @@ export default async function CommitteesPage({ params }: { params: Promise<{ loc
     <Link
       key={c.id}
       href={`/dashboard/committees/${c.id}`}
-      className="group block rounded-2xl focus-visible:outline-2 focus-visible:outline-accent"
+      className="group block rounded-2xl focus-visible:outline-2 focus-visible:outline-focus-ring"
     >
       <Card className="flex h-full flex-col gap-3 transition-colors group-hover:border-line-accent">
         <div className="flex items-start justify-between gap-3">
