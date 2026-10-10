@@ -23,6 +23,8 @@ export { Select, type SelectProps } from './Select';
 export { Pagination } from './Pagination';
 export { Textarea, type TextareaProps } from './Textarea';
 export { Switch } from './Switch';
+export { Checkbox, type CheckboxProps } from './Checkbox';
+export { RadioGroup, type RadioOption } from './Radio';
 export { Chips, SegmentedToggle } from './Chips';
 export { Stepper, type StepperStep } from './Stepper';
 export { Tabs, type TabItem } from './Tabs';
