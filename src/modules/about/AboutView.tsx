@@ -75,11 +75,11 @@ export function AboutView({ lang, data }: { lang: Lang; data: AboutData }) {
             </p>
             <div className="mt-2 flex flex-wrap gap-3">
               <SignedOutOnly>
-                <LinkButton href="/join" size="lg">
+                <LinkButton href="/join" size="lg" className="max-sm:w-full">
                   {t.apply}
                 </LinkButton>
               </SignedOutOnly>
-              <LinkButton href="/events" variant="secondary" size="lg">
+              <LinkButton href="/events" variant="secondary" size="lg" className="max-sm:w-full">
                 {t.browseEvents}
               </LinkButton>
             </div>
@@ -176,12 +176,12 @@ export function AboutView({ lang, data }: { lang: Lang; data: AboutData }) {
 
           <section aria-labelledby="ab-offer" className={section}>
             <SectionHeader headingId="ab-offer" title={t.offerTitle} lede={t.offerLede} dots />
-            <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <ul className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3">
               {t.offers.map(([icon, title, text]) => {
                 const Icon = OFFER_ICON[icon]!;
                 return (
                   <li key={title} className="pg-rv">
-                    <div className="pg-tile flex min-h-[230px] flex-col justify-between gap-6 rounded-shape-xl border border-line bg-surface p-8">
+                    <div className="pg-tile flex h-full min-h-[150px] flex-col justify-between gap-4 rounded-shape-xl border border-line bg-surface p-5 sm:min-h-[230px] sm:gap-6 sm:p-8">
                       <span
                         aria-hidden="true"
                         className="pg-ico flex size-[60px] items-center justify-center rounded-[18px] bg-accent-soft text-on-accent-soft"
@@ -189,8 +189,8 @@ export function AboutView({ lang, data }: { lang: Lang; data: AboutData }) {
                         <Icon className="size-7" strokeWidth={1.75} />
                       </span>
                       <div className="flex flex-col gap-1.5">
-                        <h3 className="t-h3">{title}</h3>
-                        <p className="t-body text-muted">{text}</p>
+                        <h3 className="t-h4 sm:t-h3">{title}</h3>
+                        <p className="t-body text-muted max-sm:sr-only">{text}</p>
                       </div>
                     </div>
                   </li>
@@ -210,18 +210,25 @@ export function AboutView({ lang, data }: { lang: Lang; data: AboutData }) {
                 aria-hidden="true"
                 className="pg-line absolute inset-x-[16%] top-8 hidden h-0.5 bg-accent md:block"
               />
-              <ol className="relative grid gap-10 text-center md:grid-cols-3 md:gap-6">
+              <ol className="relative grid gap-8 md:grid-cols-3 md:gap-6 md:text-center">
                 {t.steps.map(([title, text, href], i) => (
-                  <li key={href} className="pg-rv flex flex-col items-center gap-3">
+                  <li
+                    key={href}
+                    className="pg-rv grid grid-cols-[4rem_1fr] items-start gap-x-4 gap-y-1 md:flex md:flex-col md:items-center md:gap-3"
+                  >
                     <span
                       aria-hidden="true"
-                      className="grid size-16 place-items-center rounded-full bg-accent text-2xl font-bold text-on-accent shadow-[0_0_0_8px_var(--canvas)]"
+                      className="row-span-3 grid size-16 place-items-center rounded-full bg-accent text-2xl font-bold text-on-accent shadow-[0_0_0_8px_var(--canvas)] md:row-span-1"
                     >
                       {i + 1}
                     </span>
-                    <h3 className="t-h3 mt-2">{title}</h3>
+                    <h3 className="t-h3 md:mt-2">{title}</h3>
                     <p className="t-body max-w-[28ch] text-muted">{text}</p>
-                    <TextLink href={href} variant="standalone" className="min-h-11">
+                    <TextLink
+                      href={href}
+                      variant="standalone"
+                      className="min-h-11 justify-self-start"
+                    >
                       {title}
                       <Arrow aria-hidden="true" className="size-4" />
                     </TextLink>
@@ -250,8 +257,8 @@ export function AboutView({ lang, data }: { lang: Lang; data: AboutData }) {
                   const name = (lang === 'en' ? c.nameEn : null) ?? c.nameAr;
                   return (
                     <li key={c.slug} className="pg-rv">
-                      <div className="pg-tile relative flex min-h-[250px] flex-col gap-4 rounded-shape-xl border border-line bg-surface px-6 py-7">
-                        <span className="text-base font-semibold text-muted tabular-nums">
+                      <div className="pg-tile relative flex items-center gap-4 rounded-shape-xl border border-line bg-surface px-5 py-4 sm:min-h-[250px] sm:flex-col sm:items-stretch sm:px-6 sm:py-7">
+                        <span className="w-7 text-base font-semibold text-muted tabular-nums sm:w-auto">
                           {String(i + 1).padStart(2, '0')}
                         </span>
                         <span
@@ -260,12 +267,12 @@ export function AboutView({ lang, data }: { lang: Lang; data: AboutData }) {
                         >
                           <Icon className="size-7" strokeWidth={1.75} />
                         </span>
-                        <h3 className="t-h4 mt-auto">
+                        <h3 className="t-h4 sm:mt-auto">
                           <CardLink href={`/committees/${c.slug}`}>{name}</CardLink>
                         </h3>
                         <span
                           aria-hidden="true"
-                          className="pg-arrow absolute end-6 top-6 grid size-10 place-items-center rounded-full border-[1.5px] border-line-strong"
+                          className="pg-arrow ms-auto grid size-10 shrink-0 place-items-center rounded-full border-[1.5px] border-line-strong sm:absolute sm:end-6 sm:top-6 sm:ms-0"
                         >
                           <Arrow className="size-5" />
                         </span>
@@ -367,14 +374,14 @@ export function AboutView({ lang, data }: { lang: Lang; data: AboutData }) {
                   </LinkButton>
                 }
               />
-              <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              <ul className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
                 {data.leadership.slice(0, 8).map((p) => {
                   const name = lang === 'en' ? p.nameEn : p.nameAr;
                   return (
                     <li key={p.id} className="pg-rv">
                       <Card
                         variant="surface"
-                        className="pg-tile flex h-full flex-col items-start gap-3 p-7"
+                        className="pg-tile flex h-full flex-col items-start gap-3 p-4 sm:p-7"
                       >
                         <Avatar name={name} size={72} />
                         <h3 className="t-h4 mt-2">{name}</h3>

@@ -1,4 +1,4 @@
-import { Search, ShieldCheck, X } from 'lucide-react';
+import { CalendarDays, MapPin, Search, ShieldCheck, X } from 'lucide-react';
 import { CapsuleCover } from '@/components/patterns/CapsuleMark';
 import { SiteFooter } from '@/components/layout/SiteFooter';
 import { SiteHeader } from '@/components/layout/SiteHeader';
@@ -235,7 +235,7 @@ export function EventsListView({
           />
         </div>
 
-        <header className={`${wrap} relative mt-10 flex flex-col items-center gap-4 text-center`}>
+        <header className={`${wrap} relative mt-10 flex flex-col items-start gap-4 text-start md:items-center md:text-center`}>
           <div
             aria-hidden="true"
             className="motif-dots pointer-events-none absolute inset-x-0 -top-6 h-52 text-muted [mask-image:radial-gradient(ellipse_at_center,black,transparent_70%)]"
@@ -469,9 +469,15 @@ function FeaturedEvent({
               {(lang === 'en' ? event.summaryEn : null) ?? event.summaryAr}
             </p>
           ) : null}
-          <p className="flex flex-wrap gap-x-4 gap-y-1 text-[0.9375rem] text-muted">
-            <span>{eventWhen(event, lang)}</span>
-            <span>{eventLocation(event, lang)}</span>
+          <p className="flex flex-wrap gap-x-5 gap-y-1 text-[0.9375rem] text-muted">
+            <span className="flex items-center gap-1.5">
+              <CalendarDays aria-hidden="true" className="size-4 shrink-0 text-accent-text" />
+              {eventWhen(event, lang)}
+            </span>
+            <span className="flex items-center gap-1.5">
+              <MapPin aria-hidden="true" className="size-4 shrink-0 text-accent-text" />
+              {eventLocation(event, lang)}
+            </span>
           </p>
           {showSeats && (
             <p
@@ -486,15 +492,20 @@ function FeaturedEvent({
           <div className="mt-2 flex flex-wrap gap-2">
             {open ? (
               <>
-                <LinkButton href={`/events/${event.slug}`} size="lg">
+                <LinkButton href={`/events/${event.slug}`} size="lg" className="max-sm:w-full">
                   {t.register}
                 </LinkButton>
-                <LinkButton href={`/events/${event.slug}`} variant="ghost" size="lg">
+                <LinkButton
+                  href={`/events/${event.slug}`}
+                  variant="ghost"
+                  size="lg"
+                  className="max-sm:w-full"
+                >
                   {t.details}
                 </LinkButton>
               </>
             ) : (
-              <LinkButton href={`/events/${event.slug}`} size="lg">
+              <LinkButton href={`/events/${event.slug}`} size="lg" className="max-sm:w-full">
                 {t.details}
               </LinkButton>
             )}

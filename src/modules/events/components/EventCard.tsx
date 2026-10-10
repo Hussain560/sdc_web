@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react';
-import { ArrowLeft, ArrowRight } from 'lucide-react';
+import { ArrowLeft, ArrowRight, CalendarDays, MapPin } from 'lucide-react';
 import { CapsuleCover } from '@/components/patterns/CapsuleMark';
 import { Badge } from '@/components/ui/Badge';
 import { Card, CardLink } from '@/components/ui/Card';
@@ -90,9 +90,15 @@ export function EventCard({
         <h3 className="t-h4 line-clamp-2">
           <CardLink href={`/events/${event.slug}`}>{title}</CardLink>
         </h3>
-        <p className="t-body-sm flex flex-col gap-0.5 text-muted">
-          <span>{eventWhen(event, lang)}</span>
-          <span className="line-clamp-1">{eventLocation(event, lang)}</span>
+        <p className="t-body-sm flex flex-col gap-1 text-muted">
+          <span className="flex items-center gap-1.5">
+            <CalendarDays aria-hidden="true" className="size-4 shrink-0 text-accent-text" />
+            {eventWhen(event, lang)}
+          </span>
+          <span className="flex items-center gap-1.5">
+            <MapPin aria-hidden="true" className="size-4 shrink-0 text-accent-text" />
+            <span className="line-clamp-1">{eventLocation(event, lang)}</span>
+          </span>
         </p>
         <div className="mt-auto flex items-center justify-between gap-3 border-t border-line pt-3">
           <span className="t-caption tabular-nums text-muted">
