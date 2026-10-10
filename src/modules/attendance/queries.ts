@@ -138,6 +138,22 @@ export async function verifyCertificate(id: string): Promise<CertificateFacts | 
   };
 }
 
+export type CheckInTokenStatus = 'valid' | 'expired' | 'closed' | 'missing';
+
+/** Whether the code in a check-in link is still good (the database owns the clock). Never throws. */
+export async function getCheckInTokenStatus(
+  sessionId: string | undefined,
+  token: string | undefined,
+): Promise<CheckInTokenStatus> {
+  if (!sessionId || !/^[0-9a-f-]{36}$/i.test(sessionId) || !token) return 'missing';
+  const { data, error } = await createPublicClient().rpc('check_in_token_status', {
+    p_session: sessionId,
+    p_token: token.slice(0, 64),
+  });
+  if (error) return 'missing';
+  return data === 'valid' || data === 'expired' || data === 'closed' ? data : 'missing';
+}
+
 /** The public check-in context (no sign-in needed). Null when the session or event is unknown or not public. */
 export async function getPublicCheckInContext(
   sessionId: string | undefined,

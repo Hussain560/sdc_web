@@ -171,8 +171,10 @@ export function LanguageProvider({
   const [isSwitching, startTransition] = useTransition();
   const toggleLanguage = () => {
     if (isSwitching) return;
+    // Keep the query string and the hash: pages such as the check-in link carry their data in them.
+    const href = `${pathname}${window.location.search}${window.location.hash}`;
     startTransition(() => {
-      router.replace(pathname, { locale: lang === 'ar' ? 'en' : 'ar' });
+      router.replace(href, { locale: lang === 'ar' ? 'en' : 'ar' });
     });
   };
 

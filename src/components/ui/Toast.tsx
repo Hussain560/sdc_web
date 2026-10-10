@@ -114,7 +114,7 @@ function ToastCard({
   );
 }
 
-/** Action feedback toasts (bottom-centre on phones, bottom inline-end on desktop). One provider near the root; call `useToast()` from client code. */
+/** Action feedback toasts (top of the screen: full width on phones, the inline-end corner on desktop, so top-left in Arabic and top-right in English). One provider near the root; call `useToast()` from client code. */
 export function ToastProvider({ children }: { children: ReactNode }) {
   const { lang } = useLanguage();
   const [items, setItems] = useState<ToastItem[]>([]);
@@ -141,7 +141,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
       {children}
       <div
         dir={lang === 'ar' ? 'rtl' : 'ltr'}
-        className="sdc-inter pointer-events-none fixed inset-x-4 bottom-4 z-(--z-toast) mx-auto flex flex-col gap-2 sm:inset-x-auto sm:end-4 sm:mx-0 sm:w-96"
+        className="sdc-inter pointer-events-none fixed inset-x-4 top-4 z-(--z-toast) mx-auto flex flex-col gap-2 sm:inset-x-auto sm:end-4 sm:mx-0 sm:w-96"
       >
         {items.map((t) => (
           <ToastCard

@@ -1,4 +1,4 @@
-// Creates the six demo personas on the LOCAL Supabase stack (Sprint 04 · ACC-004 / TEST-002 support).
+// Creates the demo personas on the LOCAL Supabase stack (Sprint 04 · ACC-004 / TEST-002 support).
 // Fictional @example.test accounts, a fixed local-only password, idempotent. Never run against a hosted project.
 //   npm run db:personas
 import { execSync } from 'node:child_process';
@@ -38,6 +38,27 @@ const personas = [
     role: 'committee_member',
     committee: 'ai',
   },
+  {
+    email: 'dev.deputy@example.test',
+    name: 'نائب قائد لجنة تجريبي',
+    role: 'committee_deputy',
+    committee: 'ai',
+  },
+  { email: 'dev.advisor@example.test', name: 'مستشار تجريبي', role: 'advisor' },
+  {
+    email: 'dev.head2@example.test',
+    name: 'قائد لجنة الأمن السيبراني التجريبي',
+    role: 'committee_head',
+    committee: 'cybersecurity',
+  },
+  {
+    email: 'dev.member2@example.test',
+    name: 'عضو لجنة الأمن السيبراني التجريبي',
+    role: 'committee_member',
+    committee: 'cybersecurity',
+  },
+  // A community member with no position: sees the member area, not the dashboard.
+  { email: 'dev.regular@example.test', name: 'عضو مجتمع تجريبي', role: null, member: true },
   { email: 'dev.plain@example.test', name: 'مستخدم عادي تجريبي', role: null },
 ];
 
@@ -79,7 +100,7 @@ for (const p of personas) {
       [id, p.role, p.committee ?? null],
     );
   }
-  if (p.role) {
+  if (p.role || p.member) {
     // Committee roles require an active member (is_active_member is real since Sprint 08).
     await db.query(
       `insert into public.members (user_id, joined_via, first_name_ar, is_directory_visible)

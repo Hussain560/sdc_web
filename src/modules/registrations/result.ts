@@ -86,7 +86,8 @@ export const RESULTS: Record<ResultOutcome, RegistrationResult> = {
     tone: 'success',
     icon: 'CircleCheck',
     title: { ar: 'تم تسجيلك', en: "You're registered" },
-    body: { ar: 'أرسلنا التفاصيل إلى {email}.', en: 'We sent the details to {email}.' },
+    // No body: the title and the calendar choices are enough, and the address stays off the screen.
+    body: { ar: '', en: '' },
     action: 'calendar',
   }),
   pending: R({

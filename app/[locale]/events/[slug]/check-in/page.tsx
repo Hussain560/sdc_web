@@ -1,7 +1,11 @@
 import { notFound } from 'next/navigation';
 import { getUser } from '@/lib/auth/session';
 import CheckInCard from '@/modules/attendance/components/public/CheckInCard';
-import { getCheckInContext, getPublicCheckInContext } from '@/modules/attendance/queries';
+import {
+  getCheckInContext,
+  getCheckInTokenStatus,
+  getPublicCheckInContext,
+} from '@/modules/attendance/queries';
 
 export const dynamic = 'force-dynamic';
 
@@ -28,5 +32,7 @@ export default async function CheckInPage({
     const mine = await getCheckInContext(slug, s);
     member = mine ? { accepted: mine.accepted, checkedInAt: mine.checkedInAt } : null;
   }
-  return <CheckInCard ctx={ctx} token={t ?? null} member={member} />;
+  // An old link says so the moment it opens, before anyone types an e-mail.
+  const tokenStatus = await getCheckInTokenStatus(s, t);
+  return <CheckInCard ctx={ctx} token={t ?? null} tokenStatus={tokenStatus} member={member} />;
 }

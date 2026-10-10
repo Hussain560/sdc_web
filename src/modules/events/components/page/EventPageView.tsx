@@ -7,21 +7,24 @@ import { Alert } from '@/components/ui/Alert';
 import { Avatar } from '@/components/ui/Avatar';
 import { Badge } from '@/components/ui/Badge';
 import { Breadcrumb } from '@/components/ui/Breadcrumb';
+import { buttonClasses } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
+import { cn } from '@/components/ui/cn';
 import { DateChip } from '@/components/ui/DateChip';
 import { Media } from '@/components/ui/Media';
-import { Progress } from '@/components/ui/Progress';
 import { TextLink } from '@/components/ui/TextLink';
-import { formatDateRange } from '@/lib/format';
+import { formatDateRange, formatTime } from '@/lib/format';
 import { EventCard } from '../EventCard';
 import { eventTitle } from '../../public-types';
 import { EVENT_COPY } from '../../page-copy';
 import { PILL_LABEL } from '../../status-labels';
+import { CLOSES_SOON_SEATS } from '../../view-state';
 import type { EventPageData } from '../../page-data';
 import {
   ConfirmationPanel,
   EventActionsProvider,
   EventNote,
+  HeroCalendar,
   PrimaryAction,
   StatePill,
 } from './EventActions';
@@ -34,17 +37,51 @@ const pick = (lang: Lang, ar: string | null | undefined, en: string | null | und
 const list = (lang: Lang, ar: string[], en: string[]) => (lang === 'en' && en.length ? en : ar);
 const hhmm = (t: string | null) => t?.slice(0, 5) ?? null;
 
-const Facts = ({ children }: { children: React.ReactNode }) => (
-  <ul className="t-body flex flex-wrap gap-x-6 gap-y-3 text-muted">{children}</ul>
-);
+/** "None." filler that organisers type into optional lists; it says nothing, so the page leaves it out. */
+const NOTHING = /^(لا يوجد|none)\s*\.?$/i;
+const meaningful = (items: string[]) => items.filter((x) => x.trim() && !NOTHING.test(x.trim()));
+
+/** A panel fact: icon + text (one line each). */
 const Fact = ({ icon: Icon, children }: { icon: typeof Clock; children: React.ReactNode }) => (
-  <li className="flex items-center gap-2">
-    <Icon aria-hidden="true" className="size-5 shrink-0 text-accent-text" />
-    <span>{children}</span>
+  <li className="flex items-start gap-3">
+    <Icon aria-hidden="true" className="mt-0.5 size-5 shrink-0 text-accent-text" />
+    <div className="flex min-w-0 flex-col gap-0.5">{children}</div>
   </li>
 );
 
-/** The v2 event page (PUBLIC-SCREENS-V2/02-event-page.md): hero, sticky side panel, sections, related events. */
+/** A hero fact below `lg` (label over value, in the bordered 2-column grid). */
+const HeroFact = ({
+  label,
+  className,
+  children,
+}: {
+  label: string;
+  className?: string;
+  children: React.ReactNode;
+}) => (
+  <div className={cn('flex flex-col gap-0.5 p-3.5', className)}>
+    <dt className="t-caption text-muted">{label}</dt>
+    <dd className="text-[15px] font-semibold tabular-nums">{children}</dd>
+  </div>
+);
+
+/** Section title: the two signal dots, then the title (24 px on phones, 28 px on desktop). */
+const SectionTitle = ({ id, children }: { id: string; children: React.ReactNode }) => (
+  <h2
+    id={id}
+    className="t-h3 flex items-center gap-2.5 lg:gap-3 lg:text-[1.75rem] lg:leading-[1.3]"
+  >
+    <span aria-hidden="true" className="signal-dots" />
+    {children}
+  </h2>
+);
+
+const sectionClass = 'flex scroll-mt-32 flex-col gap-4 lg:gap-6';
+
+/**
+ * The v2 event page (PUBLIC-SCREENS-V2/02-event-page.md, "صفحة الفعالية — SDC" canvas). One home per fact per
+ * breakpoint: the hero facts show below `lg`, the side panel at `lg` and up, and the action bar on phones.
+ */
 export function EventPageView({
   data,
   lang,
@@ -60,34 +97,36 @@ export function EventPageView({
   const place =
     e.locationMode === 'online' ? t.online : pick(lang, e.locationAr, e.locationEn) || t.online;
   const dateLine = e.startDate ? formatDateRange(e.startDate, e.endDate, lang) : t.dateTbd;
-  const time =
-    hhmm(e.startTime) && hhmm(e.endTime)
-      ? `${hhmm(e.startTime)} – ${hhmm(e.endTime)}`
-      : hhmm(e.startTime);
+  const time = formatTime(e.startTime, e.endTime, lang);
   const meta = [dateLine, place].filter(Boolean).join(' · ');
   const summary = pick(lang, e.summaryAr, e.summaryEn);
   const description = pick(lang, e.descriptionAr, e.descriptionEn);
-  const goals = list(lang, e.goalsAr, e.goalsEn);
-  const audience = list(lang, e.audience.ar, e.audience.en);
-  const bring = list(lang, e.whatToBringAr, e.whatToBringEn);
-  const faq = e.show.faq ? e.faq.filter((f) => f.qAr || f.qEn) : [];
+  const goals = meaningful(list(lang, e.goalsAr, e.goalsEn));
+  const audience = meaningful(list(lang, e.audience.ar, e.audience.en));
+  const bring = meaningful(list(lang, e.whatToBringAr, e.whatToBringEn));
+  const faq = e.show.faq ? e.faq.filter((f) => pick(lang, f.qAr, f.qEn).trim().length > 0) : [];
   const detailGroups = e.show.details
     ? (['responsibilities', 'requirements', 'deliverables', 'benefits'] as const).flatMap((k) => {
-        const v = list(lang, e[k].ar, e[k].en);
+        const v = meaningful(list(lang, e[k].ar, e[k].en));
         return v.length ? [[k, v] as const] : [];
       })
     : [];
   const showPresenters = e.show.presenters && presenters.length > 0;
   const showGoals = e.show.goals && (goals.length > 0 || audience.length > 0);
   const showAgenda = days.length > 1;
-  const showPlace = true;
+  // The side panel carries the place of an in-person event on desktop; below `lg` the Place section does.
+  const placeLgHidden = e.locationMode === 'in_person';
 
-  const sections: Array<{ id: string; label: string }> = [];
+  const sections: Array<{ id: string; label: string; hideAt?: 'lg' }> = [];
   if (description) sections.push({ id: 'about', label: t.sections.about });
   if (showAgenda) sections.push({ id: 'agenda', label: t.sections.agenda });
   if (showPresenters) sections.push({ id: 'speakers', label: t.sections.speakers });
   if (showGoals) sections.push({ id: 'for-whom', label: t.sections.forWhom });
-  if (showPlace) sections.push({ id: 'place', label: t.sections.place });
+  sections.push({
+    id: 'place',
+    label: t.sections.place,
+    hideAt: placeLgHidden ? 'lg' : undefined,
+  });
   if (bring.length > 0) sections.push({ id: 'bring', label: t.sections.bring });
   if (faq.length > 0) sections.push({ id: 'faq', label: t.sections.faq });
   if (detailGroups.length > 0) sections.push({ id: 'details', label: t.sections.details });
@@ -109,14 +148,46 @@ export function EventPageView({
     registrationStartAt: e.registrationStartAt,
     registrationEndAt: e.registrationEndAt,
   };
-  const seatsPct =
-    e.seats && e.seatsLeft !== null ? Math.round(((e.seats - e.seatsLeft) / e.seats) * 100) : null;
+  // Seats are public only when the organiser turned `show_seats_remaining` on.
+  const seatsShown =
+    e.show.seats && e.phase === 'registration_open' && !!e.seats && e.seatsLeft !== null;
+  const seatsLow = seatsShown && e.seatsLeft! <= CLOSES_SOON_SEATS(e.seats!);
+  const seatsPct = seatsShown ? Math.round(((e.seats! - e.seatsLeft!) / e.seats!) * 100) : 0;
   const mapOk = !!e.mapUrl && e.mapUrl.startsWith('https://');
+  const deadline =
+    e.registrationEndAt && e.phase === 'registration_open'
+      ? t.deadline(formatDateRange(e.registrationEndAt.slice(0, 10), null, lang))
+      : null;
+  const showCalendar = e.phase !== 'cancelled' && e.phase !== 'ended';
+  const cancelled = e.phase === 'cancelled';
   const wrap = 'mx-auto w-full max-w-(--container) px-4 md:px-8';
+  const certBox = certLine && (
+    <p className="t-body-sm flex items-start gap-2.5 rounded-shape-md bg-accent-soft px-3.5 py-3 text-on-accent-soft">
+      <Award aria-hidden="true" className="mt-0.5 size-5 shrink-0" />
+      <span>{certLine}</span>
+    </p>
+  );
 
   return (
     <EventActionsProvider
-      event={{ id: e.id, slug: e.slug, title, meta }}
+      event={{
+        id: e.id,
+        slug: e.slug,
+        title,
+        meta,
+        calendar: e.startDate
+          ? {
+              title,
+              startDate: e.startDate,
+              endDate: e.endDate,
+              startTime: e.startTime,
+              endTime: e.endTime,
+              place: e.locationMode === 'online' ? null : place,
+              description: summary || null,
+              url: `${lang === 'en' ? '/en' : ''}/events/${e.slug}`,
+            }
+          : null,
+      }}
       input={input}
       checkinOpen={checkinOpen}
       now={now}
@@ -124,25 +195,38 @@ export function EventPageView({
       <SiteHeader />
       <main id="main" className="pb-28 lg:pb-0">
         <div className={`${wrap} pt-6`}>
-          <Breadcrumb
-            label={t.breadcrumb}
-            items={[
-              { label: t.home, href: '/' },
-              { label: t.events, href: '/events' },
-              { label: title },
-            ]}
-          />
+          <div className="max-lg:hidden">
+            <Breadcrumb
+              label={t.breadcrumb}
+              items={[
+                { label: t.home, href: '/' },
+                { label: t.events, href: '/events' },
+                { label: title },
+              ]}
+            />
+          </div>
+          {/* Phones show the parent only. */}
+          <TextLink href="/events" variant="standalone" className="t-body-sm min-h-11 lg:hidden">
+            {t.backToEvents}
+          </TextLink>
         </div>
 
-        <div className={`${wrap} mt-6 grid gap-10 lg:grid-cols-[1fr_480px]`}>
-          <div className="min-w-0">
-            <header className="flex flex-col gap-5">
-              {e.phase === 'cancelled' && (
+        <div
+          className={`${wrap} mt-2 grid items-start gap-12 lg:mt-6 lg:grid-cols-[minmax(0,1fr)_var(--side-panel)]`}
+        >
+          <div className="flex min-w-0 flex-col gap-10 lg:gap-16">
+            <header className="relative flex flex-col gap-5 lg:gap-6 lg:overflow-hidden lg:rounded-shape-xl lg:border lg:border-line lg:bg-surface lg:p-10">
+              <div
+                aria-hidden="true"
+                className="motif-dots pointer-events-none absolute end-0 top-0 hidden h-[200px] w-[280px] text-muted lg:block ltr:[mask-image:linear-gradient(to_bottom_right,black,transparent_70%)] rtl:[mask-image:linear-gradient(to_bottom_left,black,transparent_70%)]"
+              />
+              <Media src={e.cover} alt="" kind="event" className="rounded-shape-lg lg:hidden" />
+              {cancelled && (
                 <Alert tone="warning" title={t.cancelledTitle}>
                   {e.cancelReason}
                 </Alert>
               )}
-              <div className="flex flex-wrap items-center gap-2">
+              <div className="relative flex flex-wrap items-center gap-2">
                 <StatePill labels={pillLabels} />
                 <Badge>{t.types[e.type] ?? e.type}</Badge>
                 {committee && e.committeeSlug && (
@@ -155,69 +239,79 @@ export function EventPageView({
                   </TextLink>
                 )}
               </div>
-              <h1 className="t-h1 max-w-[24ch]">{title}</h1>
-              {summary && <p className="t-lede text-muted">{summary}</p>}
-              <div
-                className={
-                  e.phase === 'cancelled' ? 'opacity-70 line-through decoration-1' : undefined
-                }
-              >
-                <Facts>
-                  <Fact icon={CalendarDays}>{dateLine}</Fact>
-                  {time && (
-                    <Fact icon={Clock}>
-                      <span className="tabular-nums">{time}</span>
-                    </Fact>
-                  )}
-                  <Fact icon={MapPin}>{place}</Fact>
-                  {e.show.seats && e.seatsLeft !== null && e.phase === 'registration_open' && (
-                    <Fact icon={Users}>{t.seatsLeft(e.seatsLeft)}</Fact>
-                  )}
-                </Facts>
+              <div className="relative flex flex-col gap-3">
+                <h1 className="t-h1 max-w-[24ch]">{title}</h1>
+                {summary && <p className="t-lede max-w-[60ch] text-muted">{summary}</p>}
               </div>
-              <div className="flex flex-wrap items-center gap-3">
-                <div className="max-lg:hidden">
-                  <PrimaryAction eventSlug={e.slug} />
-                </div>
+
+              {/* Below lg only: the panel owns date, time and place from lg up. */}
+              <dl
+                className={cn(
+                  'relative grid grid-cols-2 overflow-hidden rounded-shape-lg border border-line bg-surface lg:hidden',
+                  cancelled && 'opacity-70 line-through decoration-1',
+                )}
+              >
+                <HeroFact
+                  label={t.labels.date}
+                  className={cn('border-b border-line', time ? 'border-e' : 'col-span-2')}
+                >
+                  {dateLine}
+                </HeroFact>
+                {time && (
+                  <HeroFact label={t.labels.time} className="border-b border-line">
+                    {time}
+                  </HeroFact>
+                )}
+                <HeroFact label={t.labels.place} className="col-span-2">
+                  {place}
+                </HeroFact>
+              </dl>
+              {deadline && <p className="t-caption -mt-2 text-muted lg:hidden">{deadline}</p>}
+              <div className="empty:hidden lg:hidden">
+                <EventNote skipSeats />
+              </div>
+              <div className="empty:hidden lg:hidden">
+                <ConfirmationPanel />
+              </div>
+              {certBox && <div className="lg:hidden">{certBox}</div>}
+
+              <div className="relative flex flex-wrap items-center gap-2">
+                {showCalendar && <HeroCalendar eventSlug={e.slug} />}
                 <ShareButton title={title} label={t.share} copied={t.copied} />
               </div>
-              <EventNote />
-              <ConfirmationPanel />
-              {certLine && (
-                <p className="t-body-sm flex gap-2 text-muted lg:hidden">
-                  <Award aria-hidden="true" className="mt-0.5 size-5 shrink-0 text-accent-text" />
-                  {certLine}
-                </p>
-              )}
             </header>
 
-            <div className="mt-8">
-              <SectionNav items={sections} label={t.onThisPage} />
-            </div>
+            <SectionNav items={sections} label={t.onThisPage} />
 
             {description && (
-              <section id="about" aria-labelledby="h-about" className="mt-10 scroll-mt-32">
-                <SectionHeader headingId="h-about" title={t.sections.about} className="mb-4" />
+              <section id="about" aria-labelledby="h-about" className={sectionClass}>
+                <SectionTitle id="h-about">{t.sections.about}</SectionTitle>
                 <p className="t-body max-w-[70ch] whitespace-pre-line">{description}</p>
               </section>
             )}
 
             {showAgenda && (
-              <section id="agenda" aria-labelledby="h-agenda" className="mt-12 scroll-mt-32">
-                <SectionHeader headingId="h-agenda" title={t.sections.agenda} className="mb-4" />
+              <section id="agenda" aria-labelledby="h-agenda" className={sectionClass}>
+                <SectionTitle id="h-agenda">{t.sections.agenda}</SectionTitle>
                 <ol className="flex flex-col gap-3">
                   {days.map((d, i) => {
                     const dayPlace = pick(lang, d.locationAr, d.locationEn) || place;
-                    const s = hhmm(d.startsAt) ?? hhmm(e.startTime);
-                    const en = hhmm(d.endsAt) ?? hhmm(e.endTime);
+                    const dayTime = formatTime(
+                      hhmm(d.startsAt) ?? hhmm(e.startTime),
+                      hhmm(d.endsAt) ?? hhmm(e.endTime),
+                      lang,
+                    );
                     return (
                       <li key={d.date}>
-                        <Card variant="surface" className="flex items-center gap-4">
+                        <Card
+                          variant="surface"
+                          className="flex items-center gap-5 px-5 py-4 md:p-5"
+                        >
                           <DateChip date={d.date} lang={lang} variant="block" />
-                          <div className="flex flex-col gap-1">
+                          <div className="flex min-w-0 flex-col gap-1">
                             <p className="t-h4">{t.day(i + 1)}</p>
                             <p className="t-body-sm tabular-nums text-muted">
-                              {[s && en ? `${s} – ${en}` : s, dayPlace].filter(Boolean).join(' · ')}
+                              {[dayTime, dayPlace].filter(Boolean).join(' · ')}
                             </p>
                           </div>
                         </Card>
@@ -229,34 +323,33 @@ export function EventPageView({
             )}
 
             {showPresenters && (
-              <section id="speakers" aria-labelledby="h-speakers" className="mt-12 scroll-mt-32">
-                <SectionHeader
-                  headingId="h-speakers"
-                  title={t.sections.speakers}
-                  className="mb-4"
-                />
-                <ul className="grid gap-4 sm:grid-cols-2">
+              <section id="speakers" aria-labelledby="h-speakers" className={sectionClass}>
+                <SectionTitle id="h-speakers">{t.sections.speakers}</SectionTitle>
+                <ul className="grid gap-3 sm:grid-cols-2 lg:gap-4">
                   {presenters.map((p) => {
                     const name = lang === 'en' ? p.nameEn : p.nameAr;
-                    const role = pick(lang, p.titleAr, p.titleEn) || t.roles[p.role];
+                    const role = pick(lang, p.titleAr, p.titleEn);
                     return (
-                      <li key={p.id} className="flex items-center gap-4">
-                        <Avatar name={name} src={p.photo} size={56} />
-                        <div className="flex flex-col">
-                          {p.link ? (
-                            <TextLink
-                              href={p.link}
-                              external
-                              externalLabel={t.newTab}
-                              variant="standalone"
-                            >
-                              {name}
-                            </TextLink>
-                          ) : (
-                            <span className="t-label">{name}</span>
-                          )}
-                          <span className="t-body-sm text-muted">{role}</span>
-                        </div>
+                      <li key={p.id}>
+                        <Card variant="surface" className="flex items-center gap-4 p-4 md:p-4">
+                          <Avatar name={name} src={p.photo} size={56} />
+                          <div className="flex min-w-0 flex-col items-start gap-0.5">
+                            <Badge tone="accent">{t.roles[p.role]}</Badge>
+                            {p.link ? (
+                              <TextLink
+                                href={p.link}
+                                external
+                                externalLabel={t.newTab}
+                                variant="standalone"
+                              >
+                                {name}
+                              </TextLink>
+                            ) : (
+                              <span className="t-label">{name}</span>
+                            )}
+                            {role && <span className="t-body-sm text-muted">{role}</span>}
+                          </div>
+                        </Card>
                       </li>
                     );
                   })}
@@ -265,11 +358,11 @@ export function EventPageView({
             )}
 
             {showGoals && (
-              <section id="for-whom" aria-labelledby="h-forwhom" className="mt-12 scroll-mt-32">
-                <SectionHeader headingId="h-forwhom" title={t.sections.forWhom} className="mb-4" />
-                <div className="grid gap-8 md:grid-cols-2">
+              <section id="for-whom" aria-labelledby="h-forwhom" className={sectionClass}>
+                <SectionTitle id="h-forwhom">{t.sections.forWhom}</SectionTitle>
+                <div className="grid gap-4 md:grid-cols-2 lg:gap-8">
                   {goals.length > 0 && (
-                    <div>
+                    <div className="max-lg:rounded-shape-lg max-lg:border max-lg:border-line max-lg:bg-surface max-lg:p-5">
                       <h3 className="t-h4 mb-3">{t.goals}</h3>
                       <ul className="flex flex-col gap-2">
                         {goals.map((g) => (
@@ -285,7 +378,7 @@ export function EventPageView({
                     </div>
                   )}
                   {audience.length > 0 && (
-                    <div>
+                    <div className="max-lg:rounded-shape-lg max-lg:border max-lg:border-line max-lg:bg-surface max-lg:p-5">
                       <h3 className="t-h4 mb-3">{t.audience}</h3>
                       <ul className="t-body flex list-disc flex-col gap-2 ps-5 marker:text-accent-text">
                         {audience.map((a) => (
@@ -298,33 +391,42 @@ export function EventPageView({
               </section>
             )}
 
-            {showPlace && (
-              <section id="place" aria-labelledby="h-place" className="mt-12 scroll-mt-32">
-                <SectionHeader headingId="h-place" title={t.sections.place} className="mb-4" />
-                <p className="t-body flex items-start gap-2">
-                  <MapPin aria-hidden="true" className="mt-1 size-5 shrink-0 text-accent-text" />
-                  {place}
-                </p>
-                {mapOk && (
-                  <TextLink
+            <section
+              id="place"
+              aria-labelledby="h-place"
+              className={cn(sectionClass, placeLgHidden && 'lg:hidden')}
+            >
+              <SectionTitle id="h-place">{t.sections.place}</SectionTitle>
+              <Card variant="surface" className="flex flex-col gap-4 p-5 md:p-5">
+                <div className="flex items-center gap-3.5">
+                  <span
+                    aria-hidden="true"
+                    className="flex size-11 shrink-0 items-center justify-center rounded-shape-md bg-accent-soft text-on-accent-soft"
+                  >
+                    <MapPin className="size-5" />
+                  </span>
+                  <p className="t-h4">{place}</p>
+                </div>
+                {e.locationMode !== 'in_person' && (
+                  <p className="t-body-sm text-muted">{t.onlineLink}</p>
+                )}
+                {mapOk && e.locationMode !== 'online' && (
+                  <a
                     href={e.mapUrl!}
-                    external
-                    externalLabel={t.newTab}
-                    variant="standalone"
-                    className="mt-2 min-h-11"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={buttonClasses({ variant: 'secondary', fullWidth: true })}
                   >
                     {t.openMaps}
-                  </TextLink>
+                    <span className="sr-only">{t.newTab}</span>
+                  </a>
                 )}
-                {e.locationMode !== 'in_person' && (
-                  <p className="t-body-sm mt-2 text-muted">{t.onlineLink}</p>
-                )}
-              </section>
-            )}
+              </Card>
+            </section>
 
             {bring.length > 0 && (
-              <section id="bring" aria-labelledby="h-bring" className="mt-12 scroll-mt-32">
-                <SectionHeader headingId="h-bring" title={t.sections.bring} className="mb-4" />
+              <section id="bring" aria-labelledby="h-bring" className={sectionClass}>
+                <SectionTitle id="h-bring">{t.sections.bring}</SectionTitle>
                 <ul className="t-body flex list-disc flex-col gap-2 ps-5 marker:text-accent-text">
                   {bring.map((b) => (
                     <li key={b}>{b}</li>
@@ -334,8 +436,8 @@ export function EventPageView({
             )}
 
             {faq.length > 0 && (
-              <section id="faq" aria-labelledby="h-faq" className="mt-12 scroll-mt-32">
-                <SectionHeader headingId="h-faq" title={t.sections.faq} className="mb-4" />
+              <section id="faq" aria-labelledby="h-faq" className={sectionClass}>
+                <SectionTitle id="h-faq">{t.sections.faq}</SectionTitle>
                 <Accordion
                   items={faq.map((f, i) => ({
                     id: `f${i}`,
@@ -347,8 +449,8 @@ export function EventPageView({
             )}
 
             {detailGroups.length > 0 && (
-              <section id="details" aria-labelledby="h-details" className="mt-12 scroll-mt-32">
-                <SectionHeader headingId="h-details" title={t.sections.details} className="mb-4" />
+              <section id="details" aria-labelledby="h-details" className={sectionClass}>
+                <SectionTitle id="h-details">{t.sections.details}</SectionTitle>
                 <Accordion
                   headingLevel={3}
                   items={detailGroups.map(([k, v]) => ({
@@ -367,63 +469,83 @@ export function EventPageView({
             )}
           </div>
 
-          <aside className="max-lg:hidden">
-            <Card variant="surface" className="sticky top-28 flex flex-col gap-6 p-8">
+          <aside aria-label={t.panelLabel} className="max-lg:hidden">
+            <div className="sticky top-24 flex flex-col gap-5 rounded-shape-xl border border-line bg-surface p-2 pb-6 text-text">
               <Media src={e.cover} alt="" kind="event" className="rounded-shape-lg" />
-              <ul className="t-lede flex flex-col gap-4 text-text">
-                <Fact icon={CalendarDays}>{dateLine}</Fact>
-                {time && (
-                  <Fact icon={Clock}>
-                    <span className="tabular-nums">{time}</span>
-                  </Fact>
-                )}
-                <Fact icon={MapPin}>{place}</Fact>
-              </ul>
-              {mapOk && (
-                <TextLink
-                  href={e.mapUrl!}
-                  external
-                  externalLabel={t.newTab}
-                  variant="standalone"
-                  className="t-body-sm"
+              <div className="flex flex-col gap-4 px-4">
+                <ul
+                  className={cn(
+                    't-body flex flex-col gap-3.5',
+                    cancelled && 'opacity-70 line-through decoration-1',
+                  )}
                 >
-                  {t.openMaps}
-                </TextLink>
-              )}
-              {e.seats && e.seatsLeft !== null && seatsPct !== null && (
-                <div>
-                  <p className="t-body-sm mb-2 tabular-nums text-muted">
-                    {t.seatsOf(e.seatsLeft, e.seats)}
-                  </p>
-                  <Progress value={seatsPct} label={t.seatsBar} className="[&>p]:sr-only" />
+                  <Fact icon={CalendarDays}>
+                    <span className="font-semibold tabular-nums">{dateLine}</span>
+                  </Fact>
+                  {time && (
+                    <Fact icon={Clock}>
+                      <span className="font-semibold tabular-nums">{time}</span>
+                    </Fact>
+                  )}
+                  <Fact icon={MapPin}>
+                    <span className="font-semibold">{place}</span>
+                    {mapOk && e.locationMode !== 'online' && (
+                      <TextLink
+                        href={e.mapUrl!}
+                        external
+                        externalLabel={t.newTab}
+                        variant="standalone"
+                        className="t-body-sm"
+                      >
+                        {t.openMaps}
+                      </TextLink>
+                    )}
+                  </Fact>
+                </ul>
+                {seatsShown && (
+                  <div className="flex flex-col gap-2 rounded-shape-lg bg-surface-raised px-4 py-3.5">
+                    <span className="inline-flex items-center gap-2 font-semibold tabular-nums">
+                      <Users aria-hidden="true" className="size-5 shrink-0 text-accent-text" />
+                      {t.seatsOf(e.seatsLeft!, e.seats!)}
+                    </span>
+                    <div
+                      role="meter"
+                      aria-label={t.seatsBar}
+                      aria-valuemin={0}
+                      aria-valuemax={e.seats!}
+                      aria-valuenow={e.seats! - e.seatsLeft!}
+                      className="h-2 overflow-hidden rounded-full bg-line"
+                    >
+                      <div
+                        className={cn('h-full rounded-full', seatsLow ? 'bg-warning' : 'bg-accent')}
+                        style={{ width: `${seatsPct}%` }}
+                      />
+                    </div>
+                  </div>
+                )}
+                <div className="flex flex-col gap-2.5">
+                  <PrimaryAction eventSlug={e.slug} fullWidth />
+                  <ConfirmationPanel />
+                  <div className="text-center [&_p]:font-semibold">
+                    <EventNote skipSeats />
+                  </div>
+                  {deadline && <p className="t-caption text-center text-muted">{deadline}</p>}
                 </div>
-              )}
-              <PrimaryAction eventSlug={e.slug} fullWidth />
-              <EventNote />
-              {e.registrationEndAt && e.phase === 'registration_open' && (
-                <p className="t-caption text-muted">
-                  {t.deadline(formatDateRange(e.registrationEndAt.slice(0, 10), null, lang))}
-                </p>
-              )}
-              {certLine && (
-                <p className="t-body-sm flex gap-2 text-muted">
-                  <Award aria-hidden="true" className="mt-0.5 size-5 shrink-0 text-accent-text" />
-                  {certLine}
-                </p>
-              )}
-              {e.contactEmail && (
-                <p className="t-body-sm text-muted">
-                  {t.contact}{' '}
-                  <a
-                    href={`mailto:${e.contactEmail}`}
-                    dir="ltr"
-                    className="text-accent-text underline underline-offset-[3px]"
-                  >
-                    {e.contactEmail}
-                  </a>
-                </p>
-              )}
-            </Card>
+                {certBox}
+                {e.contactEmail && (
+                  <p className="t-body-sm text-muted">
+                    {t.contact}{' '}
+                    <a
+                      href={`mailto:${e.contactEmail}`}
+                      dir="ltr"
+                      className="text-accent-text underline underline-offset-[3px]"
+                    >
+                      {e.contactEmail}
+                    </a>
+                  </p>
+                )}
+              </div>
+            </div>
           </aside>
         </div>
 
@@ -432,13 +554,14 @@ export function EventPageView({
             <SectionHeader
               headingId="h-related"
               title={t.sections.related}
+              dots
               action={
                 <TextLink href="/events" variant="standalone" className="min-h-11">
                   {t.allEvents}
                 </TextLink>
               }
             />
-            <ul className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <ul className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 lg:gap-6">
               {related.map((r) => (
                 <li key={r.id}>
                   <EventCard event={r} lang={lang} now={now} />
@@ -449,12 +572,10 @@ export function EventPageView({
         )}
       </main>
 
-      {/* Phone: fixed action bar (never covers content: <main> has bottom padding). */}
-      <div className="fixed inset-x-0 bottom-0 z-(--z-sticky) flex items-center justify-between gap-3 border-t border-line bg-surface/95 px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur-md lg:hidden">
-        <p className="t-body-sm tabular-nums text-muted">
-          {e.seatsLeft !== null && e.phase === 'registration_open'
-            ? t.seatsLeft(e.seatsLeft)
-            : dateLine}
+      {/* Phone: fixed action bar (never covers content: <main> has bottom padding). Seats left, or the date. */}
+      <div className="fixed inset-x-0 bottom-0 z-(--z-sticky) flex min-h-16 items-center justify-between gap-3 border-t border-line bg-surface/95 px-4 pt-2.5 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur-md lg:hidden">
+        <p className="font-bold tabular-nums">
+          {seatsShown ? (e.seatsLeft === 0 ? t.seatsFull : t.seatsLeft(e.seatsLeft!)) : dateLine}
         </p>
         <PrimaryAction eventSlug={e.slug} size="md" />
       </div>

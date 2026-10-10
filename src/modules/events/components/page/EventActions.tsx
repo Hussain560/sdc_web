@@ -2,7 +2,8 @@
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
-import { Button, LinkButton, type ButtonSize } from '@/components/ui/Button';
+import type { CalendarEventInfo } from '../../calendar-links';
+import { Button, LinkButton, buttonClasses, type ButtonSize } from '@/components/ui/Button';
 import { Dialog } from '@/components/ui/Dialog';
 import { StatusPill } from '@/components/ui/StatusPill';
 import { useToast } from '@/components/ui/Toast';
@@ -64,7 +65,13 @@ export function EventActionsProvider({
   now,
   children,
 }: {
-  event: { id: string; slug: string; title: string; meta: string };
+  event: {
+    id: string;
+    slug: string;
+    title: string;
+    meta: string;
+    calendar?: CalendarEventInfo | null;
+  };
   input: EventViewInput;
   checkinOpen: boolean;
   now: number;
@@ -148,7 +155,13 @@ export function EventActionsProvider({
       <RegistrationDialog
         open={dialog}
         onClose={() => setDialog(false)}
-        event={{ id: event.id, slug: event.slug, title: event.title, meta: event.meta }}
+        event={{
+          id: event.id,
+          slug: event.slug,
+          title: event.title,
+          meta: event.meta,
+          calendar: event.calendar,
+        }}
         waitlist={view.id === 'S4'}
         member={
           isLoggedIn && user
@@ -257,6 +270,24 @@ export function PrimaryAction({
   return null;
 }
 
+/** The hero's "Add to calendar". On desktop it steps aside once the side panel's own action is the calendar (S8). */
+export function HeroCalendar({ eventSlug }: { eventSlug: string }) {
+  const { view } = useEventCtx();
+  const { lang } = useLanguage();
+  return (
+    <a
+      href={`/events/${eventSlug}/calendar.ics`}
+      download
+      className={buttonClasses({
+        variant: 'secondary',
+        className: view.action.kind === 'calendar' ? 'lg:hidden' : undefined,
+      })}
+    >
+      {EVENT_COPY[lang].calendar}
+    </a>
+  );
+}
+
 /** The viewer's confirmation (S8): their status, the e-mail it went to, and cancelling before the event. */
 export function ConfirmationPanel() {
   const { view, registrationEmail, cancelRegistration, canCancel } = useEventCtx();
@@ -285,8 +316,11 @@ export function ConfirmationPanel() {
   );
 }
 
-/** The state's extra line under the action (closes in…, seats left, waiting-list promise, date to be announced). */
-export function EventNote() {
+/**
+ * The state's extra line under the action (closes in…, seats left, waiting-list promise, date to be announced).
+ * `skipSeats`: the seats line has its own home (panel bar, phone bar) and obeys `show_seats_remaining`.
+ */
+export function EventNote({ skipSeats }: { skipSeats?: boolean }) {
   const { view, input, now } = useEventCtx();
   const { lang } = useLanguage();
   const t = EVENT_COPY[lang];
@@ -298,7 +332,7 @@ export function EventNote() {
     text = t.closesIn(
       hours >= 24 ? rtf.format(Math.round(hours / 24), 'day') : rtf.format(hours, 'hour'),
     );
-  } else if (view.note === 'seats-left' && input.seatsLeft !== null)
+  } else if (view.note === 'seats-left' && !skipSeats && input.seatsLeft !== null)
     text = t.seatsLeft(input.seatsLeft);
   else if (view.note === 'waitlist-promise') text = t.waitlistPromise;
   else if (view.note === 'date-tbd') text = t.dateTbd;

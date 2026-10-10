@@ -24,8 +24,19 @@ export const EVENT_COPY = {
     closed: 'التسجيل مغلق',
     closesIn: (rel: string) => `يُغلق التسجيل ${rel}`,
     deadline: (d: string) => `يُغلق التسجيل ${d}`,
-    seatsLeft: (n: number) => `بقي ${n} مقاعد`,
-    seatsOf: (left: number, total: number) => `${left} من ${total} مقعداً متبقياً`,
+    // Arabic number agreement: 1 and 2 are dual forms, 3 to 10 take the plural, 11 and above take the singular noun.
+    seatsLeft: (n: number) =>
+      n === 1
+        ? 'بقي مقعد واحد'
+        : n === 2
+          ? 'بقي مقعدان'
+          : n <= 10
+            ? `بقي ${n} مقاعد`
+            : `${n} مقعداً متبقياً`,
+    seatsOf: (left: number, total: number) =>
+      left === 0 ? `اكتملت المقاعد · ${total} من ${total}` : `${left} من ${total} مقعداً متبقياً`,
+    seatsFull: 'اكتملت المقاعد',
+    labels: { date: 'التاريخ', time: 'الوقت', place: 'المكان' },
     waitlistPromise: 'سنراسلك إن توفّر مقعد.',
     dateTbd: 'يُعلن الموعد قريباً',
     online: 'عبر الإنترنت',
@@ -62,6 +73,8 @@ export const EVENT_COPY = {
       benefits: 'المزايا',
     },
     allEvents: 'كل الفعاليات',
+    backToEvents: 'الفعاليات',
+    panelLabel: 'ملخص الفعالية والتسجيل',
     cancelledTitle: 'أُلغيت هذه الفعالية',
     registeredTitle: 'أنت مسجّل',
     reviewTitle: 'طلبك قيد المراجعة',
@@ -99,8 +112,11 @@ export const EVENT_COPY = {
     closed: 'Registration closed',
     closesIn: (rel: string) => `Registration closes ${rel}`,
     deadline: (d: string) => `Registration closes ${d}`,
-    seatsLeft: (n: number) => `${n} seats left`,
-    seatsOf: (left: number, total: number) => `${left} of ${total} seats left`,
+    seatsLeft: (n: number) => (n === 1 ? '1 seat left' : `${n} seats left`),
+    seatsOf: (left: number, total: number) =>
+      left === 0 ? `Full · ${total} of ${total}` : `${left} of ${total} seats left`,
+    seatsFull: 'Full',
+    labels: { date: 'Date', time: 'Time', place: 'Place' },
     waitlistPromise: "We'll e-mail you if a seat opens.",
     dateTbd: 'Date to be announced',
     online: 'Online',
@@ -138,6 +154,8 @@ export const EVENT_COPY = {
       benefits: 'Benefits',
     },
     allEvents: 'All events',
+    backToEvents: 'Events',
+    panelLabel: 'Event summary and registration',
     cancelledTitle: 'This event was cancelled',
     registeredTitle: "You're registered",
     reviewTitle: 'Your request is under review',

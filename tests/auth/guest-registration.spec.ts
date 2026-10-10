@@ -17,6 +17,19 @@ test.afterAll(async () => {
   await sql(`delete from public.events where slug = $1`, [slug]);
 });
 
+/** The four name boxes: Arabic first and last name, English first and last name. */
+async function fillNames(dlg: import('@playwright/test').Locator) {
+  const ar = dlg.getByLabel('First name (Arabic)');
+  // The wrong script is dropped as you type.
+  await ar.fill('زائرGuest1');
+  await expect(ar).toHaveValue('زائر');
+  await dlg.getByLabel('Last name (Arabic)').fill('تجريبي');
+  const en = dlg.getByLabel('First name (English)');
+  await en.fill('Guestزائر1');
+  await expect(en).toHaveValue('Guest');
+  await dlg.getByLabel('Last name (English)').fill('Visitor');
+}
+
 test('a visitor registers from the modal without an account', async ({ page, browser }) => {
   const head = await persona('committee_head', {
     committeeSlug: 'ai',
@@ -47,14 +60,16 @@ test('a visitor registers from the modal without an account', async ({ page, bro
 
     // Empty submission: inline errors, nothing is sent.
     await dlg.getByRole('button', { name: 'Register' }).click();
-    await expect(dlg.locator('#g-name-error')).toBeVisible();
+    await expect(dlg.locator('#g-first-ar-error')).toBeVisible();
+    await expect(dlg.locator('#g-last-en-error')).toBeVisible();
     await expect(dlg.locator('#g-email-error')).toBeVisible();
     await expect(dlg.locator('#g-phone-error')).toBeVisible();
 
     // A form sent in under 1.5 seconds is refused (scripted submissions), the person may retry.
-    await dlg.getByLabel('Full name').fill('Guest Visitor Person');
+    await fillNames(dlg);
     await dlg.getByLabel('E-mail').fill(email);
-    await dlg.getByLabel(/Mobile/).fill('+966 50 123 4567');
+    await dlg.getByLabel(/Mobile/).fill('501234567'); // the Saudi mask shows 50 123 4567
+    await dlg.getByRole('button', { name: 'University student' }).click();
     await dlg.getByLabel(/University/).fill('King Saud University');
     await page.waitForTimeout(1800);
     // consent is required: without it the form refuses
@@ -66,7 +81,8 @@ test('a visitor registers from the modal without an account', async ({ page, bro
     await page.getByRole('button', { name: 'Done' }).click();
 
     // The button now reads "Registered" and the e-mail arrives.
-    await expect(page.getByText("You're registered").first()).toBeVisible();
+    // The confirmation sits in the hero below lg and in the side panel from lg up: pick the visible one.
+    await expect(page.getByText("You're registered").locator('visible=true').first()).toBeVisible();
     const mail = await waitForMail(email, { subject: /registration|registered|in/i });
     expect(mail.html).toContain(`Guest Workshop ${tag}`);
 
@@ -81,7 +97,8 @@ test('a visitor registers from the modal without an account', async ({ page, bro
     );
     expect(row!.user_id).toBeNull();
     expect(row!.status).toBe('accepted');
-    expect(row!.answers.phone).toBe('+966 50 123 4567');
+    expect(row!.answers.phone).toBe('+966501234567');
+    expect(row!.answers.first_name_en).toBe('Guest');
     const [consent] = await sql<{ consent_version: string | null; consent_at: string | null }>(
       `select consent_version, consent_at from public.event_registrations where event_id = $1 and email_snapshot = $2`,
       [eventId, email],
@@ -97,9 +114,9 @@ test('a visitor registers from the modal without an account', async ({ page, bro
       .first()
       .click();
     const dlg2 = page.getByRole('dialog', { name: /Register for Guest Workshop/ });
-    await dlg2.getByLabel('Full name').fill('Guest Visitor Person');
+    await fillNames(dlg2);
     await dlg2.getByLabel('E-mail').fill(email.toUpperCase());
-    await dlg2.getByLabel(/Mobile/).fill('0501234567');
+    await dlg2.getByLabel(/Mobile/).fill('0501234567'); // a leading zero is dropped
     await dlg2.getByRole('checkbox').check({ force: true });
     await page.waitForTimeout(1800);
     await dlg2.getByRole('button', { name: 'Register' }).click();
@@ -115,10 +132,10 @@ test('a visitor registers from the modal without an account', async ({ page, bro
     const hpage = await hctx.newPage();
     await signInAndWait(hpage, head.email, undefined, '/en/login');
     await gotoReady(hpage, `/en/dashboard/events/${eventId}?tab=registrations`);
-    await hpage.getByRole('button', { name: 'Guest Visitor Person' }).click();
+    await hpage.getByRole('button', { name: 'زائر تجريبي' }).click();
     const info = hpage.getByRole('dialog').filter({ hasText: 'Registered at' });
     await expect(info).toContainText('Guest');
-    await expect(info).toContainText('+966 50 123 4567');
+    await expect(info).toContainText('+966501234567');
     await expect(info).toContainText('King Saud University');
     await hctx.close();
   } finally {

@@ -35,7 +35,14 @@ export function FieldLabel({
   return (
     <label htmlFor={htmlFor} className={cn('t-label text-text', hidden && 'sr-only')}>
       {label}
-      {requiredLabel && <span className="ms-1 font-normal text-muted">({requiredLabel})</span>}
+      {requiredLabel && (
+        <>
+          <span aria-hidden="true" className="ms-1 text-danger">
+            *
+          </span>
+          <span className="sr-only"> ({requiredLabel})</span>
+        </>
+      )}
       {optionalLabel && <span className="ms-1 font-normal text-muted">({optionalLabel})</span>}
     </label>
   );

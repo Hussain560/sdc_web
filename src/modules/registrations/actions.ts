@@ -5,6 +5,8 @@ import { revalidatePath } from 'next/cache';
 import { headers } from 'next/headers';
 import { after } from 'next/server';
 import { z } from 'zod';
+import { isArabicName, isEnglishName } from '@/lib/names';
+import { normalizeInternational } from '@/lib/phone';
 import { fail, ok, type ErrorCode, type Result } from '@/lib/result';
 import { createClient } from '@/lib/supabase/server';
 import { isLang, type Lang } from '@/modules/auth/messages';
@@ -142,17 +144,29 @@ export async function resendRegistrationMail(id: string, ctx: { lang: Lang }): P
 }
 
 const GUEST_FIELD: Record<string, { ar: string; en: string }> = {
-  name: { ar: 'الاسم الكامل (3 أحرف على الأقل)', en: 'full name (at least 3 characters)' },
+  firstAr: { ar: 'الاسم الأول بالعربية', en: 'first name in Arabic' },
+  lastAr: { ar: 'اسم العائلة بالعربية', en: 'last name in Arabic' },
+  firstEn: { ar: 'الاسم الأول بالإنجليزية', en: 'first name in English' },
+  lastEn: { ar: 'اسم العائلة بالإنجليزية', en: 'last name in English' },
+  name: { ar: 'الاسم الكامل', en: 'full name' },
   email: { ar: 'البريد الإلكتروني', en: 'e-mail address' },
   phone: { ar: 'رقم الجوال', en: 'phone number' },
 };
 
 const guestSchema = z.object({
   eventId: z.uuid(),
-  name: z.string().trim().max(100),
+  firstAr: z.string().trim().max(40),
+  lastAr: z.string().trim().max(40),
+  firstEn: z.string().trim().max(40),
+  lastEn: z.string().trim().max(40),
   email: z.string().trim().max(160),
+  /** International (E.164) number; the form builds it from the country and the national digits. */
   phone: z.string().trim().max(25),
+  phoneCountry: z.string().trim().max(2).optional(),
+  occupation: z.enum(['student', 'employee', 'other']).optional(),
   university: z.string().trim().max(120).optional(),
+  employer: z.string().trim().max(120).optional(),
+  occupationOther: z.string().trim().max(120).optional(),
   honeypot: z.string().max(200).optional(),
   consent: z.boolean().optional(),
   elapsedMs: z.number().int().min(0).max(86_400_000).optional(),
@@ -172,6 +186,31 @@ export async function registerGuest(
   if (!parsed.success) return failCode('VALIDATION_FAILED', lang);
   const v = parsed.data;
 
+  // Script rules again on the server: Arabic boxes hold Arabic letters, English boxes hold Latin letters, and
+  // the phone is a real international number. The form already filters; this is the authority.
+  const invalid: Record<string, boolean> = {
+    firstAr: !isArabicName(v.firstAr),
+    lastAr: !isArabicName(v.lastAr),
+    firstEn: !isEnglishName(v.firstEn),
+    lastEn: !isEnglishName(v.lastEn),
+  };
+  const phone = normalizeInternational(v.phone);
+  if (!phone) invalid.phone = true;
+  const bad = Object.keys(invalid).filter((k) => invalid[k]);
+  if (bad.length > 0) {
+    const message = registrationMessage('VALIDATION_FAILED', lang);
+    return fail(
+      'VALIDATION_FAILED',
+      message,
+      Object.fromEntries(
+        bad.map((k) => [
+          k,
+          `${lang === 'ar' ? 'تحقق من ' : 'Check the '}${GUEST_FIELD[k]![lang]}.`,
+        ]),
+      ),
+    );
+  }
+
   const h = await headers();
   const ip = (h.get('x-forwarded-for')?.split(',')[0] ?? h.get('x-real-ip') ?? '').trim();
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY ?? 'dev-only-key';
@@ -180,10 +219,24 @@ export async function registerGuest(
   const supabase = await createClient();
   const { data, error } = await supabase.rpc('register_guest', {
     p_event: v.eventId,
-    p_name: v.name,
+    p_name: `${v.firstAr} ${v.lastAr}`,
     p_email: v.email,
-    p_phone: v.phone,
-    p_answers: { lang, ...(v.university ? { university: v.university } : {}) } as never,
+    p_phone: phone!,
+    p_answers: {
+      lang,
+      first_name_ar: v.firstAr,
+      last_name_ar: v.lastAr,
+      first_name_en: v.firstEn,
+      last_name_en: v.lastEn,
+      ...(v.phoneCountry ? { phone_country: v.phoneCountry } : {}),
+      ...(v.occupation ? { occupation: v.occupation } : {}),
+      // Only the field that belongs to the chosen occupation is kept.
+      ...(v.occupation === 'student' && v.university ? { university: v.university } : {}),
+      ...(v.occupation === 'employee' && v.employer ? { employer: v.employer } : {}),
+      ...(v.occupation === 'other' && v.occupationOther
+        ? { occupation_other: v.occupationOther }
+        : {}),
+    } as never,
     p_ip_hash: ipHash as string,
     p_honeypot: (v.honeypot ?? '') as string,
     p_elapsed_ms: (v.elapsedMs ?? null) as number,

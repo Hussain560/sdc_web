@@ -175,6 +175,7 @@
 
   /* Containers (layout-and-shape §2). */
   --container: 1280px;
+  --side-panel: 360px;
   --container-wide: 1440px;
   --container-narrow: 768px;
   --container-reading: 720px;

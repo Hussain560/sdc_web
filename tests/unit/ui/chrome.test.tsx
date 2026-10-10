@@ -114,7 +114,7 @@ describe('SiteHeader', () => {
     expect(screen.queryByRole('link', { name: 'لوحة التحكم' })).toBeNull();
   });
 
-  it('signed in with a position: the dashboard entry appears', async () => {
+  it('signed in with a position: one dashboard button replaces the profile menu', () => {
     state.auth = {
       isLoggedIn: true,
       loading: false,
@@ -122,8 +122,12 @@ describe('SiteHeader', () => {
       user: { email: 'a@b.sa', user_metadata: { full_name: 'Sara' } },
     };
     render(<SiteHeader />);
-    await userEvent.click(screen.getByRole('button', { name: 'قائمة الحساب' }));
-    expect(screen.getByRole('link', { name: 'لوحة التحكم' })).toHaveAttribute('href', '/dashboard');
+    expect(screen.queryByRole('button', { name: 'قائمة الحساب' })).toBeNull();
+    // The desktop bar shows the button; the phone sheet adds its own link while it is open.
+    expect(screen.getAllByRole('link', { name: 'لوحة التحكم' })[0]).toHaveAttribute(
+      'href',
+      '/dashboard',
+    );
   });
 
   it('Esc closes the account menu', async () => {
