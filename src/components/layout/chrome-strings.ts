@@ -11,6 +11,7 @@ export const CHROME = {
     events: 'الفعاليات',
     articles: 'المقالات',
     members: 'الأعضاء',
+    committees: 'اللجان',
     about: 'من نحن',
     join: 'انضم إلينا',
     memberSignIn: 'دخول الأعضاء',
@@ -45,6 +46,7 @@ export const CHROME = {
     events: 'Events',
     articles: 'Articles',
     members: 'Members',
+    committees: 'Committees',
     about: 'About',
     join: 'Join us',
     memberSignIn: 'Member sign-in',
@@ -80,6 +82,7 @@ export const NAV_ITEMS = [
   { key: 'events', href: '/events' },
   { key: 'articles', href: '/articles' },
   { key: 'members', href: '/members' },
+  { key: 'committees', href: '/committees' },
   { key: 'about', href: '/about' },
 ] as const satisfies ReadonlyArray<{ key: keyof ChromeStrings; href: string }>;
 
