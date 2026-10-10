@@ -134,7 +134,7 @@ export function EventPageView({
           />
         </div>
 
-        <div className={`${wrap} mt-6 grid gap-10 lg:grid-cols-[1fr_360px]`}>
+        <div className={`${wrap} mt-6 grid gap-10 lg:grid-cols-[1fr_480px]`}>
           <div className="min-w-0">
             <header className="flex flex-col gap-5">
               {e.phase === 'cancelled' && (
@@ -368,9 +368,9 @@ export function EventPageView({
           </div>
 
           <aside className="max-lg:hidden">
-            <Card variant="surface" className="sticky top-28 flex flex-col gap-4 p-5">
+            <Card variant="surface" className="sticky top-28 flex flex-col gap-6 p-8">
               <Media src={e.cover} alt="" kind="event" className="rounded-shape-lg" />
-              <ul className="t-body flex flex-col gap-3">
+              <ul className="t-lede flex flex-col gap-4 text-text">
                 <Fact icon={CalendarDays}>{dateLine}</Fact>
                 {time && (
                   <Fact icon={Clock}>
