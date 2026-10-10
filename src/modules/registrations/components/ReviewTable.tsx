@@ -297,7 +297,7 @@ export function ReviewTable({
                             stop(e);
                             setOpenId(r.id);
                           }}
-                          className="block max-w-full truncate text-start font-medium hover:underline focus-visible:outline-2 focus-visible:outline-accent"
+                          className="block max-w-full truncate text-start font-medium hover:underline focus-visible:outline-2 focus-visible:outline-focus-ring"
                         >
                           {r.fullName}
                         </button>

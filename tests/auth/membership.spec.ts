@@ -108,7 +108,7 @@ test.describe('intake cycle → /join → application', () => {
       await page.locator('#field-consent').check();
       await page.waitForTimeout(5200); // the form refuses submissions faster than five seconds
       await page.getByRole('button', { name: 'Submit application' }).click();
-      await expect(page.getByText('Application received')).toBeVisible({ timeout: 20_000 });
+      await expect(page.getByText('We received your application')).toBeVisible({ timeout: 20_000 });
 
       // No mail on submission: the applicant hears from us when the application is decided.
       const [app] = await sql<{ user_id: string | null; email: string }>(
@@ -147,7 +147,9 @@ test.describe('intake cycle → /join → application', () => {
       const mpage = await mctx.newPage();
       await mpage.goto(confirmLink(accepted, 'http://127.0.0.1:3300'));
       await expect(mpage).toHaveURL(/\/reset-password\?welcome=1/);
-      await expect(mpage.getByRole('heading', { name: 'Activate your account' })).toBeVisible();
+      await expect(
+        mpage.getByRole('heading', { name: 'Choose a password for your account' }),
+      ).toBeVisible();
       await mpage.locator('input[type="password"]').nth(0).fill(PASSWORD);
       await mpage.locator('input[type="password"]').nth(1).fill(PASSWORD);
       await mpage.locator('button[type="submit"]').click();

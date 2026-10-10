@@ -121,17 +121,20 @@ function NavItem({
       onClick={onNavigate}
       aria-current={active ? 'page' : undefined}
       className={cn(
-        'group flex min-h-9 items-center gap-2.5 rounded-lg px-3 text-[13.5px] transition-colors',
-        'focus-visible:outline-2 focus-visible:outline-accent',
+        'group flex min-h-10 items-center gap-2.5 rounded-shape-md px-3 text-[13.5px] transition-colors duration-(--duration-fast)',
+        'focus-visible:outline-2 focus-visible:outline-focus-ring',
         active
-          ? 'bg-surface-raised font-semibold text-text'
+          ? 'bg-accent-soft font-semibold text-on-accent-soft'
           : 'font-medium text-muted hover:bg-surface-raised hover:text-text',
       )}
     >
       <Icon
         size={17}
         aria-hidden="true"
-        className={cn('shrink-0', active ? 'text-accent' : 'text-muted group-hover:text-text')}
+        className={cn(
+          'shrink-0',
+          active ? 'text-on-accent-soft' : 'text-muted group-hover:text-text',
+        )}
       />
       <span className="truncate">{item.label[lang]}</span>
     </Link>
@@ -164,7 +167,7 @@ function NavSection({
         onClick={onToggle}
         className={cn(
           'flex min-h-9 w-full items-center gap-2.5 rounded-lg px-3 text-start text-[13.5px] font-medium text-muted transition-colors',
-          'hover:bg-surface-raised hover:text-text focus-visible:outline-2 focus-visible:outline-accent',
+          'hover:bg-surface-raised hover:text-text focus-visible:outline-2 focus-visible:outline-focus-ring',
           open && 'text-text',
         )}
       >
@@ -567,7 +570,7 @@ function ShellFrameInner({
             {menu && (
               <div
                 role="menu"
-                className="absolute end-0 top-full mt-2 w-56 rounded-2xl border border-line bg-surface p-2 shadow-lg"
+                className="absolute end-0 top-full mt-2 w-56 rounded-shape-xl border border-line bg-surface p-2 shadow-lg"
               >
                 <p
                   dir="ltr"

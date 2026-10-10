@@ -155,7 +155,7 @@ export function PartnersManager({ rows }: { rows: PartnerRow[] }) {
       </div>
 
       {rows.length > 0 && (
-        <div className="overflow-x-auto rounded-2xl border border-line bg-surface">
+        <div className="overflow-x-auto rounded-shape-xl border border-line bg-surface">
           <table className="w-full min-w-[560px] text-sm">
             <thead className="border-b border-line text-xs text-muted">
               <tr>

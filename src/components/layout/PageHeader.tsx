@@ -17,7 +17,7 @@ export function PageHeader({
   return (
     <div className="mb-5 flex flex-wrap items-start justify-between gap-4">
       <div>
-        <h1 className="text-xl font-bold lg:text-2xl">{title}</h1>
+        <h1 className="t-h3">{title}</h1>
         {description && <p className="mt-1 text-sm text-muted">{description}</p>}
         {readOnly && (
           <span className="mt-2 inline-flex rounded-full border border-line px-3 py-0.5 text-xs text-muted">
@@ -70,7 +70,7 @@ export function TableSkeleton({
   minWidth?: number;
 }) {
   return (
-    <div className="overflow-x-auto rounded-2xl border border-line bg-surface">
+    <div className="overflow-x-auto rounded-shape-xl border border-line bg-surface">
       <table className="w-full text-sm" style={{ minWidth }}>
         <thead className="border-b border-line text-xs text-muted">
           <tr>
@@ -161,7 +161,7 @@ export function CardsPageSkeleton({ cards = 2 }: { cards?: number }) {
       </div>
       <div className="grid gap-6 md:grid-cols-2">
         {Array.from({ length: cards }).map((_, i) => (
-          <div key={i} className="rounded-2xl border border-line bg-surface p-5">
+          <div key={i} className="rounded-shape-xl border border-line bg-surface p-5">
             <Skeleton className="mb-4 h-5 w-40" />
             {Array.from({ length: 3 }).map((_, j) => (
               <Skeleton key={j} className="mb-3 h-11 w-full rounded-xl" />

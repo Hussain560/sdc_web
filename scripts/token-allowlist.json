@@ -1,0 +1,8 @@
+{
+  "_comment": "Legacy files that still hold colour literals (file -> literals today). The list only shrinks; see scripts/check-tokens.mjs. Sprint 15/16 delete these files.",
+  "legacy": {},
+  "exempt": {
+    "src/lib/email/templates.ts": "E-mail clients need inline hex values (light only).",
+    "src/modules/attendance/pdf/CertificateDocument.tsx": "@react-pdf renders outside CSS: it needs literal colours."
+  }
+}

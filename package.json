@@ -17,13 +17,16 @@
     "e2e": "playwright test",
     "e2e:update": "playwright test --update-snapshots",
     "db:test": "supabase test db",
-    "check": "npm run format:check && npm run lint && npm run typecheck && npm run test",
+    "check": "npm run format:check && npm run lint && npm run typecheck && npm run check:tokens && npm run check:contrast && npm run test",
+    "check:tokens": "node scripts/check-tokens.mjs",
+    "check:contrast": "node scripts/check-contrast.mjs",
     "e2e:auth": "playwright test -c playwright.auth.config.ts",
     "db:personas": "node scripts/dev-personas.mjs",
     "smoke": "node scripts/smoke.mjs",
     "preflight": "node scripts/preflight-production.mjs",
     "db:gen-rbac-test": "node scripts/gen-rbac-matrix-test.mjs",
-    "dev:local": "node scripts/dev-local.mjs"
+    "dev:local": "node scripts/dev-local.mjs",
+    "db:demo": "docker exec -i supabase_db_sdc_web psql -U postgres -d postgres -v ON_ERROR_STOP=1 -f - < supabase/demo-seed.sql"
   },
   "dependencies": {
     "@react-pdf/renderer": "^4.9.0",

@@ -45,3 +45,57 @@
     animation: none;
   }
 }
+
+/* Indeterminate progress (components §8.3): the segment slides along the reading direction (margin-inline-start
+ * mirrors in RTL). Reduced motion: a static, full-width bar; the status text carries the state. */
+.ui-progress-indeterminate {
+  animation: ui-progress-slide 1.2s var(--ease-standard) infinite;
+}
+
+@keyframes ui-progress-slide {
+  from {
+    margin-inline-start: -30%;
+  }
+  to {
+    margin-inline-start: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ui-progress-indeterminate {
+    animation: none;
+    width: 100%;
+    opacity: 0.5;
+  }
+}
+
+/* Theme-aware logo (layout/Logo.tsx): both rasters are rendered and the theme picks one, so there is no flash. */
+:root[data-theme='light'] .logo-on-dark,
+:root:not([data-theme='light']) .logo-on-light {
+  display: none;
+}
+
+/* Focused anchors and headings must clear the floating header (00-chrome accessibility). */
+html {
+  scroll-padding-block-start: 88px;
+}
+
+/* Print (certificate verification): a plain page, system colours so no colour value is needed here. */
+@media print {
+  :root {
+    color-scheme: light;
+  }
+  html,
+  body {
+    background: Canvas !important;
+    color: CanvasText !important;
+  }
+  .certificate-card {
+    background: Canvas;
+    color: CanvasText;
+    border-color: CanvasText;
+  }
+  .certificate-card * {
+    color: CanvasText !important;
+  }
+}

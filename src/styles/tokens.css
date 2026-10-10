@@ -1,58 +1,231 @@
-/* Semantic tokens (ADR-009). Values reference ONLY primitives from primitives.css — no new colours.
- * Dark is the default theme; light overrides under [data-theme='light'] (decision D-009).
- * Dashboard and new components use these; legacy public CSS keeps working through the primitives. */
+/* Semantic tokens, Design System v2 (ADR-009, ADR-014; docs/10-design-system/token-mapping.md).
+ * Values reference ONLY primitives from primitives.css (or mix tokens with color-mix): no hex or rgb() literal here.
+ * Dark is the default theme; light overrides under [data-theme='light'].
+ * Components use these tokens, never a hex and never a --c-* primitive. */
 :root {
+  color-scheme: dark;
   --canvas: var(--c-050d09);
-  --surface: var(--c-0d0e12);
-  --surface-raised: var(--c-16181d);
-  --surface-overlay: var(--c-0d1117);
+  --band: var(--c-061812);
+  --surface: var(--c-0d1512);
+  --surface-raised: var(--c-131916);
+  --surface-overlay: var(--c-0d1512);
+  --field: var(--c-131916);
+  --border: var(--c-1d2620);
+  --border-strong: var(--c-5c7a70);
+  --border-accent: var(--c-28674b);
   --text: var(--c-ffffff);
-  --text-muted: var(--c-9ca3af);
+  --text-muted: var(--c-8fa79b);
+  --text-subtle: var(--c-7a9a90);
   --text-on-accent: var(--c-08090c);
   --accent: var(--c-00e676);
   --accent-hover: var(--c-00c853);
-  --accent-soft: var(--c-abefc6);
+  --accent-text: var(--c-00e676);
+  --accent-soft: var(--c-143426);
+  --on-accent-soft: var(--c-abefc6);
+  --signal: var(--c-00e676);
   --brand: var(--c-067847);
+  --on-brand: var(--c-ffffff);
+  --success: var(--c-72c99a);
+  --success-soft: var(--c-143426);
   --warning: var(--c-ffab00);
-  --danger: var(--c-ef4444);
-  --border: rgb(255 255 255 / 0.15);
-  --border-accent: rgb(0 230 118 / 0.3);
+  --warning-soft: var(--c-2a1f05);
+  --danger: var(--c-f87171);
+  --danger-soft: var(--c-2a1013);
+  --danger-fill: var(--c-ef4444);
+  --on-danger-fill: var(--c-050d09);
+  --info: var(--c-60a5fa);
+  --info-soft: var(--c-0c1a2e);
+  --focus-ring: var(--c-00e676);
+  --qr-ground: var(--c-ffffff);
+  --scrim: color-mix(in srgb, var(--c-000000) 75%, transparent);
+
+  /* Elevation: separate by tone and hairline first; shadows are rare and green-tinted in dark. */
+  --elev-0: none;
+  --elev-1: 0 8px 24px color-mix(in srgb, var(--signal) 12%, transparent);
+  --elev-2: 0 16px 40px color-mix(in srgb, var(--c-000000) 50%, transparent);
+  --elev-3: 0 24px 64px color-mix(in srgb, var(--c-000000) 60%, transparent);
 }
 
 :root[data-theme='light'] {
+  color-scheme: light;
   --canvas: var(--c-f4faf6);
+  --band: var(--c-e5f5ea);
   --surface: var(--c-ffffff);
-  --surface-raised: var(--c-f8fcf9);
+  --surface-raised: var(--c-f3f9f6);
   --surface-overlay: var(--c-ffffff);
+  --field: var(--c-f3f9f6);
+  --border: var(--c-cbe7d4);
+  --border-strong: var(--c-6b8a80);
+  --border-accent: var(--c-a9d8bc);
   --text: var(--c-123b35);
-  --text-muted: var(--c-52766c);
-  /* SEC-004: white on the darker palette green (5.7:1) instead of dark on #0b8f55 (3.8:1). */
+  --text-muted: var(--c-4b635a);
+  --text-subtle: var(--c-5c7a70);
+  /* SEC-004: white on the darker palette green (5.4:1) instead of dark on #0b8f55. */
   --text-on-accent: var(--c-ffffff);
   --accent: var(--c-0a7a49);
   --accent-hover: var(--c-067847);
-  --accent-soft: var(--c-cbe7d4);
+  --accent-text: var(--c-0a7a49);
+  --accent-soft: var(--c-e5f5ea);
+  --on-accent-soft: var(--c-0d3329);
+  --signal: var(--c-0b8f55);
   --brand: var(--c-72c99a);
-  --warning: var(--c-ffab00);
-  --danger: var(--c-ef4444);
-  --border: var(--c-cbe7d4);
-  --border-accent: var(--c-a9d8bc);
+  --on-brand: var(--c-0d3329);
+  --success: var(--c-067847);
+  --success-soft: var(--c-e5f5ea);
+  --warning: var(--c-7a4f00);
+  --warning-soft: var(--c-fff4dc);
+  --danger: var(--c-b91c1c);
+  --danger-soft: var(--c-fdecec);
+  --danger-fill: var(--c-b91c1c);
+  --on-danger-fill: var(--c-ffffff);
+  --info: var(--c-1d4ed8);
+  --info-soft: var(--c-e8f0fe);
+  --focus-ring: var(--c-0a7a49);
+  --qr-ground: var(--c-ffffff);
+  --scrim: color-mix(in srgb, var(--c-123b35) 45%, transparent);
+
+  --elev-1: 0 8px 24px color-mix(in srgb, var(--text) 8%, transparent);
+  --elev-2: 0 16px 40px color-mix(in srgb, var(--text) 12%, transparent);
+  --elev-3: 0 24px 64px color-mix(in srgb, var(--text) 16%, transparent);
 }
 
-/* Tailwind v4: expose the semantic tokens as utilities (bg-surface, text-muted, …). */
+/* Non-colour tokens (theme independent). Spec: docs/10-design-system/foundations/*. */
+:root {
+  /* Families (typography §1). Rubik first so Latin text and digits keep the brand face inside Arabic sentences;
+   * Arabic letters fall through to IBM Plex Sans Arabic. Both come from next/font (app/[locale]/layout.tsx). */
+  --font-sans: var(--font-rubik), var(--font-plex-arabic), system-ui, -apple-system, sans-serif;
+  --font-mono: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+
+  /* Type scale: fluid between a 360 px and a 1440 px viewport (typography §2). Line heights differ per script. */
+  --text-display: clamp(2.5rem, 1.833rem + 2.963vw, 4.5rem);
+  --text-h1: clamp(2rem, 1.5rem + 2.222vw, 3.5rem);
+  --text-h2: clamp(1.75rem, 1.417rem + 1.481vw, 2.75rem);
+  --text-h3: clamp(1.25rem, 1.167rem + 0.37vw, 1.5rem);
+  --text-h4: 1.125rem;
+  --text-stat: clamp(2.25rem, 1.833rem + 1.852vw, 3.5rem);
+  --text-lede: clamp(1.0625rem, 1rem + 0.278vw, 1.25rem);
+  --text-body: 1rem;
+  --text-body-sm: 0.875rem;
+  --text-label: 0.9375rem;
+  --text-caption: 0.8125rem;
+  --text-badge: 0.75rem;
+  --leading-display-ar: 1.25;
+  --leading-display-en: 1.1;
+  --leading-h1-ar: 1.3;
+  --leading-h1-en: 1.15;
+  --leading-h2-ar: 1.35;
+  --leading-h2-en: 1.2;
+  --leading-h3-ar: 1.45;
+  --leading-h3-en: 1.3;
+  --leading-h4-ar: 1.5;
+  --leading-h4-en: 1.4;
+  --leading-stat: 1.1;
+  --leading-lede-ar: 1.8;
+  --leading-lede-en: 1.6;
+  --leading-body-ar: 1.8;
+  --leading-body-en: 1.65;
+  --leading-body-sm-ar: 1.7;
+  --leading-body-sm-en: 1.55;
+  --leading-label: 1.5;
+  --leading-caption: 1.5;
+  --leading-badge: 1.4;
+
+  /* Spacing, 4 px base (layout-and-shape §3). */
+  --space-0-5: 0.125rem;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-24: 6rem;
+  --space-30: 7.5rem;
+  --section-gap: clamp(4rem, 2.833rem + 5.185vw, 7.5rem);
+
+  /* Shape (layout-and-shape §4). Named --shape-* because --radius-* is Tailwind's own theme namespace: redefining
+   * it would change every existing rounded-* utility in the dashboard. Exposed as rounded-shape-* below. */
+  --shape-xs: 6px;
+  --shape-sm: 10px;
+  --shape-md: 12px;
+  --shape-lg: 16px;
+  --shape-xl: 24px;
+  --shape-2xl: 32px;
+  --shape-full: 9999px;
+
+  /* Layers (layout-and-shape §6). */
+  --z-sticky: 10;
+  --z-header: 100;
+  --z-overlay: 1000;
+  --z-toast: 1100;
+  --z-skip: 1200;
+
+  /* Motion (motion-icons-focus §1.1). */
+  --duration-instant: 100ms;
+  --duration-fast: 160ms;
+  --duration-base: 240ms;
+  --duration-slow: 400ms;
+  --duration-counter: 1200ms;
+  --ease-out: cubic-bezier(0.2, 0, 0, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-standard: cubic-bezier(0.2, 0, 0.2, 1);
+
+  /* Containers (layout-and-shape §2). */
+  --container: 1280px;
+  --container-wide: 1440px;
+  --container-narrow: 768px;
+  --container-reading: 720px;
+  --container-tight: 440px;
+}
+
+/* Tailwind v4: expose the semantic tokens as utilities (bg-surface, text-muted, border-line-strong, …). */
 @theme inline {
   --color-canvas: var(--canvas);
+  --color-band: var(--band);
   --color-surface: var(--surface);
   --color-surface-raised: var(--surface-raised);
   --color-surface-overlay: var(--surface-overlay);
+  --color-field: var(--field);
   --color-text: var(--text);
   --color-muted: var(--text-muted);
+  --color-subtle: var(--text-subtle);
   --color-on-accent: var(--text-on-accent);
   --color-accent: var(--accent);
   --color-accent-hover: var(--accent-hover);
+  --color-accent-text: var(--accent-text);
   --color-accent-soft: var(--accent-soft);
+  --color-on-accent-soft: var(--on-accent-soft);
+  --color-signal: var(--signal);
   --color-brand: var(--brand);
+  --color-on-brand: var(--on-brand);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
   --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
   --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --color-danger-fill: var(--danger-fill);
+  --color-on-danger-fill: var(--on-danger-fill);
+  --color-info: var(--info);
+  --color-info-soft: var(--info-soft);
+  --color-focus-ring: var(--focus-ring);
+  --color-qr-ground: var(--qr-ground);
+  --color-scrim: var(--scrim);
   --color-line: var(--border);
+  --color-line-strong: var(--border-strong);
   --color-line-accent: var(--border-accent);
+
+  --radius-shape-xs: var(--shape-xs);
+  --radius-shape-sm: var(--shape-sm);
+  --radius-shape-md: var(--shape-md);
+  --radius-shape-lg: var(--shape-lg);
+  --radius-shape-xl: var(--shape-xl);
+  --radius-shape-2xl: var(--shape-2xl);
+
+  --shadow-elev-1: var(--elev-1);
+  --shadow-elev-2: var(--elev-2);
+  --shadow-elev-3: var(--elev-3);
 }

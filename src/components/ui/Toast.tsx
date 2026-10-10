@@ -10,20 +10,27 @@ import {
   useState,
 } from 'react';
 import type { ReactNode } from 'react';
+import { CircleAlert, CircleCheck, Info, TriangleAlert, X, type LucideIcon } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 import { cn } from './cn';
 
 type Tone = 'success' | 'info' | 'warning' | 'danger';
 
+export interface ToastAction {
+  label: string;
+  onClick: () => void;
+}
+
 interface ToastItem {
   id: number;
   tone: Tone;
   text: string;
+  action?: ToastAction;
 }
 
 interface ToastApi {
-  show: (tone: Tone, text: string) => void;
-  success: (text: string) => void;
+  show: (tone: Tone, text: string, action?: ToastAction) => void;
+  success: (text: string, action?: ToastAction) => void;
   info: (text: string) => void;
   warning: (text: string) => void;
   error: (text: string) => void;
@@ -32,30 +39,32 @@ interface ToastApi {
 const ToastContext = createContext<ToastApi | null>(null);
 
 const MAX_VISIBLE = 4;
-const DURATION: Record<Tone, number> = { success: 4500, info: 4500, warning: 7000, danger: 8000 };
+const DURATION: Record<Tone, number> = { success: 5000, info: 5000, warning: 7000, danger: 8000 };
 
-// Tone drives the leading edge bar and the icon only; surface, text and border stay on semantic tokens
-// so the toast follows the dark and light themes without extra rules.
-const bar: Record<Tone, string> = {
-  success: 'border-s-accent',
-  info: 'border-s-muted',
-  warning: 'border-s-warning',
-  danger: 'border-s-danger',
-};
+// Tone drives the icon only (components §6.4); surface, text and border stay on semantic tokens so the toast
+// follows both themes without extra rules.
 const iconColor: Record<Tone, string> = {
-  success: 'text-accent',
-  info: 'text-muted',
+  success: 'text-success',
+  info: 'text-info',
   warning: 'text-warning',
   danger: 'text-danger',
 };
-const iconPath: Record<Tone, string> = {
-  success: 'M8 12.5l3 3 5-6',
-  info: 'M12 11v5M12 8h.01',
-  warning: 'M12 8v5M12 16h.01',
-  danger: 'M9 9l6 6M15 9l-6 6',
+const ICON: Record<Tone, LucideIcon> = {
+  success: CircleCheck,
+  info: Info,
+  warning: TriangleAlert,
+  danger: CircleAlert,
 };
 
-function ToastCard({ item, onClose }: { item: ToastItem; onClose: (id: number) => void }) {
+function ToastCard({
+  item,
+  onClose,
+  closeLabel,
+}: {
+  item: ToastItem;
+  onClose: (id: number) => void;
+  closeLabel: string;
+}) {
   const [paused, setPaused] = useState(false);
   const left = useRef(DURATION[item.tone]);
 
@@ -69,67 +78,57 @@ function ToastCard({ item, onClose }: { item: ToastItem; onClose: (id: number) =
     };
   }, [paused, item.id, onClose]);
 
+  const Icon = ICON[item.tone];
   return (
     <div
       role={item.tone === 'danger' || item.tone === 'warning' ? 'alert' : 'status'}
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
-      className={cn(
-        'pointer-events-auto flex w-full items-start gap-3 rounded-xl border border-s-4 border-line bg-surface-raised px-4 py-3 text-sm text-text shadow-lg',
-        bar[item.tone],
-      )}
+      onFocus={() => setPaused(true)}
+      onBlur={() => setPaused(false)}
+      className="pointer-events-auto flex w-full items-start gap-3 rounded-shape-lg border border-line bg-surface-overlay px-4 py-3 text-sm text-text shadow-elev-3"
     >
-      <svg
-        aria-hidden="true"
-        viewBox="0 0 24 24"
-        className={cn('mt-0.5 size-5 shrink-0', iconColor[item.tone])}
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        <circle cx="12" cy="12" r="9" />
-        <path d={iconPath[item.tone]} />
-      </svg>
+      <Icon aria-hidden="true" className={cn('mt-0.5 size-5 shrink-0', iconColor[item.tone])} />
       <p className="min-w-0 flex-1 wrap-break-word leading-6">{item.text}</p>
+      {item.action && (
+        <button
+          type="button"
+          onClick={() => {
+            item.action?.onClick();
+            onClose(item.id);
+          }}
+          className="shrink-0 rounded-full px-2 font-semibold text-accent-text underline-offset-[3px] hover:underline focus-visible:outline-2 focus-visible:outline-focus-ring"
+        >
+          {item.action.label}
+        </button>
+      )}
       <button
         type="button"
         onClick={() => onClose(item.id)}
-        aria-label="Close"
-        className="-me-1 inline-flex size-6 shrink-0 items-center justify-center rounded-full text-muted hover:bg-surface hover:text-text focus-visible:outline-2 focus-visible:outline-accent"
+        aria-label={closeLabel}
+        className="-me-1 inline-flex size-6 shrink-0 items-center justify-center rounded-full text-muted hover:bg-surface-raised hover:text-text focus-visible:outline-2 focus-visible:outline-focus-ring"
       >
-        <svg
-          aria-hidden="true"
-          viewBox="0 0 24 24"
-          className="size-4"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-        >
-          <path d="M6 6l12 12M18 6L6 18" />
-        </svg>
+        <X aria-hidden="true" className="size-4" />
       </button>
     </div>
   );
 }
 
-/** Action feedback toasts (top corner: left in Arabic, right in English). One provider near the root; call `useToast()` from client code. */
+/** Action feedback toasts (bottom-centre on phones, bottom inline-end on desktop). One provider near the root; call `useToast()` from client code. */
 export function ToastProvider({ children }: { children: ReactNode }) {
   const { lang } = useLanguage();
   const [items, setItems] = useState<ToastItem[]>([]);
   const next = useRef(1);
 
   const close = useCallback((id: number) => setItems((p) => p.filter((t) => t.id !== id)), []);
-  const show = useCallback((tone: Tone, text: string) => {
-    setItems((p) => [...p, { id: next.current++, tone, text }].slice(-MAX_VISIBLE));
+  const show = useCallback((tone: Tone, text: string, action?: ToastAction) => {
+    setItems((p) => [...p, { id: next.current++, tone, text, action }].slice(-MAX_VISIBLE));
   }, []);
 
   const api = useMemo<ToastApi>(
     () => ({
       show,
-      success: (t) => show('success', t),
+      success: (t, a) => show('success', t, a),
       info: (t) => show('info', t),
       warning: (t) => show('warning', t),
       error: (t) => show('danger', t),
@@ -142,14 +141,15 @@ export function ToastProvider({ children }: { children: ReactNode }) {
       {children}
       <div
         dir={lang === 'ar' ? 'rtl' : 'ltr'}
-        className={cn(
-          'sdc-inter pointer-events-none fixed top-4 z-200 flex w-[calc(100%-2rem)] flex-col gap-2 sm:w-96',
-          // Arabic: top-left corner; English: top-right corner (physical, on purpose).
-          lang === 'ar' ? 'left-4' : 'right-4',
-        )}
+        className="sdc-inter pointer-events-none fixed inset-x-4 bottom-4 z-(--z-toast) mx-auto flex flex-col gap-2 sm:inset-x-auto sm:end-4 sm:mx-0 sm:w-96"
       >
         {items.map((t) => (
-          <ToastCard key={t.id} item={t} onClose={close} />
+          <ToastCard
+            key={t.id}
+            item={t}
+            onClose={close}
+            closeLabel={lang === 'ar' ? 'إغلاق' : 'Close'}
+          />
         ))}
       </div>
     </ToastContext.Provider>

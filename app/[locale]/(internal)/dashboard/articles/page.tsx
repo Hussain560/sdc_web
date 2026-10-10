@@ -115,7 +115,7 @@ export default async function ArticlesListPage({
             name="q"
             defaultValue={sp.q ?? ''}
             placeholder={ar ? 'العنوان…' : 'Title…'}
-            className="h-9 w-56 rounded-lg border border-line bg-surface px-3 text-sm text-text placeholder:text-muted focus-visible:outline-2 focus-visible:outline-accent"
+            className="h-9 w-56 rounded-lg border border-line bg-surface px-3 text-sm text-text placeholder:text-muted focus-visible:outline-2 focus-visible:outline-focus-ring"
           />
         </label>
         {committees.length > 1 && (
@@ -124,7 +124,7 @@ export default async function ArticlesListPage({
             <select
               name="committee"
               defaultValue={sp.committee ?? ''}
-              className="h-9 rounded-lg border border-line bg-surface px-3 text-sm text-text focus-visible:outline-2 focus-visible:outline-accent"
+              className="h-9 rounded-lg border border-line bg-surface px-3 text-sm text-text focus-visible:outline-2 focus-visible:outline-focus-ring"
             >
               <option value="">{ar ? 'الكل' : 'All'}</option>
               {committees.map((c) => (
@@ -137,7 +137,7 @@ export default async function ArticlesListPage({
         )}
         <button
           type="submit"
-          className="inline-flex h-9 items-center rounded-full border border-line-accent px-4 text-sm font-semibold text-accent hover:bg-surface-raised focus-visible:outline-2 focus-visible:outline-accent"
+          className="inline-flex h-9 items-center rounded-full border border-line-accent px-4 text-sm font-semibold text-accent hover:bg-surface-raised focus-visible:outline-2 focus-visible:outline-focus-ring"
         >
           {ar ? 'تطبيق' : 'Apply'}
         </button>

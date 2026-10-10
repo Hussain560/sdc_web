@@ -10,8 +10,8 @@ export default async function CommitteePublicPage({
 }: {
   params: Promise<{ locale: string; slug: string }>;
 }) {
-  const { slug } = await params;
+  const { locale, slug } = await params;
   const committee = await getPublicCommittee(slug);
   if (!committee) notFound();
-  return <CommitteeView committee={committee} />;
+  return <CommitteeView committee={committee} lang={locale === 'en' ? 'en' : 'ar'} />;
 }

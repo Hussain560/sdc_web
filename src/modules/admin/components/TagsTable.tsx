@@ -47,7 +47,7 @@ export function TagsTable({ rows }: { rows: TagRow[] }) {
 
   if (rows.length === 0)
     return (
-      <p className="rounded-2xl border border-dashed border-line p-8 text-center text-muted">
+      <p className="rounded-shape-xl border border-dashed border-line p-8 text-center text-muted">
         {ar
           ? 'لا توجد وسوم بعد. تُنشأ الوسوم عند كتابة المقالات.'
           : 'No tags yet. Tags are created while writing threads.'}
@@ -55,7 +55,7 @@ export function TagsTable({ rows }: { rows: TagRow[] }) {
     );
 
   return (
-    <div className="overflow-x-auto rounded-2xl border border-line bg-surface">
+    <div className="overflow-x-auto rounded-shape-xl border border-line bg-surface">
       <table className="w-full min-w-[560px] text-sm">
         <thead className="border-b border-line text-xs text-muted">
           <tr>

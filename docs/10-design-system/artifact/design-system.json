@@ -1,0 +1,87 @@
+{
+  "v": 3,
+  "layout": "files",
+  "createdOnFiles": {
+    "at": "2026-10-09T21:47:53.278Z",
+    "v": 1
+  },
+  "title": "SDC Design System",
+  "namespace": "SDC",
+  "libraries": [],
+  "sections": {},
+  "groups": [
+    "Logos",
+    "Art"
+  ],
+  "assetGroups": {
+    "Logos": {
+      "name": "Logos",
+      "tile": "m",
+      "order": [
+        "sdc-wordmark-on-dark.png",
+        "sdc-wordmark-on-light.png",
+        "sdc-vertical-on-dark.png",
+        "sdc-mark.png"
+      ],
+      "files": {
+        "sdc-wordmark-on-dark.png": {
+          "name": "sdc-wordmark-on-dark.png",
+          "blob": "a2241fea03eab43a6ec711512a581357",
+          "size": 8752,
+          "type": "image/png"
+        },
+        "sdc-wordmark-on-light.png": {
+          "name": "sdc-wordmark-on-light.png",
+          "blob": "cbebd463d8ffcfe7f3d90636271cee1e",
+          "size": 867414,
+          "type": "image/png"
+        },
+        "sdc-vertical-on-dark.png": {
+          "name": "sdc-vertical-on-dark.png",
+          "blob": "a8fe9482b6b3193248bb5f454a1d94d9",
+          "size": 5799,
+          "type": "image/png"
+        },
+        "sdc-mark.png": {
+          "name": "sdc-mark.png",
+          "blob": "0eabd420310ca31816ec18ef7fbbe315",
+          "size": 85618,
+          "type": "image/png"
+        }
+      }
+    },
+    "Art": {
+      "name": "Art",
+      "tile": "l",
+      "order": [
+        "hero-mark-dark.png",
+        "hero-mark-light.png"
+      ],
+      "files": {
+        "hero-mark-dark.png": {
+          "name": "hero-mark-dark.png",
+          "blob": "c1e0b9d13ac144ba3d57ca13e7681577",
+          "size": 199142,
+          "type": "image/png"
+        },
+        "hero-mark-light.png": {
+          "name": "hero-mark-light.png",
+          "blob": "418a861362bf7a0453b3a913cc15a9ef",
+          "size": 1283153,
+          "type": "image/png"
+        }
+      }
+    }
+  },
+  "blobs": {},
+  "docs": {
+    "readme": "project/README.md",
+    "sections": []
+  },
+  "lastChange": {
+    "by": "Hussain",
+    "at": "2026-10-09T23:43:32Z",
+    "via": "Claude (Cowork)",
+    "note": "Added the qr-ground token; QrCard now shows the venue check-in code; CertificateCard matches the certificate data (uuid id, sessions attended)."
+  }
+}

@@ -1,48 +1,60 @@
+import { ChevronDown } from 'lucide-react';
 import { useId, type SelectHTMLAttributes } from 'react';
 import { cn } from './cn';
+import { controlClasses, describedBy, FieldLabel, FieldMessages } from './field-parts';
 
 export interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
   label: string;
   error?: string;
   hint?: string;
+  success?: string;
+  requiredLabel?: string;
+  optionalLabel?: string;
 }
 
-/** Labelled native select with the same accessible wiring as Field. */
-export function Select({ label, error, hint, className, id, children, ...rest }: SelectProps) {
+/** Labelled native select (components §5.4) with a chevron that does not mirror. */
+export function Select({
+  label,
+  error,
+  hint,
+  success,
+  requiredLabel,
+  optionalLabel,
+  className,
+  id,
+  children,
+  ...rest
+}: SelectProps) {
   const auto = useId();
   const selectId = id ?? auto;
-  const describedBy =
-    [hint && `${selectId}-hint`, error && `${selectId}-error`].filter(Boolean).join(' ') ||
-    undefined;
   return (
-    <div className="flex flex-col gap-1.5">
-      <label htmlFor={selectId} className="text-sm font-medium text-text">
-        {label}
-      </label>
-      <select
-        {...rest}
-        id={selectId}
-        aria-invalid={error ? true : undefined}
-        aria-describedby={describedBy}
-        className={cn(
-          'min-h-11 rounded-xl border bg-surface-raised px-3 text-text',
-          'focus-visible:outline-2 focus-visible:outline-accent',
-          error ? 'border-danger' : 'border-line',
-          className,
-        )}
-      >
-        {children}
-      </select>
-      {hint && (
-        <p id={`${selectId}-hint`} className="text-xs text-muted">
-          {hint}
-        </p>
-      )}
-      {error && (
-        <p id={`${selectId}-error`} role="alert" className="text-xs text-danger">
-          {error}
-        </p>
-      )}
+    <div className="flex flex-col gap-2">
+      <FieldLabel
+        htmlFor={selectId}
+        label={label}
+        requiredLabel={requiredLabel}
+        optionalLabel={optionalLabel}
+      />
+      <div className="relative">
+        <select
+          {...rest}
+          id={selectId}
+          aria-invalid={error ? true : undefined}
+          aria-describedby={describedBy(selectId, { hint, error, success })}
+          className={cn(
+            'min-h-12 appearance-none pe-11',
+            controlClasses(!!error, !!success),
+            className,
+          )}
+        >
+          {children}
+        </select>
+        <ChevronDown
+          aria-hidden="true"
+          className="pointer-events-none absolute end-4 top-1/2 size-5 -translate-y-1/2 text-muted"
+        />
+      </div>
+      <FieldMessages id={selectId} hint={hint} error={error} success={success} />
     </div>
   );
 }

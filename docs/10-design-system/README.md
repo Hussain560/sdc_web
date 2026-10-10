@@ -2,78 +2,68 @@
 
 | Field            | Value      |
 | ---------------- | ---------- |
-| **Last Updated** | 2026-10-02 |
-| **Status**       | Draft      |
+| **Last Updated** | 2026-10-10 |
+| **Status**       | **v2** for public pages — approved by the owner 2026-10-10 ([ADR-014](../90-decisions/ADR-014-public-redesign-design-system-v2.md), Accepted) |
 | **Owner**        | Design & Identity committee + Technology & Development committee |
 
 ## 1. Purpose
 
-Documents the SDC visual language **as it exists today** (extracted from the CSS, not invented) and defines the **target token and component system** that will carry it into the rebuilt platform. The visual identity is one of the assets worth keeping ([audit §10](../01-project/current-system-audit.md#10-what-is-worth-keeping)); the problem is not how it looks but how it is built.
+This folder defines the SDC visual language, the tokens that carry it, the components built on them, and the patterns that combine them into pages. **v2** is the system for the public redesign ([brief](./CLAUDE-DESIGN-PROMPT-PUBLIC-REDESIGN.md)). It keeps the SDC identity and takes structure, type scale and rhythm from the [reference study](./reference-notes.md). The internal dashboard keeps D-009 until a separate decision. It shares the tokens, so it inherits v2's token values ([impact](./token-mapping.md#impact-of-the-changed-values)).
 
 ## 2. Character
 
-**"Green signal on deep night."** A dark-first, technical aesthetic: near-black green-tinted canvases, a neon-green signal color (`#00E676`) for emphasis and interaction, capsule-shaped buttons, softly rounded cards with thin green-tinted borders and green glows on hover. The light theme is a calm **mint-and-forest** counterpart (mint canvas `#F4FAF6`, forest text `#123B35`, sage accents). Arabic-first typography (IBM Plex Sans Arabic) with Rubik for Latin.
+**"Green signal on deep night, set large."** Dark first: a near-black green canvas, green-tinted surfaces, and one neon-green signal for the action that matters. Headlines are big and confident (display ≈ 4.5× body), with generous space between sections, soft large radii, capsule buttons, and colour carried by tinted surfaces rather than borders. The light theme is a complete mint-and-forest peer. Arabic first, mirrored from one stylesheet.
 
 | Principle | Meaning |
 | --------- | ------- |
-| Dark first | Dark is the default theme; light is a full peer, not an afterthought |
-| One signal color | Neon green is reserved for emphasis, active states and primary actions — never for large surfaces |
-| Capsules for actions, soft rectangles for content | Buttons and pills are fully rounded; cards are 16–20 px rounded |
-| Quiet borders, green glow | Separation by 1 px translucent borders; elevation by soft green-tinted shadows, not heavy black shadows |
-| Arabic-first, mirrored correctly | Every layout works RTL and LTR from one stylesheet |
-| Accessible contrast | Token pairs are chosen to meet WCAG AA |
+| Dark first, light complete | Dark is the default; every component and page is designed and checked in light too |
+| One signal | `--accent` marks one action per view, the active item and focus; never a large area or a paragraph |
+| Say it big, then quietly | One large headline, a short muted lede, then content. No eyebrow labels. |
+| Capsules act, soft rectangles hold | Buttons, pills and chips are capsules; cards are 24 px; bands are 32 px |
+| Tone before line, line before shadow | Separate by surface tone, then hairlines; shadows only for things that float |
+| Arabic is the reference | Designed RTL, mirrored to LTR with logical properties only; English can run 30% longer |
+| Honest content | Real data or labelled placeholders; status always in words |
+| Accessible by construction | Every token pair passes WCAG 2.2 AA in both themes; 44 px targets; reduced motion honoured |
 
-## 3. Current implementation (CURRENT)
-
-| Aspect | State |
-| ------ | ----- |
-| Styling technology | ~5,800 lines of plain global CSS in 16 files + 80 inline styles; Tailwind v4 imported but not configured or used |
-| Tokens | Only `--background` and `--foreground` exist; ~60 distinct hex values hardcoded across files |
-| Theming | `data-theme="light"` on `<html>`; light theme via ~250 `:root[data-theme='light'] .class` overrides |
-| Naming | `sdc-` prefixed classes; same class names redefined in several files (collisions) |
-| Breakpoints | 8 different `max-width` values (400–1024 px) |
-| Direction | Mostly physical properties (`left/right`, `margin-left`) with `direction: inherit`; 1 logical property |
-| Components | Visual patterns repeated per page rather than shared components |
-
-## 4. Target architecture
+## 3. Architecture
 
 ```mermaid
 flowchart LR
-    P["Primitive tokens<br/>palette: green-500, night-900, mint-50…"] --> S["Semantic tokens<br/>--color-bg, --color-text, --color-accent…<br/>(values switch per theme)"]
-    S --> C["Component tokens (only when needed)<br/>--button-primary-bg…"]
-    S --> UI["components/ui primitives<br/>Button · Badge · Card · Dialog · Input…"]
-    C --> UI
-    UI --> PAT["Patterns<br/>page banner · listing grid · detail + sidebar ·<br/>auth card · dashboard shell"]
+    P["primitives.css<br/>--c-&lt;hex&gt; (only place with hex)"] --> S["tokens.css<br/>semantic tokens, per theme<br/>+ type, space, radius, motion"]
+    S --> TW["Tailwind @theme inline<br/>bg-surface, text-muted, …"]
+    S --> UI["src/components/ui<br/>Button · Field · Dialog · …"]
+    TW --> UI
+    UI --> DOM["module components<br/>EventCard · MemberCard · …"]
+    DOM --> PAT["patterns → pages"]
 ```
 
-- Tokens are **CSS custom properties** defined once in `src/styles/tokens.css`, with theme values under `:root` (dark) and `:root[data-theme='light']`.
-- Components consume **semantic** tokens only; no raw hex values in component code.
-- The styling technology for components is decided in [ADR-009](../90-decisions/ADR-009-styling-and-design-tokens.md) (Proposed: Tailwind CSS v4 with `@theme` mapped to the same CSS variables; legacy CSS migrated when a page is touched).
+## 4. Documents
+
+| Document | Contents |
+| -------- | -------- |
+| [reference-notes.md](./reference-notes.md) | What we learned from the three Tuwaiq sites, and what SDC takes from each |
+| [foundations/colors.md](./foundations/colors.md) | Colour roles, semantic tokens (dark and light), rules |
+| [foundations/typography.md](./foundations/typography.md) | Families and pairing, the fluid type scale, measure, rules |
+| [foundations/layout-and-shape.md](./foundations/layout-and-shape.md) | Breakpoints, grid, containers, no-sideways-scroll, spacing, section rhythm, radius, elevation, z-index, the SDC motif |
+| [foundations/motion-icons-focus.md](./foundations/motion-icons-focus.md) | Motion tokens and catalogue, reduced motion, iconography (lucide 1.75), the focus ring |
+| [foundations/rtl-and-i18n.md](./foundations/rtl-and-i18n.md) | Direction rules, own-direction content, the +30% rule, copy rules |
+| [foundations/theming.md](./foundations/theming.md) | The theme mechanism, theme-aware assets, the toggle |
+| [components.md](./components.md) | 40+ components: anatomy, variants, states, sizes, AR/EN examples, and the implementation map to `src/components/ui` |
+| [patterns.md](./patterns.md) | Hero, section header, grids, filterable list, detail + side facts, timeline, CTA band, stats, quote, partners, directory, forms, feedback (incl. the registration flow), the auth split layout |
+| [accessibility.md](./accessibility.md) | WCAG 2.2 AA requirements and **the contrast table of every token pair in both themes** |
+| [token-mapping.md](./token-mapping.md) | Semantic token → primitive for both themes, what changed, the paste-ready `tokens.css` |
+| [tools/contrast.py](./tools/contrast.py) | The script that computes the contrast table |
+| [PUBLIC-SCREENS-V2/](./PUBLIC-SCREENS-V2/README.md) | **The v2 page specs**: every public route with wireframes, states, data, copy; the media list, suggested additions and open questions |
+| [artifact/](./artifact/ARTIFACT-README.md) | **Export of the Design System artifact** (v7): `tokens.json`, `tokens.css`, 44 component previews with READMEs, logos, hero art, fonts. Reference only; the docs and `src/styles` win on any difference |
+| [PUBLIC-SCREENS/](./PUBLIC-SCREENS/README.md) | Blueprints of the current (v1) public pages, kept as the record of today's pages |
+| [INTERNAL-SCREENS/](./INTERNAL-SCREENS/README.md) | Dashboard blueprints (unchanged) |
+| [reference-images/tuwaiq/](./reference-images/tuwaiq/README.md) | The owner's reference screenshots (design reference only, never copied) |
 
 ## 5. Assets
 
 | Rule | Detail |
 | ---- | ------ |
-| File names | `kebab-case`, no spaces: `logo-full-white.png`, not `Full whiteLogo 1.png` |
-| Location | `public/brand/` (logos), `public/illustrations/` (hero, 404 icons); content images (event covers) in Supabase Storage, not `public/` |
-| Formats | SVG for logos/icons when available (**OPEN Q-041** for vector masters); WebP/PNG for raster |
-| Theme variants | Logos and hero art have dark and light variants, selected by theme token or `<picture>` with `data-theme` aware CSS |
-| Icons | `lucide-react` (already used), 16–20 px, stroke 1.5–2; direction-sensitive icons mirrored in RTL |
-| No external placeholders | Remove `via.placeholder.com` fallbacks; use local fallback assets |
-
-## 6. Documents
-
-| Document | Contents |
-| -------- | -------- |
-| [foundations/colors.md](./foundations/colors.md) | Observed palette (dark + light), semantic token mapping, contrast, token sketch |
-| [foundations/typography.md](./foundations/typography.md) | Typefaces, observed scale, target scale, Arabic rules |
-| [foundations/layout-and-shape.md](./foundations/layout-and-shape.md) | Containers, breakpoints, grid, spacing, radii, elevation, motion |
-| [foundations/theming.md](./foundations/theming.md) | Dark/light mechanism, no-flash script, theme-aware assets |
-| [foundations/rtl-and-i18n.md](./foundations/rtl-and-i18n.md) | Direction rules, logical properties, bilingual text, numerals and dates |
-| [components.md](./components.md) | Inventory of current UI components with specs, and the target primitive library |
-| [patterns.md](./patterns.md) | Page and interaction patterns: public pages, listings, detail pages, forms, dashboard, states |
-| [accessibility.md](./accessibility.md) | Contrast findings, focus, keyboard, motion, screen readers |
-| [INTERNAL-SCREENS/](./INTERNAL-SCREENS/README.md) | Screen blueprints for the internal dashboard: shell & sidebar, conditional rendering, skeletons, 16 screens (incl. the KFUCS 4-step event wizard and attendance sessions), `/join`, end-to-end flows, design brief |
-| [PUBLIC-SCREENS/](./PUBLIC-SCREENS/README.md) | Blueprints of every **current** public page as rendered today (frozen look), target states/data for each, new public pages (check-in, certificate verification, privacy, search) and visitor flows |
-
-> **Identity is frozen (D-009).** Design skills and redesigns may improve layout consistency, states and accessibility, but never the palette, typefaces or shapes — see [AI agent skills §2](../07-engineering/ai-agent-skills.md#2-design-guardrail--the-identity-is-frozen-d-009).
+| Logos | Use the existing files; never redraw or recolour ([logo](./components.md#41-logo)). Rename to kebab-case under `public/brand/` without changing pixels. SVG masters: Q-041. |
+| Icons | lucide-react only, stroke 1.75 ([iconography](./foundations/motion-icons-focus.md#2-iconography)). The legacy PNG icons are retired. |
+| Content images | Event covers, member photos and article covers live in Supabase Storage, with a required localized `alt`. |
+| Placeholders | No external placeholder services. Missing media → [image fallback](./components.md#33-image-with-fallback). Design files label placeholders "PLACEHOLDER". |

@@ -77,12 +77,12 @@ export async function RegistrationsSection({
             name="q"
             defaultValue={sp.q ?? ''}
             placeholder={ar ? 'ابحث بالاسم أو البريد' : 'Search by name or e-mail'}
-            className="h-9 w-64 rounded-lg border border-line bg-surface ps-9 pe-3 text-sm text-text placeholder:text-muted focus-visible:outline-2 focus-visible:outline-accent"
+            className="h-9 w-64 rounded-lg border border-line bg-surface ps-9 pe-3 text-sm text-text placeholder:text-muted focus-visible:outline-2 focus-visible:outline-focus-ring"
           />
         </label>
         <button
           type="submit"
-          className="inline-flex h-9 items-center gap-2 rounded-full border border-line-accent px-4 text-sm font-semibold text-accent hover:bg-surface-raised focus-visible:outline-2 focus-visible:outline-accent"
+          className="inline-flex h-9 items-center gap-2 rounded-full border border-line-accent px-4 text-sm font-semibold text-accent hover:bg-surface-raised focus-visible:outline-2 focus-visible:outline-focus-ring"
         >
           <ListFilter size={15} aria-hidden="true" />
           {ar ? 'تطبيق' : 'Apply'}
