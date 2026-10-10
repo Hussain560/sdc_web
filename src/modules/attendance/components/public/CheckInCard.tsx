@@ -51,13 +51,6 @@ const feedbackMs = () => 3000 + Math.round(Math.random() * 1000);
 const RETRY_WAIT_S = 20;
 const EMAIL = /^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/;
 
-const TONE = {
-  success: 'bg-success-soft text-success',
-  info: 'bg-info-soft text-info',
-  warning: 'bg-warning-soft text-warning',
-  danger: 'bg-danger-soft text-danger',
-} as const;
-
 /**
  * The public check-in page (event page §6): a focused card opened from the QR code, no sign-in. The person types the
  * e-mail they registered with and the answer shows after 3 to 4 seconds. A signed-in accepted participant is checked
@@ -129,7 +122,7 @@ export default function CheckInCard({
   // Signed in and accepted: check in as soon as the page opens.
   useEffect(() => {
     if (!member?.accepted || !open || !token || tokenStatus !== 'valid' || member.checkedInAt) return;
-     
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- one automatic check-in on arrival; sets the busy flag
     void run(async () => {
       const r = await checkIn({ sessionId: session.id, token }, { lang });
       return r.ok
