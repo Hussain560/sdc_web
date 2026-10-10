@@ -1,5 +1,8 @@
 export { Alert } from './Alert';
-export { Badge } from './Badge';
+export { Badge, badgeTones, type BadgeTone } from './Badge';
+export { StatusPill, STATUS_META, type EventStatus } from './StatusPill';
+export { TagChip, FilterChip, RemovableChip } from './TagChip';
+export { DateChip, CountdownChip, type DateChipProps } from './DateChip';
 export {
   Button,
   LinkButton,
