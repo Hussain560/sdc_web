@@ -327,13 +327,13 @@ isOneToOne: false
                   ]
                 },"check_in_failures": {
                   Row: {
-                    "at": string,"id": number,"session_id": string
+                    "at": string,"email_hash": string | null,"id": number,"ip_hash": string | null,"session_id": string
                   }
                   Insert: {
-                    "at"?: string,"id"?: never,"session_id": string
+                    "at"?: string,"email_hash"?: string | null,"id"?: never,"ip_hash"?: string | null,"session_id": string
                   }
                   Update: {
-                    "at"?: string,"id"?: never,"session_id"?: string
+                    "at"?: string,"email_hash"?: string | null,"id"?: never,"ip_hash"?: string | null,"session_id"?: string
                   }
                   Relationships: [
                     {
@@ -1450,13 +1450,16 @@ isOneToOne: false
 { Args: { "p_session": string,"p_token"?: string }; Returns: string
                            },
 "check_in_by_email":
-{ Args: { "p_email": string,"p_session": string,"p_token": string }; Returns: Json
+{ Args: { "p_email": string,"p_ip_hash"?: string,"p_session": string,"p_token": string }; Returns: Json
                            },
 "check_in_context":
 { Args: { "p_session"?: string,"p_slug": string }; Returns: Json
                            },
 "check_in_public_context":
 { Args: { "p_session": string }; Returns: Json
+                           },
+"check_in_token_status":
+{ Args: { "p_session": string,"p_token": string }; Returns: string
                            },
 "claim_legacy_member":
 { Args: { "p_token": string }; Returns: string

@@ -30,7 +30,8 @@ test.afterAll(wipe);
 const qrToken = async (sessionId: string) =>
   (
     await sql<{ t: string }>(
-      `select private.qr_token(qr_secret, floor(extract(epoch from now()))::bigint / 120) as t from public.attendance_sessions where id = $1`,
+      `select floor(extract(epoch from now()))::bigint::text || '.' || private.qr_token(qr_secret, floor(extract(epoch from now()))::bigint) as t
+         from public.attendance_sessions where id = $1`,
       [sessionId],
     )
   )[0]!.t;
@@ -102,24 +103,26 @@ test.describe('attendance: tabs, public check-in, sign-off, certificates', () =>
       const token = await qrToken(day1);
       const actx = await browser.newContext({ baseURL: 'http://127.0.0.1:3300' });
       const anon = await actx.newPage();
+      // An unreadable or old code says so the moment the link opens, before any e-mail is typed.
       await anon.goto(`/en/events/${slug}/check-in?s=${day1}&t=nope`);
-      await anon.getByLabel('E-mail address').fill(p1.email);
-      await anon.getByRole('button', { name: 'Verify and check in' }).click();
-      await expect(anon.getByText(/Scanner timeout/)).toBeVisible();
+      await expect(anon.getByRole('heading', { name: 'This code expired' })).toBeVisible();
+      await expect(anon.getByLabel('E-mail address')).toHaveCount(0);
 
       await anon.goto(`/en/events/${slug}/check-in?s=${day1}&t=${token}`);
       await expect(anon.getByRole('heading', { name: `Attendance Camp ${tag}` })).toBeVisible();
       await anon.getByLabel('E-mail address').fill('nobody@example.test');
       await anon.getByRole('button', { name: 'Verify and check in' }).click();
-      await expect(anon.getByText(/No registration found/)).toBeVisible();
+      await expect(
+        anon.getByRole('heading', { name: 'No accepted registration matches this e-mail' }),
+      ).toBeVisible();
       await anon.getByRole('button', { name: 'Try again' }).click();
       await anon.getByLabel('E-mail address').fill(p1.email.toUpperCase());
       await anon.getByRole('button', { name: 'Verify and check in' }).click();
-      await expect(anon.getByRole('heading', { name: 'Check-in successful' })).toBeVisible();
+      await expect(anon.getByRole('heading', { name: "You're checked in" })).toBeVisible();
       await anon.goto(`/en/events/${slug}/check-in?s=${day1}&t=${token}`);
       await anon.getByLabel('E-mail address').fill(p1.email);
       await anon.getByRole('button', { name: 'Verify and check in' }).click();
-      await expect(anon.getByRole('heading', { name: /already recorded/i })).toBeVisible();
+      await expect(anon.getByRole('heading', { name: /already checked in/i })).toBeVisible();
       expect((await anon.goto('/en/events/anything/check-in?s=abc&t=xyz'))?.status()).toBe(404);
       await actx.close();
 
@@ -135,6 +138,10 @@ test.describe('attendance: tabs, public check-in, sign-off, certificates', () =>
       await row2.getByRole('button', { name: 'Mark present' }).click();
       await expect(page.getByRole('status').filter({ hasText: 'marked present' })).toBeVisible();
       await page.getByRole('button', { name: 'Close session' }).click();
+      await page
+        .getByRole('dialog')
+        .getByRole('button', { name: 'Yes, close the session' })
+        .click();
       await expect(page.getByRole('status').filter({ hasText: 'Session closed' })).toBeVisible();
       await page.getByRole('button', { name: 'Finalize session' }).click();
       await expect(page.getByRole('dialog')).toContainText('1 people will be recorded absent');
@@ -159,6 +166,10 @@ test.describe('attendance: tabs, public check-in, sign-off, certificates', () =>
         ).toBeVisible();
       }
       await page.getByRole('button', { name: 'Close session' }).click();
+      await page
+        .getByRole('dialog')
+        .getByRole('button', { name: 'Yes, close the session' })
+        .click();
       await expect(page.getByRole('button', { name: 'Finalize session' })).toBeVisible();
       await page.getByRole('button', { name: 'Finalize session' }).click();
       await page.getByRole('dialog').getByRole('button', { name: 'Finalize', exact: true }).click();
