@@ -20,8 +20,8 @@ export const PILL_LABEL: Record<EventStatus, { ar: string; en: string }> = {
 };
 
 /**
- * The pill a list card shows. Cards only know the phase and the seats left, so this is the event-page state
- * for an anonymous visitor (the audience and waiting list are not on the card).
+ * The status pill a list card shows: the event-page state for an anonymous visitor, with the audience left out
+ * (a members-only event keeps its own "Members only" tag beside the status, so the status still reads).
  */
 export function cardPill(event: PublicEventCard, now: number): EventStatus {
   return eventViewState(
@@ -30,7 +30,7 @@ export function cardPill(event: PublicEventCard, now: number): EventStatus {
       startDate: event.startDate,
       seats: event.seatsLeft === null ? null : Math.max(event.seatsLeft, 1),
       seatsLeft: event.seatsLeft,
-      waitlistEnabled: false,
+      waitlistEnabled: event.waitlistEnabled,
       audience: 'public',
       registrationStartAt: null,
       registrationEndAt: null,

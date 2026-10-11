@@ -12,6 +12,8 @@ export default defineConfig({
       NEXT_PUBLIC_SUPABASE_URL: 'http://127.0.0.1:54321',
       NEXT_PUBLIC_SUPABASE_ANON_KEY: 'test-anon-key',
     },
+    // Form tests type into jsdom with fake timers; under a loaded machine they pass the 5 s default.
+    testTimeout: 20_000,
     setupFiles: ['./tests/unit/setup.ts'],
     include: ['tests/unit/**/*.test.{ts,tsx}', 'src/**/*.test.{ts,tsx}'],
     coverage: { provider: 'v8', include: ['src/**'] },

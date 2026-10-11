@@ -44,6 +44,8 @@ export async function listEventsForList(): Promise<EventListItem[]> {
             phase: (r.phase ?? 'announced') as EventPhase,
             cover: coverSrc(r.cover_image_path),
             seatsLeft: r.seats_left,
+            access: r.audience === 'members_only' ? 'members_only' : 'public',
+            waitlistEnabled: !!r.waitlist_enabled,
             type: r.type ?? 'workshop',
             mode: (r.location_mode ?? 'in_person') as EventListItem['mode'],
             committeeSlug: r.committee_slug,
@@ -121,4 +123,24 @@ export function committeeOptions(all: EventListItem[], lang: 'ar' | 'en') {
   return [...map.entries()]
     .map(([slug, name]) => ({ slug, name }))
     .sort((a, b) => a.name.localeCompare(b.name, lang));
+}
+
+/** How many events each segment holds (before any filter), for the counts on the Upcoming / Past switch. */
+export function tabCounts(all: EventListItem[]) {
+  const upcoming = all.filter((e) => UPCOMING.has(e.phase)).length;
+  return { upcoming, past: all.length - upcoming };
+}
+
+/**
+ * The "nearest event" spotlight: the dated upcoming event that starts first; of two on the same day the one still
+ * open for registration wins. Undated events can't be "nearest", so with none dated there is no spotlight.
+ */
+export function pickFeatured(upcoming: EventListItem[]): EventListItem | null {
+  const dated = upcoming.filter((e) => e.startDate);
+  if (dated.length === 0) return null;
+  return dated.reduce((best, e) => {
+    const c = e.startDate!.localeCompare(best.startDate!);
+    if (c !== 0) return c < 0 ? e : best;
+    return e.phase === 'registration_open' && best.phase !== 'registration_open' ? e : best;
+  });
 }
