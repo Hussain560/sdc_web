@@ -2,6 +2,8 @@ import { describe, expect, it } from 'vitest';
 import {
   committeeOptions,
   filterEvents,
+  pickFeatured,
+  tabCounts,
   type EventListItem,
   type EventsQuery,
 } from '@/modules/events/list';
@@ -21,6 +23,8 @@ const ev = (o: Partial<EventListItem>): EventListItem => ({
   phase: 'registration_open',
   cover: '/x',
   seatsLeft: 5,
+  access: 'public',
+  waitlistEnabled: false,
   type: 'workshop',
   mode: 'in_person',
   committeeSlug: 'tech',
@@ -128,5 +132,42 @@ describe('filterEvents (filter to query mapping)', () => {
         .map((c) => c.slug)
         .sort(),
     ).toEqual(['ai', 'tech']);
+  });
+});
+
+describe('tabCounts', () => {
+  it('counts each segment before any filter', () => {
+    const all = [
+      ev({ phase: 'registration_open' }),
+      ev({ phase: 'announced' }),
+      ev({ phase: 'in_progress' }),
+      ev({ phase: 'ended' }),
+      ev({ phase: 'cancelled' }),
+    ];
+    expect(tabCounts(all)).toEqual({ upcoming: 3, past: 2 });
+    expect(tabCounts([])).toEqual({ upcoming: 0, past: 0 });
+  });
+});
+
+describe('pickFeatured', () => {
+  it('is the dated event that starts first', () => {
+    const near = ev({ id: 'near', startDate: '2026-10-12' });
+    expect(
+      pickFeatured([ev({ startDate: '2026-11-01' }), near, ev({ startDate: '2026-10-20' })]),
+    ).toBe(near);
+  });
+
+  it('prefers the one still open for registration on the same day', () => {
+    const open = ev({ id: 'open', startDate: '2026-10-12', phase: 'registration_open' });
+    const closed = ev({ startDate: '2026-10-12', phase: 'registration_closed' });
+    expect(pickFeatured([closed, open])).toBe(open);
+    expect(pickFeatured([open, closed])).toBe(open);
+  });
+
+  it('ignores undated events and gives none when nothing is dated', () => {
+    const dated = ev({ id: 'dated', startDate: '2026-12-01' });
+    expect(pickFeatured([ev({ startDate: null }), dated])).toBe(dated);
+    expect(pickFeatured([ev({ startDate: null })])).toBeNull();
+    expect(pickFeatured([])).toBeNull();
   });
 });

@@ -2,6 +2,9 @@ import type { Lang } from '@/context/LanguageContext';
 import { formatDateRange } from '@/lib/format';
 import type { EventPhase } from './types';
 
+/** The picture an event gets when its organisers did not upload one. */
+export const FALLBACK_COVER = '/assets/event-card.png';
+
 /** What the public pages need about an event (client-safe: plain data, no database types). */
 export type PublicEventCard = {
   id: string;
@@ -17,6 +20,10 @@ export type PublicEventCard = {
   phase: EventPhase;
   cover: string;
   seatsLeft: number | null;
+  /** `members_only` events get the "Members only" tag on their card. */
+  access: 'public' | 'members_only';
+  /** A full event with a waiting list shows "Full · waiting list" instead of "Full". */
+  waitlistEnabled: boolean;
 };
 
 export type ListBlock = { ar: string[]; en: string[] };

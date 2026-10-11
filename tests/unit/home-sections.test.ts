@@ -26,6 +26,8 @@ const ev = (o: Partial<PublicEventCard>): PublicEventCard => ({
   phase: 'registration_open',
   cover: '/x.png',
   seatsLeft: 10,
+  access: 'public',
+  waitlistEnabled: false,
   ...o,
 });
 const art = (i: number): PublicArticleCard => ({

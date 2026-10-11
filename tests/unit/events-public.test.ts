@@ -21,6 +21,8 @@ const card = (over: Partial<PublicEventCard> = {}): PublicEventCard => ({
   phase: 'registration_open',
   cover: '/a.png',
   seatsLeft: null,
+  access: 'public',
+  waitlistEnabled: false,
   ...over,
 });
 

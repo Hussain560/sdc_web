@@ -1,0 +1,187 @@
+/* Motion for the About page and the Events list (ADR-014 redesign). Transform, opacity and colour only, 160-240 ms
+ * on hover, the shared ease. The scroll-driven effects exist only where the browser supports them and are switched off
+ * for people who prefer reduced motion; without support every element simply shows its final state. */
+
+@keyframes pg-rise {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes pg-card-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes pg-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
+}
+@keyframes pg-marq {
+  to {
+    transform: translateX(var(--pg-marq-end, 50%));
+  }
+}
+@keyframes pg-draw {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* The counter is a registered integer, so the number counts up as the tile scrolls in. The digits are drawn by CSS,
+ * so the tile carries the same figure as visually hidden text for screen readers. */
+@property --pg-n {
+  syntax: '<integer>';
+  inherits: false;
+  initial-value: 0;
+}
+@keyframes pg-count {
+  from {
+    --pg-n: 0;
+  }
+}
+.pg-count {
+  --pg-n: var(--to);
+  counter-reset: pgn var(--pg-n);
+}
+.pg-count::after {
+  content: counter(pgn);
+}
+
+.pg-float {
+  animation: pg-float 7s ease-in-out infinite;
+}
+
+/* Topics marquee: the strip drifts toward the reading end; it pauses on hover and when anything inside has focus. */
+.pg-marq {
+  --pg-marq-end: -50%;
+}
+[dir='rtl'] .pg-marq {
+  --pg-marq-end: 50%;
+}
+.pg-marq-track {
+  display: flex;
+  inline-size: max-content;
+  gap: 1rem;
+  animation: pg-marq 46s linear infinite;
+}
+.pg-marq:hover .pg-marq-track,
+.pg-marq:focus-within .pg-marq-track,
+.pg-marq[data-paused='true'] .pg-marq-track {
+  animation-play-state: paused;
+}
+
+.pg-line {
+  transform-origin: left center;
+}
+[dir='rtl'] .pg-line {
+  transform-origin: right center;
+}
+
+/* Cards that lift on hover. */
+.pg-tile {
+  transition:
+    transform var(--duration-base) var(--ease-out),
+    border-color var(--duration-base) var(--ease-out);
+}
+.pg-tile:hover {
+  transform: translateY(-4px);
+  border-color: var(--border-accent);
+  box-shadow: var(--elev-1);
+}
+.pg-tile .pg-ico {
+  transition:
+    background-color var(--duration-base),
+    color var(--duration-base);
+}
+.pg-tile:hover .pg-ico {
+  background: var(--accent);
+  color: var(--text-on-accent);
+}
+.pg-tile .pg-arrow {
+  transition:
+    background-color var(--duration-base),
+    color var(--duration-base),
+    border-color var(--duration-base);
+}
+.pg-tile:hover .pg-arrow,
+.pg-tile:focus-within .pg-arrow {
+  background: var(--accent);
+  color: var(--text-on-accent);
+  border-color: var(--accent);
+}
+
+/* Event cards come in once, a little staggered by their position. */
+.pg-card-in {
+  animation: pg-card-in 320ms var(--ease-out) both;
+  animation-delay: calc(var(--i, 0) * 40ms);
+}
+.pg-card-img {
+  transition: transform var(--duration-slow) var(--ease-out);
+}
+.pg-card:hover .pg-card-img {
+  transform: scale(1.04);
+}
+
+/* Timeline strip: swipe sideways, each station snaps into place. */
+.pg-snap {
+  scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
+}
+.pg-snap > * {
+  scroll-snap-align: start;
+}
+
+@supports (animation-timeline: view()) {
+  .pg-rv {
+    animation: pg-rise linear both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 45%;
+  }
+  .pg-count {
+    animation: pg-count linear both;
+    animation-timeline: view();
+    animation-range: entry 10% cover 35%;
+  }
+  .pg-line {
+    animation: pg-draw linear both;
+    animation-timeline: view();
+    animation-range: entry 20% cover 45%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pg-float,
+  .pg-marq-track,
+  .pg-rv,
+  .pg-count,
+  .pg-line,
+  .pg-card-in {
+    animation: none !important;
+  }
+  .pg-tile,
+  .pg-card-img {
+    transition: none;
+  }
+  .pg-tile:hover,
+  .pg-card:hover .pg-card-img {
+    transform: none;
+  }
+}
