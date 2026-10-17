@@ -12,7 +12,7 @@
 | **Target version**  | `v0.1.0` (docs + repository baseline), plus `v0.1.1` only if containment is needed |
 | **Capacity**        | ~15 SP |
 | **Team**            | Project owner (PO), tech lead (TL), Supabase project owner, leadership for the answers |
-| **Status**          | 🔄 In progress — engineering preparation done; the remaining items need the owner (push, Supabase, leadership answers) |
+| **Status**          | 🔄 Repository, branches and pipeline done (2026-10-04). Open owner items: documentation review, P1 answers, Q-025 production inspection, access inventory |
 
 ## Sprint Objective
 
@@ -120,3 +120,7 @@ This retires TD-001 (no version control) and R-001/R-002 (open production data),
 - [Roadmap § Phase 0](../../roadmap.md#phase-0--discovery--foundation), [milestones M0](../../milestones.md)
 - [Open questions](../../../90-decisions/open-questions.md), [decision log](../../../90-decisions/README.md)
 - [Security model §16](../../../06-security/security-model.md#16-containment-of-current-critical-findings)
+
+## Update (2026-10-17)
+
+The push hold in this plan ended on 2026-10-04. The platform is on `Hussain560/sdc_web` (`origin`) and `sdc-saudi/SDC_website` (`upstream`), `develop`, `release/v1.0.0` and the candidate tags exist, and every change since arrives as a pull request merged on both. Still open and owned by people: the documentation review (FND-001), P1 answers (FND-002), the read-only inspection of the old production project (FND-003, Q-025) and the access inventory (FND-005). See the [action board](../../action-board.md). The "no Co-Authored-By" rule still applies.

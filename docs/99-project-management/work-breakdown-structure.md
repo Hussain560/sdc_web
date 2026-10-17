@@ -2,8 +2,8 @@
 
 | Field            | Value      |
 | ---------------- | ---------- |
-| **Last Updated** | 2026-10-02 |
-| **Status**       | Draft — sizes are rough, re-estimated at sprint planning |
+| **Last Updated** | 2026-10-17 |
+| **Status**       | Living — sizes are the original estimates; the actuals are in the last section |
 
 ## 1. Hierarchy
 
@@ -43,11 +43,12 @@ SDC Transformation
 ├── 3C Articles & Notifications (EP-ART, NOT-003) ............................. ~35 SP
 ├── 4 Management & Reports (EP-RPT, ACC-005/006, CMT-003, REG-006/007) ........ ~50 SP
 ├── 5 Hardening (EP-SEC) ....................................................... ~35 SP
-└── 6 Launch (EP-LCH) .......................................................... ~20 SP
-                                                                          Total ≈ 395 SP
+├── 6 Launch (EP-LCH) .......................................................... ~20 SP
+└── 7 Public redesign on Design System v2 (EP-RDS) ............................ ~82 SP
+                                                                          Total ≈ 477 SP
 ```
 
-At an assumed volunteer velocity of ~25–30 SP per 2-week sprint, the plan spans roughly 14–16 sprints (7–8 months). Velocity will be measured from the first two sprints and the roadmap re-forecast.
+At an assumed volunteer velocity of ~25–30 SP per 2-week sprint, the plan spanned roughly 17 sprints (8 months). That forecast turned out far too slow: see "Actuals" below.
 
 ## 3. Standard tasks per story (vertical slice)
 
@@ -59,3 +60,18 @@ At an assumed volunteer velocity of ~25–30 SP per 2-week sprint, the plan span
 6. Unit/integration/E2E tests as applicable
 7. Docs update (module doc, entity doc, rules if changed)
 8. Release-note line (user-visible change)
+
+## 4. Actuals (2026-10-17)
+
+| Phase | Planned | Delivered | Notes |
+| ----- | ------- | --------- | ----- |
+| 0 Foundation | ~15 SP | 2026-10-02 → 10-04 | Repository and pipeline done; owner items (Q-025, P1 answers, access inventory) still open |
+| 1 Baseline (Sprints 01–02) | ~55 SP | 2026-10-02 | CI on GitHub from 2026-10-04 |
+| 2 Identity & Access (Sprints 03–04) | ~60 SP | 2026-10-02 | |
+| 3A / 3B / 3C (Sprints 05–09) | ~160 SP | 2026-10-02 → 10-03 | Guest registration and accountless membership added (ADR-013) |
+| 4 Management & reports (Sprints 10–11) | ~50 SP | 2026-10-03 | |
+| 5 Hardening (Sprint 12) | ~35 SP | 2026-10-03 | Production verification pending |
+| 6 Launch (Sprint 13) | ~20 SP | 2026-10-03 | Everything buildable is done; cutover belongs to the owners |
+| 7 Public redesign (Sprints 14–16) | ~82 SP | 2026-10-10 → 10-11 | Merged in PRs #2, #3 and #4; follow-ups for registration form and About/Events second pass |
+
+Lesson for re-forecasting: delivery with an AI agent is not limited by the volunteer-days in the table in section 1. The real limits are the owner's review time, account access (Supabase, Vercel, domain, e-mail) and approvals such as visual baselines and copy. Plan those, not the coding.

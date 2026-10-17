@@ -2,8 +2,8 @@
 
 | Field            | Value      |
 | ---------------- | ---------- |
-| **Last Updated** | 2026-10-02 |
-| **Status**       | Draft      |
+| **Last Updated** | 2026-10-17 |
+| **Status**       | Active     |
 
 ## 1. Story / pull request
 
@@ -14,9 +14,9 @@
 | Review | PR approved (1 reviewer; 2 for migrations, RLS, auth, permissions, secrets); PR title is a Conventional Commit |
 | Security | Authorization enforced at server **and** database; inputs validated server-side; no secrets client-side; no PII in logs |
 | Database | Migration reviewed; RLS + grants included; pgTAP tests added/updated and passing; generated types committed |
-| Tests | Unit/integration tests for new logic; E2E updated if a critical journey changed; CI green |
+| Tests | Unit/integration tests for new logic; E2E updated if a critical journey changed; `npm run check` passes locally (the pre-push hook runs it) and CI is green. For UI, `npm run e2e` (visual gate) passes; baselines change only in a separate `chore(visual)` change the owner approved |
 | i18n | All strings in both catalogues; verified in Arabic RTL and English LTR |
-| Design | Uses tokens and primitives; verified in dark and light themes; responsive at mobile and desktop |
+| Design | Uses Design System v2 semantic tokens and the primitives in `src/components/ui`; no colour literal outside `primitives.css` (`npm run check:tokens`) and contrast pairs pass (`npm run check:contrast`); verified in dark and light themes, Arabic RTL and English LTR, at 360 px and desktop |
 | Accessibility | Keyboard operable, labelled controls, visible focus; no new axe violations |
 | Docs | Affected docs updated in the same PR (module, entity, rules, requirements status) |
 | Release notes | User-visible change summarized in the PR for the changelog |

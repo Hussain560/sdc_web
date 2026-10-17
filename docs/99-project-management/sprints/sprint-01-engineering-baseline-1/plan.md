@@ -12,7 +12,7 @@
 | **Target version**  | contributes to `v0.2.0` |
 | **Capacity**        | ~26 SP — planned 25 SP |
 | **Team**            | Tech lead + volunteer developers (assigned at sprint planning) |
-| **Status**          | 🔄 In progress — started early (2026-10-02); local scope done, the CI run waits for a push |
+| **Status**          | ✅ Complete — tooling, tests and CI are live on GitHub since 2026-10-04 |
 
 ## Sprint Objective
 
@@ -106,3 +106,7 @@ Every story also follows the [standard vertical-slice tasks](../../work-breakdow
 | Baselines captured on Windows | Regenerate on Linux in CI |
 | UI-005 `next/font` | Not started; fonts still load from Google Fonts |
 | ENG-007 | Remaining dead-code candidates not re-audited |
+
+## Update (2026-10-17)
+
+CI has run on GitHub since 2026-10-04. The pull-request gate is `ci.yml` (format, lint, types, token and contrast checks, unit tests, build, pgTAP, PR title). The slow browser suites (visual and authenticated E2E) moved out of the gate into a manual workflow and run locally before releases. The statements above about the push being on hold are historical.

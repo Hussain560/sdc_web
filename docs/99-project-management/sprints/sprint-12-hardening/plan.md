@@ -12,7 +12,7 @@
 | **Target version**    | `v0.8.0` (M7 exit) |
 | **Capacity**          | ~28 SP — planned 24 SP |
 | **Team**              | Tech lead + volunteer developers (assigned at sprint planning) |
-| **Status**            | 🔄 Local implementation in progress (2026-10-03) — see *Implementation Status* |
+| **Status**            | ✅ Complete 2026-10-03 — production verification and visual baseline approval pending |
 
 ## Sprint Objective
 

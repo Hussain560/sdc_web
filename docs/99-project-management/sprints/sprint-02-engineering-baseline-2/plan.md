@@ -12,7 +12,7 @@
 | **Target version**  | `v0.2.0` (M1 exit) |
 | **Capacity**        | ~28 SP — planned 29 SP |
 | **Team**            | Tech lead + volunteer developers (assigned at sprint planning) |
-| **Status**          | 🔄 In progress — local scope done early; remote and staging items wait for the account owners |
+| **Status**          | ✅ Complete — dev environment (Vercel `develop`, Supabase `sdc-dev`) deployed from `develop`; production projects are owner actions |
 
 ## Sprint Objective
 

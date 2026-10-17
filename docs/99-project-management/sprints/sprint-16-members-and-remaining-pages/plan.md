@@ -12,7 +12,7 @@
 | **Target version**    | `v1.1.0` (M9 exit) |
 | **Capacity**          | ~28 SP — planned 27 SP |
 | **Team**              | Tech lead + volunteer developers; owner for consent decisions, copy and approvals |
-| **Status**            | ⬜ Planned |
+| **Status**            | ✅ Complete 2026-10-10 → 10-11 (PRs #3 and #4); `v1.1.0` not tagged yet; planned for 2027-05-09 → 05-22 |
 
 ## Sprint Objective
 
@@ -24,16 +24,16 @@ Specs: [04-members](../../../10-design-system/PUBLIC-SCREENS-V2/04-members.md), 
 
 | Story ID | Title | Priority | Points | Assignee | Status |
 | -------- | ----- | -------- | ------ | -------- | ------ |
-| RDS-020 | Directory consent model: per-field flags, opt-in photo, opt-in participation, committee slugs in the view | P0 | 5 | — | ⬜ ⛔ Q-M1–M4 defaults |
-| RDS-021 | Members directory v2 (leadership + directory, search, filters, paging, states) | P0 | 5 | — | ⬜ |
-| RDS-022 | Member profile v2 (identity, bio, committees and roles, articles, opt-in events) | P0 | 3 | — | ⬜ |
-| RDS-023 | Events list v2 (segments, filter bar, paging) | P0 | 3 | — | ⬜ |
-| RDS-024 | Articles list and reading page v2 | P1 | 3 | — | ⬜ |
-| RDS-025 | Committees index (new) and committee page v2 | P1 | 2 | — | ⬜ |
-| RDS-026 | About v2 | P1 | 1 | — | ⬜ ⛔ Q-A1 |
-| RDS-027 | Join v2 (cycle panel, journey, stepper with the 1.5 s submit floor) | P0 | 2 | — | ⬜ |
-| RDS-028 | Certificate verification v2 (print) | P1 | 1 | — | ⬜ |
-| RDS-029 | Privacy and 404 v2; delete the legacy public CSS; baselines; release `v1.1.0` | P0 | 2 | — | ⬜ |
+| RDS-020 | Directory consent model: per-field flags, opt-in photo, opt-in participation, committee slugs in the view | P0 | 5 | — | ✅ defaults adopted for Q-M1–M4 |
+| RDS-021 | Members directory v2 (leadership + directory, search, filters, paging, states) | P0 | 5 | — | ✅ |
+| RDS-022 | Member profile v2 (identity, bio, committees and roles, articles, opt-in events) | P0 | 3 | — | ✅ |
+| RDS-023 | Events list v2 (segments, filter bar, paging) | P0 | 3 | — | ✅ |
+| RDS-024 | Articles list and reading page v2 | P1 | 3 | — | ✅ |
+| RDS-025 | Committees index (new) and committee page v2 | P1 | 2 | — | ✅ |
+| RDS-026 | About v2 | P1 | 1 | — | ✅ draft copy until Q-A1 is answered |
+| RDS-027 | Join v2 (cycle panel, journey, stepper with the 1.5 s submit floor) | P0 | 2 | — | ✅ |
+| RDS-028 | Certificate verification v2 (print) | P1 | 1 | — | ✅ |
+| RDS-029 | Privacy and 404 v2; delete the legacy public CSS; baselines; release `v1.1.0` | P0 | 2 | — | ✅ |
 
 ### Acceptance criteria per story
 
@@ -127,3 +127,10 @@ Specs: [04-members](../../../10-design-system/PUBLIC-SCREENS-V2/04-members.md), 
 | Consent defaults hide data people expect | Medium | Medium | Owner decides Q-M1; members get an e-mail about the new switches |
 | Too many pages for one sprint | Medium | Medium | P1 pages (articles, committees, about, certificate) can slip to a Sprint 17 without blocking the release of the flagships |
 | Baseline review fatigue | Medium | Low | Baselines approved per page in small PRs, not one giant diff |
+
+## Delivery notes (2026-10-17)
+
+- Delivered in PR #3 (all stories) and PR #4 (second pass on About and Events list, `RDS-032` in the [backlog](../../backlog.md)).
+- Consent model: migrations `20270403000000_directory_consent.sql` and `20270404000000_member_consent_rpc.sql`. The defaults for Q-M1–M4 were adopted as written in the open-questions file; the owner can still change them.
+- Legacy public CSS is deleted (only `src/components/markdown/markdown.css` and the shared `src/styles` remain) and the colour-literal allowlist is empty.
+- **Not done:** the `v1.1.0` tag and release record are pending the release-number decision; visual baselines for `/about` and `/events` must be approved and updated in a separate `chore(visual)` change; About and Home copy is draft (Q-A1, Q-H3, Q-H4).

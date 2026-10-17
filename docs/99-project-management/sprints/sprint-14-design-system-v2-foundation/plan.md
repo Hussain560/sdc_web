@@ -12,7 +12,7 @@
 | **Target version**    | contributes to `v1.1.0` |
 | **Capacity**          | ~28 SP — planned 27 SP |
 | **Team**              | Tech lead + volunteer developers (assigned at sprint planning); owner for approvals |
-| **Status**            | ⬜ Planned |
+| **Status**            | ✅ Complete 2026-10-10 (PR #2); planned for 2027-04-11 → 04-24 |
 
 ## Sprint Objective
 
@@ -24,14 +24,14 @@ References: [ADR-014](../../../90-decisions/ADR-014-public-redesign-design-syste
 
 | Story ID | Title | Priority | Points | Assignee | Status |
 | -------- | ----- | -------- | ------ | -------- | ------ |
-| RDS-001 | v2 tokens: new primitives, semantic tokens, non-colour tokens, Tailwind theme, contrast check in CI | P0 | 3 | — | ⬜ |
-| RDS-002 | Fonts: one stack (Rubik → Plex Sans Arabic) via `next/font`, type scale utilities | P0 | 2 | — | ⬜ |
-| RDS-003 | Actions and labels: Button (+LinkButton), IconButton, TextLink, SegmentedToggle, Badge, StatusPill, TagChip, DateChip | P0 | 5 | — | ⬜ |
-| RDS-004 | Forms: Field (+Password), Select, Textarea, Checkbox, Radio, Switch, error summary | P0 | 3 | — | ⬜ |
-| RDS-005 | Containers and feedback: Card variants, Avatar, Media, Alert, Toast, Dialog (+busy lock, sheet mode), ResultDialog, Progress, EmptyState, Skeleton presets | P0 | 5 | — | ⬜ |
-| RDS-006 | In-page navigation: Tabs, Accordion, Breadcrumb, Pagination, Stepper | P1 | 2 | — | ⬜ |
-| RDS-007 | Chrome: SiteHeader (floating + mobile sheet), SiteFooter, Logo, LocaleSwitch, ThemeSwitch, skip link | P0 | 4 | — | ⬜ |
-| RDS-008 | Auth route layout `(auth)` without header/footer; login, forgot, reset, claim on v2 | P0 | 3 | — | ⬜ |
+| RDS-001 | v2 tokens: new primitives, semantic tokens, non-colour tokens, Tailwind theme, contrast check in CI | P0 | 3 | — | ✅ |
+| RDS-002 | Fonts: one stack (Rubik → Plex Sans Arabic) via `next/font`, type scale utilities | P0 | 2 | — | ✅ |
+| RDS-003 | Actions and labels: Button (+LinkButton), IconButton, TextLink, SegmentedToggle, Badge, StatusPill, TagChip, DateChip | P0 | 5 | — | ✅ |
+| RDS-004 | Forms: Field (+Password), Select, Textarea, Checkbox, Radio, Switch, error summary | P0 | 3 | — | ✅ |
+| RDS-005 | Containers and feedback: Card variants, Avatar, Media, Alert, Toast, Dialog (+busy lock, sheet mode), ResultDialog, Progress, EmptyState, Skeleton presets | P0 | 5 | — | ✅ |
+| RDS-006 | In-page navigation: Tabs, Accordion, Breadcrumb, Pagination, Stepper | P1 | 2 | — | ✅ |
+| RDS-007 | Chrome: SiteHeader (floating + mobile sheet), SiteFooter, Logo, LocaleSwitch, ThemeSwitch, skip link | P0 | 4 | — | ✅ |
+| RDS-008 | Auth route layout `(auth)` without header/footer; login, forgot, reset, claim on v2 | P0 | 3 | — | ✅ |
 
 ### Acceptance criteria per story
 
@@ -138,3 +138,11 @@ Baselines change in this sprint. **No PR updates `__screenshots__` on its own.**
 - Design system v2: `docs/10-design-system/README.md` and its files
 - ADRs: ADR-009, ADR-010, ADR-013, ADR-014
 - Tests: `docs/09-quality/testing-strategy.md`
+
+## Delivery notes (2026-10-17)
+
+- Delivered in PR #2 (squash-merged on both repositories) together with the design documents (PR #1).
+- Deviation: the component gallery is at `/design-gallery` (not `/_design`). It returns 404 in production unless `DESIGN_GALLERY=1`; the Playwright run sets it.
+- Deviation: the radius scale is `--shape-*` so the dashboard's Tailwind `rounded-*` classes did not change.
+- Added to CI and `npm run check`: `check:tokens` (no colour literal outside `primitives.css`) and `check:contrast` (84 pairs, both themes).
+- The dashboard shares the tokens, so it moved slightly (capsule-soft active item, 24 px cards, focus ring).

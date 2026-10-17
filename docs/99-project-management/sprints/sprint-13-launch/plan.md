@@ -12,7 +12,7 @@
 | **Target version**    | `v1.0.0` |
 | **Capacity**          | ~20 SP — planned 16 SP |
 | **Team**              | Tech lead + volunteer developers (assigned at sprint planning) |
-| **Status**            | 🔄 Local preparation in progress (2026-10-03) — production actions need the owners (see Known Gaps) |
+| **Status**            | 🔄 Everything buildable is done (2026-10-03); production actions wait on the owners (see Known Gaps) |
 
 ## Sprint Objective
 
@@ -129,3 +129,7 @@ Read for this sprint (paths relative to `docs/`):
 | Contract follow-up edits | After the contract runs: regenerate database types, drop the legacy lines in `supabase/seed.sql`, and the legacy assertions in `supabase/tests/06_registrations.sql`; pgTAP and e2e were not re-run against the contracted copy. |
 | Tag | `v1.0.0` is not tagged and nothing was pushed. |
 | Visual baselines | Footer privacy link and logo rendering need an approved baseline refresh. |
+
+## Update (2026-10-17)
+
+`release/v1.0.0` and the tags `v1.0.0-rc.1` and `v1.0.0-rc.2` are pushed to both repositories; `v1.0.0` is still untagged and `main` on both remotes is still the baseline. The public redesign (Sprints 14–16) landed on `develop` after the candidate tags, so the owner must decide how the launch release relates to it: see the [action board](../../action-board.md) item 3. The production actions listed under Known Gaps are unchanged.

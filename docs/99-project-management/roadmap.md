@@ -2,8 +2,24 @@
 
 | Field            | Value      |
 | ---------------- | ---------- |
-| **Last Updated** | 2026-10-02 |
-| **Status**       | Draft — durations indicative (volunteer capacity) |
+| **Last Updated** | 2026-10-17 |
+| **Status**       | Living — phases 0–7 are built; the durations below are the original forecast |
+
+## Where each phase stands
+
+| Phase | Version | Status |
+| ----- | ------- | ------ |
+| 0 Discovery & Foundation | v0.1.0 | 🔄 Repository and pipeline done; P1 answers and the production inspection (Q-025) are open |
+| 1 Engineering baseline | v0.2.0 | ✅ Done |
+| 2 Identity & Access | v0.3.0 | ✅ Done |
+| 3A Events & Registrations | v0.4.0 | ✅ Done (guest registration added, see ADR-013) |
+| 3B Membership & Members | v0.5.0 | ✅ Done (applications need no account) |
+| 3C Articles & Notifications | v0.6.0 | ✅ Done |
+| 4 Internal Management & Reporting | v0.7.0 | ✅ Done |
+| 5 Quality & Security Hardening | v0.8.0 | ✅ Done in code; production verification pending |
+| 6 Production Launch | v1.0.0 | 🔄 Rehearsed; cutover and tag are owner actions |
+| 7 Public redesign on Design System v2 | v1.1.0 | 🔄 Built and merged 2026-10-10/11; baselines and copy review pending |
+| 8 Continuous improvement | — | ⬜ Not started |
 
 ## Overview
 
@@ -18,7 +34,9 @@ flowchart LR
     P3C --> P4
     P4 --> P5["Phase 5<br/>Quality & Security<br/>Hardening<br/>v0.8.0"]
     P5 --> P6["Phase 6<br/>Production<br/>Launch<br/>v1.0.0"]
-    P6 --> P7["Phase 7<br/>Continuous<br/>Improvement"]
+    P5 --> P7["Phase 7<br/>Public redesign<br/>Design System v2<br/>v1.1.0"]
+    P6 --> P8["Phase 8<br/>Continuous<br/>Improvement"]
+    P7 --> P8
     P0 -.-> CT["Containment track<br/>(if production exposed)<br/>v0.1.1"]
 ```
 
@@ -104,13 +122,23 @@ Articles entity + lifecycle + Markdown editor + public pages; migration of the s
 | Version | `v1.0.0` |
 | Duration | 1 sprint |
 
-## Phase 7 — Continuous Improvement
+## Phase 7 — Public Redesign on Design System v2
+
+| Item | Detail |
+| ---- | ------ |
+| Goal | Every public page on one documented design system, privacy first for members, AA contrast in both themes ([ADR-014](../90-decisions/ADR-014-public-redesign-design-system-v2.md)) |
+| Scope | v2 tokens, components, header and footer, auth layout (Sprint 14); Home, event page, registration dialog, calendar export, check-in (Sprint 15); members with per-field consent, events list, articles, committees, About, Join, certificate, privacy and 404, legacy public CSS deleted (Sprint 16); follow-ups: new registration form, About and Events list second pass |
+| Exit criteria | Owner-approved visual baselines for every redesigned page; owner-reviewed copy (Q-A1, Q-H3, Q-H4); release record |
+| Version | `v1.1.0` (see the release-number decision on the [action board](./action-board.md)) |
+| Delivered | 2026-10-10 → 2026-10-11 in PRs #2, #3 and #4 (planned: 2027-04-11 → 05-22) |
+
+## Phase 8 — Continuous Improvement
 
 Post-launch backlog: certificates (Q-020), event-scoped grants, partners management, analytics (Q-037), member contact (Q-022), projects showcase. Planned per release with the same process.
 
-## Next stage after the foundation
+## Order of work (as followed)
 
-Once Phase 0 exits, the work proceeds as:
+The work proceeded in this order:
 
 ```text
 Foundation → Detailed system analysis (per module, at sprint planning) → Internal design (module docs) →
@@ -118,4 +146,4 @@ Database design (migrations) → RBAC implementation → Member management → C
 Event management → Articles → Reports & statistics → Notifications → Testing & security → Production readiness
 ```
 
-Sprint plans for the whole roadmap (Sprint 00 → 13, v1.0.0 ≈ 2027-04-10) are in [sprints](./sprints/README.md#2-sprint-roadmap). Implementation sprints start only after Phase 0 exit criteria are met; the current priorities are on the [action board](./action-board.md).
+Sprint plans for the whole roadmap (Sprint 00 → 16) are in [sprints](./sprints/README.md#2-sprint-roadmap). The current priorities are on the [action board](./action-board.md).

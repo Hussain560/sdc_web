@@ -12,7 +12,7 @@
 | **Target version**    | contributes to `v1.1.0` |
 | **Capacity**          | ~28 SP — planned 28 SP |
 | **Team**              | Tech lead + volunteer developers; owner for copy and approvals |
-| **Status**            | ⬜ Planned |
+| **Status**            | ✅ Complete 2026-10-10 (PR #3); planned for 2027-04-25 → 05-08 |
 
 ## Sprint Objective
 
@@ -24,14 +24,14 @@ Specs: [01-home](../../../10-design-system/PUBLIC-SCREENS-V2/01-home.md), [02-ev
 
 | Story ID | Title | Priority | Points | Assignee | Status |
 | -------- | ----- | -------- | ------ | -------- | ------ |
-| RDS-010 | Mount SiteHeader/SiteFooter on every public route; retire the legacy Header/Footer | P0 | 2 | — | ⬜ |
-| RDS-011 | Event data additions: per-day place, `what_to_bring`, public certificate settings, public presenters view | P0 | 3 | — | ⬜ |
-| RDS-012 | Home page v2 (announcement, hero, stats, events, why join, articles, partners, CTA, FAQ) | P0 | 6 | — | ⬜ |
-| RDS-013 | Event page v2: hero, side panel / sticky action bar, sections, all 13 states | P0 | 6 | — | ⬜ |
-| RDS-014 | Registration dialog v2: form, 1.5 s minimum progress, result dialogs for every outcome | P0 | 5 | — | ⬜ |
-| RDS-015 | Add to calendar (`/events/[slug]/calendar.ics`) | P1 | 1 | — | ⬜ |
-| RDS-016 | Check-in page v2 (and the venue QR card) | P1 | 2 | — | ⬜ |
-| RDS-017 | Public stats view for the home figures | P1 | 3 | — | ⬜ ⛔ Q-H2 |
+| RDS-010 | Mount SiteHeader/SiteFooter on every public route; retire the legacy Header/Footer | P0 | 2 | — | ✅ |
+| RDS-011 | Event data additions: per-day place, `what_to_bring`, public certificate settings, public presenters view | P0 | 3 | — | ✅ |
+| RDS-012 | Home page v2 (announcement, hero, stats, events, why join, articles, partners, CTA, FAQ) | P0 | 6 | — | ✅ |
+| RDS-013 | Event page v2: hero, side panel / sticky action bar, sections, all 13 states | P0 | 6 | — | ✅ |
+| RDS-014 | Registration dialog v2: form, 1.5 s minimum progress, result dialogs for every outcome | P0 | 5 | — | ✅ |
+| RDS-015 | Add to calendar (`/events/[slug]/calendar.ics`) | P1 | 1 | — | ✅ |
+| RDS-016 | Check-in page v2 (and the venue QR card) | P1 | 2 | — | ✅ |
+| RDS-017 | Public stats view for the home figures | P1 | 3 | — | ✅ default adopted for Q-H2 (live counts, hidden when missing) |
 
 ### Acceptance criteria per story
 
@@ -152,3 +152,11 @@ The order follows the brief: tokens and components (Sprint 14) → auth layout (
 | The 1.5 s floor feels slow | Low | Low | It's the owner's explicit requirement; the progress state explains it |
 | Flaky timing tests in CI | Medium | Medium | Unit tests use fake timers; e2e asserts windows (≥ 1.5 s, < 15 s), not exact times |
 | Copy not ready | High | Medium | Feature flags hide sections; nothing invented ships |
+
+## Delivery notes (2026-10-17)
+
+- Delivered in PR #3. Migration `20270402000000_event_public_v2.sql` carries RDS-011; `20270401000000_public_stats.sql` carries RDS-017; `20270405000000_checkin_hardening.sql` hardens the check-in probe.
+- RDS-017 was unblocked with the default for Q-H2: counts are computed live and a figure that is missing or zero is hidden.
+- Home why-join and FAQ blocks are on (`HOME_FLAGS`) with draft copy (Q-H3, Q-H4); the owner reviews the wording.
+- The event page was reworked after review to the approved canvas: one home per fact per breakpoint, a 360 px side panel, a phone action bar, 12-hour time format and Arabic seat grammar.
+- Follow-up outside the plan: new registration form with name parts, occupation and international phone (migrations `guest_name_parts`, `guest_occupation`, `guest_occupation_other`).
