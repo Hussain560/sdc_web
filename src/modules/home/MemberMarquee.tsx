@@ -16,16 +16,16 @@ function Person({ member, lang, hidden }: { member: HomeMember; lang: Lang; hidd
   const name = lang === 'en' ? member.nameEn : member.nameAr;
   const line = lang === 'en' ? (member.trackEn ?? member.trackAr) : member.trackAr;
   return (
-    <li dir={lang === 'ar' ? 'rtl' : 'ltr'} className="w-56 shrink-0 md:w-64">
+    <li dir={lang === 'ar' ? 'rtl' : 'ltr'} className="w-72 shrink-0 md:w-96">
       <Link
         href={`/members/${member.id}`}
         tabIndex={hidden ? -1 : undefined}
-        className="flex h-full items-center gap-3 rounded-shape-xl border border-line bg-surface p-3 hover:border-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring"
+        className="flex h-full items-center gap-5 rounded-shape-xl border border-line bg-surface p-5 hover:border-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring"
       >
-        <Avatar name={name} src={member.thumb} size={56} />
+        <Avatar name={name} src={member.thumb} size={72} className="size-20! md:size-24!" />
         <span className="min-w-0">
-          <span className="t-body block truncate font-semibold">{name}</span>
-          <span className="t-body-sm block truncate text-muted">{line ?? ' '}</span>
+          <span className="block truncate text-lg font-semibold md:text-xl">{name}</span>
+          <span className="t-body block truncate text-muted">{line ?? ' '}</span>
         </span>
       </Link>
     </li>
@@ -111,12 +111,12 @@ function Row({
         }}
         className="flex w-max cursor-grab touch-pan-y active:cursor-grabbing"
       >
-        <ul ref={copy} className="flex gap-4 pe-4">
+        <ul ref={copy} className="flex gap-5 pe-5">
           {members.map((p) => (
             <Person key={p.id} member={p} lang={lang} hidden={false} />
           ))}
         </ul>
-        <ul aria-hidden="true" className="flex gap-4 pe-4" {...{ inert: true }}>
+        <ul aria-hidden="true" className="flex gap-5 pe-5" {...{ inert: true }}>
           {members.map((p) => (
             <Person key={p.id} member={p} lang={lang} hidden />
           ))}
