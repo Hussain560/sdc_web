@@ -1,3 +1,4 @@
+import { PageMain } from '@/components/motion/PageMain';
 import { ExternalLink } from 'lucide-react';
 import { ViewTransition } from 'react';
 import { SiteFooter } from '@/components/layout/SiteFooter';
@@ -94,7 +95,7 @@ export function ProfileView({
   return (
     <>
       <SiteHeader />
-      <main id="main" className="pb-4">
+      <PageMain className="pb-4">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
@@ -112,11 +113,11 @@ export function ProfileView({
 
         <header className={`${wrap} m-enter mt-8`}>
           <div className="flex flex-col items-center gap-6 text-center md:flex-row md:items-center md:text-start">
-            <ViewTransition name={`member-photo-${member.id}`} share="auto" default="none">
+            <ViewTransition name={`member-photo-${member.id}`} share="morph" default="none">
               <Avatar name={name} src={member.photo} size={120} className="ring-4 ring-surface" />
             </ViewTransition>
             <div className="flex min-w-0 flex-1 flex-col items-center gap-2 md:items-start">
-              <ViewTransition name={`member-name-${member.id}`} share="auto" default="none">
+              <ViewTransition name={`member-name-${member.id}`} share="morph" default="none">
                 <h1 className="t-h1">{name}</h1>
               </ViewTransition>
               {headline && <p className="t-lede">{headline}</p>}
@@ -308,7 +309,7 @@ export function ProfileView({
             {t.back}
           </TextLink>
         </div>
-      </main>
+      </PageMain>
       <SiteFooter />
     </>
   );

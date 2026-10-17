@@ -135,7 +135,7 @@ export function SiteHeader() {
   return (
     <header
       className={cn(
-        'sticky top-0 z-(--z-header) lg:top-3 lg:mb-5 lg:px-4',
+        'm-vt-header sticky top-0 z-(--z-header) lg:top-3 lg:mb-5 lg:px-4',
         'transition-transform duration-(--duration-base) ease-(--ease-standard) motion-reduce:transition-none',
         hidden && '-translate-y-[calc(100%+1rem)]',
       )}

@@ -1,3 +1,4 @@
+import { PageMain } from '@/components/motion/PageMain';
 import { Search, X } from 'lucide-react';
 import { SiteFooter } from '@/components/layout/SiteFooter';
 import { SiteHeader } from '@/components/layout/SiteHeader';
@@ -96,7 +97,7 @@ export function ArticlesListView({
   return (
     <>
       <SiteHeader />
-      <main id="main">
+      <PageMain>
         <div className={`${wrap} pt-6`}>
           <Breadcrumb label={t.breadcrumb} items={[{ label: t.home, href: '/' }, { label: t.title }]} />
           <h1 className="t-h1 mt-6">{t.title}</h1>
@@ -194,7 +195,7 @@ export function ArticlesListView({
             </div>
           )}
         </section>
-      </main>
+      </PageMain>
       <SiteFooter />
     </>
   );

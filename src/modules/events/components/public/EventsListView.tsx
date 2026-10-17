@@ -1,3 +1,4 @@
+import { PageMain } from '@/components/motion/PageMain';
 import { CalendarDays, MapPin, Search, ShieldCheck, X } from 'lucide-react';
 import { CapsuleCover } from '@/components/patterns/CapsuleMark';
 import { SiteFooter } from '@/components/layout/SiteFooter';
@@ -227,7 +228,7 @@ export function EventsListView({
   return (
     <>
       <SiteHeader />
-      <main id="main">
+      <PageMain>
         <div className={`${wrap} pt-6`}>
           <Breadcrumb
             label={p.breadcrumb}
@@ -408,7 +409,7 @@ export function EventsListView({
             </div>
           </SignedOutOnly>
         </section>
-      </main>
+      </PageMain>
       <SiteFooter />
     </>
   );

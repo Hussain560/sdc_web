@@ -72,7 +72,7 @@ export function SiteFooter() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="mt-(--section-gap) rounded-t-shape-2xl bg-surface px-4 pt-12 pb-6 md:px-8">
+    <footer className="m-vt-footer mt-(--section-gap) rounded-t-shape-2xl bg-surface px-4 pt-12 pb-6 md:px-8">
       <div className="mx-auto grid max-w-(--container) gap-8 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
         <div className="flex flex-col items-start gap-4">
           <Image

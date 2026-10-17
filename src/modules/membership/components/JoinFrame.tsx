@@ -1,3 +1,4 @@
+import { PageMain } from '@/components/motion/PageMain';
 import { Award, BookOpen, Check, Rocket, Users } from 'lucide-react';
 import { SiteFooter } from '@/components/layout/SiteFooter';
 import { SiteHeader } from '@/components/layout/SiteHeader';
@@ -75,7 +76,7 @@ export function JoinFrame({ ar, children }: { ar: boolean; children: React.React
   return (
     <>
       <SiteHeader />
-      <main id="main">
+      <PageMain>
         <div className={`${wrap} pt-6`}>
           <Breadcrumb
             label={t.breadcrumb}
@@ -144,7 +145,7 @@ export function JoinFrame({ ar, children }: { ar: boolean; children: React.React
             items={t.faq.map(([question, answer], i) => ({ id: `q${i}`, question, answer }))}
           />
         </section>
-      </main>
+      </PageMain>
       <SiteFooter />
     </>
   );

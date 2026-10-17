@@ -52,7 +52,7 @@ export function DirectoryCard({
       className="m-in relative flex h-full flex-col items-center gap-3 overflow-hidden p-0 pb-5 text-center"
     >
       <div aria-hidden="true" className="motif-dots h-16 w-full bg-accent-soft text-line-accent" />
-      <ViewTransition name={`member-photo-${member.id}`} share="auto" default="none">
+      <ViewTransition name={`member-photo-${member.id}`} share="morph" default="none">
         <Avatar
           name={name}
           src={member.thumb ?? member.photo}
@@ -62,7 +62,7 @@ export function DirectoryCard({
       </ViewTransition>
       <div className="flex min-w-0 flex-1 flex-col items-center gap-2 px-4">
         <h3 className="t-h4 line-clamp-2">
-          <ViewTransition name={`member-name-${member.id}`} share="auto" default="none">
+          <ViewTransition name={`member-name-${member.id}`} share="morph" default="none">
             <CardLink href={`/members/${member.id}`}>{name}</CardLink>
           </ViewTransition>
         </h3>

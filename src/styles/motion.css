@@ -225,3 +225,39 @@
     box-shadow: none;
   }
 }
+
+/* Route transitions (React <ViewTransition>): page crossfade, shared-element morph, still header and footer. */
+@keyframes m-vt-out {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes m-vt-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+::view-transition-old(.m-page) {
+  animation: m-vt-out var(--duration-fast) var(--ease-in) both;
+}
+::view-transition-new(.m-page) {
+  animation: m-vt-in var(--duration-base) var(--ease-out) both;
+}
+::view-transition-group(.morph) {
+  animation-duration: var(--duration-slow);
+  animation-timing-function: var(--ease-out);
+}
+.m-vt-header {
+  view-transition-name: site-header;
+}
+.m-vt-footer {
+  view-transition-name: site-footer;
+}
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}

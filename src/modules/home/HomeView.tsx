@@ -1,3 +1,4 @@
+import { PageMain } from '@/components/motion/PageMain';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import Image from 'next/image';
 import { CtaBand } from '@/components/patterns/CtaBand';
@@ -64,7 +65,7 @@ export function HomeView({
   return (
     <>
       <SiteHeader />
-      <main id="main">
+      <PageMain>
         {ann && (
           <div className="bg-accent-soft text-on-accent-soft">
             <Link
@@ -338,7 +339,7 @@ export function HomeView({
             />
           </section>
         )}
-      </main>
+      </PageMain>
       <SiteFooter />
     </>
   );

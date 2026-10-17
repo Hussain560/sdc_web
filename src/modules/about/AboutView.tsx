@@ -1,3 +1,4 @@
+import { PageMain } from '@/components/motion/PageMain';
 import {
   ArrowLeft,
   ArrowRight,
@@ -59,7 +60,7 @@ export function AboutView({ lang, data }: { lang: Lang; data: AboutData }) {
   return (
     <>
       <SiteHeader />
-      <main id="main" className="overflow-x-clip">
+      <PageMain className="overflow-x-clip">
         <div className={`${wrap} pt-6`}>
           <Breadcrumb
             label={t.breadcrumb}
@@ -423,7 +424,7 @@ export function AboutView({ lang, data }: { lang: Lang; data: AboutData }) {
             </section>
           </SignedOutOnly>
         </div>
-      </main>
+      </PageMain>
       <SiteFooter />
     </>
   );

@@ -1,3 +1,4 @@
+import { PageMain } from '@/components/motion/PageMain';
 import { Search, Users, X } from 'lucide-react';
 import { FilterSelect, FilterSheet } from '@/components/patterns/FilterControls';
 import { CtaBand } from '@/components/patterns/CtaBand';
@@ -173,7 +174,7 @@ export function MembersView({
   return (
     <>
       <SiteHeader />
-      <main id="main" className="pb-4">
+      <PageMain className="pb-4">
         <div className={`${wrap} pt-6`}>
           <Breadcrumb
             label={t.breadcrumb}
@@ -397,7 +398,7 @@ export function MembersView({
             />
           </div>
         </SignedOutOnly>
-      </main>
+      </PageMain>
       <SiteFooter />
     </>
   );
