@@ -20,7 +20,7 @@ import {
 import { FALLBACK_COVER, eventLocation, eventTitle } from '../../public-types';
 import { PILL_LABEL, cardPill } from '../../status-labels';
 import { EventCard, eventWhen } from '../EventCard';
-import { FilterSelect, FilterSheet } from './FilterControls';
+import { FilterSelect, FilterSheet } from '@/components/patterns/FilterControls';
 
 type Lang = 'ar' | 'en';
 

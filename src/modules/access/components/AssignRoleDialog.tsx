@@ -54,6 +54,7 @@ export function AssignRoleDialog({
   canHandover,
   fixedCommitteeId,
   addMemberHref,
+  presetUser,
 }: {
   roles: RoleOption[];
   committees: CommitteeOption[];
@@ -63,6 +64,8 @@ export function AssignRoleDialog({
   fixedCommitteeId?: string;
   /** Where "add them as a new member" leads, for people who may add members. Omit to hide the link. */
   addMemberHref?: string;
+  /** The person is already chosen (the dialog opens from their own page). */
+  presetUser?: AssignableUser;
 }) {
   const { lang } = useLanguage();
   const ar = lang === 'ar';
@@ -72,7 +75,7 @@ export function AssignRoleDialog({
   const [open, setOpen] = useState(false);
   const [pending, startTransition] = useTransition();
   const [values, setValues] = useState({ ...empty, committeeId: fixedCommitteeId ?? '' });
-  const [picked, setPicked] = useState<AssignableUser | null>(null);
+  const [picked, setPicked] = useState<AssignableUser | null>(presetUser ?? null);
   const [query, setQuery] = useState('');
   const [search, setSearch] = useState<{
     status: ComboStatus;
@@ -133,7 +136,7 @@ export function AssignRoleDialog({
 
   const reset = () => {
     setValues({ ...empty, committeeId: fixedCommitteeId ?? '' });
-    setPicked(null);
+    setPicked(presetUser ?? null);
     setQuery('');
     setSearch({ status: 'idle', data: null });
     setKeepAsDeputy(false);
