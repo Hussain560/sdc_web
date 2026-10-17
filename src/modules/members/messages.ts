@@ -20,6 +20,8 @@ const MEMBER_CODES = [
   'VALIDATION_FAILED',
   'ALREADY_MEMBER',
   'LIMIT_REACHED',
+  'FILE_TOO_LARGE',
+  'FILE_TYPE',
 ] as const satisfies readonly ErrorCode[];
 
 const messages: Partial<Record<ErrorCode, Record<Lang, string>>> = {
@@ -58,6 +60,18 @@ const messages: Partial<Record<ErrorCode, Record<Lang, string>>> = {
   ALREADY_MEMBER: {
     ar: 'هذا البريد لعضو في المجتمع بالفعل.',
     en: 'This e-mail already belongs to a member.',
+  },
+  FILE_TOO_LARGE: {
+    ar: 'الصورة أكبر من 2 ميغابايت. اختر صورة أصغر.',
+    en: 'The picture is larger than 2 MB. Choose a smaller one.',
+  },
+  FILE_TYPE: {
+    ar: 'نوع الملف غير مدعوم. نقبل JPG وPNG وWebP فقط.',
+    en: 'This file type is not supported. We accept JPG, PNG and WebP only.',
+  },
+  FORBIDDEN: {
+    ar: 'لم تُحفظ الصورة. حاول مرة أخرى.',
+    en: 'The picture was not saved. Try again.',
   },
   LIMIT_REACHED: {
     ar: 'وصلت إلى الحد الأقصى.',

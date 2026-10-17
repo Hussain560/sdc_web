@@ -1742,6 +1742,9 @@ isOneToOne: false
 "register_guest":
 { Args: { "p_answers"?: Json,"p_consent_version"?: string,"p_elapsed_ms"?: number,"p_email": string,"p_event": string,"p_honeypot"?: string,"p_ip_hash"?: string,"p_name": string,"p_phone": string }; Returns: Json
                            },
+"remove_my_member_photo":
+{ Args: Record<PropertyKey, never>; Returns: string
+                           },
 "reorder_my_projects":
 { Args: { "p_ids": (string)[] }; Returns: undefined
                            },
@@ -1801,6 +1804,9 @@ isOneToOne: false
                            },
 "set_member_status":
 { Args: { "p_id": string,"p_reason"?: string,"p_status": string }; Returns: string
+                           },
+"set_my_member_photo":
+{ Args: { "p_path": string,"p_show"?: boolean }; Returns: string
                            },
 "set_my_skills":
 { Args: { "p_slugs": (string)[] }; Returns: undefined

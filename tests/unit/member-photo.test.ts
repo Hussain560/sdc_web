@@ -6,6 +6,7 @@ import {
   cropSide,
   dragToMove,
   initialCrop,
+  sniffImageType,
   memberPhotoPaths,
   sourceRect,
   thumbPathOf,
@@ -124,5 +125,25 @@ describe('storage paths', () => {
     const j = memberPhotoPaths('user-1', 'abc', 'jpg');
     expect(j.full).toBe('user-1/abc.jpg');
     expect(thumbPathOf(j.full)).toBe('user-1/abc-128.jpg');
+  });
+});
+
+describe('sniffImageType', () => {
+  const bytes = (...b: number[]) => new Uint8Array(b);
+  it('knows JPEG, PNG and WebP by their first bytes', () => {
+    expect(sniffImageType(bytes(0xff, 0xd8, 0xff, 0xe0))).toBe('image/jpeg');
+    expect(sniffImageType(bytes(0x89, 0x50, 0x4e, 0x47, 0x0d))).toBe('image/png');
+    expect(sniffImageType(bytes(0x52, 0x49, 0x46, 0x46, 0, 0, 0, 0, 0x57, 0x45, 0x42, 0x50))).toBe(
+      'image/webp',
+    );
+  });
+  it('refuses everything else, including a renamed file', () => {
+    expect(sniffImageType(bytes(0x47, 0x49, 0x46, 0x38))).toBeNull();
+    expect(sniffImageType(bytes(0x25, 0x50, 0x44, 0x46))).toBeNull();
+    expect(sniffImageType(bytes())).toBeNull();
+    // a RIFF container that is not WebP (for example WAV)
+    expect(
+      sniffImageType(bytes(0x52, 0x49, 0x46, 0x46, 0, 0, 0, 0, 0x57, 0x41, 0x56, 0x45)),
+    ).toBeNull();
   });
 });
