@@ -3,7 +3,7 @@ import { ArrowLeft, ArrowRight, ExternalLink } from 'lucide-react';
 import { ViewTransition } from 'react';
 import { SiteFooter } from '@/components/layout/SiteFooter';
 import { SiteHeader } from '@/components/layout/SiteHeader';
-import { CapsuleCover, CapsuleMark } from '@/components/patterns/CapsuleMark';
+import { CapsuleCover } from '@/components/patterns/CapsuleMark';
 import { Avatar } from '@/components/ui/Avatar';
 import { Breadcrumb } from '@/components/ui/Breadcrumb';
 import { LinkButton } from '@/components/ui/Button';
@@ -191,11 +191,16 @@ export function ProfileView({
 
         <header className={`${wrap} m-enter mt-6`}>
           <div className="overflow-hidden rounded-shape-2xl border border-line bg-surface">
-            <div
-              aria-hidden="true"
-              className="motif-dots relative h-28 overflow-hidden bg-accent-soft text-line-accent md:h-36"
-            >
-              <CapsuleMark className="absolute start-6 -top-6 h-48 opacity-70 md:start-10 md:h-56" />
+            <div aria-hidden="true" className="relative h-28 overflow-hidden bg-accent-soft md:h-36">
+              <div
+                className="absolute inset-0 opacity-45"
+                style={{
+                  backgroundImage: 'url("/assets/P3%202.png")',
+                  backgroundRepeat: 'repeat',
+                  backgroundSize: '140px auto',
+                  backgroundPosition: 'center',
+                }}
+              />
             </div>
             <div className="px-5 pb-6 md:px-8">
               <div className="-mt-14 flex flex-col items-center gap-4 text-center md:flex-row md:items-start md:gap-6 md:text-start">
