@@ -203,16 +203,16 @@ export function ProfileView({
               />
             </div>
             <div className="px-5 pb-6 md:px-8">
-              <div className="-mt-14 flex flex-col items-center gap-4 text-center md:flex-row md:items-start md:gap-6 md:text-start">
+              <div className="-mt-20 flex flex-col items-center gap-4 text-center md:-mt-20 md:flex-row md:items-start md:gap-8 md:text-start">
                 <ViewTransition name={`member-photo-${member.id}`} share="morph" default="none">
                   <Avatar
                     name={name}
                     src={member.photo}
                     size={120}
-                    className="shrink-0 ring-4 ring-surface"
+                    className="size-40! shrink-0 ring-4 ring-surface md:size-52!"
                   />
                 </ViewTransition>
-                <div className="flex min-w-0 flex-1 flex-col items-center gap-2 md:mt-16 md:items-start">
+                <div className="flex min-w-0 flex-1 flex-col items-center gap-2 md:mt-24 md:items-start">
                   <ViewTransition name={`member-name-${member.id}`} share="morph" default="none">
                     <h1 className="t-h1">{name}</h1>
                   </ViewTransition>
@@ -243,7 +243,7 @@ export function ProfileView({
                     </ul>
                   )}
                 </div>
-                <div className="flex shrink-0 justify-center md:mt-16">
+                <div className="flex shrink-0 justify-center md:mt-24">
                   <ShareButton label={t.share} doneLabel={t.shared} title={name} />
                 </div>
               </div>
