@@ -4,7 +4,6 @@ import {
   getDirectoryFacets,
   getSkillCatalog,
   listDirectoryPage,
-  listLeadership,
 } from '@/modules/members/public';
 
 type SP = { q?: string; skill?: string; committee?: string; track?: string; n?: string };
@@ -29,19 +28,17 @@ export default async function MembersPage({
     n,
   };
 
-  const [page, leadership, facets, skills] = await Promise.all([
+  const [page, facets, skills] = await Promise.all([
     listDirectoryPage(query, lang).then(
       (r) => ({ ...r, failed: false }),
       () => ({ total: 0, items: [], failed: true }),
     ),
-    listLeadership(),
     getDirectoryFacets(),
     getSkillCatalog(),
   ]);
   return (
     <MembersView
       lang={lang}
-      leadership={leadership}
       members={page.items}
       total={page.total}
       facets={facets}

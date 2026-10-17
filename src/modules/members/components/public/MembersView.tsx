@@ -17,11 +17,9 @@ import {
   type DirectoryFacets,
   type DirectoryMember,
   type DirectoryQuery,
-  type LeadershipPerson,
   type PublicSkill,
 } from '../../public';
 import { DirectoryCard } from './DirectoryCard';
-import { CommitteeLeadCard, LeaderCard, splitLeadership } from './LeadershipCards';
 import { MEMBERS_COPY } from './members-copy';
 
 type Lang = 'ar' | 'en';
@@ -50,7 +48,6 @@ const selectClass =
  */
 export function MembersView({
   lang,
-  leadership,
   members,
   total,
   facets,
@@ -59,7 +56,6 @@ export function MembersView({
   loadError,
 }: {
   lang: Lang;
-  leadership: LeadershipPerson[];
   members: DirectoryMember[];
   total: number;
   facets: DirectoryFacets;
@@ -72,7 +68,6 @@ export function MembersView({
   const wrap = 'mx-auto w-full max-w-(--container) px-4 md:px-8';
   const action = lang === 'en' ? '/en/members' : '/members';
   const filtered = !!(query.q || query.skill || query.committee || query.track);
-  const { top, committee } = splitLeadership(leadership);
   const skillName = (slug: string) => {
     const s = skills.get(slug);
     return s ? (lang === 'en' ? s.nameEn : s.nameAr) : slug;
@@ -235,43 +230,6 @@ export function MembersView({
                 })}
               </ul>
             </div>
-          </section>
-        )}
-
-        {top.length > 0 && (
-          <section aria-labelledby="m-lead" className={`${wrap} mt-(--section-gap)`}>
-            <SectionHeader headingId="m-lead" title={t.leadership} lede={t.leadershipLede} dots />
-            <ul className="grid gap-5 md:grid-cols-3">
-              {top.map((p) => (
-                <li key={p.id}>
-                  <LeaderCard person={p} lang={lang} />
-                </li>
-              ))}
-            </ul>
-            {committee.length > 0 && (
-              <div className="mt-8">
-                <h3 className="t-h4 mb-4 text-muted">{t.committeeLeads}</h3>
-                <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
-                  {committee.map((p) => (
-                    <li key={p.id}>
-                      <CommitteeLeadCard person={p} lang={lang} />
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </section>
-        )}
-        {top.length === 0 && committee.length > 0 && (
-          <section aria-labelledby="m-lead" className={`${wrap} mt-(--section-gap)`}>
-            <SectionHeader headingId="m-lead" title={t.leadership} lede={t.leadershipLede} dots />
-            <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
-              {committee.map((p) => (
-                <li key={p.id}>
-                  <CommitteeLeadCard person={p} lang={lang} />
-                </li>
-              ))}
-            </ul>
           </section>
         )}
 

@@ -1,3 +1,4 @@
+import { LeadershipSection } from '@/modules/members/components/public/LeadershipSection';
 import { PageMain } from '@/components/motion/PageMain';
 import {
   ArrowLeft,
@@ -16,7 +17,6 @@ import { CapsuleCover } from '@/components/patterns/CapsuleMark';
 import { SectionHeader } from '@/components/patterns/SectionHeader';
 import { SiteFooter } from '@/components/layout/SiteFooter';
 import { SiteHeader } from '@/components/layout/SiteHeader';
-import { Avatar } from '@/components/ui/Avatar';
 import { Breadcrumb } from '@/components/ui/Breadcrumb';
 import { LinkButton } from '@/components/ui/Button';
 import { Card, CardLink } from '@/components/ui/Card';
@@ -362,40 +362,20 @@ export function AboutView({ lang, data }: { lang: Lang; data: AboutData }) {
         )}
 
         <div className={wrap}>
-          {data.leadership.length > 0 && (
-            <section aria-labelledby="ab-lead" className={section}>
-              <SectionHeader
-                headingId="ab-lead"
-                title={t.leadership}
-                lede={t.leadershipLede}
-                dots
-                action={
-                  <LinkButton href="/members" variant="secondary">
-                    {t.allMembers}
-                  </LinkButton>
-                }
-              />
-              <ul className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
-                {data.leadership.slice(0, 8).map((p) => {
-                  const name = lang === 'en' ? p.nameEn : p.nameAr;
-                  return (
-                    <li key={p.id} className="m-reveal">
-                      <Card
-                        variant="surface"
-                        className="m-lift flex h-full flex-col items-start gap-3 p-4 sm:p-7"
-                      >
-                        <Avatar name={name} size={72} />
-                        <h3 className="t-h4 mt-2">{name}</h3>
-                        <p className="font-semibold text-accent-text">
-                          {lang === 'en' ? p.roleEn : p.roleAr}
-                        </p>
-                      </Card>
-                    </li>
-                  );
-                })}
-              </ul>
-            </section>
-          )}
+          <div className={section}>
+            <LeadershipSection
+              leadership={data.leadership}
+              lang={lang}
+              headingId="ab-lead"
+              title={t.leadership}
+              lede={t.leadershipLede}
+              action={
+                <LinkButton href="/members" variant="secondary">
+                  {t.allMembers}
+                </LinkButton>
+              }
+            />
+          </div>
 
           <SignedOutOnly>
             <section
