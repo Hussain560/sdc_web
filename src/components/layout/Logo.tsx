@@ -9,7 +9,7 @@ import { cn } from '@/components/ui/cn';
  * used as they are: never redraw, recolour or stretch them.
  */
 const SIZE = {
-  header: 'h-10! md:h-12!',
+  header: 'h-12! lg:h-14!',
   footer: 'h-16! md:h-20!',
 } as const;
 
