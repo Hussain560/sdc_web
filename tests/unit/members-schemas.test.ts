@@ -11,7 +11,7 @@ describe('member profile form', () => {
 
   it('requires the Arabic first name and bounds the text', () => {
     expect(validateProfile({ ...valid(), firstNameAr: ' ' }, 'ar').firstNameAr).toBeTruthy();
-    expect(validateProfile({ ...valid(), bioAr: 'x'.repeat(1001) }, 'en').bioAr).toBeTruthy();
+    expect(validateProfile({ ...valid(), bioAr: 'x'.repeat(2001) }, 'en').bioAr).toBeTruthy();
     expect(
       validateProfile({ ...valid(), firstNameEn: 'x'.repeat(101) }, 'en').firstNameAr,
     ).toBeTruthy();

@@ -90,6 +90,7 @@ export default async function CommitteePage({
                 permissionLabels={labels}
                 canHandover={canAssignAny}
                 fixedCommitteeId={id}
+                addMemberHref={can(access, 'members.create') ? '/dashboard/members' : undefined}
               />
             )}
             {canManage && <CommitteeForm committee={committee} trigger="edit" />}

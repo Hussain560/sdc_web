@@ -1,19 +1,16 @@
 import { cn } from '@/components/ui/cn';
 
 /**
- * The SDC mark drawn as two crossing capsules, used where a picture is missing (an event without a cover, the
- * featured card). Pure CSS from tokens, so it follows the theme. Size it with `className` (width and height).
+ * The SDC emblem (brand kit, `public/assets/brand/sdc-mark.png`) where a picture is missing: an event without a cover,
+ * a project without a cover, the featured card. Size it with `className` (height or width); it keeps its proportions.
  */
 export function CapsuleMark({ className }: { className?: string }) {
   return (
-    <span aria-hidden="true" className={cn('relative block aspect-[4/5]', className)}>
-      <span className="absolute start-[35%] top-0 h-full w-[30%] rotate-[32deg] rounded-full bg-brand" />
-      <span className="absolute start-[35%] top-0 h-full w-[30%] -rotate-[32deg] rounded-full bg-signal opacity-90" />
-    </span>
+    <img src="/assets/brand/sdc-mark.png" alt="" className={cn('block h-auto w-auto', className)} />
   );
 }
 
-/** A framed tile with the dot grid and the mark, standing in for a missing cover. */
+/** A framed tile with the dot grid and the emblem, standing in for a missing cover. */
 export function CapsuleCover({
   className,
   size = 'md',

@@ -59,7 +59,7 @@ export function EventCard({
       interactive
       style={{ '--i': Math.min(index, 8) } as CSSProperties}
       className={cn(
-        'pg-card pg-card-in flex h-full flex-col gap-3.5 p-2 pb-5 motion-reduce:transform-none',
+        'm-card m-in flex h-full flex-col gap-3.5 p-2 pb-5 motion-reduce:transform-none',
         className,
       )}
     >
@@ -71,10 +71,10 @@ export function EventCard({
             alt=""
             loading="lazy"
             decoding="async"
-            className="pg-card-img size-full object-cover object-top"
+            className="m-zoom size-full object-cover object-top"
           />
         ) : (
-          <CapsuleCover className="pg-card-img" />
+          <CapsuleCover className="m-zoom" />
         )}
         {typeLabel && (
           <Badge className="absolute start-3 top-3 bg-surface text-text">{typeLabel}</Badge>

@@ -1,3 +1,4 @@
+import { PageMain } from '@/components/motion/PageMain';
 import { SiteFooter } from '@/components/layout/SiteFooter';
 import { SiteHeader } from '@/components/layout/SiteHeader';
 import { MarkdownRenderer } from '@/components/markdown/MarkdownRenderer';
@@ -45,7 +46,7 @@ export default function ArticleDetailView({
   return (
     <>
       <SiteHeader />
-      <main id="main" className="pb-4">
+      <PageMain className="pb-4">
         <div className={`${wrap} pt-6`}>
           <Breadcrumb
             label={t.breadcrumb}
@@ -104,7 +105,7 @@ export default function ArticleDetailView({
             </ul>
           </section>
         )}
-      </main>
+      </PageMain>
       <SiteFooter />
     </>
   );

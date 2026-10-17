@@ -85,3 +85,17 @@ describe('calendar links', () => {
     expect(icsUrl('demo', 'en')).toBe('/en/events/demo/calendar.ics');
   });
 });
+
+describe('splitInternational', () => {
+  it('splits a stored number into the country and the national digits', async () => {
+    const { splitInternational } = await import('@/lib/phone');
+    expect(splitInternational('+966559876543')).toEqual({ country: 'SA', national: '559876543' });
+    expect(splitInternational('+971501234567')).toEqual({ country: 'AE', national: '501234567' });
+  });
+  it('gives null for nothing or for something unreadable', async () => {
+    const { splitInternational } = await import('@/lib/phone');
+    expect(splitInternational(null)).toBeNull();
+    expect(splitInternational('')).toBeNull();
+    expect(splitInternational('0559876543')).toBeNull();
+  });
+});

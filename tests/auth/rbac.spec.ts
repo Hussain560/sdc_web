@@ -214,18 +214,17 @@ test.describe('assigning and ending positions', () => {
       await gotoReady(page, '/en/dashboard/admin/roles');
       await page.getByRole('button', { name: '+ Assign position' }).click();
 
-      await page.getByLabel('User *').fill('Incoming Candidate');
+      await page.getByRole('combobox', { name: /Member/ }).fill('Incoming Candidate');
       await page.getByRole('option', { name: new RegExp(`Incoming Candidate ${tag}`) }).click();
-      await page.getByLabel('Role *').selectOption('committee_head');
+      await page.getByLabel('Position *').selectOption('committee_head');
       await page.getByLabel('Committee *').selectOption({ label: 'Projects' });
       // The permission preview shows what the role grants.
       await expect(page.getByText('Permissions it grants')).toBeVisible();
-      await page.getByRole('button', { name: 'Assign', exact: true }).click();
-
+      // The dialog names the current head before anything is saved; saving is the handover.
       await expect(
-        page.getByRole('alert').filter({ hasText: 'already has an active head' }),
+        page.getByText(new RegExp(`This committee has a head: Outgoing Head ${tag}`)),
       ).toBeVisible();
-      await page.getByRole('button', { name: 'Hand over to this person' }).click();
+      await page.getByRole('button', { name: 'Hand over leadership' }).click();
 
       await expect(page.getByRole('dialog')).toBeHidden();
       await expect(
@@ -244,6 +243,56 @@ test.describe('assigning and ending positions', () => {
     }
   });
 
+  test('the person picker finds members by name part and tells a committee head the search is limited', async ({
+    page,
+  }) => {
+    const head = await persona('committee_head', {
+      committeeSlug: 'ai',
+      fullName: `Picker Head ${tag}`,
+      member: true,
+    });
+    const inside = await persona('committee_member', {
+      committeeSlug: 'ai',
+      fullName: `Inside Member ${tag}`,
+      member: true,
+    });
+    const outside = await persona(null, { fullName: `Outside Member ${tag}`, member: true });
+    try {
+      await signInAndWait(page, head.email, undefined, '/en/login');
+      const ai = (
+        await sql<{ id: string }>('select id from public.committees where slug = $1', ['ai'])
+      )[0]!.id;
+      await gotoReady(page, `/en/dashboard/committees/${ai}`);
+      await page.getByRole('button', { name: '+ Assign position' }).click();
+      await page.getByRole('combobox', { name: /Member/ }).fill(`Member ${tag}`);
+      // Their own committee is searched, and the person is told that is all they can search.
+      await expect(
+        page.getByRole('option', { name: new RegExp(`Inside Member ${tag}`) }),
+      ).toBeVisible();
+      await expect(
+        page.getByRole('option', { name: new RegExp(`Outside Member ${tag}`) }),
+      ).toHaveCount(0);
+      await expect(page.getByText(/You cannot search every user/)).toBeVisible();
+      // No e-mail address is shown to someone who may not search every account.
+      await expect(page.getByRole('option').filter({ hasText: '@' })).toHaveCount(0);
+    } finally {
+      await remove(head, inside, outside);
+    }
+  });
+
+  test('nobody found is an answer, not an empty list', async ({ page }) => {
+    const leader = await persona('community_leader');
+    try {
+      await signInAndWait(page, leader.email, undefined, '/en/login');
+      await gotoReady(page, '/en/dashboard/admin/roles');
+      await page.getByRole('button', { name: '+ Assign position' }).click();
+      await page.getByRole('combobox', { name: /Member/ }).fill(`zzzz-nobody-${tag}`);
+      await expect(page.getByText('Nobody with this name or e-mail')).toBeVisible();
+    } finally {
+      await remove(leader);
+    }
+  });
+
   test('guards are explained in the dialog (leader cannot grant system_admin)', async ({
     page,
   }) => {
@@ -253,7 +302,7 @@ test.describe('assigning and ending positions', () => {
       await gotoReady(page, '/en/dashboard/admin/roles');
       await page.getByRole('button', { name: '+ Assign position' }).click();
       // The role list only contains what the actor may grant (BR-ORG-006).
-      const options = await page.getByLabel('Role *').locator('option').allInnerTexts();
+      const options = await page.getByLabel('Position *').locator('option').allInnerTexts();
       expect(options).not.toContain('System administrator');
       expect(options).not.toContain('Community leader');
       expect(options).toContain('Committee head');
@@ -374,7 +423,7 @@ test.describe('public leadership comes from the database', () => {
     try {
       await gotoReady(page, '/en/members');
       await expect(page.getByText(`Founder Display ${tag}`)).toBeVisible();
-      await expect(page.getByText('Community Founders')).toBeVisible();
+      await expect(page.getByRole('heading', { name: 'Community leadership' })).toBeVisible();
 
       const { sql } = await import('./db');
       await sql(

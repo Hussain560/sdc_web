@@ -1,3 +1,4 @@
+import { PageMain } from '@/components/motion/PageMain';
 import { Award, CalendarDays, Check, Clock, MapPin, Users } from 'lucide-react';
 import { SiteFooter } from '@/components/layout/SiteFooter';
 import { SiteHeader } from '@/components/layout/SiteHeader';
@@ -193,7 +194,7 @@ export function EventPageView({
       now={now}
     >
       <SiteHeader />
-      <main id="main" className="pb-28 lg:pb-0">
+      <PageMain className="pb-28 lg:pb-0">
         <div className={`${wrap} pt-6`}>
           <div className="max-lg:hidden">
             <Breadcrumb
@@ -570,7 +571,7 @@ export function EventPageView({
             </ul>
           </section>
         )}
-      </main>
+      </PageMain>
 
       {/* Phone: fixed action bar (never covers content: <main> has bottom padding). Seats left, or the date. */}
       <div className="fixed inset-x-0 bottom-0 z-(--z-sticky) flex min-h-16 items-center justify-between gap-3 border-t border-line bg-surface/95 px-4 pt-2.5 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur-md lg:hidden">

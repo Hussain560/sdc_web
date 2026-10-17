@@ -64,7 +64,8 @@ describe('EventCard', () => {
     const { container, rerender } = render(
       <EventCard event={card({ cover: FALLBACK_COVER })} lang="en" now={NOW} />,
     );
-    expect(container.querySelector('img')).toBeNull();
+    // The emblem is itself an image, so the placeholder is identified by its source.
+    expect(container.querySelector('img')).toHaveAttribute('src', '/assets/brand/sdc-mark.png');
     rerender(<EventCard event={card()} lang="en" now={NOW} />);
     expect(container.querySelector('img')).toHaveAttribute('src', '/covers/a.png');
   });

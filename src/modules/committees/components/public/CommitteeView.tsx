@@ -1,3 +1,4 @@
+import { PageMain } from '@/components/motion/PageMain';
 import { UsersRound } from 'lucide-react';
 import { SiteFooter } from '@/components/layout/SiteFooter';
 import { SiteHeader } from '@/components/layout/SiteHeader';
@@ -59,7 +60,7 @@ export default function CommitteeView({ committee, lang }: { committee: PublicCo
   return (
     <>
       <SiteHeader />
-      <main id="main">
+      <PageMain>
         <div className={`${wrap} pt-6`}>
           <Breadcrumb
             label={t.breadcrumb}
@@ -175,7 +176,7 @@ export default function CommitteeView({ committee, lang }: { committee: PublicCo
             />
           </div>
         </SignedOutOnly>
-      </main>
+      </PageMain>
       <SiteFooter />
     </>
   );

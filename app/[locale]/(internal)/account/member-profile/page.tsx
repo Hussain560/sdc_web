@@ -3,7 +3,9 @@ import { Alert, Badge, EmptyState } from '@/components/ui';
 import { Link } from '@/i18n/navigation';
 import { requireUser } from '@/lib/auth/session';
 import { getReferenceData } from '@/modules/membership/queries';
-import { ProfileForm } from '@/modules/members/components/ProfileForm';
+import { MemberProfileEditor } from '@/modules/members/components/editor/MemberProfileEditor';
+import { getMyEditorData } from '@/modules/members/editor';
+import { getSkillCatalog } from '@/modules/members/public';
 import { getMyMember } from '@/modules/members/queries';
 import { MEMBER_STATUS_LABEL } from '@/modules/members/schemas';
 
@@ -57,7 +59,11 @@ export default async function MemberProfilePage({
     );
   }
 
-  const reference = await getReferenceData();
+  const [reference, editor, catalog] = await Promise.all([
+    getReferenceData(),
+    getMyEditorData(),
+    getSkillCatalog(),
+  ]);
   const st = MEMBER_STATUS_LABEL[member.status];
   return (
     <div className="flex flex-col gap-4">
@@ -72,7 +78,14 @@ export default async function MemberProfilePage({
             : 'Your membership is inactive. You can apply again in the next intake.'}
         </Alert>
       ) : (
-        <ProfileForm memberId={member.id} initial={member.values} reference={reference} />
+        editor && (
+          <MemberProfileEditor
+            data={editor}
+            reference={reference}
+            catalog={[...catalog.values()]}
+            lang={lang}
+          />
+        )
       )}
     </div>
   );

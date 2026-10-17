@@ -71,7 +71,7 @@ export default function CertificateView({
         </div>
         <article className="certificate-card mt-8 flex flex-col gap-6 rounded-shape-xl border border-line-accent bg-surface p-6 md:p-10">
           <div className="flex items-center justify-between gap-4">
-            <Image src="/assets/sdc-logo-mark.svg" alt="" width={40} height={40} className="size-10" />
+            <Image src="/assets/brand/sdc-mark.png" alt="" width={40} height={40} className="size-10" />
             <p className="t-caption text-muted">{t.kicker}</p>
           </div>
           <div role="status" className="flex items-center gap-3 text-success">

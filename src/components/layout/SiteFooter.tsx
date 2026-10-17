@@ -1,7 +1,7 @@
 'use client';
 
 import { ChevronDown } from 'lucide-react';
-import Image from 'next/image';
+import { LogoWordmark } from './Logo';
 import { useSyncExternalStore, type ReactNode } from 'react';
 import { TextLink } from '@/components/ui/TextLink';
 import { useLanguage } from '@/context/LanguageContext';
@@ -72,17 +72,10 @@ export function SiteFooter() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="mt-(--section-gap) rounded-t-shape-2xl bg-surface px-4 pt-12 pb-6 md:px-8">
+    <footer className="m-vt-footer mt-(--section-gap) rounded-t-shape-2xl bg-surface px-4 pt-12 pb-6 md:px-8">
       <div className="mx-auto grid max-w-(--container) gap-8 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
         <div className="flex flex-col items-start gap-4">
-          <Image
-            src="/assets/Logos.png"
-            alt={s.logoAlt}
-            width={224}
-            height={99}
-            loading="lazy"
-            className="h-20 w-auto"
-          />
+          <LogoWordmark alt={s.logoAlt} size="footer" />
           <p className="t-body-sm max-w-xs text-muted">{s.tagline}</p>
           {socials.length > 0 && (
             <ul aria-label={s.social} className="flex gap-1">

@@ -1,12 +1,50 @@
-import Image from 'next/image';
+/* The brand SVGs are plain files, not optimised by next/image: an <img> is the right element. */
+/* eslint-disable @next/next/no-img-element */
 import { Link } from '@/i18n/navigation';
 import { cn } from '@/components/ui/cn';
 
 /**
- * The SDC wordmark linking home (components §4.1). Both raster files are rendered and CSS shows the one that
- * matches the theme (`.logo-on-dark` / `.logo-on-light` in ui.css), so there is no flash and no hydration
- * mismatch. The logo files are used as they are: never redraw, recolour or stretch them (Q-041 asks for SVGs).
+ * The SDC wordmark (brand kit: `public/assets/brand`). Two SVGs are rendered and CSS shows the one that matches the
+ * theme (`.logo-on-dark` / `.logo-on-light` in ui.css), so there is no flash and no hydration mismatch. The files are
+ * used as they are: never redraw, recolour or stretch them.
  */
+const SIZE = {
+  header: 'h-12! lg:h-14!',
+  footer: 'h-16! md:h-20!',
+} as const;
+
+export function LogoWordmark({
+  alt,
+  size = 'header',
+  priority,
+}: {
+  alt: string;
+  size?: keyof typeof SIZE;
+  priority?: boolean;
+}) {
+  return (
+    <>
+      <img
+        src="/assets/brand/sdc-logo-white-3.svg"
+        alt={alt}
+        width={231}
+        height={98}
+        fetchPriority={priority ? 'high' : undefined}
+        className={cn('logo-on-dark w-auto!', SIZE[size])}
+      />
+      <img
+        src="/assets/brand/sdc-logo-black-1.svg"
+        alt={alt}
+        width={231}
+        height={98}
+        fetchPriority={priority ? 'high' : undefined}
+        className={cn('logo-on-light w-auto!', SIZE[size])}
+      />
+    </>
+  );
+}
+
+/** The wordmark linking home. */
 export function Logo({
   label,
   alt,
@@ -28,23 +66,7 @@ export function Logo({
         className,
       )}
     >
-      <Image
-        src="/assets/Full whiteLogo 1.png"
-        alt={alt}
-        width={159}
-        height={67}
-        priority={priority}
-        className="logo-on-dark h-8 w-auto md:h-9"
-      />
-      <Image
-        src="/assets/navbar.png"
-        alt={alt}
-        width={1928}
-        height={816}
-        sizes="172px"
-        priority={priority}
-        className="logo-on-light h-8 w-auto md:h-9"
-      />
+      <LogoWordmark alt={alt} priority={priority} />
     </Link>
   );
 }
