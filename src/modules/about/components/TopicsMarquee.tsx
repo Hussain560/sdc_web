@@ -26,9 +26,9 @@ export function TopicsMarquee({
       role="region"
       aria-label={label}
       data-paused={paused}
-      className="pg-marq relative mt-14 overflow-hidden border-y border-line py-5"
+      className="m-marq relative mt-14 overflow-hidden border-y border-line py-5"
     >
-      <div aria-hidden="true" className="pg-marq-track">
+      <div aria-hidden="true" className="m-marq-track">
         {row.map((topic, i) => (
           <span
             key={i}

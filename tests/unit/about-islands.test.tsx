@@ -85,7 +85,7 @@ describe('TopicsMarquee', () => {
       'true',
     );
     // The moving copy is hidden from assistive technology.
-    expect(container.querySelector('.pg-marq-track')).toHaveAttribute('aria-hidden', 'true');
+    expect(container.querySelector('.m-marq-track')).toHaveAttribute('aria-hidden', 'true');
   });
 });
 

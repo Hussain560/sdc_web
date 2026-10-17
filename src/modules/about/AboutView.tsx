@@ -100,7 +100,7 @@ export function AboutView({ lang, data }: { lang: Lang; data: AboutData }) {
                 fill
                 priority
                 sizes="(min-width: 1024px) 40vw, 90vw"
-                className="logo-on-dark pg-float object-cover"
+                className="logo-on-dark m-float object-cover"
               />
               <Image
                 src="/brand/hero-mark-light.png"
@@ -108,7 +108,7 @@ export function AboutView({ lang, data }: { lang: Lang; data: AboutData }) {
                 fill
                 priority
                 sizes="(min-width: 1024px) 40vw, 90vw"
-                className="logo-on-light pg-float object-cover"
+                className="logo-on-light m-float object-cover"
               />
             </div>
           </div>
@@ -130,7 +130,7 @@ export function AboutView({ lang, data }: { lang: Lang; data: AboutData }) {
                       : ''
                     : (copy.note as string);
                 return (
-                  <li key={f.key} className={cn('pg-rv', bentoSpan(figures.length, i))}>
+                  <li key={f.key} className={cn('m-reveal', bentoSpan(figures.length, i))}>
                     <div
                       className={cn(
                         'relative flex h-full flex-col gap-1 overflow-hidden rounded-shape-xl',
@@ -149,9 +149,9 @@ export function AboutView({ lang, data }: { lang: Lang; data: AboutData }) {
                       )}
                       <b
                         aria-hidden="true"
-                        style={{ '--to': f.value } as CSSProperties}
+                        style={{ '--m-to': f.value } as CSSProperties}
                         className={cn(
-                          'pg-count mt-auto leading-[1.1] font-bold text-signal tabular-nums',
+                          'm-count mt-auto leading-[1.1] font-bold text-signal tabular-nums',
                           big ? 'text-[length:clamp(3rem,2rem+3vw,5rem)]' : 'text-5xl',
                         )}
                       />
@@ -180,11 +180,11 @@ export function AboutView({ lang, data }: { lang: Lang; data: AboutData }) {
               {t.offers.map(([icon, title, text]) => {
                 const Icon = OFFER_ICON[icon]!;
                 return (
-                  <li key={title} className="pg-rv">
-                    <div className="pg-tile flex h-full min-h-[150px] flex-col justify-between gap-4 rounded-shape-xl border border-line bg-surface p-5 sm:min-h-[230px] sm:gap-6 sm:p-8">
+                  <li key={title} className="m-reveal">
+                    <div className="m-lift flex h-full min-h-[150px] flex-col justify-between gap-4 rounded-shape-xl border border-line bg-surface p-5 sm:min-h-[230px] sm:gap-6 sm:p-8">
                       <span
                         aria-hidden="true"
-                        className="pg-ico flex size-[60px] items-center justify-center rounded-[18px] bg-accent-soft text-on-accent-soft"
+                        className="m-ico flex size-[60px] items-center justify-center rounded-[18px] bg-accent-soft text-on-accent-soft"
                       >
                         <Icon className="size-7" strokeWidth={1.75} />
                       </span>
@@ -208,13 +208,13 @@ export function AboutView({ lang, data }: { lang: Lang; data: AboutData }) {
               />
               <div
                 aria-hidden="true"
-                className="pg-line absolute inset-x-[16%] top-8 hidden h-0.5 bg-accent md:block"
+                className="m-line absolute inset-x-[16%] top-8 hidden h-0.5 bg-accent md:block"
               />
               <ol className="relative grid gap-8 md:grid-cols-3 md:gap-6 md:text-center">
                 {t.steps.map(([title, text, href], i) => (
                   <li
                     key={href}
-                    className="pg-rv grid grid-cols-[4rem_1fr] items-start gap-x-4 gap-y-1 md:flex md:flex-col md:items-center md:gap-3"
+                    className="m-reveal grid grid-cols-[4rem_1fr] items-start gap-x-4 gap-y-1 md:flex md:flex-col md:items-center md:gap-3"
                   >
                     <span
                       aria-hidden="true"
@@ -256,14 +256,14 @@ export function AboutView({ lang, data }: { lang: Lang; data: AboutData }) {
                   const Icon = committeeIcon(c.slug);
                   const name = (lang === 'en' ? c.nameEn : null) ?? c.nameAr;
                   return (
-                    <li key={c.slug} className="pg-rv">
-                      <div className="pg-tile relative flex items-center gap-4 rounded-shape-xl border border-line bg-surface px-5 py-4 sm:min-h-[250px] sm:flex-col sm:items-stretch sm:px-6 sm:py-7">
+                    <li key={c.slug} className="m-reveal">
+                      <div className="m-lift relative flex items-center gap-4 rounded-shape-xl border border-line bg-surface px-5 py-4 sm:min-h-[250px] sm:flex-col sm:items-stretch sm:px-6 sm:py-7">
                         <span className="w-7 text-base font-semibold text-muted tabular-nums sm:w-auto">
                           {String(i + 1).padStart(2, '0')}
                         </span>
                         <span
                           aria-hidden="true"
-                          className="pg-ico flex size-14 items-center justify-center rounded-shape-lg bg-accent-soft text-on-accent-soft"
+                          className="m-ico flex size-14 items-center justify-center rounded-shape-lg bg-accent-soft text-on-accent-soft"
                         >
                           <Icon className="size-7" strokeWidth={1.75} />
                         </span>
@@ -272,7 +272,7 @@ export function AboutView({ lang, data }: { lang: Lang; data: AboutData }) {
                         </h3>
                         <span
                           aria-hidden="true"
-                          className="pg-arrow ms-auto grid size-10 shrink-0 place-items-center rounded-full border-[1.5px] border-line-strong sm:absolute sm:end-6 sm:top-6 sm:ms-0"
+                          className="m-arrow ms-auto grid size-10 shrink-0 place-items-center rounded-full border-[1.5px] border-line-strong sm:absolute sm:end-6 sm:top-6 sm:ms-0"
                         >
                           <Arrow className="size-5" />
                         </span>
@@ -291,7 +291,7 @@ export function AboutView({ lang, data }: { lang: Lang; data: AboutData }) {
               'grid items-start gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.8fr)] lg:gap-16',
             )}
           >
-            <div className="pg-rv flex flex-col gap-3 lg:sticky lg:top-28">
+            <div className="m-reveal flex flex-col gap-3 lg:sticky lg:top-28">
               <h2 id="ab-val" className="t-h2 flex items-center gap-3">
                 <span aria-hidden="true" className="signal-dots" />
                 {t.values}
@@ -319,7 +319,7 @@ export function AboutView({ lang, data }: { lang: Lang; data: AboutData }) {
               <ol
                 tabIndex={0}
                 aria-label={t.timelineLabel}
-                className="pg-snap -mx-1 flex gap-5 overflow-x-auto px-1 pt-1 pb-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring"
+                className="m-snap -mx-1 flex gap-5 overflow-x-auto px-1 pt-1 pb-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring"
               >
                 {stations.map((e) => (
                   <li key={e.id} className="flex flex-[0_0_300px] flex-col gap-4">
@@ -378,10 +378,10 @@ export function AboutView({ lang, data }: { lang: Lang; data: AboutData }) {
                 {data.leadership.slice(0, 8).map((p) => {
                   const name = lang === 'en' ? p.nameEn : p.nameAr;
                   return (
-                    <li key={p.id} className="pg-rv">
+                    <li key={p.id} className="m-reveal">
                       <Card
                         variant="surface"
-                        className="pg-tile flex h-full flex-col items-start gap-3 p-4 sm:p-7"
+                        className="m-lift flex h-full flex-col items-start gap-3 p-4 sm:p-7"
                       >
                         <Avatar name={name} size={72} />
                         <h3 className="t-h4 mt-2">{name}</h3>
@@ -401,7 +401,7 @@ export function AboutView({ lang, data }: { lang: Lang; data: AboutData }) {
               aria-labelledby="ab-cta"
               className={cn(
                 section,
-                'pg-rv relative flex flex-wrap items-center justify-between gap-8 overflow-hidden rounded-shape-2xl bg-brand p-10 text-on-brand md:p-20',
+                'm-reveal relative flex flex-wrap items-center justify-between gap-8 overflow-hidden rounded-shape-2xl bg-brand p-10 text-on-brand md:p-20',
               )}
             >
               <div aria-hidden="true" className="absolute -top-10 -bottom-10 end-[6%] w-64">
