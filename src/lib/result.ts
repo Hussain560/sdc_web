@@ -76,6 +76,7 @@ export type ErrorCode =
   | 'TOO_FAST'
   | 'ALREADY_REQUESTED'
   | 'REGISTRATION_CANCELLED'
+  | 'LIMIT_REACHED'
   | 'INTERNAL';
 
 export type Result<T = void> =

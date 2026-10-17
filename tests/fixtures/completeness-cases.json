@@ -1,0 +1,83 @@
+[
+  {
+    "name": "nothing",
+    "photo": false,
+    "headline": "",
+    "about": "",
+    "skills": 0,
+    "links": 0,
+    "percent": 0
+  },
+  {
+    "name": "photo only",
+    "photo": true,
+    "headline": "",
+    "about": "",
+    "skills": 0,
+    "links": 0,
+    "percent": 20
+  },
+  {
+    "name": "blank text does not count",
+    "photo": false,
+    "headline": "   ",
+    "about": "  ",
+    "skills": 0,
+    "links": 0,
+    "percent": 0
+  },
+  {
+    "name": "two skills are not enough",
+    "photo": false,
+    "headline": "",
+    "about": "",
+    "skills": 2,
+    "links": 0,
+    "percent": 0
+  },
+  {
+    "name": "three skills count",
+    "photo": false,
+    "headline": "",
+    "about": "",
+    "skills": 3,
+    "links": 0,
+    "percent": 20
+  },
+  {
+    "name": "one link counts",
+    "photo": false,
+    "headline": "",
+    "about": "",
+    "skills": 0,
+    "links": 1,
+    "percent": 20
+  },
+  {
+    "name": "headline and about",
+    "photo": false,
+    "headline": "Frontend developer",
+    "about": "I build interfaces.",
+    "skills": 0,
+    "links": 0,
+    "percent": 40
+  },
+  {
+    "name": "four of five",
+    "photo": true,
+    "headline": "x",
+    "about": "y",
+    "skills": 5,
+    "links": 0,
+    "percent": 80
+  },
+  {
+    "name": "complete",
+    "photo": true,
+    "headline": "x",
+    "about": "y",
+    "skills": 12,
+    "links": 4,
+    "percent": 100
+  }
+]

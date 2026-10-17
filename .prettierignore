@@ -17,3 +17,6 @@ supabase/migrations
 # Design System v2 exports and reference screenshots are read-only inputs (not formatted)
 docs/10-design-system/artifact
 docs/10-design-system/reference-images
+
+# Exported design files (Sprint 17): kept as delivered
+docs/99-project-management/sprints/sprint-17-members-profiles-and-motion/designs/

@@ -19,6 +19,7 @@ const MEMBER_CODES = [
   'CAPACITY_REACHED',
   'VALIDATION_FAILED',
   'ALREADY_MEMBER',
+  'LIMIT_REACHED',
 ] as const satisfies readonly ErrorCode[];
 
 const messages: Partial<Record<ErrorCode, Record<Lang, string>>> = {
@@ -57,6 +58,10 @@ const messages: Partial<Record<ErrorCode, Record<Lang, string>>> = {
   ALREADY_MEMBER: {
     ar: 'هذا البريد لعضو في المجتمع بالفعل.',
     en: 'This e-mail already belongs to a member.',
+  },
+  LIMIT_REACHED: {
+    ar: 'وصلت إلى الحد الأقصى.',
+    en: 'You reached the limit.',
   },
   VALIDATION_FAILED: {
     ar: 'يرجى مراجعة الحقول المحددة.',
