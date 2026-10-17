@@ -49,3 +49,10 @@ export { Progress } from './Progress';
 export { ExportButton } from './ExportButton';
 export { Avatar, AvatarGroup, initialsOf, type AvatarSize } from './Avatar';
 export { IconAction, IconButton } from './IconAction';
+export {
+  Combobox,
+  splitMatch,
+  type ComboOption,
+  type ComboStatus,
+  type ComboTexts,
+} from './Combobox';
