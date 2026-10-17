@@ -56,7 +56,7 @@ export function CommitteeLeadCard({ person, lang }: { person: LeadershipPerson; 
   const Arrow = lang === 'ar' ? ArrowLeft : ArrowRight;
   const inner = (
     <div className="flex items-center gap-3">
-      <Avatar name={name} src={person.photo} size={56} />
+      <Avatar name={name} src={person.thumb} size={56} />
       <div className="min-w-0 flex-1">
         <p className="t-body line-clamp-2 font-semibold">{name}</p>
         <p className="t-body-sm line-clamp-2 text-accent-text">{committee ?? role}</p>

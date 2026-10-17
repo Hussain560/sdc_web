@@ -60,7 +60,10 @@ export type LeadershipPerson = {
   id: string;
   /** Present only for a person who is listed in the directory: the card links to the profile. */
   memberId: string | null;
+  /** 512 px photo for the large cards. */
   photo: string | null;
+  /** 128 px thumbnail for the small cards. */
+  thumb: string | null;
   roleKey: string;
   nameAr: string;
   nameEn: string;
@@ -447,7 +450,8 @@ export async function listLeadership(): Promise<LeadershipPerson[]> {
         {
           id: r.assignment_id,
           memberId: r.member_id ?? null,
-          photo: memberThumbUrl(r.member_photo_path),
+          photo: memberPhotoUrl(r.member_photo_path),
+          thumb: memberThumbUrl(r.member_photo_path),
           roleKey: r.role_key ?? '',
           nameAr: r.person_name_ar ?? '',
           nameEn: r.person_name_en ?? r.person_name_ar ?? '',
