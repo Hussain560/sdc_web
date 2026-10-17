@@ -49,16 +49,25 @@ export function DirectoryCard({
       variant="surface"
       interactive
       style={{ '--i': Math.min(index, 8) } as React.CSSProperties}
-      className="m-in relative flex h-full flex-col items-center gap-3 overflow-hidden p-0 pb-5 text-center"
+      className="m-in relative flex h-full flex-col items-center gap-3 overflow-hidden p-0! pb-5! text-center"
     >
-      <div aria-hidden="true" className="motif-dots h-16 w-full bg-accent-soft text-line-accent" />
       <ViewTransition name={`member-photo-${member.id}`} share="morph" default="none">
-        <Avatar
-          name={name}
-          src={member.thumb ?? member.photo}
-          size={72}
-          className="-mt-10 ring-4 ring-surface"
-        />
+        {member.photo ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={member.photo}
+            alt=""
+            loading="lazy"
+            className="aspect-square w-full object-cover"
+          />
+        ) : (
+          <div
+            aria-hidden="true"
+            className="motif-dots flex aspect-square w-full items-center justify-center bg-accent-soft text-line-accent"
+          >
+            <Avatar name={name} size={120} className="ring-4 ring-surface" />
+          </div>
+        )}
       </ViewTransition>
       <div className="flex min-w-0 flex-1 flex-col items-center gap-2 px-4">
         <h3 className="t-h4 line-clamp-2">
