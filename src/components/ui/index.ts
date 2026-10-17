@@ -56,3 +56,4 @@ export {
   type ComboStatus,
   type ComboTexts,
 } from './Combobox';
+export { ImageCropper, type CropTexts, type CroppedPhoto } from './ImageCropper';
