@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { notFound, permanentRedirect } from 'next/navigation';
 import { listPublicArticles } from '@/modules/articles/public';
 import { ProfileView } from '@/modules/members/components/public/ProfileView';
-import { getDirectoryMember, getProfileExtras, getSkillCatalog } from '@/modules/members/public';
+import { getDirectoryMember, getProfileExtras } from '@/modules/members/public';
 
 export const revalidate = 60;
 
@@ -40,7 +40,7 @@ export default async function MemberProfilePage({
   // Old numeric links redirect to the public id, only while the member is listed.
   if (/^\d+$/.test(id)) permanentRedirect(`${locale === 'en' ? '/en' : ''}/members/${member.id}`);
 
-  const [extras, allSkills] = await Promise.all([getProfileExtras(member), getSkillCatalog()]);
+  const extras = await getProfileExtras(member);
   const ids = new Set(extras.articleIds);
   const articles = ids.size ? (await listPublicArticles()).filter((a) => ids.has(a.id)) : [];
 
@@ -49,7 +49,6 @@ export default async function MemberProfilePage({
       member={member}
       extras={extras}
       articles={articles}
-      allSkills={allSkills}
       lang={locale === 'en' ? 'en' : 'ar'}
     />
   );
