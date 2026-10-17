@@ -77,7 +77,12 @@ function Row({
   return (
     <div
       dir="ltr"
-      className="overflow-hidden"
+      className="overflow-hidden py-1"
+      style={{
+        // cards fade out at both ends instead of stopping at a hard edge
+        maskImage: 'linear-gradient(to right, transparent, black 7%, black 93%, transparent)',
+        WebkitMaskImage: 'linear-gradient(to right, transparent, black 7%, black 93%, transparent)',
+      }}
       onPointerEnter={(e) => {
         if (e.pointerType === 'mouse') over.current = true;
       }}
