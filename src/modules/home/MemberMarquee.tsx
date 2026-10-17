@@ -16,7 +16,7 @@ function Person({ member, lang, hidden }: { member: HomeMember; lang: Lang; hidd
   const name = lang === 'en' ? member.nameEn : member.nameAr;
   const line = lang === 'en' ? (member.trackEn ?? member.trackAr) : member.trackAr;
   return (
-    <li className="w-56 shrink-0 md:w-64">
+    <li dir={lang === 'ar' ? 'rtl' : 'ltr'} className="w-56 shrink-0 md:w-64">
       <Link
         href={`/members/${member.id}`}
         tabIndex={hidden ? -1 : undefined}
