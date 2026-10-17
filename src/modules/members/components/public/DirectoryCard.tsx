@@ -56,8 +56,8 @@ export function DirectoryCard({
         <Avatar
           name={name}
           src={member.thumb ?? member.photo}
-          size={72}
-          className="-mt-10 ring-4 ring-surface"
+          size={120}
+          className="-mt-12 ring-4 ring-surface"
         />
       </ViewTransition>
       <div className="flex min-w-0 flex-1 flex-col items-center gap-2 px-4">
