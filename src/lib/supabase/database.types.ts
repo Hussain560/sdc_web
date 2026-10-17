@@ -1706,6 +1706,9 @@ isOneToOne: false
 "finalize_session":
 { Args: { "p_session": string }; Returns: Json
                            },
+"find_member_by_email":
+{ Args: { "p_email": string }; Returns: Json
+                           },
 "handle_data_request":
 { Args: { "p_decision": string,"p_id": string,"p_note"?: string }; Returns: Json
                            },

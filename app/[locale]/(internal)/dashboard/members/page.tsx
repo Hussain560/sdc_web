@@ -8,7 +8,9 @@ import { requireUser } from '@/lib/auth/session';
 import { formatDate } from '@/lib/format';
 import { pageMeta, parsePage } from '@/lib/pagination';
 import { getAccess } from '@/modules/access/queries';
-import { AddMemberDialog } from '@/modules/members/components/AddMemberDialog';
+import { AddMemberWizard } from '@/modules/members/components/AddMemberWizard';
+import { WIZARD_ROLE_KEYS } from '@/modules/members/new-member';
+import { listCommittees, listRoles } from '@/modules/access/admin-queries';
 import { MemberActions } from '@/modules/members/components/MemberActions';
 import { getReferenceData } from '@/modules/membership/queries';
 import { getMemberCounts, listMembers } from '@/modules/members/queries';
@@ -40,6 +42,12 @@ export default async function MembersAdminPage({
   const canManage = can(access, 'members.manage');
   const canCreate = can(access, 'members.create');
   const reference = canCreate ? await getReferenceData() : null;
+  const canAssign = can(access, 'roles.assign');
+  const [committees, allRoles] =
+    canCreate && canAssign ? await Promise.all([listCommittees(), listRoles()]) : [[], []];
+  const wizardRoles = allRoles.filter((r) =>
+    (WIZARD_ROLE_KEYS as readonly string[]).includes(r.key),
+  );
 
   const sp = await searchParams;
   const status = (MEMBER_STATUSES as readonly string[]).includes(sp.status ?? '')
@@ -88,7 +96,16 @@ export default async function MembersAdminPage({
         }
         readOnly={!canManage && !canCreate}
         readOnlyLabel={ar ? 'عرض فقط' : 'View only'}
-        action={reference ? <AddMemberDialog reference={reference} /> : undefined}
+        action={
+          reference ? (
+            <AddMemberWizard
+              reference={reference}
+              committees={committees}
+              roles={wizardRoles}
+              canAssign={canAssign}
+            />
+          ) : undefined
+        }
       />
       <Tabs
         items={tabs}
