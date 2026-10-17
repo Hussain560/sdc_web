@@ -18,7 +18,8 @@ import { PILL_LABEL } from '@/modules/events/status-labels';
 import { Accordion } from '@/components/ui/Accordion';
 import { MemberCard } from '@/modules/members/components/MemberCard';
 import { WhyJoin } from './WhyJoin';
-import type { HomeMember } from './data';
+import { MARQUEE_MIN, type HomeMember } from './data';
+import { MemberMarquee } from './MemberMarquee';
 import { HOME_COPY } from './copy';
 import { SignedInOnly, SignedOutOnly } from './SignedOutOnly';
 import type { HomeSections, IntakeState } from './sections';
@@ -225,18 +226,23 @@ export function HomeView({
                 </TextLink>
               }
             />
-            <ul className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-              {members.map((m) => (
-                <li key={m.id}>
-                  <MemberCard
-                    id={m.id}
-                    lang={lang}
-                    name={lang === 'en' ? m.nameEn : m.nameAr}
-                    track={lang === 'en' ? (m.trackEn ?? m.trackAr) : m.trackAr}
-                  />
-                </li>
-              ))}
-            </ul>
+            {members.length >= MARQUEE_MIN ? (
+              <MemberMarquee members={members} lang={lang} />
+            ) : (
+              <ul className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+                {members.map((m) => (
+                  <li key={m.id}>
+                    <MemberCard
+                      id={m.id}
+                      lang={lang}
+                      photo={m.thumb}
+                      name={lang === 'en' ? m.nameEn : m.nameAr}
+                      track={lang === 'en' ? (m.trackEn ?? m.trackAr) : m.trackAr}
+                    />
+                  </li>
+                ))}
+              </ul>
+            )}
           </section>
         )}
 
