@@ -117,13 +117,13 @@ function Row({
         className="flex w-max cursor-grab touch-pan-y active:cursor-grabbing"
       >
         <ul ref={copy} className="flex gap-5 pe-5">
-          {members.map((p) => (
-            <Person key={p.id} member={p} lang={lang} hidden={false} />
+          {members.map((p, i) => (
+            <Person key={`${p.id}-${i}`} member={p} lang={lang} hidden={false} />
           ))}
         </ul>
         <ul aria-hidden="true" className="flex gap-5 pe-5" {...{ inert: true }}>
-          {members.map((p) => (
-            <Person key={p.id} member={p} lang={lang} hidden />
+          {members.map((p, i) => (
+            <Person key={`${p.id}-${i}`} member={p} lang={lang} hidden />
           ))}
         </ul>
       </m.div>
@@ -132,7 +132,7 @@ function Row({
 }
 
 /**
- * The home members strip (RDS-035): two rows moving in opposite directions at 70 s and 85 s per loop, with a pause
+ * The home members strip (RDS-035): three rows: the first and third move left, the middle one right, at 70 s, 85 s and 78 s per loop, with a pause
  * button (WCAG 2.2.2). With reduced motion it is a still grid of eight. A person's dragging works on touch and mouse.
  */
 function Strip({ members, lang }: { members: HomeMember[]; lang: Lang }) {
@@ -149,13 +149,22 @@ function Strip({ members, lang }: { members: HomeMember[]; lang: Lang }) {
       </ul>
     );
   }
-  const half = Math.ceil(members.length / 2);
-  const a = members.slice(0, half);
-  const b = members.slice(half);
+  // Three rows, dealt in turn so each row shows a different part of the day's order. A row is filled up to six cards by
+  // repeating its own people, so it always has a full loop and never shows a gap. The first and third rows move left,
+  // the middle one right, so the three read as one wall of people.
+  const rows = [0, 1, 2].map((r) => {
+    const own = members.filter((_, i) => i % 3 === r);
+    const filled: HomeMember[] = [];
+    for (let i = 0; own.length > 0 && filled.length < Math.max(6, own.length); i++) {
+      filled.push(own[i % own.length]!);
+    }
+    return filled;
+  });
   return (
     <div className="flex flex-col gap-4">
-      <Row members={a} lang={lang} seconds={70} reverse={false} paused={paused} />
-      {b.length >= 3 && <Row members={b} lang={lang} seconds={85} reverse paused={paused} />}
+      <Row members={rows[0]!} lang={lang} seconds={70} reverse={false} paused={paused} />
+      <Row members={rows[1]!} lang={lang} seconds={85} reverse paused={paused} />
+      <Row members={rows[2]!} lang={lang} seconds={78} reverse={false} paused={paused} />
       <div className="flex justify-end">
         <Button
           type="button"
