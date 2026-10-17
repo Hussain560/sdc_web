@@ -1710,7 +1710,7 @@ isOneToOne: false
 { Args: { "p_decision": string,"p_id": string,"p_note"?: string }; Returns: Json
                            },
 "handover_head":
-{ Args: { "p_at"?: string,"p_committee": string,"p_new_head": string }; Returns: string
+{ Args: { "p_at"?: string,"p_committee": string,"p_keep_as_deputy"?: boolean,"p_new_head": string }; Returns: string
                            },
 "issue_certificates":
 { Args: { "p_event": string }; Returns: Json
@@ -1782,6 +1782,9 @@ isOneToOne: false
 { Args: { "p_query": string }; Returns: {
               "full_name_ar": string,"full_name_en": string,"id": string
             }[]
+                           },
+"search_assignable_users":
+{ Args: { "p_committee"?: string,"p_query": string }; Returns: Json
                            },
 "search_presenter_candidates":
 { Args: { "p_query": string }; Returns: {

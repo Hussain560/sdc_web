@@ -98,6 +98,7 @@ export default async function RolesPage({
               committees={committees}
               permissionLabels={labels}
               canHandover={canAssign}
+              addMemberHref={can(access, 'members.create') ? '/dashboard/members' : undefined}
             />
           ) : undefined
         }

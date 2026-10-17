@@ -55,6 +55,8 @@ export const handoverSchema = z.object({
   committeeId: z.uuid(),
   newHeadUserId: z.uuid(),
   handoverAt: dateOnly,
+  /** The previous head stays on as deputy instead of leaving the committee. */
+  keepAsDeputy: z.boolean().optional(),
 });
 
 /** A date picked in the UI is midnight in Saudi Arabia (UTC+3, no daylight saving). */
