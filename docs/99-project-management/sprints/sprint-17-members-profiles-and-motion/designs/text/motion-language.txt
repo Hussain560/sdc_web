@@ -1,0 +1,164 @@
+لغة الحركة
+ 
+ لغة الحركة · SDC 
+ إعادة التشغيل 
+ معاينة «تقليل الحركة» 
+ حركة هادئة،
+تُحسّ ولا تُلاحظ
+ مفردات حركة واحدة للموقع العام ولوحة التحكم. ستة عشر نمطاً، كلٌّ بمدته وتوقيته من رموز الحركة، وبنسخته عند تقليل الحركة.
+ المحتوى أولاً كل شيء في HTML من البداية. الحركة تزيّن ولا تؤخّر. 
+ تحويل وشفافية فقط transform و opacity. لا شيء يغيّر التخطيط، و CLS صفر. 
+ باتجاه القراءة «التالي» يأتي من اليسار في العربية ومن اليمين في الإنجليزية. 
+ نسخة هادئة دائماً prefers-reduced-motion يوقف الحركة ويُبقي التلاشي فقط. 
+ الرموز
+ المدد 
+ instant 100ms 
+ fast · تفاعل صغير 160ms 
+ base · دخول وخروج 240ms 
+ slow · مسافة كبيرة 400ms 
+ counter · العدّ 1200ms 
+ التوقيت 
+ ease-out · الدخول 0.2, 0, 0, 1 
+ ease-in · الخروج 0.4, 0, 1, 1 
+ ease-standard · التحريك 0.2, 0, 0.2, 1 
+ النوابض والتتابع (motion) 
+ spring.soft stiffness 380 · damping 34. اللوحات والنوافذ. spring.snappy stiffness 520 · damping 38. الشرائح والمفاتيح. stagger 40ms لكل عنصر، 8 عناصر حداً أقصى. distance 12px للنصوص، 16px للبطاقات، 24px للأقسام والخطوات. 
+ القاعدة: MotionConfig reducedMotion="user" يغلّف الواجهة العامة، فيلتزم كل نابض بإعداد المستخدم تلقائياً.
+ الأنماط
+ اضغط «إعادة التشغيل» لرؤية الحركة مرة أخرى. M4 و M9 و M10 تفاعلية.
+ M1 دخول الصفحة CSS 
+ زر
+ المتى أول عرض للصفحة، فوق الطيّة فقط الحركة opacity 0→1، translateY 12px→0 المدة base 240 · ease-out · تتابع 60ms، 5 عناصر حداً أقصى أين عنوان الصفحة، الوصف، الأزرار 
+ تقليل الحركة: يظهر كل شيء فوراً بلا حركة.
+ M2 الظهور عند التمرير CSS 
+ المتى دخول القسم إلى الشاشة الحركة opacity، translateY 24px→0 المدة animation-timeline: view()، range entry 0% → cover 22% أين عناوين الأقسام والبطاقات الكبيرة 
+ تقليل الحركة: المحتوى ظاهر من البداية. والمتصفح الذي لا يدعم view() يعرضه ظاهراً أيضاً.
+ M3 تتابع القوائم CSS 
+ المتى أول عرض للشبكة، وتحميل المزيد الحركة opacity، translateY 16px المدة base 240 · خطوة 40ms · حد 8 عناصر (320ms) أين بطاقات الأعضاء والفعاليات والمقالات 
+ تقليل الحركة: بلا تتابع وبلا حركة.
+ M4 رفع البطاقة CSS 
+ مرّر أو ركّز هنا
+ المتى hover و focus-visible الحركة translateY −4px، ظل elev-1، حدّ border-accent؛ الصورة scale 1.04 المدة fast 160 · ease-out؛ الصورة slow 400 أين كل بطاقة قابلة للنقر 
+ تقليل الحركة: يتغيّر لون الحدّ فقط، بلا رفع ولا تكبير.
+ M5 شريط الأعضاء motion 
+ عضو 1 
+ عضو 2 
+ عضو 3 
+ عضو 4 
+ عضو 5 
+ عضو 1 
+ عضو 2 
+ عضو 3 
+ عضو 4 
+ عضو 5 
+ المتى دائماً عند ظهور القسم؛ يتوقف خارج الشاشة الحركة translateX خطّي، صفّان متعاكسان 70/85 ثانية التحكم تباطؤ إلى صفر خلال 600ms عند المرور أو التركيز، سحب بزخم، زر إيقاف الأداة motion: useAnimationFrame + useMotionValue + drag 
+ تقليل الحركة: شبكة ثابتة من 8 بطاقات، بلا انجراف ولا سحب.
+ M6 العدّ التصاعدي CSS 
+ المتى أول ظهور للرقم الحركة @property --n من 0 إلى القيمة المدة counter 1200 · ease-out أين أرقام عن المجتمع، عدد الأعضاء، إحصاءات الملف 
+ تقليل الحركة: يظهر الرقم النهائي فوراً. القيمة الحقيقية في النص دائماً لقارئ الشاشة.
+ M7 النوافذ motion 
+ تأكيد
+ الدخول opacity، scale .96→1، translateY 8px · base 240 · ease-out الخروج opacity، scale .98 · fast 160 · ease-in الخلفية fade · fast 160 الأداة motion: AnimatePresence 
+ تقليل الحركة: تلاشٍ بالشفافية فقط · fast 160.
+ M8 اللوحة السفلية motion 
+ الدخول spring.soft: stiffness 380، damping 34 (ارتداد خفيف) الإغلاق سحب للأسفل: يُغلق بعد 30% من الارتفاع أو سرعة 500px/s أين فلاتر الجوال، معاينة الملف، منتقي المهارات، تعيين منصب الأداة motion: drag="y" + AnimatePresence 
+ تقليل الحركة: تظهر وتختفي بالشفافية، والإغلاق بالزر فقط يبقى متاحاً دائماً.
+ M9 إعادة ترتيب الشبكة motion 
+ {{t.n}} 
+ بدّل الفلتر 
+ المتى تغيّر الفلاتر أو البحث في الدليل الحركة البطاقات الباقية تنزلق لمكانها الجديد (layout)، الجديدة opacity + scale .96 المدة base 240 · ease-standard؛ الخارجة fast 160 الأداة motion: layout + AnimatePresence mode="popLayout" 
+ تقليل الحركة: تُستبدل القائمة فوراً. عدد النتائج يُعلن عبر aria-live في الحالتين.
+ M10 الصورة من البطاقة إلى الملف View Transitions 
+ سارة العتيبي {{morphLabel}} 
+ المتى فتح ملف عضو من بطاقته الحركة الصورة والاسم ينتقلان إلى رأس الملف المدة slow 400 · ease-out الأداة React <ViewTransition> · name: member-photo-‹id› و member-name-‹id› 
+ تقليل الحركة: انتقال عادي بلا تحويل. المتصفح غير الداعم ينتقل بلا حركة.
+ M11 الانتقال بين الصفحات View Transitions 
+ القديمة opacity → 0 · fast 160 · ease-in الجديدة opacity، translateX 12px باتجاه القراءة · base 240 الثابت الترويسة والتذييل لا يتحركان (view-transition-name: header) الأداة React <ViewTransition> على محتوى التخطيط العام 
+ تقليل الحركة: بلا انتقال.
+ M12 خطوات المعالج motion 
+ التالي المحتوى يدخل من جهة التقدّم (اليسار في العربية) 24px + opacity السابق من الجهة المقابلة العلامة مؤشر الخطوة ينزلق بـ layoutId مشترك المدة base 240 · ease-out 
+ تقليل الحركة: تلاشٍ فقط · fast 160. التركيز ينتقل لعنوان الخطوة في الحالتين.
+ M13 إضافة مهارة motion 
+ React Figma 
+ الإضافة scale .8→1 + opacity بنابض خفيف الإزالة scale .9 + opacity · fast 160؛ الباقي ينزلق (layout) الترتيب سحب بـ Reorder، والبديل بلوحة المفاتيح: Alt + الأسهم الأداة motion: Reorder + layout 
+ تقليل الحركة: تظهر الشريحة وتختفي فوراً.
+ M14 امتلاء الاكتمال CSS 
+ 80٪ 
+ المتى حفظ قسم يرفع النسبة الحركة المقطع الجديد scaleX من جهة البداية، وعلامة الصح تقفز المدة slow 400 · ease-out عند 100٪ نقاط الإشارة تومض مرة واحدة، بلا قصاصات احتفال 
+ تقليل الحركة: تتغيّر الألوان فوراً.
+ M15 الإشعار المنبثق motion 
+ ✓ حُفظت المهارات
+ الدخول translateY 16px + opacity من أسفل الشاشة · base 240 البقاء 4 ثوانٍ، ويتوقف العدّ عند المرور أو التركيز الخروج opacity · fast 160 الأداة motion: AnimatePresence 
+ تقليل الحركة: يظهر ويختفي بلا انزلاق.
+ M16 نبض الحالة الحيّة CSS 
+ المتى «جارية الآن»، «يُغلق قريباً»، تسجيل الحضور المفتوح الحركة هالة box-shadow تتمدّد وتتلاشى المدة 1800ms · ease-in-out · متكرر القاعدة نبض واحد في الشاشة حداً أقصى 
+ تقليل الحركة: نقطة ثابتة بلا نبض.
+ أين يُستخدم كل نمط
+ أين يُستخدم كل نمط النمط الرئيسية الفعالية الأعضاء الملف المقالات اللجان انضم لوحة التحكم M1 دخول الصفحة M2 الظهور عند التمرير لا لا M3 تتابع القوائم لا لا لا M4 رفع البطاقة لا M5 شريط الأعضاء لا لا لا لا لا لا لا M6 العدّ التصاعدي لا لا لا لا لا M7 النوافذ لا لا لا لا لا M8 اللوحة السفلية لا لا لا لا M9 إعادة ترتيب الشبكة لا لا لا لا لا M10 الصورة إلى الملف لا لا لا لا لا لا M11 الانتقال بين الصفحات لا M12 خطوات المعالج لا لا لا لا لا M13 إضافة مهارة لا لا لا لا لا لا لا M14 امتلاء الاكتمال لا لا لا لا لا لا M15 الإشعار المنبثق لا لا لا لا M16 نبض الحالة لا لا لا لا لا 
+ الرئيسية دخول البطل M1، أرقام المجتمع M6، الأقسام M2، الفعاليات القادمة M3 + M4، شريط الأعضاء M5. نبض «جارية الآن» على فعالية واحدة فقط.
+ الأعضاء والملف الدليل: M3 أول مرة ثم M9 عند كل فلتر. فتح ملف: M10 للصورة والاسم ثم M2 للأقسام. الفلاتر على الجوال M8.
+ لوحة التحكم أهدأ من الموقع العام: لا ظهور عند التمرير ولا عدّ. النوافذ M7، المعالج M12، الإشعارات M15، المحرّر M13 و M14.
+ المواصفة للتنفيذ
+ CSS: للأنماط البسيطة بلا JavaScript /* src/styles/motion.css (replaces page-motion.css) */
+:root {
+ --duration-instant: 100ms; --duration-fast: 160ms; --duration-base: 240ms;
+ --duration-slow: 400ms; --duration-counter: 1200ms;
+ --ease-out: cubic-bezier(0.2, 0, 0, 1);
+ --ease-in: cubic-bezier(0.4, 0, 1, 1);
+ --ease-standard: cubic-bezier(0.2, 0, 0.2, 1);
+ --stagger-step: 40ms; --stagger-max: 8;
+}
+@keyframes m-rise { from { opacity: 0; transform: translateY(var(--m-y, 12px)); } }
+/* M1 page enter: server-rendered, no JS */
+.m-enter > * { animation: m-rise var(--duration-base) var(--ease-out) both; }
+.m-enter > :nth-child(2) { animation-delay: 60ms; }
+.m-enter > :nth-child(3) { animation-delay: 120ms; }
+/* M2 scroll reveal: only where supported, content visible otherwise */
+@supports (animation-timeline: view()) {
+ .m-reveal { --m-y: 24px; animation: m-rise linear both;
+ animation-timeline: view(); animation-range: entry 0% cover 22%; }
+}
+/* M3 stagger: the server sets --i on each item (0..7) */
+.m-stagger > * { animation: m-rise var(--duration-base) var(--ease-out) both;
+ animation-delay: calc(min(var(--i, 0), 7) * var(--stagger-step)); --m-y: 16px; }
+/* M4 card hover */
+.m-lift { transition: transform var(--duration-fast) var(--ease-out),
+ box-shadow var(--duration-fast), border-color var(--duration-fast); }
+.m-lift:is(:hover, :focus-within) { transform: translateY(-4px);
+ box-shadow: var(--elev-1); border-color: var(--border-accent); }
+/* M6 count-up */
+@property --m-n { syntax: '<integer>'; initial-value: 0; inherits: false; }
+.m-count { counter-reset: n var(--m-n); animation: m-count var(--duration-counter) var(--ease-out) both; }
+.m-count::after { content: counter(n); }
+@keyframes m-count { from { --m-n: 0; } to { --m-n: var(--m-to); } }
+/* M16 live pulse */
+.m-live { animation: m-pulse 1.8s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+ .m-enter > *, .m-reveal, .m-stagger > *, .m-count, .m-live { animation: none; }
+ .m-lift:is(:hover, :focus-within) { transform: none; box-shadow: none; }
+ .m-count { --m-n: var(--m-to); }
+}
+ motion: للإيماءات والنوابض والتخطيط // src/lib/motion.ts: every component imports these, nobody writes numbers
+const css = (v: string) => Number(getComputedStyle(document.documentElement)
+ .getPropertyValue(v).replace('ms', '')) / 1000;
+export const ease = { out: [0.2, 0, 0, 1], in: [0.4, 0, 1, 1], standard: [0.2, 0, 0.2, 1] } as const;
+export const dur = { fast: 0.16, base: 0.24, slow: 0.4 }; // mirrors the CSS tokens
+export const spring = { soft: { type: 'spring', stiffness: 380, damping: 34 },
+ snappy: { type: 'spring', stiffness: 520, damping: 38 } } as const;
+export const presets = {
+ reveal: { initial: { opacity: 0, y: 24 }, whileInView: { opacity: 1, y: 0 },
+ viewport: { once: true, amount: 0.2 }, transition: { duration: dur.slow, ease: ease.out } },
+ dialog: { initial: { opacity: 0, scale: 0.96, y: 8 }, animate: { opacity: 1, scale: 1, y: 0 },
+ exit: { opacity: 0, scale: 0.98, transition: { duration: dur.fast, ease: ease.in } },
+ transition: { duration: dur.base, ease: ease.out } },
+ sheet: { initial: { y: '100%' }, animate: { y: 0 }, exit: { y: '100%' }, transition: spring.soft },
+ step: (dir: 1 | -1, rtl: boolean) => ({ initial: { opacity: 0, x: 24 * dir * (rtl ? -1 : 1) },
+ animate: { opacity: 1, x: 0 }, exit: { opacity: 0, x: -24 * dir * (rtl ? -1 : 1) },
+ transition: { duration: dur.base, ease: ease.out } }),
+ layout: { layout: true, transition: { duration: dur.base, ease: ease.standard } },
+};
+// <MotionProvider>: <LazyMotion features={domAnimation}><MotionConfig reducedMotion="user">
+ قواعد الاختبار Playwright يعمل بـ reducedMotion: 'reduce' فتبقى اللقطات ثابتة.
+ اختبار واحد بالحركة: الشريط يتحرك، ويتوقف عند التركيز، والمحتوى مقروء دون انتظار.
+ حزمة motion تحت 15KB في الصفحات التي تستخدمها، وصفر في غيرها.
+ 
