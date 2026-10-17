@@ -11,10 +11,7 @@ export function FilterSelect({
   ...props
 }: SelectHTMLAttributes<HTMLSelectElement> & { auto?: boolean }) {
   return (
-    <select
-      {...props}
-      onChange={auto ? (e) => e.currentTarget.form?.requestSubmit() : undefined}
-    />
+    <select {...props} onChange={auto ? (e) => e.currentTarget.form?.requestSubmit() : undefined} />
   );
 }
 

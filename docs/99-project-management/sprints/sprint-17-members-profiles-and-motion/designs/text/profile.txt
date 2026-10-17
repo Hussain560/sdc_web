@@ -1,0 +1,47 @@
+ملف العضو
+ 
+ {{n.label}} 
+ {{t.otherLang}} 
+ {{t.signIn}} 
+ {{t.home}} 
+ {{t.members}} 
+ {{p.name}} 
+ {{t.ownNote}}
+ {{t.edit}} 
+ {{p.ini}} 
+ {{p.name}}
+ {{p.head}}
+ {{mt}} 
+ {{o}} 
+ {{t.share}} 
+ {{lk}} {{t.newTab}} 
+ {{st.l}} {{st.v}} 
+ {{t.about}}
+ {{p.about}}
+ {{t.skills}}
+ {{g.cat}}
+ {{s.n}}
+ {{t.projects}}
+ {{pj.title}}
+ {{pj.desc}}
+ {{tg}} 
+ {{pj.cta}} 
+ {{t.articles}}
+ {{ar.title}} 
+ {{ar.meta}}
+ {{t.events}}
+ {{t.eventsNote}} 
+ {{ev.d}} {{ev.m}} {{ev.title}}
+ {{ev.place}}
+ {{ev.role}} 
+ {{t.inCommunity}}
+ {{r.com}}
+ {{r.role}} · {{r.when}}
+ {{t.similar}}
+ {{s.ini}} {{s.name}} {{s.why}} 
+ {{t.browseSkill}} 
+ {{t.moreMembers}}
+ {{s.ini}} {{s.name}} {{s.why}} 
+ {{t.back}} 
+ {{t.copy}} {{t.privacy}} 
+ 

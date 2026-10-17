@@ -101,3 +101,14 @@ export function normalizeInternational(value: string): string | null {
   const parsed = parsePhoneNumberFromString(value.trim());
   return parsed?.isValid() ? parsed.number : null;
 }
+
+/** Splits a stored international number into the country and the national digits the form shows; null if unreadable. */
+export function splitInternational(value: string | null | undefined): {
+  country: PhoneCountry;
+  national: string;
+} | null {
+  if (!value) return null;
+  const parsed = parsePhoneNumberFromString(value.trim());
+  if (!parsed?.country) return null;
+  return { country: parsed.country, national: String(parsed.nationalNumber) };
+}

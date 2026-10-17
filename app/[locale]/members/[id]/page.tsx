@@ -1,10 +1,32 @@
+import type { Metadata } from 'next';
 import { notFound, permanentRedirect } from 'next/navigation';
-import { createPublicClient } from '@/lib/supabase/public';
 import { listPublicArticles } from '@/modules/articles/public';
 import { ProfileView } from '@/modules/members/components/public/ProfileView';
-import { getDirectoryMember } from '@/modules/members/public';
+import { getDirectoryMember, getProfileExtras } from '@/modules/members/public';
 
 export const revalidate = 60;
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string; id: string }>;
+}): Promise<Metadata> {
+  const { locale, id } = await params;
+  const member = await getDirectoryMember(id);
+  if (!member) return {};
+  const en = locale === 'en';
+  const name = en ? member.nameEn : member.nameAr;
+  const headline = en ? (member.headlineEn ?? member.headlineAr) : member.headlineAr;
+  return {
+    title: name,
+    description: headline ?? undefined,
+    openGraph: {
+      title: name,
+      description: headline ?? undefined,
+      images: member.photo ? [member.photo] : undefined,
+    },
+  };
+}
 
 /** A listed member's profile. Unlisted, inactive and unknown ids are the same 404 as any unknown URL. */
 export default async function MemberProfilePage({
@@ -18,12 +40,16 @@ export default async function MemberProfilePage({
   // Old numeric links redirect to the public id, only while the member is listed.
   if (/^\d+$/.test(id)) permanentRedirect(`${locale === 'en' ? '/en' : ''}/members/${member.id}`);
 
-  const { data: rows } = await createPublicClient()
-    .from('member_public_articles')
-    .select('article_id')
-    .eq('member_id', member.id);
-  const ids = new Set((rows ?? []).map((r) => r.article_id));
+  const extras = await getProfileExtras(member);
+  const ids = new Set(extras.articleIds);
   const articles = ids.size ? (await listPublicArticles()).filter((a) => ids.has(a.id)) : [];
 
-  return <ProfileView member={member} articles={articles} lang={locale === 'en' ? 'en' : 'ar'} />;
+  return (
+    <ProfileView
+      member={member}
+      extras={extras}
+      articles={articles}
+      lang={locale === 'en' ? 'en' : 'ar'}
+    />
+  );
 }

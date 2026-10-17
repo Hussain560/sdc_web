@@ -86,9 +86,11 @@ export function PhoneField({
             onChange={(e) => onCountryChange(e.target.value as PhoneCountry)}
             className="absolute inset-0 size-full cursor-pointer opacity-0 disabled:cursor-not-allowed"
           >
+            {/* Country names come from the ICU data of the runtime: the server and the browser can spell a few of
+                them differently ("Palestine" and "Palestinian Territories"). That is harmless text, not a bug. */}
             {PHONE_COUNTRIES.map((c) => (
-              <option key={c} value={c}>
-                {countryName(c, lang)} ({callingCode(c)})
+              <option key={c} value={c} suppressHydrationWarning>
+                {`${countryName(c, lang)} (${callingCode(c)})`}
               </option>
             ))}
           </select>

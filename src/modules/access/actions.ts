@@ -123,6 +123,7 @@ export async function handoverHead(
     p_committee: parsed.data.committeeId,
     p_new_head: parsed.data.newHeadUserId,
     p_at: parsed.data.handoverAt ? riyadhMidnight(parsed.data.handoverAt) : undefined,
+    p_keep_as_deputy: parsed.data.keepAsDeputy ?? false,
   });
   if (error) return failCode(codeFromDbError(error), lang);
 
@@ -131,21 +132,79 @@ export async function handoverHead(
   return ok({ id: data });
 }
 
-/** Typeahead for the assign dialog. Needs users.view; RLS filters the rows as well. */
-export async function searchUsers(
-  query: string,
-): Promise<Array<{ id: string; name: string; email: string }>> {
-  const access = await getAccess();
-  if (!access || !can(access, 'users.view')) return [];
-  const q = query.trim().replace(/[%,()]/g, ' ');
-  if (q.length < 2) return [];
+export type AssignableUser = {
+  memberId: string;
+  userId: string;
+  nameAr: string;
+  nameEn: string | null;
+  /** Only for people who may search every account (users.view). */
+  email: string | null;
+  photoPath: string | null;
+  /** The account has signed in at least once. */
+  activated: boolean;
+  /** Holds a position in the committee the dialog is for. */
+  inCommittee: boolean;
+  roleAr: string | null;
+  roleEn: string | null;
+};
 
+export type AssignableSearch = {
+  /** The search is limited to the people of one committee. Say so instead of staying silent. */
+  restricted: boolean;
+  /** Who leads the committee now (names only), for the handover warning. */
+  head: { nameAr: string; nameEn: string | null } | null;
+  rows: AssignableUser[];
+};
+
+/**
+ * The person picker of the assign dialog. One database function decides what the caller may search, searches every
+ * name part in both languages and returns `restricted` when the answer is limited (a committee head sees only the
+ * own committee), so the dialog can say why instead of showing an empty list.
+ */
+export async function searchAssignableUsers(
+  query: string,
+  committeeId?: string,
+): Promise<Result<AssignableSearch>> {
+  if (!(await getAccess())) return fail('UNAUTHENTICATED', accessMessage('UNAUTHENTICATED', 'ar'));
   const supabase = await createClient();
-  const { data } = await supabase
-    .from('profiles')
-    .select('id, full_name_ar, full_name_en, email')
-    .or(`full_name_ar.ilike.%${q}%,full_name_en.ilike.%${q}%,email.ilike.%${q}%`)
-    .order('full_name_ar')
-    .limit(8);
-  return (data ?? []).map((p) => ({ id: p.id, name: p.full_name_ar, email: p.email }));
+  const { data, error } = await supabase.rpc('search_assignable_users', {
+    p_query: query,
+    ...(committeeId ? { p_committee: committeeId } : {}),
+  });
+  if (error) {
+    const code = codeFromDbError(error);
+    return fail(code, accessMessage(code, 'ar'));
+  }
+  const d = data as unknown as {
+    restricted: boolean;
+    head: { name_ar: string; name_en: string | null } | null;
+    rows: Array<{
+      member_id: string;
+      user_id: string;
+      name_ar: string;
+      name_en: string | null;
+      email: string | null;
+      photo_path: string | null;
+      activated: boolean;
+      in_committee: boolean;
+      role_ar: string | null;
+      role_en: string | null;
+    }>;
+  };
+  return ok({
+    restricted: d.restricted,
+    head: d.head ? { nameAr: d.head.name_ar, nameEn: d.head.name_en } : null,
+    rows: d.rows.map((r) => ({
+      memberId: r.member_id,
+      userId: r.user_id,
+      nameAr: r.name_ar,
+      nameEn: r.name_en,
+      email: r.email,
+      photoPath: r.photo_path,
+      activated: r.activated,
+      inCommittee: r.in_committee,
+      roleAr: r.role_ar,
+      roleEn: r.role_en,
+    })),
+  });
 }

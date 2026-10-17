@@ -1,0 +1,263 @@
+/* One motion vocabulary for the public site and the dashboard (Sprint 17, MOT-001; design: "لغة الحركة").
+ * CSS handles the simple patterns with no JavaScript: page enter (M1), scroll reveal (M2), list stagger (M3), card lift
+ * (M4), count-up (M6), live pulse (M16). Gestures, springs and layout animation live in the `motion` package, in small
+ * client islands (src/lib/motion.ts). Durations and easings come from tokens.css. Transform and opacity only, so
+ * nothing moves the layout. Scroll-driven effects exist only where the browser supports them and everything shows its
+ * final state otherwise; people who prefer reduced motion get no movement at all. */
+
+:root {
+  --stagger-step: 40ms;
+  --stagger-max: 8;
+}
+
+@keyframes m-rise {
+  from {
+    opacity: 0;
+    transform: translateY(var(--m-y, 12px));
+  }
+}
+@keyframes m-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
+}
+@keyframes m-marq {
+  to {
+    transform: translateX(var(--m-marq-end, 50%));
+  }
+}
+@keyframes m-draw {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+@keyframes m-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--signal) 45%, transparent);
+  }
+  50% {
+    box-shadow: 0 0 0 8px transparent;
+  }
+}
+
+/* M1 page enter: server-rendered, first screen only. The first five children follow each other by 60 ms. */
+.m-enter > * {
+  animation: m-rise var(--duration-base) var(--ease-out) both;
+}
+.m-enter > :nth-child(2) {
+  animation-delay: 60ms;
+}
+.m-enter > :nth-child(3) {
+  animation-delay: 120ms;
+}
+.m-enter > :nth-child(4) {
+  animation-delay: 180ms;
+}
+.m-enter > :nth-child(5) {
+  animation-delay: 240ms;
+}
+
+/* M2 scroll reveal: section titles and big cards. */
+@supports (animation-timeline: view()) {
+  .m-reveal {
+    --m-y: 24px;
+    animation: m-rise linear both;
+    animation-timeline: view();
+    animation-range: entry 0% cover 22%;
+  }
+}
+
+/* M3 list stagger: the server sets --i on each item (0 to 7), so the longest wait is 320 ms. */
+.m-stagger > *,
+.m-in {
+  --m-y: 16px;
+  animation: m-rise var(--duration-base) var(--ease-out) both;
+  animation-delay: calc(min(var(--i, 0), var(--stagger-max) - 1) * var(--stagger-step));
+}
+
+/* M4 card lift on hover and focus; the picture inside zooms slowly. */
+.m-lift {
+  transition:
+    transform var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out);
+}
+.m-lift:is(:hover, :focus-within) {
+  transform: translateY(-4px);
+  border-color: var(--border-accent);
+  box-shadow: var(--elev-1);
+}
+.m-lift .m-ico {
+  transition:
+    background-color var(--duration-fast),
+    color var(--duration-fast);
+}
+.m-lift:hover .m-ico {
+  background: var(--accent);
+  color: var(--text-on-accent);
+}
+.m-lift .m-arrow {
+  transition:
+    background-color var(--duration-fast),
+    color var(--duration-fast),
+    border-color var(--duration-fast);
+}
+.m-lift:is(:hover, :focus-within) .m-arrow {
+  background: var(--accent);
+  color: var(--text-on-accent);
+  border-color: var(--accent);
+}
+.m-zoom {
+  transition: transform var(--duration-slow) var(--ease-out);
+}
+.m-card:is(:hover, :focus-within) .m-zoom {
+  transform: scale(1.04);
+}
+
+/* M6 count-up: a registered integer, so the number counts as the tile scrolls in (or on load without view()).
+ * The digits are drawn by CSS, so the tile carries the same figure as visually hidden text for screen readers.
+ * Set the target with style="--m-to: 128". */
+@property --m-n {
+  syntax: '<integer>';
+  inherits: false;
+  initial-value: 0;
+}
+@keyframes m-count {
+  from {
+    --m-n: 0;
+  }
+  to {
+    --m-n: var(--m-to);
+  }
+}
+.m-count {
+  --m-n: var(--m-to);
+  counter-reset: mn var(--m-n);
+  animation: m-count var(--duration-counter) var(--ease-out) both;
+}
+.m-count::after {
+  content: counter(mn);
+}
+@supports (animation-timeline: view()) {
+  .m-count {
+    animation: m-count linear both;
+    animation-timeline: view();
+    animation-range: entry 10% cover 35%;
+  }
+}
+
+/* M16 live pulse: one pulse per screen at most ("on now", "closing soon", open check-in). */
+.m-live {
+  animation: m-pulse 1.8s ease-in-out infinite;
+}
+
+/* About page helpers (kept from the first version): floating mark, topics marquee, drawn line, swipe strip. */
+.m-float {
+  animation: m-float 7s ease-in-out infinite;
+}
+.m-marq {
+  --m-marq-end: -50%;
+}
+[dir='rtl'] .m-marq {
+  --m-marq-end: 50%;
+}
+.m-marq-track {
+  display: flex;
+  inline-size: max-content;
+  gap: 1rem;
+  animation: m-marq 46s linear infinite;
+}
+.m-marq:hover .m-marq-track,
+.m-marq:focus-within .m-marq-track,
+.m-marq[data-paused='true'] .m-marq-track {
+  animation-play-state: paused;
+}
+.m-line {
+  transform-origin: left center;
+}
+[dir='rtl'] .m-line {
+  transform-origin: right center;
+}
+@supports (animation-timeline: view()) {
+  .m-line {
+    animation: m-draw linear both;
+    animation-timeline: view();
+    animation-range: entry 20% cover 45%;
+  }
+}
+.m-snap {
+  scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
+}
+.m-snap > * {
+  scroll-snap-align: start;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .m-enter > *,
+  .m-reveal,
+  .m-stagger > *,
+  .m-in,
+  .m-count,
+  .m-live,
+  .m-float,
+  .m-marq-track,
+  .m-line {
+    animation: none !important;
+  }
+  .m-lift,
+  .m-lift .m-ico,
+  .m-lift .m-arrow,
+  .m-zoom {
+    transition: none;
+  }
+  .m-lift:is(:hover, :focus-within),
+  .m-card:is(:hover, :focus-within) .m-zoom {
+    transform: none;
+    box-shadow: none;
+  }
+}
+
+/* Route transitions (React <ViewTransition>): page crossfade, shared-element morph, still header and footer. */
+@keyframes m-vt-out {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes m-vt-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+::view-transition-old(.m-page) {
+  animation: m-vt-out var(--duration-fast) var(--ease-in) both;
+}
+::view-transition-new(.m-page) {
+  animation: m-vt-in var(--duration-base) var(--ease-out) both;
+}
+::view-transition-group(.morph) {
+  animation-duration: var(--duration-slow);
+  animation-timing-function: var(--ease-out);
+}
+.m-vt-header {
+  view-transition-name: site-header;
+}
+.m-vt-footer {
+  view-transition-name: site-footer;
+}
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}

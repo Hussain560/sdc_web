@@ -27,7 +27,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
     getJoinCycle().catch(() => null),
     getPublicSettings(),
     getPublicStats(),
-    listHomeMembers(4),
+    listHomeMembers(24),
   ]);
   const { now, today } = clock();
   const sections = homeSections({

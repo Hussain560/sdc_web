@@ -90,9 +90,11 @@ test.describe('review and decisions', () => {
       await signInAndWait(mpage, a.email, undefined, '/en/login');
       await gotoReady(mpage, '/en/account/member-profile');
       await mpage.getByText('Show my profile in the public member directory').click();
-      await mpage.getByLabel('Bio (Arabic)').fill('نبذة معدلة');
-      await mpage.getByRole('button', { name: 'Save' }).click();
-      await expect(mpage.getByText('Your profile was saved.')).toBeVisible();
+      await mpage
+        .locator('section[aria-labelledby="ed-visibility"]')
+        .getByRole('button', { name: 'Save' })
+        .click();
+      await expect(mpage.getByText('Saved.', { exact: true })).toBeVisible();
       const hidden = await sql<{ n: string }>(
         `select count(*)::text as n from public.member_directory where last_name like '%' || $1`,
         [tag],
@@ -101,7 +103,7 @@ test.describe('review and decisions', () => {
       await mctx.close();
 
       // Leadership suspends a member with a reason.
-      await gotoReady(page, '/en/dashboard/members');
+      await gotoReady(page, `/en/dashboard/members?q=${tag}`);
       const row = page
         .getByRole('row', { name: new RegExp(`متقدم أول ${tag}|Review Applicant`) })
         .first();

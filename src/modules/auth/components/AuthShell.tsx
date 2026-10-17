@@ -22,7 +22,7 @@ export function AuthShell({
         aria-hidden="true"
         className="motif-dots flex h-24 items-center justify-center rounded-b-shape-2xl bg-band text-muted lg:hidden"
       >
-        <Image src="/assets/sdc-logo-mark.svg" alt="" width={48} height={48} className="size-12" />
+        <Image src="/assets/brand/sdc-mark.png" alt="" width={48} height={48} className="size-12" />
       </div>
 
       <div className="flex min-h-[calc(100dvh-6rem)] flex-col px-4 py-4 lg:min-h-0 lg:px-12 lg:py-6">
@@ -47,7 +47,7 @@ export function AuthShell({
       >
         <div className="flex items-center gap-4">
           <Image
-            src="/assets/sdc-logo-mark.svg"
+            src="/assets/brand/sdc-mark.png"
             alt=""
             width={160}
             height={160}

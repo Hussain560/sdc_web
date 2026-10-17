@@ -2,30 +2,61 @@
 
 | Field            | Value                                                  |
 | ---------------- | ------------------------------------------------------ |
-| **Paused on**    | 2026-10-04                                             |
-| **Branch**       | `release/v1.0.0` (clean working tree, nothing pending) |
-| **Last commit**  | `f5aacc1` test(visual): baselines from a freshly seeded database |
-| **Tag**          | `v1.0.0-rc.1` (local only)                             |
-| **Pushed?**      | **No.** The first push to `develop` failed with HTTP 403 (no write access). |
+| **Paused on**    | 2026-10-18                                             |
+| **Branch**       | `feat/sprint-17-members-and-motion` (local, nothing pushed) |
+| **Last commit**  | `65d84d1` fix(home): compact member marquee cards on phones |
+| **Pushed?**      | **No.** Push commands are in the handoff message; the owner decides when. |
 
 ## State of the machine
 
-- Supabase containers are **stopped** (`npx supabase stop`, data backed up by the CLI). Dev servers on ports 3000, 3100 and 3300 are stopped.
-- The `origin` push URL is now the real URL (it was `DISABLED-do-not-push`). To block accidental pushes again:
-  `git remote set-url --push origin DISABLED-do-not-push`.
+- Supabase containers are **stopped** (`npx supabase stop`). The dev server on port 3000 is stopped.
+- Local data (demo accounts, leadership photos, filled sample members) lives in the stopped Supabase volume and comes back on `npx supabase start`.
+- Uncommitted: `supabase/dev-env-seed.sql` (untracked, not part of Sprint 17 commits) and a whitespace-only change in `tests/unit/event-card.test.tsx`.
 
 ## Resume in five minutes
 
 ```bash
 npx supabase start
-npm run db:personas        # demo accounts (password in docs/07-engineering/local-demo-guide.md)
 npm run dev                # http://localhost:3000
 ```
 
-A database reset removes the demo registrants and test events. Before the visual suite always run `npx supabase db reset`
-(the screenshots assume a freshly seeded database).
+The sprint 17 demo data is already in the local database. If you reset the database, re-run in this order:
+`npm run db:personas`, `node scripts/dev-seed-leadership.mjs`, `node scripts/dev-seed-member-photos.mjs`,
+`docker exec -i supabase_db_sdc_web psql -U postgres < supabase/dev-fill-fake-members.sql`,
+`docker exec -i supabase_db_sdc_web psql -U postgres < supabase/dev-full-member.sql`.
 
-## Where the work stands
+## Sprint 17 status (members, profiles, motion)
+
+| Story | Status |
+| ----- | ------ |
+| MOT-001 motion foundation | Done (`motion` package, `MotionProvider`, CSS vocabulary) |
+| ACC-007 assign-position search | Done |
+| MEM-011 data model v3, MEM-012 photos | Done |
+| MEM-014 add-member wizard | Done |
+| MEM-015 admin list, detail, staff edit | Done |
+| MEM-013 profile editor | Done (project cover upload and phone-language toggle slipped to Sprint 18) |
+| RDS-033/034 public directory and profile | Done; profile follows the approved design; the visual baselines for `/members*` are **not** updated |
+| RDS-035 home marquee | Done: three rows, two directions, fade edges, phone sizing |
+| MOT-002 page transitions | Done; `12-motion.md` written |
+| Brand | Header and footer use the logo-kit SVGs; the X placeholder uses `public/assets/brand/sdc-mark.png` |
+| Leadership on About | Moved from the members page; members page has room for filters |
+
+Open items:
+- Visual baseline updates for `/members*`, Home and About need the owner's approval (`e2e:update` only then).
+- `04-members.md`, the members module doc and `notes.md` still need the final pass.
+- Q-C1 (should committee heads add any member to their committee?) is open.
+- Q-M5 to Q-M9 defaults are not yet written up.
+- The certificate PDF still uses `navbar.png`; `sdc-logo-mark.svg` is no longer referenced.
+- The Next dev server reported a Zod CSP "eval" report on login; harmless, optional follow-up.
+
+## Standing rules
+
+Never push without the owner saying so; no `Co-Authored-By` trailer; commit body lines at most 100 characters; no `.env*` or secrets in commits;
+frozen visual identity (D-009); never run `e2e:update` without approval.
+
+## Previous pause (release/v1.0.0, 2026-10-04)
+
+### Where the work stood
 
 | Area | Status |
 | ---- | ------ |
@@ -55,9 +86,3 @@ accessibility fixes, restore drill, cutover rehearsal, fieldset overflow fix in 
 - Timing of the contract migration that drops the legacy tables (`supabase/contract/`).
 - Optional follow-up: silence the harmless Zod "eval" CSP report (`z.config({ jitless: true })`).
 
-## Standing rules
-
-Never push without the owner saying so; no `Co-Authored-By` trailer; commit body lines at most 100 characters; no `.env*` or secrets in commits;
-frozen visual identity (D-009); never run `e2e:update` without approval.
-
-Pipeline check: PR flow tested on 2026-10-09.

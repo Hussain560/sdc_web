@@ -29,7 +29,7 @@ export type ProfileValues = {
 const m = {
   name: { ar: 'الاسم الأول مطلوب.', en: 'The first name is required.' },
   long: { ar: 'النص طويل جدًا.', en: 'The text is too long.' },
-  bio: { ar: 'النبذة طويلة (1000 حرف كحد أقصى).', en: 'The bio is too long (max 1000).' },
+  bio: { ar: 'النبذة طويلة (2000 حرف كحد أقصى).', en: 'The bio is too long (max 2000).' },
   https: { ar: 'يجب أن يبدأ الرابط بـ https://', en: 'The link must start with https://' },
   status: { ar: 'اختر الحالة.', en: 'Choose a status.' },
 } as const;
@@ -41,8 +41,8 @@ export function validateProfile(v: ProfileValues, lang: Lang): Record<string, st
     e.firstNameAr = m.long[lang];
   if (v.academicStatus && !(ACADEMIC_STATUSES as readonly string[]).includes(v.academicStatus))
     e.academicStatus = m.status[lang];
-  if (v.bioAr.length > 1000) e.bioAr = m.bio[lang];
-  if (v.bioEn.length > 1000) e.bioEn = m.bio[lang];
+  if (v.bioAr.length > 2000) e.bioAr = m.bio[lang];
+  if (v.bioEn.length > 2000) e.bioEn = m.bio[lang];
   for (const [field, value] of [
     ['portfolioUrl', v.portfolioUrl],
     ['githubUrl', v.githubUrl],
@@ -66,8 +66,8 @@ export function toProfilePayload(v: ProfileValues) {
     major_id: v.majorId,
     sub_major_id: v.subMajorId,
     track_id: v.trackId,
-    bio_ar: v.bioAr.trim(),
-    bio_en: v.bioEn.trim(),
+    about_ar: v.bioAr.trim(),
+    about_en: v.bioEn.trim(),
     portfolio_url: v.portfolioUrl.trim(),
     github_url: v.githubUrl.trim(),
     linkedin_url: v.linkedinUrl.trim(),

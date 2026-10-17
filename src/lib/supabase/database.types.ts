@@ -633,6 +633,12 @@ isOneToOne: false
       foreignKeyName: "member_claim_tokens_member_id_fkey"
       columns: ["member_id"]
 isOneToOne: false
+      referencedRelation: "current_positions"
+      referencedColumns: ["member_id"]
+    },{
+      foreignKeyName: "member_claim_tokens_member_id_fkey"
+      columns: ["member_id"]
+isOneToOne: false
       referencedRelation: "member_directory"
       referencedColumns: ["id"]
     },{
@@ -645,19 +651,135 @@ isOneToOne: false
       foreignKeyName: "member_claim_tokens_member_id_fkey"
       columns: ["member_id"]
 isOneToOne: false
+      referencedRelation: "member_public_projects"
+      referencedColumns: ["member_id"]
+    },{
+      foreignKeyName: "member_claim_tokens_member_id_fkey"
+      columns: ["member_id"]
+isOneToOne: false
+      referencedRelation: "member_public_skills"
+      referencedColumns: ["member_id"]
+    },{
+      foreignKeyName: "member_claim_tokens_member_id_fkey"
+      columns: ["member_id"]
+isOneToOne: false
       referencedRelation: "members"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"member_projects": {
+                  Row: {
+                    "cover_path": string | null,"created_at": string,"description_ar": string | null,"description_en": string | null,"id": string,"member_id": string,"position": number,"title_ar": string,"title_en": string | null,"updated_at": string,"url": string
+                  }
+                  Insert: {
+                    "cover_path"?: string | null,"created_at"?: string,"description_ar"?: string | null,"description_en"?: string | null,"id"?: string,"member_id": string,"position"?: number,"title_ar": string,"title_en"?: string | null,"updated_at"?: string,"url": string
+                  }
+                  Update: {
+                    "cover_path"?: string | null,"created_at"?: string,"description_ar"?: string | null,"description_en"?: string | null,"id"?: string,"member_id"?: string,"position"?: number,"title_ar"?: string,"title_en"?: string | null,"updated_at"?: string,"url"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "member_projects_member_id_fkey"
+      columns: ["member_id"]
+isOneToOne: false
+      referencedRelation: "current_positions"
+      referencedColumns: ["member_id"]
+    },{
+      foreignKeyName: "member_projects_member_id_fkey"
+      columns: ["member_id"]
+isOneToOne: false
+      referencedRelation: "member_directory"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "member_projects_member_id_fkey"
+      columns: ["member_id"]
+isOneToOne: false
+      referencedRelation: "member_public_articles"
+      referencedColumns: ["member_id"]
+    },{
+      foreignKeyName: "member_projects_member_id_fkey"
+      columns: ["member_id"]
+isOneToOne: false
+      referencedRelation: "member_public_projects"
+      referencedColumns: ["member_id"]
+    },{
+      foreignKeyName: "member_projects_member_id_fkey"
+      columns: ["member_id"]
+isOneToOne: false
+      referencedRelation: "member_public_skills"
+      referencedColumns: ["member_id"]
+    },{
+      foreignKeyName: "member_projects_member_id_fkey"
+      columns: ["member_id"]
+isOneToOne: false
+      referencedRelation: "members"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"member_skills": {
+                  Row: {
+                    "member_id": string,"position": number,"skill_id": number
+                  }
+                  Insert: {
+                    "member_id": string,"position": number,"skill_id": number
+                  }
+                  Update: {
+                    "member_id"?: string,"position"?: number,"skill_id"?: number
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "member_skills_member_id_fkey"
+      columns: ["member_id"]
+isOneToOne: false
+      referencedRelation: "current_positions"
+      referencedColumns: ["member_id"]
+    },{
+      foreignKeyName: "member_skills_member_id_fkey"
+      columns: ["member_id"]
+isOneToOne: false
+      referencedRelation: "member_directory"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "member_skills_member_id_fkey"
+      columns: ["member_id"]
+isOneToOne: false
+      referencedRelation: "member_public_articles"
+      referencedColumns: ["member_id"]
+    },{
+      foreignKeyName: "member_skills_member_id_fkey"
+      columns: ["member_id"]
+isOneToOne: false
+      referencedRelation: "member_public_projects"
+      referencedColumns: ["member_id"]
+    },{
+      foreignKeyName: "member_skills_member_id_fkey"
+      columns: ["member_id"]
+isOneToOne: false
+      referencedRelation: "member_public_skills"
+      referencedColumns: ["member_id"]
+    },{
+      foreignKeyName: "member_skills_member_id_fkey"
+      columns: ["member_id"]
+isOneToOne: false
+      referencedRelation: "members"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "member_skills_skill_id_fkey"
+      columns: ["skill_id"]
+isOneToOne: false
+      referencedRelation: "skills"
       referencedColumns: ["id"]
     }
                   ]
                 },"members": {
                   Row: {
-                    "academic_status": string | null,"application_id": string | null,"bio_ar": string | null,"bio_en": string | null,"created_at": string,"ended_at": string | null,"first_name_ar": string,"first_name_en": string | null,"github_url": string | null,"id": string,"is_directory_visible": boolean,"joined_at": string,"joined_cycle_id": string | null,"joined_via": string,"last_name_ar": string,"last_name_en": string | null,"legacy_claim_email": string | null,"legacy_id": number | null,"linkedin_url": string | null,"major_id": number | null,"photo_path": string | null,"portfolio_url": string | null,"show_links": boolean,"show_participation": boolean,"show_photo": boolean,"show_track": boolean,"show_university": boolean,"status": string,"status_reason": string | null,"sub_major_id": number | null,"track_id": number | null,"university_id": number | null,"updated_at": string,"user_id": string | null,"x_url": string | null
+                    "about_ar": string | null,"about_en": string | null,"academic_status": string | null,"application_id": string | null,"behance_url": string | null,"bio_ar": string | null,"bio_en": string | null,"created_at": string,"dribbble_url": string | null,"ended_at": string | null,"first_name_ar": string,"first_name_en": string | null,"github_url": string | null,"headline_ar": string | null,"headline_en": string | null,"id": string,"is_directory_visible": boolean,"joined_at": string,"joined_cycle_id": string | null,"joined_via": string,"last_name_ar": string,"last_name_en": string | null,"legacy_claim_email": string | null,"legacy_id": number | null,"linkedin_url": string | null,"major_id": number | null,"middle_name_ar": string | null,"middle_name_en": string | null,"open_to": (string)[],"phone": string | null,"photo_path": string | null,"portfolio_url": string | null,"show_about": boolean,"show_headline": boolean,"show_links": boolean,"show_open_to": boolean,"show_participation": boolean,"show_photo": boolean,"show_projects": boolean,"show_skills": boolean,"show_track": boolean,"show_university": boolean,"status": string,"status_reason": string | null,"sub_major_id": number | null,"track_id": number | null,"university_id": number | null,"updated_at": string,"user_id": string | null,"website_url": string | null,"x_url": string | null,"youtube_url": string | null
                   }
                   Insert: {
-                    "academic_status"?: string | null,"application_id"?: string | null,"bio_ar"?: string | null,"bio_en"?: string | null,"created_at"?: string,"ended_at"?: string | null,"first_name_ar": string,"first_name_en"?: string | null,"github_url"?: string | null,"id"?: string,"is_directory_visible"?: boolean,"joined_at"?: string,"joined_cycle_id"?: string | null,"joined_via": string,"last_name_ar"?: string,"last_name_en"?: string | null,"legacy_claim_email"?: string | null,"legacy_id"?: number | null,"linkedin_url"?: string | null,"major_id"?: number | null,"photo_path"?: string | null,"portfolio_url"?: string | null,"show_links"?: boolean,"show_participation"?: boolean,"show_photo"?: boolean,"show_track"?: boolean,"show_university"?: boolean,"status"?: string,"status_reason"?: string | null,"sub_major_id"?: number | null,"track_id"?: number | null,"university_id"?: number | null,"updated_at"?: string,"user_id"?: string | null,"x_url"?: string | null
+                    "about_ar"?: string | null,"about_en"?: string | null,"academic_status"?: string | null,"application_id"?: string | null,"behance_url"?: string | null,"bio_ar"?: string | null,"bio_en"?: string | null,"created_at"?: string,"dribbble_url"?: string | null,"ended_at"?: string | null,"first_name_ar": string,"first_name_en"?: string | null,"github_url"?: string | null,"headline_ar"?: string | null,"headline_en"?: string | null,"id"?: string,"is_directory_visible"?: boolean,"joined_at"?: string,"joined_cycle_id"?: string | null,"joined_via": string,"last_name_ar"?: string,"last_name_en"?: string | null,"legacy_claim_email"?: string | null,"legacy_id"?: number | null,"linkedin_url"?: string | null,"major_id"?: number | null,"middle_name_ar"?: string | null,"middle_name_en"?: string | null,"open_to"?: (string)[],"phone"?: string | null,"photo_path"?: string | null,"portfolio_url"?: string | null,"show_about"?: boolean,"show_headline"?: boolean,"show_links"?: boolean,"show_open_to"?: boolean,"show_participation"?: boolean,"show_photo"?: boolean,"show_projects"?: boolean,"show_skills"?: boolean,"show_track"?: boolean,"show_university"?: boolean,"status"?: string,"status_reason"?: string | null,"sub_major_id"?: number | null,"track_id"?: number | null,"university_id"?: number | null,"updated_at"?: string,"user_id"?: string | null,"website_url"?: string | null,"x_url"?: string | null,"youtube_url"?: string | null
                   }
                   Update: {
-                    "academic_status"?: string | null,"application_id"?: string | null,"bio_ar"?: string | null,"bio_en"?: string | null,"created_at"?: string,"ended_at"?: string | null,"first_name_ar"?: string,"first_name_en"?: string | null,"github_url"?: string | null,"id"?: string,"is_directory_visible"?: boolean,"joined_at"?: string,"joined_cycle_id"?: string | null,"joined_via"?: string,"last_name_ar"?: string,"last_name_en"?: string | null,"legacy_claim_email"?: string | null,"legacy_id"?: number | null,"linkedin_url"?: string | null,"major_id"?: number | null,"photo_path"?: string | null,"portfolio_url"?: string | null,"show_links"?: boolean,"show_participation"?: boolean,"show_photo"?: boolean,"show_track"?: boolean,"show_university"?: boolean,"status"?: string,"status_reason"?: string | null,"sub_major_id"?: number | null,"track_id"?: number | null,"university_id"?: number | null,"updated_at"?: string,"user_id"?: string | null,"x_url"?: string | null
+                    "about_ar"?: string | null,"about_en"?: string | null,"academic_status"?: string | null,"application_id"?: string | null,"behance_url"?: string | null,"bio_ar"?: string | null,"bio_en"?: string | null,"created_at"?: string,"dribbble_url"?: string | null,"ended_at"?: string | null,"first_name_ar"?: string,"first_name_en"?: string | null,"github_url"?: string | null,"headline_ar"?: string | null,"headline_en"?: string | null,"id"?: string,"is_directory_visible"?: boolean,"joined_at"?: string,"joined_cycle_id"?: string | null,"joined_via"?: string,"last_name_ar"?: string,"last_name_en"?: string | null,"legacy_claim_email"?: string | null,"legacy_id"?: number | null,"linkedin_url"?: string | null,"major_id"?: number | null,"middle_name_ar"?: string | null,"middle_name_en"?: string | null,"open_to"?: (string)[],"phone"?: string | null,"photo_path"?: string | null,"portfolio_url"?: string | null,"show_about"?: boolean,"show_headline"?: boolean,"show_links"?: boolean,"show_open_to"?: boolean,"show_participation"?: boolean,"show_photo"?: boolean,"show_projects"?: boolean,"show_skills"?: boolean,"show_track"?: boolean,"show_university"?: boolean,"status"?: string,"status_reason"?: string | null,"sub_major_id"?: number | null,"track_id"?: number | null,"university_id"?: number | null,"updated_at"?: string,"user_id"?: string | null,"website_url"?: string | null,"x_url"?: string | null,"youtube_url"?: string | null
                   }
                   Relationships: [
                     {
@@ -1003,6 +1125,19 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"skills": {
+                  Row: {
+                    "category": string,"display_order": number,"id": number,"is_active": boolean,"name_ar": string,"name_en": string,"slug": string
+                  }
+                  Insert: {
+                    "category": string,"display_order"?: number,"id"?: never,"is_active"?: boolean,"name_ar": string,"name_en": string,"slug": string
+                  }
+                  Update: {
+                    "category"?: string,"display_order"?: number,"id"?: never,"is_active"?: boolean,"name_ar"?: string,"name_en"?: string,"slug"?: string
+                  }
+                  Relationships: [
+                    
+                  ]
                 },"tags": {
                   Row: {
                     "created_at": string,"id": string,"label_ar": string,"label_en": string | null,"slug": string
@@ -1110,7 +1245,7 @@ isOneToOne: false
                   ]
                 },"current_positions": {
                   Row: {
-                    "assignment_id": string | null,"committee_id": string | null,"committee_name_ar": string | null,"committee_name_en": string | null,"committee_order": number | null,"committee_slug": string | null,"display_title_ar": string | null,"display_title_en": string | null,"ends_at": string | null,"person_name_ar": string | null,"person_name_en": string | null,"public_bio_ar": string | null,"public_bio_en": string | null,"public_tags_ar": (string)[] | null,"public_tags_en": (string)[] | null,"role_key": string | null,"role_name_ar": string | null,"role_name_en": string | null,"role_order": number | null,"starts_at": string | null
+                    "assignment_id": string | null,"committee_id": string | null,"committee_name_ar": string | null,"committee_name_en": string | null,"committee_order": number | null,"committee_slug": string | null,"display_title_ar": string | null,"display_title_en": string | null,"ends_at": string | null,"member_id": string | null,"member_photo_path": string | null,"person_name_ar": string | null,"person_name_en": string | null,"public_bio_ar": string | null,"public_bio_en": string | null,"public_tags_ar": (string)[] | null,"public_tags_en": (string)[] | null,"role_key": string | null,"role_name_ar": string | null,"role_name_en": string | null,"role_order": number | null,"starts_at": string | null
                   }
                   Relationships: [
                     {
@@ -1174,7 +1309,7 @@ isOneToOne: false
                   ]
                 },"member_directory": {
                   Row: {
-                    "bio": string | null,"bio_en": string | null,"first_name": string | null,"first_name_en": string | null,"github_url": string | null,"id": string | null,"joined_at": string | null,"last_name": string | null,"last_name_en": string | null,"legacy_id": number | null,"linkedin_url": string | null,"major": string | null,"major_en": string | null,"photo_path": string | null,"portfolio_url": string | null,"status": string | null,"status_en": string | null,"sub_major": string | null,"sub_major_en": string | null,"track": string | null,"track_en": string | null,"university": string | null,"university_en": string | null,"x_url": string | null
+                    "behance_url": string | null,"bio": string | null,"bio_en": string | null,"committee_slugs": (string)[] | null,"committees": Json | null,"dribbble_url": string | null,"first_name": string | null,"first_name_en": string | null,"github_url": string | null,"headline": string | null,"headline_en": string | null,"id": string | null,"joined_at": string | null,"last_name": string | null,"last_name_en": string | null,"legacy_id": number | null,"linkedin_url": string | null,"major": string | null,"major_en": string | null,"middle_name": string | null,"middle_name_en": string | null,"open_to": (string)[] | null,"photo_path": string | null,"portfolio_url": string | null,"skill_slugs": (string)[] | null,"status": string | null,"status_en": string | null,"sub_major": string | null,"sub_major_en": string | null,"track": string | null,"track_en": string | null,"university": string | null,"university_en": string | null,"website_url": string | null,"x_url": string | null,"youtube_url": string | null
                   }
                   Relationships: [
                     
@@ -1203,6 +1338,27 @@ isOneToOne: false
       referencedRelation: "public_articles"
       referencedColumns: ["id"]
     }
+                  ]
+                },"member_public_participation": {
+                  Row: {
+                    "event_id": string | null,"location_ar": string | null,"location_en": string | null,"member_id": string | null,"role": string | null,"slug": string | null,"start_date": string | null,"title_ar": string | null,"title_en": string | null
+                  }
+                  Relationships: [
+                    
+                  ]
+                },"member_public_projects": {
+                  Row: {
+                    "cover_path": string | null,"description_ar": string | null,"description_en": string | null,"member_id": string | null,"position": number | null,"project_id": string | null,"title_ar": string | null,"title_en": string | null,"url": string | null
+                  }
+                  Relationships: [
+                    
+                  ]
+                },"member_public_skills": {
+                  Row: {
+                    "category": string | null,"member_id": string | null,"name_ar": string | null,"name_en": string | null,"position": number | null,"slug": string | null
+                  }
+                  Relationships: [
+                    
                   ]
                 },"membership_cycle_counts": {
                   Row: {
@@ -1431,7 +1587,16 @@ isOneToOne: false
                 }
           }
           Functions: {
-            "apply_for_membership":
+            "admin_list_members":
+{ Args: { "p_committee"?: string,"p_completeness"?: string,"p_from"?: number,"p_q"?: string,"p_status"?: string,"p_to"?: number,"p_track"?: number }; Returns: Json
+                           },
+"admin_member_detail":
+{ Args: { "p_id": string }; Returns: Json
+                           },
+"admin_update_member":
+{ Args: { "p": Json,"p_id": string }; Returns: undefined
+                           },
+"apply_for_membership":
 { Args: { "p": Json,"p_cycle": string,"p_elapsed_ms"?: number,"p_honeypot"?: string,"p_ip_hash"?: string }; Returns: Json
                            },
 "assign_role":
@@ -1508,6 +1673,9 @@ isOneToOne: false
 "delete_event_draft":
 { Args: { "p_id": string }; Returns: undefined
                            },
+"delete_my_project":
+{ Args: { "p_id": string }; Returns: undefined
+                           },
 "delete_partner":
 { Args: { "p_id": string }; Returns: undefined
                            },
@@ -1547,11 +1715,14 @@ isOneToOne: false
 "finalize_session":
 { Args: { "p_session": string }; Returns: Json
                            },
+"find_member_by_email":
+{ Args: { "p_email": string }; Returns: Json
+                           },
 "handle_data_request":
 { Args: { "p_decision": string,"p_id": string,"p_note"?: string }; Returns: Json
                            },
 "handover_head":
-{ Args: { "p_at"?: string,"p_committee": string,"p_new_head": string }; Returns: string
+{ Args: { "p_at"?: string,"p_committee": string,"p_keep_as_deputy"?: boolean,"p_new_head": string }; Returns: string
                            },
 "issue_certificates":
 { Args: { "p_event": string }; Returns: Json
@@ -1583,6 +1754,12 @@ isOneToOne: false
 "register_guest":
 { Args: { "p_answers"?: Json,"p_consent_version"?: string,"p_elapsed_ms"?: number,"p_email": string,"p_event": string,"p_honeypot"?: string,"p_ip_hash"?: string,"p_name": string,"p_phone": string }; Returns: Json
                            },
+"remove_my_member_photo":
+{ Args: Record<PropertyKey, never>; Returns: string
+                           },
+"reorder_my_projects":
+{ Args: { "p_ids": (string)[] }; Returns: undefined
+                           },
 "request_account_deletion":
 { Args: { "p_reason"?: string }; Returns: string
                            },
@@ -1601,6 +1778,9 @@ isOneToOne: false
 "save_membership_cycle":
 { Args: { "p": Json,"p_id": string }; Returns: Json
                            },
+"save_my_project":
+{ Args: { "p": Json }; Returns: string
+                           },
 "save_partner":
 { Args: { "p": Json,"p_id": string }; Returns: string
                            },
@@ -1614,6 +1794,9 @@ isOneToOne: false
 { Args: { "p_query": string }; Returns: {
               "full_name_ar": string,"full_name_en": string,"id": string
             }[]
+                           },
+"search_assignable_users":
+{ Args: { "p_committee"?: string,"p_query": string }; Returns: Json
                            },
 "search_presenter_candidates":
 { Args: { "p_query": string }; Returns: {
@@ -1636,6 +1819,12 @@ isOneToOne: false
                            },
 "set_member_status":
 { Args: { "p_id": string,"p_reason"?: string,"p_status": string }; Returns: string
+                           },
+"set_my_member_photo":
+{ Args: { "p_path": string,"p_show"?: boolean }; Returns: string
+                           },
+"set_my_skills":
+{ Args: { "p_slugs": (string)[] }; Returns: undefined
                            },
 "submit_membership_application":
 { Args: { "p": Json,"p_cycle": string }; Returns: Json

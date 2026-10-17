@@ -4,7 +4,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { TopicsMarquee } from '@/modules/about/components/TopicsMarquee';
 import { ValuesList } from '@/modules/about/components/ValuesList';
 import { VisionMission } from '@/modules/about/components/VisionMission';
-import { FilterSelect, FilterSheet } from '@/modules/events/components/public/FilterControls';
+import { FilterSelect, FilterSheet } from '@/components/patterns/FilterControls';
 
 vi.mock('@/i18n/navigation', () => ({
   Link: ({ href, children, ...rest }: React.ComponentProps<'a'> & { href: string }) => (
@@ -85,7 +85,7 @@ describe('TopicsMarquee', () => {
       'true',
     );
     // The moving copy is hidden from assistive technology.
-    expect(container.querySelector('.pg-marq-track')).toHaveAttribute('aria-hidden', 'true');
+    expect(container.querySelector('.m-marq-track')).toHaveAttribute('aria-hidden', 'true');
   });
 });
 

@@ -25,7 +25,7 @@ export function VisionMission({
   return (
     <section
       aria-labelledby="ab-vm"
-      className="pg-rv relative mt-(--section-gap) overflow-hidden rounded-shape-2xl bg-band p-8 md:p-12 lg:p-20"
+      className="m-reveal relative mt-(--section-gap) overflow-hidden rounded-shape-2xl bg-band p-8 md:p-12 lg:p-20"
     >
       <div
         aria-hidden="true"

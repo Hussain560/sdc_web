@@ -135,7 +135,7 @@ export function SiteHeader() {
   return (
     <header
       className={cn(
-        'sticky top-0 z-(--z-header) lg:top-3 lg:mb-5 lg:px-4',
+        'm-vt-header sticky top-0 z-(--z-header) lg:top-3 lg:mb-5 lg:px-4',
         'transition-transform duration-(--duration-base) ease-(--ease-standard) motion-reduce:transition-none',
         hidden && '-translate-y-[calc(100%+1rem)]',
       )}
@@ -150,13 +150,13 @@ export function SiteHeader() {
       {/* Desktop: floating bar */}
       <div
         className={cn(
-          'mx-auto hidden h-16 max-w-(--container-wide) items-center gap-4 rounded-shape-xl border border-line px-4 lg:flex',
+          'mx-auto hidden h-18 max-w-(--container-wide) grid-cols-[1fr_auto_1fr] items-center gap-4 rounded-shape-xl border border-line px-4 lg:grid',
           'bg-surface/85 backdrop-blur-md transition-shadow duration-(--duration-base)',
           elevated && 'shadow-elev-2',
         )}
       >
         <Logo label={s.logoHome} alt={s.logoAlt} priority />
-        <nav aria-label={s.mainNav} className="mx-auto">
+        <nav aria-label={s.mainNav} className="justify-self-center">
           <ul className="flex items-center gap-1 rounded-full bg-surface-raised p-1">
             {NAV_ITEMS.map(({ key, href }) => {
               const active = isActive(pathname, href);
@@ -166,7 +166,10 @@ export function SiteHeader() {
                     href={href}
                     variant="nav"
                     active={active}
-                    className={cn('min-h-10 rounded-full px-4', active && 'bg-surface text-text')}
+                    className={cn(
+                      'min-h-9 rounded-full px-3.5 text-sm',
+                      active && 'bg-surface text-text',
+                    )}
                   >
                     {s[key]}
                   </TextLink>
@@ -175,13 +178,13 @@ export function SiteHeader() {
             })}
           </ul>
         </nav>
-        <div className="flex items-center gap-1">
+        <div className="flex items-center justify-self-end gap-1">
           <LocaleSwitch />
           <ThemeSwitch />
           {isLoggedIn ? (
             hasPosition ? (
               // People who hold a position get one button into the internal system (account and sign-out live there).
-              <LinkButton href="/dashboard" size="md" className="ms-2">
+              <LinkButton href="/dashboard" size="sm" className="ms-2">
                 <LayoutDashboard aria-hidden="true" className="size-5" />
                 {s.dashboard}
               </LinkButton>
@@ -191,10 +194,10 @@ export function SiteHeader() {
           ) : (
             !loading && (
               <>
-                <LinkButton href="/login" variant="ghost" size="md" className="ms-2">
+                <LinkButton href="/login" variant="ghost" size="sm" className="ms-2">
                   {s.signIn}
                 </LinkButton>
-                <LinkButton href="/join" size="md">
+                <LinkButton href="/join" size="sm">
                   {s.join}
                 </LinkButton>
               </>
