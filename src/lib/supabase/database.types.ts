@@ -1587,7 +1587,16 @@ isOneToOne: false
                 }
           }
           Functions: {
-            "apply_for_membership":
+            "admin_list_members":
+{ Args: { "p_committee"?: string,"p_completeness"?: string,"p_from"?: number,"p_q"?: string,"p_status"?: string,"p_to"?: number,"p_track"?: number }; Returns: Json
+                           },
+"admin_member_detail":
+{ Args: { "p_id": string }; Returns: Json
+                           },
+"admin_update_member":
+{ Args: { "p": Json,"p_id": string }; Returns: undefined
+                           },
+"apply_for_membership":
 { Args: { "p": Json,"p_cycle": string,"p_elapsed_ms"?: number,"p_honeypot"?: string,"p_ip_hash"?: string }; Returns: Json
                            },
 "assign_role":

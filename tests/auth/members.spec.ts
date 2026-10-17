@@ -101,7 +101,7 @@ test.describe('review and decisions', () => {
       await mctx.close();
 
       // Leadership suspends a member with a reason.
-      await gotoReady(page, '/en/dashboard/members');
+      await gotoReady(page, `/en/dashboard/members?q=${tag}`);
       const row = page
         .getByRole('row', { name: new RegExp(`متقدم أول ${tag}|Review Applicant`) })
         .first();

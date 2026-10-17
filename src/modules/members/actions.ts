@@ -357,3 +357,69 @@ export async function resendMemberActivation(
   }).catch(() => 'failed' as const);
   return ok({ emailStatus: mailStatus(outcome) });
 }
+
+const staffEditSchema = z.object({
+  firstNameAr: z.string().trim().min(1).max(100),
+  middleNameAr: z.string().trim().max(100).optional(),
+  lastNameAr: z.string().trim().min(1).max(100),
+  firstNameEn: z.string().trim().max(100).optional(),
+  middleNameEn: z.string().trim().max(100).optional(),
+  lastNameEn: z.string().trim().max(100).optional(),
+  /** International format, empty to clear, or undefined to leave it as it is. */
+  phone: z
+    .string()
+    .regex(/^(\+[1-9]\d{6,14})?$/)
+    .optional(),
+  academicStatus: z.enum(['student', 'graduate', 'employee', 'other']),
+  universityId: optionalDigits,
+  majorId: optionalDigits,
+  subMajorId: optionalDigits,
+  trackId: optionalDigits,
+});
+export type StaffEditInput = z.input<typeof staffEditSchema>;
+
+/**
+ * Leadership corrects a member's names, phone and academic data (Q-M8: the public blocks of the profile belong to the
+ * member alone). One database function checks `members.manage` (and `members.view_contact` for the phone) and audits
+ * the change.
+ */
+export async function updateMemberByStaff(
+  id: string,
+  input: StaffEditInput,
+  ctx: { lang: Lang },
+): Promise<Result> {
+  const lang = langOf(ctx?.lang);
+  if (!UUID.safeParse(id).success) return failCode('NOT_FOUND', lang);
+  const access = await getAccess();
+  if (!access) return failCode('UNAUTHENTICATED', lang);
+  if (!can(access, 'members.manage')) return failCode('FORBIDDEN', lang);
+  const parsed = staffEditSchema.safeParse(input);
+  if (!parsed.success) {
+    const fieldErrors: Record<string, string> = {};
+    for (const i of parsed.error.issues)
+      fieldErrors[String(i.path[0])] ??= memberMessage('VALIDATION_FAILED', lang);
+    return fail('VALIDATION_FAILED', memberMessage('VALIDATION_FAILED', lang), fieldErrors);
+  }
+  const v = parsed.data;
+  const supabase = await createClient();
+  const { error } = await supabase.rpc('admin_update_member', {
+    p_id: id,
+    p: {
+      first_name_ar: v.firstNameAr,
+      middle_name_ar: v.middleNameAr ?? '',
+      last_name_ar: v.lastNameAr,
+      first_name_en: v.firstNameEn ?? '',
+      middle_name_en: v.middleNameEn ?? '',
+      last_name_en: v.lastNameEn ?? '',
+      ...(v.phone !== undefined ? { phone: v.phone } : {}),
+      academic_status: v.academicStatus,
+      university_id: v.universityId ?? '',
+      major_id: v.majorId ?? '',
+      sub_major_id: v.subMajorId ?? '',
+      track_id: v.trackId ?? '',
+    } as never,
+  });
+  if (error) return dbFailure(error, lang);
+  refresh();
+  return ok(undefined);
+}

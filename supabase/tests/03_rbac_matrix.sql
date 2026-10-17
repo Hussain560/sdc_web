@@ -3,7 +3,7 @@
 begin;
 -- isolate from dev personas / E2E leftovers: this transaction is rolled back
 delete from public.role_assignments;
-select plan(589);
+select plan(608);
 
 create temp table _c as select (select id from public.committees where slug = 'ai') as a, (select id from public.committees where slug = 'cybersecurity') as b;
 grant select on _c to authenticated;
@@ -69,6 +69,8 @@ select is(private.has_permission('members.manage'), true, 'system_admin · membe
 select is(private.has_permission('members.manage', (select b from _c)), true, 'system_admin · members.manage (any committee) = true');
 select is(private.has_permission('members.create'), true, 'system_admin · members.create (no scope) = true');
 select is(private.has_permission('members.create', (select b from _c)), true, 'system_admin · members.create (any committee) = true');
+select is(private.has_permission('members.view_contact'), true, 'system_admin · members.view_contact (no scope) = true');
+select is(private.has_permission('members.view_contact', (select b from _c)), true, 'system_admin · members.view_contact (any committee) = true');
 select is(private.has_permission('committees.manage'), true, 'system_admin · committees.manage (no scope) = true');
 select is(private.has_permission('committees.manage', (select b from _c)), true, 'system_admin · committees.manage (any committee) = true');
 select is(private.has_permission('committee_members.manage'), true, 'system_admin · committee_members.manage (no scope) = true');
@@ -133,6 +135,8 @@ select is(private.has_permission('members.manage'), true, 'community_leader · m
 select is(private.has_permission('members.manage', (select b from _c)), true, 'community_leader · members.manage (any committee) = true');
 select is(private.has_permission('members.create'), true, 'community_leader · members.create (no scope) = true');
 select is(private.has_permission('members.create', (select b from _c)), true, 'community_leader · members.create (any committee) = true');
+select is(private.has_permission('members.view_contact'), true, 'community_leader · members.view_contact (no scope) = true');
+select is(private.has_permission('members.view_contact', (select b from _c)), true, 'community_leader · members.view_contact (any committee) = true');
 select is(private.has_permission('committees.manage'), true, 'community_leader · committees.manage (no scope) = true');
 select is(private.has_permission('committees.manage', (select b from _c)), true, 'community_leader · committees.manage (any committee) = true');
 select is(private.has_permission('committee_members.manage'), true, 'community_leader · committee_members.manage (no scope) = true');
@@ -197,6 +201,8 @@ select is(private.has_permission('members.manage'), false, 'founder · members.m
 select is(private.has_permission('members.manage', (select b from _c)), false, 'founder · members.manage (any committee) = false');
 select is(private.has_permission('members.create'), true, 'founder · members.create (no scope) = true');
 select is(private.has_permission('members.create', (select b from _c)), true, 'founder · members.create (any committee) = true');
+select is(private.has_permission('members.view_contact'), false, 'founder · members.view_contact (no scope) = false');
+select is(private.has_permission('members.view_contact', (select b from _c)), false, 'founder · members.view_contact (any committee) = false');
 select is(private.has_permission('committees.manage'), false, 'founder · committees.manage (no scope) = false');
 select is(private.has_permission('committees.manage', (select b from _c)), false, 'founder · committees.manage (any committee) = false');
 select is(private.has_permission('committee_members.manage'), false, 'founder · committee_members.manage (no scope) = false');
@@ -261,6 +267,8 @@ select is(private.has_permission('members.manage'), false, 'advisor · members.m
 select is(private.has_permission('members.manage', (select b from _c)), false, 'advisor · members.manage (any committee) = false');
 select is(private.has_permission('members.create'), false, 'advisor · members.create (no scope) = false');
 select is(private.has_permission('members.create', (select b from _c)), false, 'advisor · members.create (any committee) = false');
+select is(private.has_permission('members.view_contact'), false, 'advisor · members.view_contact (no scope) = false');
+select is(private.has_permission('members.view_contact', (select b from _c)), false, 'advisor · members.view_contact (any committee) = false');
 select is(private.has_permission('committees.manage'), false, 'advisor · committees.manage (no scope) = false');
 select is(private.has_permission('committees.manage', (select b from _c)), false, 'advisor · committees.manage (any committee) = false');
 select is(private.has_permission('committee_members.manage'), false, 'advisor · committee_members.manage (no scope) = false');
@@ -345,6 +353,9 @@ select is(private.has_permission('members.manage'), false, 'committee_head · me
 select is(private.has_permission('members.create', (select a from _c)), false, 'committee_head · members.create in own committee = false');
 select is(private.has_permission('members.create', (select b from _c)), false, 'committee_head · members.create in another committee = false');
 select is(private.has_permission('members.create'), false, 'committee_head · members.create without scope = false');
+select is(private.has_permission('members.view_contact', (select a from _c)), false, 'committee_head · members.view_contact in own committee = false');
+select is(private.has_permission('members.view_contact', (select b from _c)), false, 'committee_head · members.view_contact in another committee = false');
+select is(private.has_permission('members.view_contact'), false, 'committee_head · members.view_contact without scope = false');
 select is(private.has_permission('committees.manage', (select a from _c)), false, 'committee_head · committees.manage in own committee = false');
 select is(private.has_permission('committees.manage', (select b from _c)), false, 'committee_head · committees.manage in another committee = false');
 select is(private.has_permission('committees.manage'), false, 'committee_head · committees.manage without scope = false');
@@ -440,6 +451,9 @@ select is(private.has_permission('members.manage'), false, 'committee_deputy · 
 select is(private.has_permission('members.create', (select a from _c)), false, 'committee_deputy · members.create in own committee = false');
 select is(private.has_permission('members.create', (select b from _c)), false, 'committee_deputy · members.create in another committee = false');
 select is(private.has_permission('members.create'), false, 'committee_deputy · members.create without scope = false');
+select is(private.has_permission('members.view_contact', (select a from _c)), false, 'committee_deputy · members.view_contact in own committee = false');
+select is(private.has_permission('members.view_contact', (select b from _c)), false, 'committee_deputy · members.view_contact in another committee = false');
+select is(private.has_permission('members.view_contact'), false, 'committee_deputy · members.view_contact without scope = false');
 select is(private.has_permission('committees.manage', (select a from _c)), false, 'committee_deputy · committees.manage in own committee = false');
 select is(private.has_permission('committees.manage', (select b from _c)), false, 'committee_deputy · committees.manage in another committee = false');
 select is(private.has_permission('committees.manage'), false, 'committee_deputy · committees.manage without scope = false');
@@ -535,6 +549,9 @@ select is(private.has_permission('members.manage'), false, 'committee_member · 
 select is(private.has_permission('members.create', (select a from _c)), false, 'committee_member · members.create in own committee = false');
 select is(private.has_permission('members.create', (select b from _c)), false, 'committee_member · members.create in another committee = false');
 select is(private.has_permission('members.create'), false, 'committee_member · members.create without scope = false');
+select is(private.has_permission('members.view_contact', (select a from _c)), false, 'committee_member · members.view_contact in own committee = false');
+select is(private.has_permission('members.view_contact', (select b from _c)), false, 'committee_member · members.view_contact in another committee = false');
+select is(private.has_permission('members.view_contact'), false, 'committee_member · members.view_contact without scope = false');
 select is(private.has_permission('committees.manage', (select a from _c)), false, 'committee_member · committees.manage in own committee = false');
 select is(private.has_permission('committees.manage', (select b from _c)), false, 'committee_member · committees.manage in another committee = false');
 select is(private.has_permission('committees.manage'), false, 'committee_member · committees.manage without scope = false');
@@ -610,6 +627,8 @@ select is(private.has_permission('members.manage'), false, 'plain_user · member
 select is(private.has_permission('members.manage', (select b from _c)), false, 'plain_user · members.manage (any committee) = false');
 select is(private.has_permission('members.create'), false, 'plain_user · members.create (no scope) = false');
 select is(private.has_permission('members.create', (select b from _c)), false, 'plain_user · members.create (any committee) = false');
+select is(private.has_permission('members.view_contact'), false, 'plain_user · members.view_contact (no scope) = false');
+select is(private.has_permission('members.view_contact', (select b from _c)), false, 'plain_user · members.view_contact (any committee) = false');
 select is(private.has_permission('committees.manage'), false, 'plain_user · committees.manage (no scope) = false');
 select is(private.has_permission('committees.manage', (select b from _c)), false, 'plain_user · committees.manage (any committee) = false');
 select is(private.has_permission('committee_members.manage'), false, 'plain_user · committee_members.manage (no scope) = false');
