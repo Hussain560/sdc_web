@@ -16,15 +16,15 @@ function Person({ member, lang, hidden }: { member: HomeMember; lang: Lang; hidd
   const name = lang === 'en' ? member.nameEn : member.nameAr;
   const line = lang === 'en' ? (member.trackEn ?? member.trackAr) : member.trackAr;
   return (
-    <li dir={lang === 'ar' ? 'rtl' : 'ltr'} className="w-72 shrink-0 md:w-96">
+    <li dir={lang === 'ar' ? 'rtl' : 'ltr'} className="w-64 shrink-0 md:w-96">
       <Link
         href={`/members/${member.id}`}
         tabIndex={hidden ? -1 : undefined}
-        className="flex h-full items-center gap-5 rounded-shape-xl border border-line bg-surface p-5 hover:border-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring"
+        className="flex h-full items-center gap-4 rounded-shape-xl border border-line bg-surface p-4 md:gap-5 md:p-5 hover:border-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring"
       >
-        <Avatar name={name} src={member.thumb} size={72} className="size-20! md:size-24!" />
+        <Avatar name={name} src={member.thumb} size={72} className="size-14! md:size-24!" />
         <span className="min-w-0">
-          <span className="block truncate text-lg font-semibold md:text-xl">{name}</span>
+          <span className="block truncate text-base font-semibold md:text-xl">{name}</span>
           <span className="t-body block truncate text-muted">{line ?? ' '}</span>
         </span>
       </Link>
