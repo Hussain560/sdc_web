@@ -70,7 +70,7 @@ test.describe('review and decisions', () => {
       const welcome = await waitForMail(a.email, {
         subject: /Welcome to the Saudi Developer Community/i,
       });
-      expect(welcome.html).toContain('/account/member-profile');
+      expect(welcome.html).toContain('/account/profile');
       const rows = await sql<{ n: string }>(
         `select count(*)::text as n from public.members where application_id is not null and user_id in ($1, $2)`,
         [a.id, b.id],
@@ -88,7 +88,7 @@ test.describe('review and decisions', () => {
       const mctx = await browser.newContext({ baseURL: 'http://127.0.0.1:3300' });
       const mpage = await mctx.newPage();
       await signInAndWait(mpage, a.email, undefined, '/en/login');
-      await gotoReady(mpage, '/en/account/member-profile');
+      await gotoReady(mpage, '/en/account/profile');
       await mpage.getByText('Show my profile in the public member directory').click();
       await mpage
         .locator('section[aria-labelledby="ed-visibility"]')

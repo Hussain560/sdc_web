@@ -55,7 +55,7 @@ export function ClaimConfirm({
             ? 'راجع بياناتك واختر ما إذا كنت تريد الظهور في الدليل.'
             : 'Review your details and choose whether to appear in the directory.'}
         </p>
-        <LinkButton href="/account/member-profile" size="lg" fullWidth>
+        <LinkButton href="/account/profile" size="lg" fullWidth>
           {ar ? 'اذهب إلى ملفي' : 'Go to my profile'}
         </LinkButton>
       </div>

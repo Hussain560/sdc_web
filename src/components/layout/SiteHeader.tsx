@@ -1,6 +1,6 @@
 'use client';
 
-import { ChevronDown, LayoutDashboard, LogOut, Menu, User } from 'lucide-react';
+import { ChevronDown, LayoutDashboard, LogOut, Menu, User, UserRound } from 'lucide-react';
 import { useEffect, useId, useRef, useState } from 'react';
 import { Button, LinkButton } from '@/components/ui/Button';
 import { Dialog } from '@/components/ui/Dialog';
@@ -93,6 +93,10 @@ function AccountMenu() {
           <Link href="/account" className={item} onClick={() => setOpen(false)}>
             <User aria-hidden="true" className="size-5 text-muted" />
             {s.account}
+          </Link>
+          <Link href="/account/profile" className={item} onClick={() => setOpen(false)}>
+            <UserRound aria-hidden="true" className="size-5 text-muted" />
+            {s.profile}
           </Link>
           {hasPosition && (
             <Link href="/dashboard" className={item} onClick={() => setOpen(false)}>
@@ -254,6 +258,14 @@ export function SiteHeader() {
             <>
               <LinkButton href="/account" fullWidth onClick={() => setSheet(false)}>
                 {s.account}
+              </LinkButton>
+              <LinkButton
+                href="/account/profile"
+                variant="secondary"
+                fullWidth
+                onClick={() => setSheet(false)}
+              >
+                {s.profile}
               </LinkButton>
               <LogoutRow onDone={() => setSheet(false)} />
             </>

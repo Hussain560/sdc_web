@@ -33,17 +33,25 @@ select hasnt_column('public', 'member_directory', 'email', 'the public directory
 select cmp_ok((select count(*)::int from public.skills where is_active), '>=', 40, 'the curated skill list is seeded');
 
 -- ------------------------------------------------------------------------------------------ 2. the member writes (as the member)
+-- Middle names are identity: leadership records them, so the fixture sets them directly (as an administrator would).
+update public.members set middle_name_ar = 'عبدالله', middle_name_en = 'Abdullah' where id = '00000000-0000-0000-0000-00000000b101';
+
 set local role authenticated;
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-00000000a101","role":"authenticated"}', true);
 
-select lives_ok($$select public.update_my_member_profile('{"headline_ar":"مطوّرة واجهات","headline_en":"Frontend developer","about_ar":"أبني واجهات سريعة.","open_to":["internship","mentoring"],"middle_name_ar":"عبدالله","middle_name_en":"Abdullah"}'::jsonb)$$, 'a member saves one section of the profile');
+select lives_ok($$select public.update_my_member_profile('{"headline_ar":"مطوّرة واجهات","headline_en":"Frontend developer","about_ar":"أبني واجهات سريعة.","open_to":["internship","mentoring"]}'::jsonb)$$, 'a member saves one section of the profile');
 select is((select headline_en from public.members where id = '00000000-0000-0000-0000-00000000b101'), 'Frontend developer', 'the headline is saved');
 select is((select first_name_ar from public.members where id = '00000000-0000-0000-0000-00000000b101'), 'سارة', 'a key that was not sent is left as it was');
 select is((select open_to from public.members where id = '00000000-0000-0000-0000-00000000b101'), array['internship', 'mentoring'], 'open to is saved');
 
 select throws_ok($$select public.update_my_member_profile('{"open_to":["fishing"]}'::jsonb)$$, 'P0001', 'VALIDATION_FAILED', 'an unknown open-to value is refused');
-select throws_ok($$select public.update_my_member_profile('{"first_name_ar":"  "}'::jsonb)$$, 'P0001', 'VALIDATION_FAILED', 'an empty first name is refused');
-select throws_ok($$select public.update_my_member_profile('{"last_name_ar":""}'::jsonb)$$, 'P0001', 'VALIDATION_FAILED', 'an empty last name is refused');
+select throws_ok($$select public.update_my_member_profile('{"first_name_ar":"اسم جديد"}'::jsonb)$$, 'P0001', 'NAME_LOCKED', 'a member cannot change their own first name');
+select throws_ok($$select public.update_my_member_profile('{"last_name_en":"New"}'::jsonb)$$, 'P0001', 'NAME_LOCKED', 'a member cannot change their own English last name');
+select throws_ok($$select public.update_my_member_profile('{"headline_ar":"x","middle_name_ar":"y"}'::jsonb)$$, 'P0001', 'NAME_LOCKED', 'one name key refuses the whole save');
+select lives_ok($$select public.update_my_member_profile('{"phone":"+966555000111"}'::jsonb)$$, 'a member saves their own phone number');
+select is((select phone from public.members where id = '00000000-0000-0000-0000-00000000b101'), '+966555000111', 'the phone is stored in international format');
+select throws_ok($$select public.update_my_member_profile('{"phone":"0555000111"}'::jsonb)$$, 'P0001', 'VALIDATION_FAILED', 'a phone without the country code is refused');
+select lives_ok($$select public.update_my_member_profile('{"phone":""}'::jsonb)$$, 'a phone number can be cleared');
 select throws_ok($$select public.update_my_member_profile('{"github_url":"http://insecure.example"}'::jsonb)$$, 'P0001', 'VALIDATION_FAILED', 'a link must start with https');
 select throws_ok($$select public.update_my_member_profile(('{"headline_ar":"' || repeat('x', 121) || '"}')::jsonb)$$, 'P0001', 'VALIDATION_FAILED', 'a headline over 120 characters is refused');
 

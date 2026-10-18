@@ -118,7 +118,7 @@ numbers are formatted `5x xxx xxxx` and stored as `+966…`. After a successful 
 | ---- | --- |
 | Overview | `/account` |
 | Profile | `/account/profile` |
-| Member profile | `/account/member-profile` |
+| Member profile | `/account/profile` |
 | My membership | `/account/membership` |
 | My registrations (attendance %, certificates) | `/account/registrations` |
 | My roles | `/account/roles` |

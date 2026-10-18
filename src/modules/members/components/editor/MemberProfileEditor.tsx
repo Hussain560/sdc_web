@@ -3,9 +3,11 @@
 import { ArrowDown, ArrowUp, Pencil, Plus, Trash2, X } from 'lucide-react';
 import { useMemo, useState, useTransition, type ReactNode } from 'react';
 import {
+  Alert,
   Button,
   Chips,
   Field,
+  PhoneField,
   FilterChip,
   Select,
   Switch,
@@ -13,6 +15,7 @@ import {
   useToast,
 } from '@/components/ui';
 import { Link, useRouter } from '@/i18n/navigation';
+import { DEFAULT_PHONE_COUNTRY, splitInternational, toE164, type PhoneCountry } from '@/lib/phone';
 import {
   ACADEMIC_LABEL,
   ACADEMIC_STATUSES,
@@ -121,6 +124,20 @@ export function MemberProfileEditor({
   const [, startTransition] = useTransition();
   const [query, setQuery] = useState('');
   const [leaving, setLeaving] = useState(false);
+  const phoneParts = splitInternational(data.values.phone);
+  const [phoneCountry, setPhoneCountry] = useState<PhoneCountry>(
+    phoneParts?.country ?? DEFAULT_PHONE_COUNTRY,
+  );
+  const [phoneDigits, setPhoneDigits] = useState(phoneParts?.national ?? '');
+  const savePhone = () => {
+    const e164 = phoneDigits ? toE164(phoneCountry, phoneDigits) : '';
+    if (phoneDigits && !e164) {
+      setErrors((e) => ({ ...e, phone: t.phoneInvalid }));
+      return;
+    }
+    setErrors(({ phone: _gone, ...rest }) => rest);
+    run('contact', () => saveMyProfilePart({ phone: e164 ?? '' }, { lang }));
+  };
 
   const set = <K extends keyof EditorValues>(k: K, value: EditorValues[K]) => {
     setV((x) => ({ ...x, [k]: value }));
@@ -376,68 +393,34 @@ export function MemberProfileEditor({
           />
         </Section>
 
-        <Section
-          id="ed-names"
-          title={t.namesTitle}
-          lede={t.namesLede}
-          footer={saveBtn('names', () =>
-            savePart('names', [
-              'first_name_ar',
-              'middle_name_ar',
-              'last_name_ar',
-              'first_name_en',
-              'middle_name_en',
-              'last_name_en',
-            ]),
-          )}
-        >
+        <Section id="ed-names" title={t.namesTitle} lede={t.namesLede}>
+          <Alert tone="info">{t.namesLocked}</Alert>
           <div className="grid gap-4 sm:grid-cols-3">
-            <Field
-              label={t.firstAr}
-              value={v.first_name_ar}
-              error={errors.first_name_ar}
-              onChange={(e) => set('first_name_ar', e.target.value)}
-              maxLength={60}
-            />
-            <Field
-              label={t.middleAr}
-              value={v.middle_name_ar}
-              error={errors.middle_name_ar}
-              onChange={(e) => set('middle_name_ar', e.target.value)}
-              maxLength={60}
-            />
-            <Field
-              label={t.lastAr}
-              value={v.last_name_ar}
-              error={errors.last_name_ar}
-              onChange={(e) => set('last_name_ar', e.target.value)}
-              maxLength={60}
-            />
-            <Field
-              label={t.firstEn}
-              value={v.first_name_en}
-              dir="ltr"
-              error={errors.first_name_en}
-              onChange={(e) => set('first_name_en', e.target.value)}
-              maxLength={60}
-            />
-            <Field
-              label={t.middleEn}
-              value={v.middle_name_en}
-              dir="ltr"
-              error={errors.middle_name_en}
-              onChange={(e) => set('middle_name_en', e.target.value)}
-              maxLength={60}
-            />
-            <Field
-              label={t.lastEn}
-              value={v.last_name_en}
-              dir="ltr"
-              error={errors.last_name_en}
-              onChange={(e) => set('last_name_en', e.target.value)}
-              maxLength={60}
-            />
+            <Field label={t.firstAr} value={v.first_name_ar} disabled readOnly />
+            <Field label={t.middleAr} value={v.middle_name_ar} disabled readOnly />
+            <Field label={t.lastAr} value={v.last_name_ar} disabled readOnly />
+            <Field label={t.firstEn} value={v.first_name_en} dir="ltr" disabled readOnly />
+            <Field label={t.middleEn} value={v.middle_name_en} dir="ltr" disabled readOnly />
+            <Field label={t.lastEn} value={v.last_name_en} dir="ltr" disabled readOnly />
           </div>
+        </Section>
+
+        <Section
+          id="ed-contact"
+          title={t.contactTitle}
+          lede={t.contactLede}
+          footer={saveBtn('contact', savePhone)}
+        >
+          <PhoneField
+            label={t.phone}
+            country={phoneCountry}
+            onCountryChange={setPhoneCountry}
+            value={phoneDigits}
+            onChange={setPhoneDigits}
+            lang={lang}
+            countryLabel={t.phoneCountry}
+            error={errors.phone}
+          />
         </Section>
 
         <Section

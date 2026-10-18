@@ -16,7 +16,11 @@ test('a member builds a profile; the public page shows only what they chose', as
       [who.id],
     );
     await signInAndWait(page, who.email, undefined, '/en/login');
-    await gotoReady(page, '/en/account/member-profile');
+    await gotoReady(page, '/en/account/profile');
+    // The name is shown but locked: only leadership changes it.
+    await expect(page.getByLabel('First name (Arabic)')).toBeDisabled();
+    await expect(page.getByLabel('Last name (English)')).toBeDisabled();
+    await expect(page.getByText(/You cannot change your own name/)).toBeVisible();
     const meter = page.getByRole('meter', { name: 'Profile completeness' });
     await expect(meter).toHaveAttribute('aria-valuenow', '0');
 
