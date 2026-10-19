@@ -36,6 +36,15 @@ import { VisionMission } from './components/VisionMission';
 
 type Lang = 'ar' | 'en';
 
+/** Picture file stems for the offers, in the order of copy.offers (dark and light variants share a stem). */
+const OFFER_IMAGES = [
+  'offer-1-workshops',
+  'offer-2-camps',
+  'offer-3-hackathons',
+  'offer-4-meetups-talks',
+  'offer-5-technical-content',
+  'offer-6-certificates',
+];
 const OFFER_ICON: Record<string, LucideIcon> = { Wrench, Tent, Trophy, Mic, BookOpen, Award };
 
 const wrap = 'mx-auto w-full max-w-(--container) px-4 md:px-8';
@@ -217,18 +226,22 @@ export function AboutView({ lang, data }: { lang: Lang; data: AboutData }) {
                         flip && 'lg:order-1 lg:[--m-x:-56px]',
                       )}
                     >
-                      <div
-                        className="absolute inset-0 opacity-45"
-                        style={{
-                          backgroundImage: 'url("/assets/P3%202.png")',
-                          backgroundRepeat: 'repeat',
-                          backgroundSize: '140px auto',
-                          backgroundPosition: 'center',
-                        }}
+                      {/* One picture per row, in the same order as the offers. Light and dark files swap with the
+                          theme (logo-on-dark / logo-on-light). Until the light set exists, both use the dark file. */}
+                      <Image
+                        src={`/assets/offers/${OFFER_IMAGES[i % OFFER_IMAGES.length]}-dark.webp`}
+                        alt=""
+                        fill
+                        sizes="(min-width: 1024px) 45vw, 90vw"
+                        className="logo-on-dark object-cover"
                       />
-                      <span className="m-parallax relative grid size-28 place-items-center rounded-full bg-surface shadow-elev-1 md:size-36">
-                        <Icon className="size-12 md:size-16" strokeWidth={1.5} />
-                      </span>
+                      <Image
+                        src={`/assets/offers/${OFFER_IMAGES[i % OFFER_IMAGES.length]}-dark.webp`}
+                        alt=""
+                        fill
+                        sizes="(min-width: 1024px) 45vw, 90vw"
+                        className="logo-on-light object-cover"
+                      />
                     </div>
                   </li>
                 );
