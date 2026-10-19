@@ -1,5 +1,6 @@
 import { LeadershipSection } from '@/modules/members/components/public/LeadershipSection';
 import { PageMain } from '@/components/motion/PageMain';
+import { Words } from '@/components/motion/Words';
 import {
   ArrowLeft,
   ArrowRight,
@@ -69,8 +70,10 @@ export function AboutView({ lang, data }: { lang: Lang; data: AboutData }) {
         </div>
 
         <header className={`${wrap} mt-10 grid items-center gap-12 lg:grid-cols-2 lg:gap-16`}>
-          <div className="flex flex-col gap-6">
-            <h1 className="t-display">{t.title}</h1>
+          <div className="m-enter flex flex-col gap-6">
+            <h1 className="t-display">
+              <Words text={t.title} />
+            </h1>
             <p className="max-w-[38ch] text-[length:clamp(1.125rem,1rem+0.5vw,1.5rem)] leading-[1.75]">
               {t.intro}
             </p>
@@ -85,7 +88,7 @@ export function AboutView({ lang, data }: { lang: Lang; data: AboutData }) {
               </LinkButton>
             </div>
           </div>
-          <div className="relative p-6">
+          <div className="m-slide relative p-6 [--m-x:56px] max-lg:[--m-x:0px]">
             <div
               aria-hidden="true"
               className="absolute end-0 top-0 size-36 rotate-12 rounded-[32px] bg-accent-soft"
@@ -131,7 +134,11 @@ export function AboutView({ lang, data }: { lang: Lang; data: AboutData }) {
                       : ''
                     : (copy.note as string);
                 return (
-                  <li key={f.key} className={cn('m-reveal', bentoSpan(figures.length, i))}>
+                  <li
+                    key={f.key}
+                    className={cn('m-reveal', bentoSpan(figures.length, i))}
+                    style={{ '--i': i } as CSSProperties}
+                  >
                     <div
                       className={cn(
                         'relative flex h-full flex-col gap-1 overflow-hidden rounded-shape-xl',
@@ -286,7 +293,7 @@ export function AboutView({ lang, data }: { lang: Lang; data: AboutData }) {
                   const Icon = committeeIcon(c.slug);
                   const name = (lang === 'en' ? c.nameEn : null) ?? c.nameAr;
                   return (
-                    <li key={c.slug} className="m-reveal">
+                    <li key={c.slug} className="m-reveal" style={{ '--i': i % 5 } as CSSProperties}>
                       <div className="m-lift relative flex items-center gap-4 rounded-shape-xl border border-line bg-surface px-5 py-4 sm:min-h-[250px] sm:flex-col sm:items-stretch sm:px-6 sm:py-7">
                         <span className="w-7 text-base font-semibold text-muted tabular-nums sm:w-auto">
                           {String(i + 1).padStart(2, '0')}
@@ -351,8 +358,12 @@ export function AboutView({ lang, data }: { lang: Lang; data: AboutData }) {
                 aria-label={t.timelineLabel}
                 className="m-snap -mx-1 flex gap-5 overflow-x-auto px-1 pt-1 pb-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring"
               >
-                {stations.map((e) => (
-                  <li key={e.id} className="flex flex-[0_0_300px] flex-col gap-4">
+                {stations.map((e, i) => (
+                  <li
+                    key={e.id}
+                    className="m-reveal flex flex-[0_0_300px] flex-col gap-4"
+                    style={{ '--i': i % 4 } as CSSProperties}
+                  >
                     <div className="flex items-center gap-3">
                       <span className="text-[2rem] font-bold text-signal tabular-nums">
                         {e.startDate!.slice(0, 4)}

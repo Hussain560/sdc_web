@@ -15,19 +15,27 @@ import { LocaleSwitch } from './LocaleSwitch';
 import { Logo } from './Logo';
 import { ThemeSwitch, ThemeSwitchRow } from './ThemeSwitch';
 
-/** Scroll state for the floating bar: it gets a shadow after 8 px and stays pinned. */
+/** Scroll state for the floating bar: elevated after 8 px, hidden while scrolling down (not under reduced motion). */
 function useHeaderScroll() {
   const [elevated, setElevated] = useState(false);
+  const [hidden, setHidden] = useState(false);
   useEffect(() => {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let last = window.scrollY;
     const onScroll = () => {
       const y = window.scrollY;
       setElevated(y > 8);
+      if (!reduce) {
+        if (y > last && y > 120) setHidden(true);
+        else if (y < last) setHidden(false);
+      }
+      last = y;
     };
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
-  return { elevated };
+  return { elevated, hidden };
 }
 
 function AccountMenu() {
@@ -125,13 +133,19 @@ export function SiteHeader() {
   const { isLoggedIn, loading, hasPosition } = useAuth();
   const pathname = usePathname();
   const s = CHROME[lang];
-  const { elevated } = useHeaderScroll();
+  const { elevated, hidden } = useHeaderScroll();
   const [sheet, setSheet] = useState(false);
 
   return (
     <>
       <div aria-hidden="true" className="m-progress" />
-      <header className={cn('m-vt-header sticky top-0 z-(--z-header) lg:top-3 lg:mb-5 lg:px-4')}>
+      <header
+        className={cn(
+          'm-vt-header sticky top-0 z-(--z-header) lg:top-3 lg:mb-5 lg:px-4',
+          'transition-transform duration-(--duration-base) ease-(--ease-standard) motion-reduce:transition-none',
+          hidden && '-translate-y-[calc(100%+1rem)]',
+        )}
+      >
         <a
           href="#main"
           className="sr-only focus:not-sr-only focus:fixed focus:start-4 focus:top-4 focus:z-(--z-skip) focus:rounded-full focus:bg-accent focus:px-5 focus:py-3 focus:t-label focus:text-on-accent"
