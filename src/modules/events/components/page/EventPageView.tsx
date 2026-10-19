@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react';
 import { PageMain } from '@/components/motion/PageMain';
 import { Award, CalendarDays, Check, Clock, MapPin, Users } from 'lucide-react';
 import { SiteFooter } from '@/components/layout/SiteFooter';
@@ -216,7 +217,7 @@ export function EventPageView({
           className={`${wrap} mt-2 grid items-start gap-12 lg:mt-6 lg:grid-cols-[minmax(0,1fr)_var(--side-panel)]`}
         >
           <div className="flex min-w-0 flex-col gap-10 lg:gap-16">
-            <header className="relative flex flex-col gap-5 lg:gap-6 lg:overflow-hidden lg:rounded-shape-xl lg:border lg:border-line lg:bg-surface lg:p-10">
+            <header className="m-enter relative flex flex-col gap-5 lg:gap-6 lg:overflow-hidden lg:rounded-shape-xl lg:border lg:border-line lg:bg-surface lg:p-10">
               <div
                 aria-hidden="true"
                 className="motif-dots pointer-events-none absolute end-0 top-0 hidden h-[200px] w-[280px] text-muted lg:block ltr:[mask-image:linear-gradient(to_bottom_right,black,transparent_70%)] rtl:[mask-image:linear-gradient(to_bottom_left,black,transparent_70%)]"
@@ -563,8 +564,8 @@ export function EventPageView({
               }
             />
             <ul className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 lg:gap-6">
-              {related.map((r) => (
-                <li key={r.id}>
+              {related.map((r, i) => (
+                <li key={r.id} className="m-reveal" style={{ '--i': i % 3 } as CSSProperties}>
                   <EventCard event={r} lang={lang} now={now} />
                 </li>
               ))}

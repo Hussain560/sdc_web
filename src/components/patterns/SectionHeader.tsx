@@ -24,7 +24,7 @@ export function SectionHeader({
   return (
     <div
       className={cn(
-        'mb-8 flex flex-col gap-4 md:mb-10 md:flex-row md:items-end md:justify-between',
+        'm-reveal mb-8 flex flex-col gap-4 md:mb-10 md:flex-row md:items-end md:justify-between',
         className,
       )}
     >

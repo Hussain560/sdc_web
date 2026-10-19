@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react';
 import { PageMain } from '@/components/motion/PageMain';
 import { UsersRound } from 'lucide-react';
 import { SiteFooter } from '@/components/layout/SiteFooter';
@@ -67,7 +68,7 @@ export default function CommitteeView({ committee, lang }: { committee: PublicCo
             items={[{ label: t.home, href: '/' }, { label: t.committees, href: '/committees' }, { label: name }]}
           />
         </div>
-        <header className={`${wrap} mt-8 flex items-start gap-5`}>
+        <header className={`${wrap} m-enter mt-8 flex items-start gap-5`}>
           <span aria-hidden="true" className="flex size-16 shrink-0 items-center justify-center rounded-shape-lg bg-accent-soft text-on-accent-soft">
             <UsersRound className="size-8" />
           </span>
@@ -82,7 +83,7 @@ export default function CommitteeView({ committee, lang }: { committee: PublicCo
             <SectionHeader headingId="c-lead" title={t.leadership} />
             <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {committee.leaders.map((l, i) => (
-                <li key={`${l.roleKey}-${i}`}>
+                <li key={`${l.roleKey}-${i}`} className="m-reveal" style={{ '--i': i % 3 } as CSSProperties}>
                   <Card variant="surface" className="flex items-center gap-4">
                     <Avatar name={l.name[lang]} size={56} />
                     <div className="flex flex-col">
@@ -108,8 +109,8 @@ export default function CommitteeView({ committee, lang }: { committee: PublicCo
           />
           {committee.events.length > 0 ? (
             <ul className="flex flex-col gap-3">
-              {committee.events.map((e) => (
-                <li key={e.slug}>
+              {committee.events.map((e, i) => (
+                <li key={e.slug} className="m-reveal" style={{ '--i': i % 1 } as CSSProperties}>
                   <Card variant="surface" interactive className="flex items-center gap-4">
                     {e.startDate && <DateChip date={e.startDate} lang={lang} variant="block" />}
                     <h3 className="t-h4">
@@ -142,8 +143,8 @@ export default function CommitteeView({ committee, lang }: { committee: PublicCo
           />
           {committee.articles.length > 0 ? (
             <ul className="flex flex-col gap-3">
-              {committee.articles.map((a) => (
-                <li key={a.slug}>
+              {committee.articles.map((a, i) => (
+                <li key={a.slug} className="m-reveal" style={{ '--i': i % 1 } as CSSProperties}>
                   <Card variant="surface" interactive>
                     <h3 className="t-h4">
                       <TextLink

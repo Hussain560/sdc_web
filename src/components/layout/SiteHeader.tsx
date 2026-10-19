@@ -137,156 +137,159 @@ export function SiteHeader() {
   const [sheet, setSheet] = useState(false);
 
   return (
-    <header
-      className={cn(
-        'm-vt-header sticky top-0 z-(--z-header) lg:top-3 lg:mb-5 lg:px-4',
-        'transition-transform duration-(--duration-base) ease-(--ease-standard) motion-reduce:transition-none',
-        hidden && '-translate-y-[calc(100%+1rem)]',
-      )}
-    >
-      <a
-        href="#main"
-        className="sr-only focus:not-sr-only focus:fixed focus:start-4 focus:top-4 focus:z-(--z-skip) focus:rounded-full focus:bg-accent focus:px-5 focus:py-3 focus:t-label focus:text-on-accent"
-      >
-        {s.skip}
-      </a>
-
-      {/* Desktop: floating bar */}
-      <div
+    <>
+      <div aria-hidden="true" className="m-progress" />
+      <header
         className={cn(
-          'mx-auto hidden h-18 max-w-(--container-wide) grid-cols-[1fr_auto_1fr] items-center gap-4 rounded-shape-xl border border-line px-4 lg:grid',
-          'bg-surface/85 backdrop-blur-md transition-shadow duration-(--duration-base)',
-          elevated && 'shadow-elev-2',
+          'm-vt-header sticky top-0 z-(--z-header) lg:top-3 lg:mb-5 lg:px-4',
+          'transition-transform duration-(--duration-base) ease-(--ease-standard) motion-reduce:transition-none',
+          hidden && '-translate-y-[calc(100%+1rem)]',
         )}
       >
-        <Logo label={s.logoHome} alt={s.logoAlt} priority />
-        <nav aria-label={s.mainNav} className="justify-self-center">
-          <ul className="flex items-center gap-1 rounded-full bg-surface-raised p-1">
-            {NAV_ITEMS.map(({ key, href }) => {
-              const active = isActive(pathname, href);
-              return (
-                <li key={key}>
-                  <TextLink
-                    href={href}
-                    variant="nav"
-                    active={active}
-                    className={cn(
-                      'min-h-9 rounded-full px-3.5 text-sm',
-                      active && 'bg-surface text-text',
-                    )}
-                  >
-                    {s[key]}
-                  </TextLink>
-                </li>
-              );
-            })}
-          </ul>
-        </nav>
-        <div className="flex items-center justify-self-end gap-1">
-          <LocaleSwitch />
-          <ThemeSwitch />
-          {isLoggedIn ? (
-            hasPosition ? (
-              // People who hold a position get one button into the internal system (account and sign-out live there).
-              <LinkButton href="/dashboard" size="sm" className="ms-2">
-                <LayoutDashboard aria-hidden="true" className="size-5" />
-                {s.dashboard}
-              </LinkButton>
-            ) : (
-              <AccountMenu />
-            )
-          ) : (
-            !loading && (
-              <>
-                <LinkButton href="/login" variant="ghost" size="sm" className="ms-2">
-                  {s.signIn}
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:fixed focus:start-4 focus:top-4 focus:z-(--z-skip) focus:rounded-full focus:bg-accent focus:px-5 focus:py-3 focus:t-label focus:text-on-accent"
+        >
+          {s.skip}
+        </a>
+
+        {/* Desktop: floating bar */}
+        <div
+          className={cn(
+            'mx-auto hidden h-18 max-w-(--container-wide) grid-cols-[1fr_auto_1fr] items-center gap-4 rounded-shape-xl border border-line px-4 lg:grid',
+            'bg-surface/85 backdrop-blur-md transition-shadow duration-(--duration-base)',
+            elevated && 'shadow-elev-2',
+          )}
+        >
+          <Logo label={s.logoHome} alt={s.logoAlt} priority />
+          <nav aria-label={s.mainNav} className="justify-self-center">
+            <ul className="flex items-center gap-1 rounded-full bg-surface-raised p-1">
+              {NAV_ITEMS.map(({ key, href }) => {
+                const active = isActive(pathname, href);
+                return (
+                  <li key={key}>
+                    <TextLink
+                      href={href}
+                      variant="nav"
+                      active={active}
+                      className={cn(
+                        'min-h-9 rounded-full px-3.5 text-sm',
+                        active && 'bg-surface text-text',
+                      )}
+                    >
+                      {s[key]}
+                    </TextLink>
+                  </li>
+                );
+              })}
+            </ul>
+          </nav>
+          <div className="flex items-center justify-self-end gap-1">
+            <LocaleSwitch />
+            <ThemeSwitch />
+            {isLoggedIn ? (
+              hasPosition ? (
+                // People who hold a position get one button into the internal system (account and sign-out live there).
+                <LinkButton href="/dashboard" size="sm" className="ms-2">
+                  <LayoutDashboard aria-hidden="true" className="size-5" />
+                  {s.dashboard}
                 </LinkButton>
-                <LinkButton href="/join" size="sm">
+              ) : (
+                <AccountMenu />
+              )
+            ) : (
+              !loading && (
+                <>
+                  <LinkButton href="/login" variant="ghost" size="sm" className="ms-2">
+                    {s.signIn}
+                  </LinkButton>
+                  <LinkButton href="/join" size="sm">
+                    {s.join}
+                  </LinkButton>
+                </>
+              )
+            )}
+          </div>
+        </div>
+
+        {/* Phone and tablet: 56 px bar */}
+        <div className="flex h-14 items-center justify-between border-b border-line bg-surface px-4 lg:hidden">
+          <Logo label={s.logoHome} alt={s.logoAlt} priority />
+          <IconAction label={s.menu} variant="ghost" onClick={() => setSheet(true)}>
+            <Menu aria-hidden="true" className="size-6" />
+          </IconAction>
+        </div>
+
+        <Dialog
+          open={sheet}
+          onClose={() => setSheet(false)}
+          title={s.menu}
+          closeLabel={s.closeMenu}
+          presentation="sheet"
+        >
+          <nav aria-label={s.mainNav}>
+            <ul className="flex flex-col">
+              {NAV_ITEMS.map(({ key, href }) => {
+                const active = isActive(pathname, href);
+                return (
+                  <li key={key}>
+                    <Link
+                      href={href}
+                      aria-current={active ? 'page' : undefined}
+                      onClick={() => setSheet(false)}
+                      className={cn(
+                        't-body flex min-h-12 items-center rounded-shape-sm px-3',
+                        'focus-visible:outline-2 focus-visible:outline-focus-ring',
+                        active ? 'bg-accent-soft font-semibold text-on-accent-soft' : 'text-text',
+                      )}
+                    >
+                      {s[key]}
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          </nav>
+          <hr className="my-3 border-line" />
+          <div className="flex flex-col gap-1">
+            <LocaleSwitch className="w-full justify-between" />
+            <ThemeSwitchRow />
+          </div>
+          <div className="mt-4 flex flex-col items-center gap-2">
+            {isLoggedIn ? (
+              <>
+                <LinkButton href="/account" fullWidth onClick={() => setSheet(false)}>
+                  {s.account}
+                </LinkButton>
+                <LinkButton
+                  href="/account/profile"
+                  variant="secondary"
+                  fullWidth
+                  onClick={() => setSheet(false)}
+                >
+                  {s.profile}
+                </LinkButton>
+                <LogoutRow onDone={() => setSheet(false)} />
+              </>
+            ) : (
+              <>
+                <LinkButton href="/join" fullWidth onClick={() => setSheet(false)}>
                   {s.join}
                 </LinkButton>
+                <TextLink
+                  href="/login"
+                  variant="standalone"
+                  className="min-h-11"
+                  onClick={() => setSheet(false)}
+                >
+                  {s.memberSignIn}
+                </TextLink>
               </>
-            )
-          )}
-        </div>
-      </div>
-
-      {/* Phone and tablet: 56 px bar */}
-      <div className="flex h-14 items-center justify-between border-b border-line bg-surface px-4 lg:hidden">
-        <Logo label={s.logoHome} alt={s.logoAlt} priority />
-        <IconAction label={s.menu} variant="ghost" onClick={() => setSheet(true)}>
-          <Menu aria-hidden="true" className="size-6" />
-        </IconAction>
-      </div>
-
-      <Dialog
-        open={sheet}
-        onClose={() => setSheet(false)}
-        title={s.menu}
-        closeLabel={s.closeMenu}
-        presentation="sheet"
-      >
-        <nav aria-label={s.mainNav}>
-          <ul className="flex flex-col">
-            {NAV_ITEMS.map(({ key, href }) => {
-              const active = isActive(pathname, href);
-              return (
-                <li key={key}>
-                  <Link
-                    href={href}
-                    aria-current={active ? 'page' : undefined}
-                    onClick={() => setSheet(false)}
-                    className={cn(
-                      't-body flex min-h-12 items-center rounded-shape-sm px-3',
-                      'focus-visible:outline-2 focus-visible:outline-focus-ring',
-                      active ? 'bg-accent-soft font-semibold text-on-accent-soft' : 'text-text',
-                    )}
-                  >
-                    {s[key]}
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
-        </nav>
-        <hr className="my-3 border-line" />
-        <div className="flex flex-col gap-1">
-          <LocaleSwitch className="w-full justify-between" />
-          <ThemeSwitchRow />
-        </div>
-        <div className="mt-4 flex flex-col items-center gap-2">
-          {isLoggedIn ? (
-            <>
-              <LinkButton href="/account" fullWidth onClick={() => setSheet(false)}>
-                {s.account}
-              </LinkButton>
-              <LinkButton
-                href="/account/profile"
-                variant="secondary"
-                fullWidth
-                onClick={() => setSheet(false)}
-              >
-                {s.profile}
-              </LinkButton>
-              <LogoutRow onDone={() => setSheet(false)} />
-            </>
-          ) : (
-            <>
-              <LinkButton href="/join" fullWidth onClick={() => setSheet(false)}>
-                {s.join}
-              </LinkButton>
-              <TextLink
-                href="/login"
-                variant="standalone"
-                className="min-h-11"
-                onClick={() => setSheet(false)}
-              >
-                {s.memberSignIn}
-              </TextLink>
-            </>
-          )}
-        </div>
-      </Dialog>
-    </header>
+            )}
+          </div>
+        </Dialog>
+      </header>
+    </>
   );
 }
 

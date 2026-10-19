@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react';
 import { PageMain } from '@/components/motion/PageMain';
 import { Award, BookOpen, Check, Rocket, Users } from 'lucide-react';
 import { SiteFooter } from '@/components/layout/SiteFooter';
@@ -83,7 +84,7 @@ export function JoinFrame({ ar, children }: { ar: boolean; children: React.React
             items={[{ label: t.home, href: '/' }, { label: t.title }]}
           />
         </div>
-        <header className={`${wrap} mt-6 flex flex-col gap-3`}>
+        <header className={`${wrap} m-enter mt-6 flex flex-col gap-3`}>
           <h1 className="t-h1">{t.title}</h1>
           <p className="t-lede text-muted">{t.lede}</p>
         </header>
@@ -117,7 +118,7 @@ export function JoinFrame({ ar, children }: { ar: boolean; children: React.React
             {t.benefits.map(([icon, label], i) => {
               const Icon = ICON[icon as keyof typeof ICON];
               return (
-                <li key={label}>
+                <li key={label} className="m-reveal" style={{ '--i': i % 4 } as CSSProperties}>
                   <Card
                     variant={i % 2 === 0 ? 'feature' : 'feature-alt'}
                     className="flex h-full flex-col gap-3"
