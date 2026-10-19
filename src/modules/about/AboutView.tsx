@@ -36,14 +36,15 @@ import { VisionMission } from './components/VisionMission';
 
 type Lang = 'ar' | 'en';
 
-/** Picture file stems for the offers, in the order of copy.offers (dark and light variants share a stem). */
+/** Picture file stems for the offers, in the order of copy.offers. `light` is false while a light version is missing:
+ * the dark picture is then used in both themes. */
 const OFFER_IMAGES = [
-  'offer-1-workshops',
-  'offer-2-camps',
-  'offer-3-hackathons',
-  'offer-4-meetups-talks',
-  'offer-5-technical-content',
-  'offer-6-certificates',
+  { stem: 'offer-1-workshops', light: true },
+  { stem: 'offer-2-camps', light: true },
+  { stem: 'offer-3-hackathons', light: true },
+  { stem: 'offer-4-meetups-talks', light: true },
+  { stem: 'offer-5-technical-content', light: false },
+  { stem: 'offer-6-certificates', light: true },
 ];
 const OFFER_ICON: Record<string, LucideIcon> = { Wrench, Tent, Trophy, Mic, BookOpen, Award };
 
@@ -226,17 +227,17 @@ export function AboutView({ lang, data }: { lang: Lang; data: AboutData }) {
                         flip && 'lg:order-1 lg:[--m-x:-56px]',
                       )}
                     >
-                      {/* One picture per row, in the same order as the offers. Light and dark files swap with the
-                          theme (logo-on-dark / logo-on-light). Until the light set exists, both use the dark file. */}
+                      {/* One picture per row, in the same order as the offers. Light and dark files swap with the theme
+                          (logo-on-dark / logo-on-light). */}
                       <Image
-                        src={`/assets/offers/${OFFER_IMAGES[i % OFFER_IMAGES.length]}-dark.webp`}
+                        src={`/assets/offers/${OFFER_IMAGES[i % OFFER_IMAGES.length]!.stem}-dark.webp`}
                         alt=""
                         fill
                         sizes="(min-width: 1024px) 45vw, 90vw"
                         className="logo-on-dark object-cover"
                       />
                       <Image
-                        src={`/assets/offers/${OFFER_IMAGES[i % OFFER_IMAGES.length]}-dark.webp`}
+                        src={`/assets/offers/${OFFER_IMAGES[i % OFFER_IMAGES.length]!.stem}-${OFFER_IMAGES[i % OFFER_IMAGES.length]!.light ? 'light' : 'dark'}.webp`}
                         alt=""
                         fill
                         sizes="(min-width: 1024px) 45vw, 90vw"
