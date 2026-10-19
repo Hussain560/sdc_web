@@ -43,7 +43,7 @@ const OFFER_IMAGES = [
   { stem: 'offer-2-camps', light: true },
   { stem: 'offer-3-hackathons', light: true },
   { stem: 'offer-4-meetups-talks', light: true },
-  { stem: 'offer-5-technical-content', light: false },
+  { stem: 'offer-5-technical-content', light: true },
   { stem: 'offer-6-certificates', light: true },
 ];
 const OFFER_ICON: Record<string, LucideIcon> = { Wrench, Tent, Trophy, Mic, BookOpen, Award };
