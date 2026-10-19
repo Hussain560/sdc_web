@@ -111,3 +111,14 @@ svg {
     -apple-system,
     sans-serif;
 }
+
+/* Sideways strips (topic chips, tabs, filter rows) scroll by touch, wheel or keyboard; the grey bar under them is
+ * noise. Wide data tables keep theirs, because mouse users need it there. */
+.overflow-x-auto:not(:has(> table)),
+.m-snap {
+  scrollbar-width: none;
+}
+.overflow-x-auto:not(:has(> table))::-webkit-scrollbar,
+.m-snap::-webkit-scrollbar {
+  display: none;
+}

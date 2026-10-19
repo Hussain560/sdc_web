@@ -250,7 +250,7 @@
 }
 .m-snap {
   scroll-snap-type: x mandatory;
-  scrollbar-width: thin;
+  scrollbar-width: none;
 }
 .m-snap > * {
   scroll-snap-align: start;

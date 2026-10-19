@@ -177,22 +177,51 @@ export function AboutView({ lang, data }: { lang: Lang; data: AboutData }) {
 
           <section aria-labelledby="ab-offer" className={section}>
             <SectionHeader headingId="ab-offer" title={t.offerTitle} lede={t.offerLede} dots />
-            <ul className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3">
-              {t.offers.map(([icon, title, text]) => {
+            <ul className="flex flex-col gap-16 md:gap-24">
+              {t.offers.map(([icon, title, text], i) => {
                 const Icon = OFFER_ICON[icon]!;
+                const flip = i % 2 === 1;
                 return (
-                  <li key={title} className="m-reveal">
-                    <div className="m-lift flex h-full min-h-[150px] flex-col justify-between gap-4 rounded-shape-xl border border-line bg-surface p-5 sm:min-h-[230px] sm:gap-6 sm:p-8">
+                  <li
+                    key={title}
+                    className="grid items-center gap-6 lg:grid-cols-2 lg:gap-16 xl:gap-24"
+                  >
+                    {/* Text on one side, a big picture on the other, swapping sides each row. The picture is a
+                        placeholder until the community's own images arrive. */}
+                    <div
+                      className={cn(
+                        'm-slide flex flex-col gap-4 [--m-x:-56px] max-lg:[--m-x:0px]',
+                        flip && 'lg:order-2 lg:[--m-x:56px]',
+                      )}
+                    >
                       <span
                         aria-hidden="true"
-                        className="m-ico flex size-[60px] items-center justify-center rounded-[18px] bg-accent-soft text-on-accent-soft"
+                        className="flex size-14 items-center justify-center rounded-shape-lg bg-accent-soft text-on-accent-soft"
                       >
                         <Icon className="size-7" strokeWidth={1.75} />
                       </span>
-                      <div className="flex flex-col gap-1.5">
-                        <h3 className="t-h4 sm:t-h3">{title}</h3>
-                        <p className="t-body text-muted max-sm:sr-only">{text}</p>
-                      </div>
+                      <h3 className="t-h2">{title}</h3>
+                      <p className="t-lede max-w-[40ch] text-muted">{text}</p>
+                    </div>
+                    <div
+                      aria-hidden="true"
+                      className={cn(
+                        'm-slide relative grid aspect-[4/3] place-items-center overflow-hidden rounded-shape-2xl bg-accent-soft text-on-accent-soft [--m-x:56px] max-lg:[--m-x:0px] lg:aspect-[5/4]',
+                        flip && 'lg:order-1 lg:[--m-x:-56px]',
+                      )}
+                    >
+                      <div
+                        className="absolute inset-0 opacity-45"
+                        style={{
+                          backgroundImage: 'url("/assets/P3%202.png")',
+                          backgroundRepeat: 'repeat',
+                          backgroundSize: '140px auto',
+                          backgroundPosition: 'center',
+                        }}
+                      />
+                      <span className="m-parallax relative grid size-28 place-items-center rounded-full bg-surface shadow-elev-1 md:size-36">
+                        <Icon className="size-12 md:size-16" strokeWidth={1.5} />
+                      </span>
                     </div>
                   </li>
                 );
