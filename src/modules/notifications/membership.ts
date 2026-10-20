@@ -84,7 +84,7 @@ export async function notifyApplicationDecision(
     data: {
       name: a.full_name_ar,
       eventTitle: cycleName,
-      membershipUrl: `${siteUrl()}${prefix}${template === 'membership.application_accepted' ? '/account/member-profile' : '/account/membership'}`,
+      membershipUrl: `${siteUrl()}${prefix}${template === 'membership.application_accepted' ? '/account/profile' : '/account/membership'}`,
       eventUrl: `${siteUrl()}${prefix}/events`,
       activationUrl,
       whatsappUrl: await communityWhatsapp(),
@@ -134,7 +134,7 @@ export async function sendMemberCreatedMail(input: {
     data: {
       name: input.name,
       eventTitle: '',
-      membershipUrl: `${siteUrl()}${prefix}/account/member-profile`,
+      membershipUrl: `${siteUrl()}${prefix}/account/profile`,
       activationUrl: input.activationUrl,
       whatsappUrl: await communityWhatsapp(),
     },

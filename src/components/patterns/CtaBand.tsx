@@ -22,7 +22,7 @@ export function CtaBand({
   return (
     <section
       className={cn(
-        'rounded-shape-2xl bg-accent-soft px-6 py-12 text-center text-on-accent-soft md:px-12 md:py-16',
+        'm-reveal rounded-shape-2xl bg-accent-soft px-6 py-12 text-center text-on-accent-soft md:px-12 md:py-16',
         className,
       )}
     >

@@ -39,6 +39,7 @@ export async function getMyEditorData(): Promise<EditorData | null> {
       first_name_en: s(m.first_name_en),
       middle_name_en: s(m.middle_name_en),
       last_name_en: s(m.last_name_en),
+      phone: s(m.phone),
       headline_ar: s(m.headline_ar),
       headline_en: s(m.headline_en),
       about_ar: s(m.about_ar),

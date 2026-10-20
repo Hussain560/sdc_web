@@ -71,7 +71,62 @@
     --m-y: 24px;
     animation: m-rise linear both;
     animation-timeline: view();
-    animation-range: entry 0% cover 22%;
+    /* --i staggers the items of one row: each later item starts a little further into the scroll. */
+    animation-range: entry calc(var(--i, 0) * 5%) cover calc(22% + var(--i, 0) * 5%);
+  }
+  /* Parallax: a decorative layer drifts against the scroll. Set the travel with --m-par (default 28px). */
+  .m-parallax {
+    animation: m-par linear both;
+    animation-timeline: view();
+    animation-range: cover;
+  }
+  /* Reading progress bar on the top edge of the page. */
+  .m-progress {
+    position: fixed;
+    inset-block-start: 0;
+    inset-inline: 0;
+    z-index: var(--z-skip);
+    block-size: 3px;
+    background: var(--signal);
+    transform-origin: left center;
+    transform: scaleX(0);
+    animation: m-draw linear both;
+    animation-timeline: scroll(root);
+    pointer-events: none;
+  }
+  [dir='rtl'] .m-progress {
+    transform-origin: right center;
+  }
+  /* A block that eases in from the side the reader is coming from. */
+  .m-slide {
+    animation: m-slide linear both;
+    animation-timeline: view();
+    animation-range: entry 0% cover 28%;
+  }
+}
+@keyframes m-par {
+  from {
+    transform: translateY(calc(var(--m-par, 28px) * -1));
+  }
+  to {
+    transform: translateY(var(--m-par, 28px));
+  }
+}
+@keyframes m-slide {
+  from {
+    opacity: 0;
+    transform: translateX(calc(var(--m-x, 32px) * var(--m-dir, 1)));
+  }
+}
+[dir='rtl'] {
+  --m-dir: -1;
+}
+.m-progress {
+  display: none;
+}
+@supports (animation-timeline: scroll()) {
+  .m-progress {
+    display: block;
   }
 }
 
@@ -195,7 +250,7 @@
 }
 .m-snap {
   scroll-snap-type: x mandatory;
-  scrollbar-width: thin;
+  scrollbar-width: none;
 }
 .m-snap > * {
   scroll-snap-align: start;
@@ -210,8 +265,13 @@
   .m-live,
   .m-float,
   .m-marq-track,
-  .m-line {
+  .m-line,
+  .m-parallax,
+  .m-slide {
     animation: none !important;
+  }
+  .m-progress {
+    display: none !important;
   }
   .m-lift,
   .m-lift .m-ico,

@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react';
 import { PageMain } from '@/components/motion/PageMain';
 import { SiteFooter } from '@/components/layout/SiteFooter';
 import { SiteHeader } from '@/components/layout/SiteHeader';
@@ -55,7 +56,7 @@ export default function ArticleDetailView({
         </div>
 
         <article className="mx-auto mt-8 w-full max-w-(--container-reading) px-4">
-          <header className="flex flex-col gap-4">
+          <header className="m-enter flex flex-col gap-4">
             {article.tags.length > 0 && (
               <ul className="flex flex-wrap gap-2">
                 {article.tags.map((tag) => (
@@ -97,8 +98,8 @@ export default function ArticleDetailView({
           <section aria-labelledby="a-related" className={`${wrap} mt-(--section-gap)`}>
             <SectionHeader headingId="a-related" title={t.related} />
             <ul className="grid gap-4 md:grid-cols-3">
-              {related.map((a) => (
-                <li key={a.id}>
+              {related.map((a, i) => (
+                <li key={a.id} className="m-reveal" style={{ '--i': i % 3 } as CSSProperties}>
                   <ArticleCard article={a} lang={lang} />
                 </li>
               ))}

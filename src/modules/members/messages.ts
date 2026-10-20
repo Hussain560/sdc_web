@@ -20,6 +20,7 @@ const MEMBER_CODES = [
   'VALIDATION_FAILED',
   'ALREADY_MEMBER',
   'LIMIT_REACHED',
+  'NAME_LOCKED',
   'FILE_TOO_LARGE',
   'FILE_TYPE',
 ] as const satisfies readonly ErrorCode[];
@@ -72,6 +73,10 @@ const messages: Partial<Record<ErrorCode, Record<Lang, string>>> = {
   FORBIDDEN: {
     ar: 'لم تُحفظ الصورة. حاول مرة أخرى.',
     en: 'The picture was not saved. Try again.',
+  },
+  NAME_LOCKED: {
+    ar: 'لا يمكنك تغيير اسمك بنفسك. تواصل مع قائد المجتمع أو مدير النظام.',
+    en: 'You cannot change your own name. Contact the community leader or a system administrator.',
   },
   LIMIT_REACHED: {
     ar: 'وصلت إلى الحد الأقصى.',

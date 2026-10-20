@@ -36,7 +36,7 @@ export function LeaderCard({ person, lang }: { person: LeadershipPerson; lang: L
     </>
   );
   return (
-    <Card variant="surface" interactive={!!person.memberId} className={cn("m-in h-full overflow-hidden p-0")}>
+    <div className="m-reveal h-full"><Card variant="surface" interactive={!!person.memberId} className={cn("h-full overflow-hidden p-0")}>
       {person.memberId ? (
         <CardLink href={`/members/${person.memberId}`} className="block h-full">
           {body}
@@ -44,7 +44,7 @@ export function LeaderCard({ person, lang }: { person: LeadershipPerson; lang: L
       ) : (
         body
       )}
-    </Card>
+    </Card></div>
   );
 }
 

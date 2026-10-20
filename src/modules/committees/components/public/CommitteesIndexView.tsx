@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react';
 import { PageMain } from '@/components/motion/PageMain';
 import { ArrowLeft, ArrowRight, UsersRound } from 'lucide-react';
 import { SiteFooter } from '@/components/layout/SiteFooter';
@@ -39,7 +40,7 @@ export function CommitteesIndexView({ lang, committees }: { lang: Lang; committe
     <>
       <SiteHeader />
       <PageMain>
-        <div className={`${wrap} pt-6`}>
+        <div className={`${wrap} m-enter pt-6`}>
           <Breadcrumb label={t.breadcrumb} items={[{ label: t.home, href: '/' }, { label: t.title }]} />
           <h1 className="t-h1 mt-6">{t.title}</h1>
           <p className="t-lede mt-2 text-muted">{t.lede}</p>
@@ -49,12 +50,12 @@ export function CommitteesIndexView({ lang, committees }: { lang: Lang; committe
             <EmptyState variant="no-data" title={t.empty} />
           ) : (
             <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {committees.map((c) => {
+              {committees.map((c, i) => {
                 const name = lang === 'en' && c.nameEn ? c.nameEn : c.nameAr;
                 const about = (lang === 'en' ? c.descriptionEn : null) || c.descriptionAr;
                 const lead = lang === 'en' ? c.leadEn : c.leadAr;
                 return (
-                  <li key={c.slug}>
+                  <li key={c.slug} className="m-reveal" style={{ '--i': i % 4 } as CSSProperties}>
                     <Card variant="surface" interactive className="flex h-full flex-col gap-3">
                       <span aria-hidden="true" className="flex size-12 items-center justify-center rounded-shape-md bg-accent-soft text-on-accent-soft">
                         <UsersRound className="size-6" />

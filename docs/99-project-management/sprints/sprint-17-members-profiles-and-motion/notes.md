@@ -60,3 +60,17 @@ Fix: `search_assignable_users(query, committee)` searches active members by ever
 - 2026-10-17: MOT-001, `Combobox`, photo crop maths and `ImageCropper` committed. Docker was blocked by a frozen WSL virtual machine until the owner fixed it.
 - 2026-10-17: MEM-011, MEM-012, ACC-007 and MEM-014 committed; 1,597 pgTAP checks green.
 - 2026-10-17: MEM-015 built: `admin_list_members`, `admin_member_detail`, `admin_update_member`, the list page, the detail page, the edit dialog; checked in the browser against the local stack.
+
+## Follow-up (2026-10-19): names locked, one profile page, richer "My data"
+
+- A member can no longer change their own name. `update_my_member_profile` refuses any name key with `NAME_LOCKED`
+  (migration `20270409000900`); only leadership with `members.manage` (system administrator, community leader) edits it
+  through `admin_update_member`. The editor shows the names read-only with the reason.
+- The member's own phone is now editable in the editor ("Contact" section); it stays private (`members.view_contact`).
+- `/account/member-profile` was merged into `/account/profile` ("My profile", the tab and the header menu entry); the old
+  address redirects. Members see the editor plus the account card; non-members see the account form as before.
+- "My data" now shows the account, the member record (with the phone) and every membership application with its answers,
+  above the download and deletion tools. Reviewer notes are not shown.
+- The overview no longer says "leadership" to someone with only a committee seat.
+- Local note: the sample photos seeded by `scripts/dev-seed-*.mjs` make pgTAP files 18 and 20 fail locally (they expect
+  an empty photo bucket); a `supabase db reset` restores a clean state.

@@ -1,7 +1,7 @@
 'use client';
 
 import { Minus, Plus } from 'lucide-react';
-import { useId, useState } from 'react';
+import { useId, useState, type CSSProperties } from 'react';
 import { cn } from '@/components/ui/cn';
 
 /**
@@ -17,7 +17,11 @@ export function ValuesList({ items }: { items: ReadonlyArray<readonly [string, s
         const isOpen = open === i;
         const panel = `${base}-${i}`;
         return (
-          <li key={title} className="border-b border-line">
+          <li
+            key={title}
+            className="m-reveal border-b border-line"
+            style={{ '--i': i } as CSSProperties}
+          >
             <h3>
               <button
                 type="button"

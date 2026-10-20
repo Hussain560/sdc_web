@@ -1,4 +1,6 @@
+import type { CSSProperties } from 'react';
 import { PageMain } from '@/components/motion/PageMain';
+import { Words } from '@/components/motion/Words';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import Image from 'next/image';
 import { CtaBand } from '@/components/patterns/CtaBand';
@@ -87,9 +89,9 @@ export function HomeView({
 
         <section aria-labelledby="home-hero" className={`${wrap} pt-10 md:pt-16`}>
           <div className="grid items-center gap-10 lg:grid-cols-[1.1fr_0.9fr]">
-            <div className="flex flex-col items-start gap-6">
+            <div className="m-enter flex flex-col items-start gap-6">
               <h1 id="home-hero" className="t-display max-w-[18ch]">
-                {t.heroTitle}
+                <Words text={t.heroTitle} />
               </h1>
               <p className="t-lede text-muted">{t.heroLede}</p>
               <div className="flex flex-wrap items-center gap-x-6 gap-y-3 max-sm:w-full max-sm:flex-col max-sm:items-stretch">
@@ -118,7 +120,8 @@ export function HomeView({
             <div className="relative flex justify-center">
               <div
                 aria-hidden="true"
-                className="absolute inset-0 -z-10 bg-[radial-gradient(60%_60%_at_50%_50%,color-mix(in_srgb,var(--signal)_14%,transparent),transparent)]"
+                className="m-parallax absolute inset-0 -z-10 bg-[radial-gradient(60%_60%_at_50%_50%,color-mix(in_srgb,var(--signal)_14%,transparent),transparent)]"
+                style={{ '--m-par': '48px' } as CSSProperties}
               />
               <Image
                 src="/brand/hero-mark-dark.png"
@@ -127,7 +130,7 @@ export function HomeView({
                 height={380}
                 priority
                 sizes="(max-width: 1024px) 60vw, 480px"
-                className="logo-on-dark h-auto w-3/5 lg:w-full"
+                className="logo-on-dark m-parallax h-auto w-3/5 lg:w-full"
               />
               <Image
                 src="/brand/hero-mark-light.png"
@@ -136,7 +139,7 @@ export function HomeView({
                 height={1046}
                 priority
                 sizes="(max-width: 1024px) 60vw, 480px"
-                className="logo-on-light h-auto w-3/5 rounded-shape-xl lg:w-full"
+                className="logo-on-light m-parallax h-auto w-3/5 rounded-shape-xl lg:w-full"
               />
             </div>
           </div>
@@ -168,8 +171,8 @@ export function HomeView({
               }
             />
             <ul className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {sections.events.items.map((e) => (
-                <li key={e.id}>
+              {sections.events.items.map((e, i) => (
+                <li key={e.id} className="m-reveal" style={{ '--i': i % 3 } as CSSProperties}>
                   <EventCard event={e} lang={lang} now={now} />
                 </li>
               ))}
@@ -205,8 +208,8 @@ export function HomeView({
               }
             />
             <ul className="grid gap-4 md:grid-cols-2">
-              {sections.articles.map((a) => (
-                <li key={a.id}>
+              {sections.articles.map((a, i) => (
+                <li key={a.id} className="m-reveal" style={{ '--i': i % 2 } as CSSProperties}>
                   <ArticleCard article={a} lang={lang} />
                 </li>
               ))}

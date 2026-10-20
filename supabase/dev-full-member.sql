@@ -47,11 +47,7 @@ insert into public.member_projects (member_id, position, title_ar, title_en, des
    'قائمة طعام تفاعلية للمطاعم الصغيرة تُحدَّث من لوحة بسيطة.', 'An interactive menu for small restaurants, updated from a simple dashboard.',
    'https://github.com/example/menu');
 
--- committee position (AI committee, member)
-insert into public.role_assignments (user_id, role_key, committee_id, display_title_ar)
-select user_id, 'committee_member', (select id from public.committees where slug = 'ai'), 'عضو لجنة الذكاء الاصطناعي'
-from me
-where not exists (select 1 from public.role_assignments r where r.user_id = (select user_id from me) and r.ends_at is null and r.role_key = 'committee_member');
+-- No committee position is granted here: dev.regular stays a regular member (no position) on purpose.
 
 -- events she took part in (presenter of one, attended two)
 insert into public.event_presenters (event_id, profile_id)

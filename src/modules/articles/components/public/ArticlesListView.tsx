@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react';
 import { PageMain } from '@/components/motion/PageMain';
 import { Search, X } from 'lucide-react';
 import { SiteFooter } from '@/components/layout/SiteFooter';
@@ -98,7 +99,7 @@ export function ArticlesListView({
     <>
       <SiteHeader />
       <PageMain>
-        <div className={`${wrap} pt-6`}>
+        <div className={`${wrap} m-enter pt-6`}>
           <Breadcrumb label={t.breadcrumb} items={[{ label: t.home, href: '/' }, { label: t.title }]} />
           <h1 className="t-h1 mt-6">{t.title}</h1>
           <p className="t-lede mt-2 text-muted">{t.lede}</p>
@@ -166,8 +167,8 @@ export function ArticlesListView({
 
           {items.length > 0 ? (
             <ul className="mt-4 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {items.map((a) => (
-                <li key={a.id}>
+              {items.map((a, i) => (
+                <li key={a.id} className="m-reveal" style={{ '--i': i % 3 } as CSSProperties}>
                   <ArticleCard article={a} lang={lang} />
                 </li>
               ))}
