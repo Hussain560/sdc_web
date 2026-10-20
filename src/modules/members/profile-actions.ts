@@ -26,19 +26,13 @@ const TEXT = {
   https: { ar: 'يجب أن يبدأ الرابط بـ https://', en: 'The link must start with https://' },
 } as const;
 
-const name = z.string().trim().max(60);
 const line = z.string().trim().max(80);
 const link = z.string().trim().max(500);
 const id = z.string().regex(/^\d{0,6}$/);
 
 const partSchema = z
   .object({
-    first_name_ar: name.min(1, 'required'),
-    middle_name_ar: name,
-    last_name_ar: name.min(1, 'required'),
-    first_name_en: name,
-    middle_name_en: name,
-    last_name_en: name,
+    phone: z.string().regex(/^(\+[1-9][0-9]{6,14})?$/),
     headline_ar: line,
     headline_en: line,
     about_ar: z.string().trim().max(1000),
@@ -90,7 +84,10 @@ function fieldErrors(error: z.ZodError, lang: Lang) {
   return out;
 }
 
-/** Saves some fields of my profile (a section). Only the keys sent change; links must be https. */
+/**
+ * Saves some fields of my profile (a section). Only the keys sent change; links must be https. Names are not among them:
+ * they are set when the membership is accepted and only leadership changes them (the database refuses them too).
+ */
 export async function saveMyProfilePart(
   part: Record<string, unknown>,
   ctx: { lang: Lang },

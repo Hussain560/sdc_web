@@ -36,6 +36,8 @@ export type EditorValues = {
   first_name_en: string;
   middle_name_en: string;
   last_name_en: string;
+  /** Private: international format (+966...), shown only to the member and to leadership. */
+  phone: string;
   headline_ar: string;
   headline_en: string;
   about_ar: string;

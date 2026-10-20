@@ -7,7 +7,14 @@ import { useLanguage } from '@/context/LanguageContext';
 import { updateProfile } from '@/modules/auth/actions';
 import type { MyProfile } from '../queries';
 
-export function ProfileForm({ profile }: { profile: MyProfile }) {
+export function ProfileForm({
+  profile,
+  hideNames = false,
+}: {
+  profile: MyProfile;
+  /** Members: the name lives in the member profile (set at acceptance, changed only by leadership). */
+  hideNames?: boolean;
+}) {
   const { lang } = useLanguage();
   const toast = useToast();
   const ar = lang === 'ar';
@@ -40,20 +47,24 @@ export function ProfileForm({ profile }: { profile: MyProfile }) {
     <form onSubmit={submit} className="flex flex-col gap-6">
       <Card className="flex flex-col gap-5">
         <h2 className="text-lg font-bold">{ar ? 'الحساب' : 'Account'}</h2>
-        <Field
-          label={ar ? 'الاسم (عربي)' : 'Name (Arabic)'}
-          value={values.fullNameAr}
-          error={errors.fullNameAr}
-          onChange={(e) => setValues({ ...values, fullNameAr: e.target.value })}
-          required
-        />
-        <Field
-          label={ar ? 'الاسم (إنجليزي)' : 'Name (English)'}
-          dir="ltr"
-          value={values.fullNameEn}
-          error={errors.fullNameEn}
-          onChange={(e) => setValues({ ...values, fullNameEn: e.target.value })}
-        />
+        {!hideNames && (
+          <>
+            <Field
+              label={ar ? 'الاسم (عربي)' : 'Name (Arabic)'}
+              value={values.fullNameAr}
+              error={errors.fullNameAr}
+              onChange={(e) => setValues({ ...values, fullNameAr: e.target.value })}
+              required
+            />
+            <Field
+              label={ar ? 'الاسم (إنجليزي)' : 'Name (English)'}
+              dir="ltr"
+              value={values.fullNameEn}
+              error={errors.fullNameEn}
+              onChange={(e) => setValues({ ...values, fullNameEn: e.target.value })}
+            />
+          </>
+        )}
         <div>
           <p className="mb-1.5 text-sm font-medium">{ar ? 'البريد الإلكتروني' : 'Email'}</p>
           <p dir="ltr" className="text-muted" style={{ textAlign: 'start' }}>

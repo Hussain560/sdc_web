@@ -31,7 +31,13 @@ export default async function AccountOverviewPage({
         // People who hold a position are part of the community: no "this is not membership" message.
         <Card className="flex flex-col gap-3">
           <h2 className="text-lg font-bold">
-            {ar ? 'أنت جزء من قيادة المجتمع' : 'You are part of the community leadership'}
+            {positions.some((p) => p.role !== 'committee_member')
+              ? ar
+                ? 'أنت جزء من قيادة المجتمع'
+                : 'You are part of the community leadership'
+              : ar
+                ? 'أنت عضو في لجان المجتمع'
+                : 'You are a member of community committees'}
           </h2>
           <ul className="flex flex-col gap-2">
             {positions.map((p) => (

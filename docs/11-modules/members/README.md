@@ -146,7 +146,7 @@ erDiagram
 | ----- | -------- | ------- | --------- |
 | `/[locale]/members` | Everyone | Leadership (from committees) + directory with filters in the URL | [PUBLIC 07-members](../../10-design-system/PUBLIC-SCREENS/07-members.md) |
 | `/[locale]/members/[id]` | Everyone | Public profile | [PUBLIC 08-member-profile](../../10-design-system/PUBLIC-SCREENS/08-member-profile.md) |
-| `/[locale]/account/member-profile` | Member | Edit profile and visibility | [11-account-area](../../10-design-system/INTERNAL-SCREENS/11-account-area.md) |
+| `/[locale]/account/profile` | Member | Edit profile and visibility | [11-account-area](../../10-design-system/INTERNAL-SCREENS/11-account-area.md) |
 | `/[locale]/claim/[token]` | Legacy member | Claim flow | (auth-card pattern) |
 | `/[locale]/dashboard/members` (+ `/[id]`) | Founders (read), leader, admin | Search, view all, status changes, claim invites | [19-members-management](../../10-design-system/INTERNAL-SCREENS/19-members-management.md) |
 
@@ -178,7 +178,7 @@ erDiagram
 ## 13. Edge cases
 
 1. A member hides their profile → it disappears from the directory, and the profile URL returns 404 (cached pages revalidated by tag).
-2. A suspended member signs in → `/account/member-profile` shows a neutral "membership suspended — contact leadership" panel.
+2. A suspended member signs in → `/account/profile` shows a neutral "membership suspended — contact leadership" panel.
 3. Two legacy records belong to the same person → admin merges them before sending invites (the import report flags duplicate names).
 4. A legacy member never claims → visible per Q-026 until the cut-off, then hidden.
 5. A filter combination with zero results → empty state + reset filters (same card grid area).

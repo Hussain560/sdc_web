@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react';
 import { cn } from '@/components/ui/cn';
 
 /**
@@ -27,9 +28,23 @@ export function StatsRow({
         className,
       )}
     >
-      {items.map((s) => (
-        <div key={s.key}>
-          <dd className="t-stat text-signal">{fmt.format(s.value)}</dd>
+      {items.map((s, i) => (
+        <div key={s.key} className="m-reveal" style={{ '--i': i } as CSSProperties}>
+          <dd className="t-stat text-signal">
+            {s.value < 1000 ? (
+              <>
+                {/* The digits are drawn by CSS and count up; the figure is also plain text for screen readers. */}
+                <span
+                  aria-hidden="true"
+                  className="m-count"
+                  style={{ '--m-to': s.value } as CSSProperties}
+                />
+                <span className="sr-only">{fmt.format(s.value)}</span>
+              </>
+            ) : (
+              fmt.format(s.value)
+            )}
+          </dd>
           <dt className="t-body-sm text-muted">{s.label}</dt>
         </div>
       ))}

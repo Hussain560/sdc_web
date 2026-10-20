@@ -36,7 +36,7 @@ export function OwnProfileBar({
   if (!own) return null;
   return (
     <div className="mt-6 flex flex-wrap items-center gap-3">
-      <LinkButton href="/account/member-profile" variant="secondary" size="sm">
+      <LinkButton href="/account/profile" variant="secondary" size="sm">
         {edit}
       </LinkButton>
       <p className="t-body-sm text-muted">{note}</p>

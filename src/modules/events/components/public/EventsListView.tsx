@@ -236,7 +236,7 @@ export function EventsListView({
           />
         </div>
 
-        <header className={`${wrap} relative mt-10 flex flex-col items-start gap-4 text-start md:items-center md:text-center`}>
+        <header className={`${wrap} m-enter relative mt-10 flex flex-col items-start gap-4 text-start md:items-center md:text-center`}>
           <div
             aria-hidden="true"
             className="motif-dots pointer-events-none absolute inset-x-0 -top-6 h-52 text-muted [mask-image:radial-gradient(ellipse_at_center,black,transparent_70%)]"

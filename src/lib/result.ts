@@ -77,6 +77,7 @@ export type ErrorCode =
   | 'ALREADY_REQUESTED'
   | 'REGISTRATION_CANCELLED'
   | 'LIMIT_REACHED'
+  | 'NAME_LOCKED'
   | 'INTERNAL';
 
 export type Result<T = void> =
