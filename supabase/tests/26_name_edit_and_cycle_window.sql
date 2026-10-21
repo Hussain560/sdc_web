@@ -45,23 +45,37 @@ delete from public.membership_cycles;
 insert into auth.users (id, aud, role, email, email_confirmed_at, raw_user_meta_data) values
   ('00000000-0000-0000-0000-00000000a203', 'authenticated', 'authenticated', 'admin.cycle@example.test', now(), '{"full_name":"Admin Cycle"}');
 insert into public.role_assignments (user_id, role_key) values ('00000000-0000-0000-0000-00000000a203', 'system_admin');
-insert into public.membership_cycles (id, name_ar, opens_at, closes_at, status, questions)
-  values ('00000000-0000-0000-0000-00000000c201', 'دورة جارية تجريبية', now() - interval '1 day', now() + interval '5 days', 'published', '[]');
+-- Opened a day ago and closed early an hour ago, with nobody applying yet.
+insert into public.membership_cycles (id, name_ar, opens_at, closes_at, closed_early_at, status, questions)
+  values ('00000000-0000-0000-0000-00000000c201', 'دورة جارية تجريبية', now() - interval '1 day', now() + interval '5 days', now() - interval '1 hour', 'published', '[]');
 
 set local role authenticated;
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-00000000a203","role":"authenticated"}', true);
+-- No application yet: dates entered by mistake can be fixed, and the early close is cleared.
 select lives_ok(format($f$select public.save_membership_cycle('00000000-0000-0000-0000-00000000c201', %L::jsonb)$f$,
-  jsonb_build_object('name_ar', 'دورة جارية تجريبية', 'opens_at', now() - interval '1 day', 'closes_at', now() + interval '2 days', 'questions', '[]'::jsonb)::text),
-  'a running cycle can close earlier than planned');
+  jsonb_build_object('name_ar', 'دورة جارية تجريبية', 'opens_at', now() - interval '3 days', 'closes_at', now() + interval '4 days', 'questions', '[]'::jsonb)::text),
+  'with no applications the opening and closing times of a running or closed cycle can be corrected');
+select is((select closed_early_at from public.membership_cycles where id = '00000000-0000-0000-0000-00000000c201'), null, 'the early close is cleared by the new dates');
+select is((select private.cycle_phase(status, opens_at, closes_at, closed_early_at) from public.membership_cycles where id = '00000000-0000-0000-0000-00000000c201'), 'open', 'the cycle follows its new dates');
+reset role;
+
+-- With an application the opening time is history; only the closing time moves.
+insert into public.membership_applications (cycle_id, user_id, status, full_name_ar, phone, academic_status, answers, wants_directory_listing, consent_version)
+  values ('00000000-0000-0000-0000-00000000c201', '00000000-0000-0000-0000-00000000a201', 'submitted', 'اسم المتقدم', '+966555000333', 'student', '{}'::jsonb, true, 'v1');
+set local role authenticated;
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-00000000a203","role":"authenticated"}', true);
 select lives_ok(format($f$select public.save_membership_cycle('00000000-0000-0000-0000-00000000c201', %L::jsonb)$f$,
-  jsonb_build_object('name_ar', 'دورة جارية تجريبية', 'opens_at', now() - interval '1 day', 'closes_at', now() + interval '9 days', 'questions', '[]'::jsonb)::text),
-  'a running cycle can close later than planned');
+  jsonb_build_object('name_ar', 'دورة جارية تجريبية', 'opens_at', (select opens_at from public.membership_cycles where id = '00000000-0000-0000-0000-00000000c201'), 'closes_at', now() + interval '2 days', 'questions', '[]'::jsonb)::text),
+  'with applications a running cycle can close earlier than planned');
+select lives_ok(format($f$select public.save_membership_cycle('00000000-0000-0000-0000-00000000c201', %L::jsonb)$f$,
+  jsonb_build_object('name_ar', 'دورة جارية تجريبية', 'opens_at', (select opens_at from public.membership_cycles where id = '00000000-0000-0000-0000-00000000c201'), 'closes_at', now() + interval '9 days', 'questions', '[]'::jsonb)::text),
+  'with applications a running cycle can close later than planned');
 select throws_ok(format($f$select public.save_membership_cycle('00000000-0000-0000-0000-00000000c201', %L::jsonb)$f$,
-  jsonb_build_object('name_ar', 'دورة جارية تجريبية', 'opens_at', now() - interval '3 days', 'closes_at', now() + interval '9 days', 'questions', '[]'::jsonb)::text),
-  'P0001', 'NOT_EDITABLE', 'the opening time of a running cycle cannot move');
+  jsonb_build_object('name_ar', 'دورة جارية تجريبية', 'opens_at', now() - interval '9 days', 'closes_at', now() + interval '9 days', 'questions', '[]'::jsonb)::text),
+  'P0001', 'NOT_EDITABLE', 'with applications the opening time cannot move');
 select throws_ok(format($f$select public.save_membership_cycle('00000000-0000-0000-0000-00000000c201', %L::jsonb)$f$,
-  jsonb_build_object('name_ar', 'دورة جارية تجريبية', 'opens_at', now() - interval '1 day', 'closes_at', now() - interval '1 hour', 'questions', '[]'::jsonb)::text),
-  'P0001', 'NOT_EDITABLE', 'the closing time cannot be moved into the past');
+  jsonb_build_object('name_ar', 'دورة جارية تجريبية', 'opens_at', (select opens_at from public.membership_cycles where id = '00000000-0000-0000-0000-00000000c201'), 'closes_at', now() - interval '1 hour', 'questions', '[]'::jsonb)::text),
+  'P0001', 'NOT_EDITABLE', 'with applications the closing time cannot be moved into the past');
 reset role;
 
 select * from finish();

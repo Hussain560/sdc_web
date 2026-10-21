@@ -38,6 +38,7 @@ export function CycleForm({
   locked,
   windowLocked,
   closeEditable,
+  freeEdit,
 }: {
   id?: string;
   initial?: CycleFormValues;
@@ -47,6 +48,8 @@ export function CycleForm({
   windowLocked?: boolean;
   /** A running window: the closing time can still move, earlier or later, as long as it is ahead. */
   closeEditable?: boolean;
+  /** Nobody has applied yet: the dates can be corrected freely, even on a running or closed window. */
+  freeEdit?: boolean;
 }) {
   const { lang } = useLanguage();
   const ar = lang === 'ar';
@@ -181,6 +184,13 @@ export function CycleForm({
         <p className="text-xs text-muted">
           {ar ? 'التوقيت بتوقيت السعودية (UTC+3).' : 'Saudi time (UTC+3).'}
         </p>
+        {freeEdit && (
+          <Alert tone="info">
+            {ar
+              ? 'لم يصل أي طلب بعد، فيمكنك تصحيح التواريخ بحرية. إذا كانت الدورة أُغلقت مبكراً فستتبع التواريخ الجديدة.'
+              : 'No application has arrived yet, so you can correct the dates freely. If the cycle was closed early, it will follow the new dates.'}
+          </Alert>
+        )}
         {windowLocked && (
           <Alert tone="info">
             {closeEditable
