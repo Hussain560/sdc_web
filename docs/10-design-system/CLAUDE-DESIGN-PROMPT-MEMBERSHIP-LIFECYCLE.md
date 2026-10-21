@@ -37,7 +37,15 @@ whenever someone signs in, they understand their situation.
    new link", and a short onboarding after the first sign-in (confirm your name, add a photo, complete your profile).
 6. **Notices on sign-in**: account blocked (contact the administration), membership suspended (reason category,
    contact), membership expired (ended on a date, request renewal), membership ended. Calm, clear, never scary.
-7. **My membership** in the account area: status, term dates, "ending soon", request renewal, and **ask to leave the
+7. **Onboarding after the first sign-in.** A short guided screen shown once (skippable, reopenable from "My profile"):
+   welcome and what membership gives, confirm your names, add a photo, pick a few skills, choose what is public. It
+   saves progress per step and ends on the profile with the completeness meter. Make it feel like a warm start, not a
+   form.
+8. **My membership** in the account area, now with the **digital membership card** — name, photo (only if shown), member
+   number, "member since", term end, status and a QR code. It must look good full screen on a phone, can be saved to the
+   home screen and prints well. Also design the **public verification page** the QR opens (only name, member number,
+   status and term end; and the "not valid" state) and the member's option to rotate the code. Beyond the card, this
+   page shows: status, term dates, "ending soon", request renewal, and **ask to leave the
    community**. A member cannot leave by themselves: they send a leave request (optional reason and preferred last
    day) and stay a full member until leadership approves it. Design the request dialog (explain what happens to the
    profile and positions if it is approved), the "request sent, waiting for leadership" state with a withdraw button,
@@ -45,29 +53,38 @@ whenever someone signs in, they understand their situation.
 
 **Dashboard, for reviewers and leadership** (keep the dashboard's feel)
 
-8. **Cycles** list and form: add the membership term end date per cycle, show the cycle's funnel at a glance (applied,
-   in review, accepted, activated).
-9. **Applications list**: status tabs with counts, cycle switcher, search by name part, e-mail, phone or reference,
+9. **Cycles** list and form: add the membership term end date per cycle, the **activation deadline** (days an accepted
+   person has to activate before the place goes to the waitlist), and an optional **reviewer rubric** (up to 6 criteria
+   with Arabic and English labels and weights, with a default set). Show the cycle's funnel at a glance (applied, in
+   review, accepted, activated, lapsed).
+10. **Applications list**: status tabs with counts (including waitlisted and lapsed), the score average and sort by score, cycle switcher, search by name part, e-mail, phone or reference,
    filters, selection with a bulk bar (accept, waitlist, reject, assign to me) and a per-row result after a bulk
    decision. On a phone: cards, not a squeezed table.
-10. **Application review page** — the most important screen. Everything the applicant submitted, grouped and easy to
+11. **Application review page** — the most important screen. Everything the applicant submitted, grouped and easy to
     scan (identity, contact, study, links, bio, answers to the cycle questions). Warnings (same e-mail or phone in an
     earlier cycle, already a member, previously rejected, blocked account). The application's history. A decision
     area that stays in reach: claim, accept, waitlist, reject, ask for a correction with a message, an internal note,
-    and moving to the next application. Make reviewing twenty applications in a row comfortable, on desktop and phone.
-11. **Members list** with lifecycle at a glance (status, term end, "ending soon", activation pending, leave request
+    and moving to the next application. When the cycle has a rubric, include a **scoring panel**: each reviewer gives 1 to 5
+    per criterion plus a comment, sees the other reviewers' scores and the average; scores are never shown to the
+    applicant and never decide on their own. Make reviewing twenty applications in a row comfortable, on desktop and phone.
+12. **Members list** with lifecycle at a glance (status, term end, "ending soon", activation pending, leave request
     pending) and selection with bulk actions: renew to a date, suspend, reinstate, end membership, approve or decline
     leave requests, resend activation, e-mail the selected, export. Show the confirmation (how many, who) and the
     per-row results. Add a **leave requests queue** for leadership (count badge, who asked, since when, the member's
     reason and preferred last day, approve or decline).
-12. **Member detail**: one timeline (applied, decided, activated, positions, renewals, suspensions, end) and the
+13. **Member detail**: one timeline (applied, decided, activated, positions, renewals, suspensions, end) and the
     actions, each with its dialog: reason (internal), optional message to the member, dates.
-13. **Block / unblock account** dialog, usable for any account, not only members.
-14. **The lifecycle e-mails** in both languages: received (with tracking link), correction requested, accepted
-    (activation), activation reminder, rejected (plain: no note and no reason), waitlisted, term reminder, expired, renewed, suspended, reinstated,
+14. **Block / unblock account** dialog, usable for any account, not only members.
+15. **The lifecycle e-mails** in both languages: received (with tracking link), correction requested, accepted
+    (activation), activation reminder, activation lapsed (plain), rejected (plain: no note and no reason), waitlisted, term reminder, expired, renewed, suspended, reinstated,
     ended, leave requested, leave approved, leave declined (plain, no message), account blocked and unblocked.
 
 For every screen: empty, loading, error and success states, and what a person without the permission sees.
+
+A rule you should show: when an accepted person does not activate their account in time, the place is released and
+offered to the next person on the waitlist automatically. Leadership sees what changed in a daily digest and can
+restore the person while a place remains. Design the waitlist view (order, score, "offer now"), the lapsed state, and
+the digest.
 
 ## Things to respect
 

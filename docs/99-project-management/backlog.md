@@ -232,5 +232,8 @@ Work the team did because the situation changed or the owner asked. Ids are new.
 | MEM-018 | Members list bulk actions and leave-requests queue with per-row results | P0 — ⬜ Sprint 18 ⛔ designs |
 | MEM-019 | Member detail lifecycle timeline and actions | P1 — ⬜ Sprint 18 ⛔ designs |
 | ACC-008 | Block and unblock accounts (`users.block`), sign-in notices | P0 — ⬜ Sprint 18 |
-| ACC-009 | Activation reminders, expired-link resend, onboarding after first sign-in | P1 — ⬜ Sprint 18 |
+| ACC-009 | Activation reminders, expired-link resend, onboarding screen after first sign-in | P0 — ⬜ Sprint 18 ⛔ designs |
+| MBR-012 | Reviewer scoring rubric (criteria per cycle, scores and comments, summary on review page) | P1 — ⬜ Sprint 18 ⛔ designs |
+| MBR-013 | Waitlist auto-promotion when accepted people do not activate in time | P1 — ⬜ Sprint 18 |
+| MEM-020 | Digital membership card with QR code and public verification page | P1 — ⬜ Sprint 18 ⛔ designs |
 | NOT-004 | Lifecycle e-mails (new templates, both languages, sent once, retried) | P0 — ⬜ Sprint 18 |
