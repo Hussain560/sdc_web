@@ -10,7 +10,7 @@ is the reference for the Sprint 18 stories ([plan](./plan.md)); the database is 
 flowchart LR
   C["Cycle opens<br/>(published, dates)"] --> F["Applicant fills the join form<br/>(no account needed)"]
   F --> S["Submitted<br/>e-mail: received + tracking link"]
-  S --> R["Under review<br/>(a reviewer claims it)"]
+  S --> R["Under review<br/>(a reviewer claims it, scores it)"]
   R -->|accept| A["Accepted<br/>account created, activation e-mail"]
   R -->|waitlist| W["Waitlisted"]
   R -->|reject| X["Rejected<br/>plain e-mail, no note or reason"]
@@ -18,8 +18,10 @@ flowchart LR
   I --> R
   W -->|accept| A
   W -->|cycle completed| X
-  A --> P["Activation: sets a password<br/>first sign-in, onboarding"]
-  P --> M["Active member<br/>term runs until its end date"]
+  A --> P["Activation: sets a password<br/>first sign-in, onboarding screen"]
+  A -->|not activated in N days| LP["Place lapsed<br/>next on the waitlist is offered it"]
+  LP --> A
+  P --> M["Active member<br/>digital card with QR, term runs until its end date"]
   M -->|30 / 7 / 1 days before| N["Reminders"]
   M -->|term end, not renewed| E["Expired<br/>access to member areas stops"]
   E -->|leadership renews| M
@@ -54,6 +56,19 @@ Rules: one application per e-mail per cycle (exists); a reviewer never decides t
 is checked at acceptance (exists); decisions can be taken in bulk (exists, up to 200, per-row result); every decision is
 audited and e-mailed once.
 
+### 2.1.1 Review scoring (new)
+
+When a cycle has a rubric (up to 6 criteria), every reviewer gives a 1–5 score per criterion and an optional comment.
+Scores and comments are visible to reviewers only and never to the applicant. They inform the decision (and the
+waitlist order, Q-L9); they never decide on their own.
+
+### 2.1.2 Waitlist auto-promotion (new)
+
+An accepted person who has not activated their account within the cycle's activation deadline (default 7 days, Q-L8)
+loses the place: the acceptance becomes `lapsed`, they get a plain e-mail, and the daily job offers the place to the next
+waitlisted applicant (capacity respected, audited, idempotent). Leadership can restore a lapsed person while a place
+remains.
+
 ### 2.2 Account activation (accepted applicants)
 
 | State | Meaning |
@@ -61,6 +76,8 @@ audited and e-mailed once.
 | invited | Account created on acceptance, activation link e-mailed (valid 7 days) |
 | activated | Password set; first sign-in opens onboarding (complete the profile) |
 | invite expired | Link no longer valid; a reminder goes at day 3 and day 6; leadership can resend from the member page |
+| lapsed | Not activated within the deadline: the place goes to the waitlist (§2.1.2) |
+| onboarding | After the first sign-in a short guided screen (welcome, names, photo, skills, what is public) shown once, skippable, saved per step in the database |
 
 ### 2.3 Membership (`members.status`, expanded)
 
@@ -94,6 +111,13 @@ can be approved or declined one by one or in bulk.
 | Field | Meaning |
 | ----- | ------- |
 | `blocked_at`, `blocked_by`, `blocked_reason` | Account blocked by leadership. The auth user is banned too, so existing sessions end; sign-in shows the blocked notice. Unblocking clears both. |
+
+### 2.5 Digital membership card
+
+Every active member has a card in "My membership": name, photo (if shown), member number, "member since", term end,
+status and a QR code to `/verify/member/<token>`. The public page shows only name, member number, status and term end.
+The token is rotatable and is revoked when the membership ends or the account is blocked; an expired or ended
+membership shows its real status, never "active".
 
 ## 3. Term and renewal
 
@@ -147,7 +171,7 @@ explanation.
 
 ## 7. E-mails (new templates marked)
 
-`membership.application_received` (add the tracking link) · **`membership.info_requested`** ·
+`membership.application_received` (add the tracking link) · **`membership.activation_lapsed`** (plain: the place was released) · **`membership.info_requested`** ·
 `membership.application_accepted` (activation) · **`membership.activation_reminder`** · `membership.application_rejected` (plain: no note, no reason)
 · `membership.application_waitlisted` · **`member.term_reminder`** (30/7/1) · **`member.expired`** ·
 **`member.renewed`** · **`member.suspended`** · **`member.reinstated`** · **`member.ended`** (terminated or not renewed) · **`member.leave_requested`** (to the member, and a notice to leadership) · **`member.leave_approved`** · **`member.leave_declined`** (plain, no message) ·
