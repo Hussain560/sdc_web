@@ -436,16 +436,25 @@ export async function getProfileExtras(member: DirectoryMember): Promise<Profile
 }
 
 // ------------------------------------------------------------------------------------------ leadership
+/** Public wording for the system administrator role. */
+const PLATFORM_DEVELOPER = { ar: 'أحد مطوري المنصة', en: 'Platform developer' } as const;
+
 export async function listLeadership(): Promise<LeadershipPerson[]> {
   const { data, error } = await createPublicClient().from('current_positions').select('*');
   if (error || !data) return [];
   return data
     .flatMap((r) => {
       if (!r.assignment_id) return [];
-      const ar =
-        r.display_title_ar || [r.role_name_ar, r.committee_name_ar].filter(Boolean).join(' ');
-      const en =
-        r.display_title_en || [r.role_name_en, r.committee_name_en].filter(Boolean).join(' ') || ar;
+      // The platform administrator is shown to visitors as one of the platform's developers, not by the system role.
+      const platform = r.role_key === 'system_admin' && !r.display_title_ar;
+      const ar = platform
+        ? PLATFORM_DEVELOPER.ar
+        : r.display_title_ar || [r.role_name_ar, r.committee_name_ar].filter(Boolean).join(' ');
+      const en = platform
+        ? PLATFORM_DEVELOPER.en
+        : r.display_title_en ||
+          [r.role_name_en, r.committee_name_en].filter(Boolean).join(' ') ||
+          ar;
       return [
         {
           id: r.assignment_id,

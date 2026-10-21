@@ -52,8 +52,8 @@ const messages: Partial<Record<ErrorCode, Record<Lang, string>>> = {
     en: 'You must accept the privacy notice.',
   },
   CYCLE_OVERLAP: {
-    ar: 'يوجد دورة أخرى منشورة في نفس الفترة.',
-    en: 'Another published cycle overlaps these dates.',
+    ar: 'تتداخل هذه التواريخ مع دورة منشورة أخرى. غيّر التواريخ، أو أعد الدورة الأخرى إلى مسودة، أو أغلقها مبكراً.',
+    en: 'These dates overlap another published cycle. Change the dates, unpublish the other cycle, or close it early.',
   },
   PENDING_APPLICATIONS: {
     ar: 'توجد طلبات دون قرار — لا يمكن إكمال الدورة.',

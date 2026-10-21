@@ -30,6 +30,7 @@
 | `members.manage` | Members | Change member status; manual/legacy member records; claim emails | global |
 | `members.create` | Members | Add a member directly (the account is created and an activation link is e-mailed) | global |
 | `members.view_contact` | Members | See the e-mail and phone of members in the dashboard (the column is absent without it) | global |
+| `members.edit_own_name` | Members | Correct your own name on your member profile (everyone else sees it as locked) | global |
 | `committees.manage` | Committees | Create/edit/deactivate committees | global |
 | `committee_members.manage` | Committees | Assign/end `committee_member` (and deputy) in scope | committee |
 | `roles.view` | Access | View all role assignments | global |
@@ -71,6 +72,7 @@ Ownership rights (no permission key): read/update own profile; read/cancel own r
 | members.manage | ✅ | — | ✅ | — | — | — | — |
 | members.create | ✅ | ✅ | ✅ | — | — | — | — |
 | members.view_contact | ✅ | ✅ | — | — | — | — | — |
+| members.edit_own_name | ✅ | ✅ | ✅ | — | — | — | — |
 | committees.manage | ✅ | — | ✅ | — | — | — | — |
 | committee_members.manage | ✅ | — | ✅ | — | ◐ | — | — |
 | roles.view | ✅ | ✅ | ✅ | — | — | — | — |

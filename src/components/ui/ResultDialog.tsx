@@ -27,6 +27,7 @@ export function ResultDialog({
   icon,
   title,
   description,
+  children,
   actions,
   className,
 }: {
@@ -37,6 +38,8 @@ export function ResultDialog({
   icon?: LucideIcon;
   title: string;
   description?: string;
+  /** Extra content between the sentence and the buttons, e.g. a checklist of what was done. */
+  children?: ReactNode;
   actions?: ReactNode;
   className?: string;
 }) {
@@ -71,6 +74,7 @@ export function ResultDialog({
           {title}
         </h2>
         {description && <p className="t-body text-muted">{description}</p>}
+        {children}
       </div>
       {actions && <div className="mt-6 flex flex-col gap-2 *:w-full">{actions}</div>}
     </dialog>

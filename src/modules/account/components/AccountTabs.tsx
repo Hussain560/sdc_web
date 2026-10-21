@@ -5,7 +5,6 @@ import { useLanguage } from '@/context/LanguageContext';
 import { cn } from '@/components/ui';
 
 const tabs = [
-  { href: '/account', ar: 'نظرة عامة', en: 'Overview' },
   { href: '/account/profile', ar: 'ملفي الشخصي', en: 'My profile' },
   { href: '/account/roles', ar: 'مناصبي', en: 'My positions' },
   { href: '/account/security', ar: 'الأمان', en: 'Security' },

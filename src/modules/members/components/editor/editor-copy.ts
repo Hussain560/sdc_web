@@ -26,6 +26,13 @@ export const EDITOR_COPY = {
     namesLede: 'هكذا سُجّل اسمك عند قبول عضويتك.',
     namesLocked:
       'لا يمكنك تغيير اسمك بنفسك. إن كان فيه خطأ، اطلب التعديل من قائد المجتمع أو مدير النظام.',
+    namesLedeOpen: 'يظهر اسمك في الدليل والشهادات كما تكتبه هنا.',
+    saveNames: 'حفظ الاسم',
+    photoShow: 'أظهر صورتي للزوار',
+    photoShowHint: 'إذا أُطفئ المفتاح يظهر أول حرف من اسمك بدل الصورة.',
+    jumpLabel: 'الانتقال إلى قسم',
+    arabicCol: 'بالعربية',
+    englishCol: 'English',
     firstAr: 'الاسم الأول (عربي)',
     middleAr: 'الاسم الأوسط (عربي)',
     lastAr: 'اسم العائلة (عربي)',
@@ -129,6 +136,14 @@ export const EDITOR_COPY = {
     namesLede: 'This is how your name was recorded when your membership was accepted.',
     namesLocked:
       'You cannot change your own name. If it has a mistake, ask the community leader or a system administrator to correct it.',
+    namesLedeOpen:
+      'Your name appears in the directory and on certificates exactly as you write it here.',
+    saveNames: 'Save name',
+    photoShow: 'Show my photo to visitors',
+    photoShowHint: 'When off, visitors see the first letter of your name instead.',
+    jumpLabel: 'Jump to a section',
+    arabicCol: 'Arabic',
+    englishCol: 'English',
     firstAr: 'First name (Arabic)',
     middleAr: 'Middle name (Arabic)',
     lastAr: 'Last name (Arabic)',

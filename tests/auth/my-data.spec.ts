@@ -59,17 +59,12 @@ test('my data shows the member record and the application; the profile holds the
       })
       .toBe('+966555000444');
 
-    // A member with no position is not shown the leadership message; one with only a committee seat gets its own.
+    // The overview was merged into the profile: the account area opens on it, and it has only four tabs.
     await gotoReady(page, '/en/account');
-    await expect(page.getByText('You are part of the community leadership')).toHaveCount(0);
-    await sql(
-      `insert into public.role_assignments (user_id, role_key, committee_id)
-       values ($1, 'committee_member', (select id from public.committees where slug = 'ai'))`,
-      [who.id],
-    );
-    await gotoReady(page, '/en/account');
-    await expect(page.getByText('You are a member of community committees')).toBeVisible();
-    await expect(page.getByText('You are part of the community leadership')).toHaveCount(0);
+    await expect(page).toHaveURL(new RegExp('/en/account/profile$'));
+    const tabs = page.getByRole('navigation', { name: 'Account menu' }).getByRole('link');
+    await expect(tabs).toHaveCount(4);
+    await expect(tabs.first()).toHaveText('My profile');
   } finally {
     await sql(`delete from public.membership_applications where user_id = $1`, [who.id]);
     await sql(`delete from public.membership_cycles where name_ar like $1`, [`%${tag}%`]);
