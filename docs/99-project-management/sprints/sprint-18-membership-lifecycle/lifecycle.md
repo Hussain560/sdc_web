@@ -13,7 +13,7 @@ flowchart LR
   S --> R["Under review<br/>(a reviewer claims it)"]
   R -->|accept| A["Accepted<br/>account created, activation e-mail"]
   R -->|waitlist| W["Waitlisted"]
-  R -->|reject| X["Rejected<br/>e-mail with optional note"]
+  R -->|reject| X["Rejected<br/>plain e-mail, no note or reason"]
   R -->|need more info| I["Info requested<br/>applicant edits and resubmits"]
   I --> R
   W -->|accept| A
@@ -25,7 +25,10 @@ flowchart LR
   E -->|leadership renews| M
   M -->|leadership| SU["Suspended (reason)<br/>sign-in shows a notice"]
   SU -->|reinstate| M
-  M -->|member leaves| L["Ended — left"]
+  M -->|member asks to leave| LR["Leave requested<br/>still an active member"]
+  LR -->|leadership approves| L["Ended — left"]
+  LR -->|leadership declines| M
+  LR -->|member withdraws the request| M
   M -->|leadership ends it| T["Ended — terminated (reason)"]
 ```
 
@@ -44,7 +47,7 @@ about the membership.
 | `info_requested` **new** | The reviewer needs a correction or more detail; the applicant can edit and resubmit while the cycle's review window lasts | reviewer → applicant | the request, a link to edit |
 | `waitlisted` | Good application, no place yet | reviewer | "Waitlisted" |
 | `accepted` | Becomes a member; an account is created or reused | reviewer | e-mail with the activation link |
-| `rejected` | Not accepted (optional note shown to the applicant, internal note never shown) | reviewer, or automatic for waitlisted when the cycle completes | e-mail |
+| `rejected` | Not accepted. The applicant gets a plain e-mail with **no note and no reason**; the reviewer may keep an internal note that is never shown to anyone outside leadership | reviewer, or automatic for waitlisted when the cycle completes | the plain e-mail |
 | `withdrawn` | The applicant withdrew before a decision | applicant | confirmation |
 
 Rules: one application per e-mail per cycle (exists); a reviewer never decides their own application (exists); capacity
@@ -70,6 +73,22 @@ audited and e-mailed once.
 
 Existing `inactive` rows migrate to `ended` with `end_reason = 'left'` (or `legacy` for legacy records).
 
+### 2.3.1 Leave request (`member_leave_requests`, new)
+
+A member can **never** end their own membership directly. They send a **leave request**; the membership stays `active` (with all access) until leadership decides.
+
+| State | Meaning | Who moves it |
+| ----- | ------- | ------------ |
+| `pending` | The member asked to leave, with an optional reason and a preferred last day | member |
+| `approved` | Leadership accepted: the membership becomes `ended` / `left` on the agreed date (today or the member's preferred date), positions end | `members.manage` |
+| `declined` | Leadership refused; the member stays active. The member gets a plain e-mail with no message or reason; leadership talks to them directly if needed | `members.manage` |
+| `withdrawn` | The member took the request back before a decision | member |
+
+Rules: one pending request per member; a member with a pending request sees its status on "My membership" and can
+withdraw it; a leader cannot decide a request about themselves (another leader or the system administrator does);
+every step is audited and e-mailed once; the pending requests are a queue on the dashboard with a count badge, and
+can be approved or declined one by one or in bulk.
+
 ### 2.4 Account (`profiles`, new fields)
 
 | Field | Meaning |
@@ -90,7 +109,8 @@ Existing `inactive` rows migrate to `ended` with `end_reason = 'left'` (or `lega
 
 | Action | Who | Needs | Effect | E-mail |
 | ------ | --- | ----- | ------ | ------ |
-| Leave the community | the member | confirmation dialog | `ended` / `left`, positions end, hidden from directory | confirmation |
+| Ask to leave | the member | confirmation dialog, optional reason and preferred last day | creates a **pending leave request**; nothing changes yet | received (member) and a notice to leadership |
+| Approve / decline a leave request | `members.manage` (system administrator, community leader, and the vice leader role if the owner adds it, Q-L7) | one click; approving can set the last day | approve: `ended` / `left`, positions end, hidden from directory; decline: member stays active | approved / declined (plain, no message) |
 | End membership (terminate) | `members.manage` | reason (internal) and optional message to the member | `ended` / `terminated`, positions end | yes, with the optional message |
 | Suspend / reinstate | `members.manage` | reason; optional end date of the suspension | `suspended` ↔ `active`; positions are kept but inactive | yes |
 | Renew | `members.manage` | new end date | `expired` or `active` → `active` with new `term_ends_at` | yes |
@@ -108,6 +128,7 @@ refused (a community leader cannot block the system administrator; nobody blocks
 | suspended membership | a modal with the reason category and contact; the account area works (security, my data), member pages do not |
 | expired membership | a modal "Your membership ended on <date>"; the "request renewal" action (Q-L2) |
 | ended membership | the account works for history (my data, certificates); member pages say the membership has ended |
+| pending leave request | no change in access; "My membership" shows "Leave request sent on <date>, waiting for leadership" with a withdraw button |
 
 Server-side checks enforce all of this (RLS and the member functions check `status = 'active'` already for writes;
 new: reads of member-only pages and the directory, and a session check for blocked accounts). The modal is only the
@@ -121,14 +142,15 @@ explanation.
 | `membership.review` (exists) | system admin, community leader | decisions, info requests, bulk decisions |
 | `members.manage` (exists) | system admin, community leader | renew, suspend, end, resend activation, bulk member actions |
 | `users.block` **new** | system admin, community leader | block / unblock any account |
+| `members.manage` (leave requests) | system admin, community leader (and the vice leader if added, Q-L7) | approve or decline leave requests |
 | `members.edit_own_name` (Sprint 17) | system admin, community leader, founders | unchanged |
 
 ## 7. E-mails (new templates marked)
 
 `membership.application_received` (add the tracking link) · **`membership.info_requested`** ·
-`membership.application_accepted` (activation) · **`membership.activation_reminder`** · `membership.application_rejected`
+`membership.application_accepted` (activation) · **`membership.activation_reminder`** · `membership.application_rejected` (plain: no note, no reason)
 · `membership.application_waitlisted` · **`member.term_reminder`** (30/7/1) · **`member.expired`** ·
-**`member.renewed`** · **`member.suspended`** · **`member.reinstated`** · **`member.ended`** (left / terminated) ·
+**`member.renewed`** · **`member.suspended`** · **`member.reinstated`** · **`member.ended`** (terminated or not renewed) · **`member.leave_requested`** (to the member, and a notice to leadership) · **`member.leave_approved`** · **`member.leave_declined`** (plain, no message) ·
 **`account.blocked`** · **`account.unblocked`**. Both languages, the member's preferred language, sent once
 (idempotency key per event), retried by the existing retry route.
 

@@ -33,7 +33,7 @@ The business process is in [lifecycle.md](./lifecycle.md). The design brief is
 | G2 | **No membership term.** `members` has `joined_at` and `ended_at` but no end date, no reminders, no expiry, no renewal | `members` table |
 | G3 | **`suspended` does not stop anything.** The status and a required reason exist, but no check in the sign-in path, the proxy or the member pages | `members.status`, `src/lib/auth` |
 | G4 | **No way to block an account.** `profiles` has no blocked state; leadership cannot stop a person from signing in | `profiles` |
-| G5 | **Ending a membership is thin.** A member can leave (`inactive`) and leaders can change one status at a time; there is no reason for termination, no e-mail, positions are not ended, no bulk actions on the members list | `set_member_status`, `MemberActions.tsx`, `dashboard/members` |
+| G5 | **Ending a membership is thin and unchecked.** A member can end their own membership (`inactive`) with no approval, leaders change one status at a time, there is no reason for termination, no e-mail, positions are not ended, no bulk actions on the members list | `set_member_status`, `MemberActions.tsx`, `dashboard/members` |
 | G6 | **Applicants get little feedback.** A "received" e-mail exists, but there is no reference number, no way to check status without an account, and no "please correct this" step | `membership.application_received`, `/join` |
 | G7 | **The review page is hard to review on.** The application detail page and the applications list need a redesign: all submitted fields grouped, answers readable, duplicate warnings, a sticky decision panel, next/previous through the queue; the list has no phone layout (cards) | `dashboard/membership/applications`, `[id]` |
 | G8 | **Accepted people can stall.** The activation e-mail goes once; there is no reminder, no expiry handling and no onboarding after the first sign-in | `member.created`, activation flow |
@@ -55,8 +55,8 @@ MEM-016, ACC-008) start in parallel.
 | MBR-010 | Applications list redesign: filters, cycle switcher, bulk bar, phone cards | P0 | 3 | ⬜ ⛔ step 0 |
 | MBR-011 | Application review page redesign: every field, answers, duplicates, history, sticky decision panel, request info, next/previous | P0 | 5 | ⬜ ⛔ step 0 |
 | MEM-016 | Membership term: term dates, cycle term end, daily expiry job, reminders, renew (single and bulk) | P0 | 5 | ⬜ |
-| MEM-017 | Membership states v2: `expired`, `ended` with reason, suspension that really stops access, positions end with the membership | P0 | 3 | ⬜ |
-| MEM-018 | Members list bulk actions (renew, suspend, reinstate, end, resend activation, e-mail, export) with per-row results | P0 | 3 | ⬜ ⛔ step 0 |
+| MEM-017 | Membership states v2: `expired`, `ended` with reason, leave requests that leadership approves or declines, suspension that really stops access, positions end with the membership | P0 | 4 | ⬜ |
+| MEM-018 | Members list bulk actions (renew, suspend, reinstate, end, approve or decline leave requests, resend activation, e-mail, export) with per-row results | P0 | 3 | ⬜ ⛔ step 0 |
 | MEM-019 | Member detail: lifecycle timeline and actions with reasons and messages | P1 | 2 | ⬜ ⛔ step 0 |
 | ACC-008 | Block and unblock accounts (`users.block`), session end, sign-in notices for blocked / suspended / expired | P0 | 3 | ⬜ |
 | ACC-009 | Activation follow-up: reminders, expired link handling, resend, onboarding after the first sign-in | P1 | 2 | ⬜ |
@@ -114,6 +114,11 @@ MEM-016, ACC-008) start in parallel.
 - `renew_members(ids, ends_at)` with `members.manage`, ≤ 200 per call, per-row results; renewing sets `active`.
 
 **MEM-017 — States v2**
+- **Leave requests:** a member can no longer end their own membership. `request_to_leave` creates a pending request
+  (`member_leave_requests`: pending, approved, declined, withdrawn; optional reason and preferred last day); the
+  membership stays `active` until leadership decides. `decide_leave_requests(ids, decision)` needs `members.manage`,
+  handles up to 200 with per-row results, refuses a leader deciding their own request, ends positions on approval and
+  e-mails once. The old direct "leave" path is removed.
 - `members.status`: `active`, `suspended`, `expired`, `ended` (+ `end_reason`: `left`, `terminated`, `not_renewed`,
   `legacy`); migrate `inactive` → `ended`. Status changes go through one function with the transition table of
   [lifecycle.md §2.3](./lifecycle.md) and refuse anything else.
@@ -122,6 +127,7 @@ MEM-016, ACC-008) start in parallel.
 - pgTAP: every transition allowed / refused, reasons required, positions follow, directory hides non-active members.
 
 **MEM-018 — Bulk actions on members**
+- A "Leave requests" queue (count badge) where leadership approves or declines requests, one by one or in bulk.
 - Selection on the members list (desktop rows, phone cards), a bar with: renew, suspend, reinstate, end membership,
   resend activation, e-mail the selected (template + free text), export CSV. Dialogs ask for the reason and the
   optional message; results per row (done, skipped and why).
@@ -178,6 +184,7 @@ MEM-016, ACC-008) start in parallel.
 | Q-L3 | Grace period after expiry before hiding the member from the directory? | None: hidden on the day of expiry, restored on renewal |
 | Q-L4 | Verify the applicant's e-mail before the application counts (a confirmation link) or after acceptance only? | After acceptance (the activation link proves it) |
 | Q-L5 | Can a rejected applicant apply again in the next cycle? | Yes; the reviewer sees the earlier application |
+| Q-L7 | There is no "vice leader" role today. Add a role (for example `community_vice`) that holds `members.manage` and `membership.review`, so the vice can decide leave requests and applications? | Not added: only the system administrator and the community leader decide; the vice role is a later change |
 | Q-L6 | What does a suspended member keep: certificates, event registrations, positions? | Keeps certificates and past registrations; positions paused; cannot register for member-only events |
 
 ## Definition of Done (sprint-specific)

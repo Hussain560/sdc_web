@@ -228,8 +228,8 @@ Work the team did because the situation changed or the owner asked. Ids are new.
 | MBR-010 | Applications list redesign with bulk bar and phone cards | P0 — ⬜ Sprint 18 ⛔ designs |
 | MBR-011 | Application review page redesign (all fields, duplicates, history, decision panel, request info) | P0 — ⬜ Sprint 18 ⛔ designs |
 | MEM-016 | Membership term: dates, daily expiry job, reminders, renew (single and bulk) | P0 — ⬜ Sprint 18 |
-| MEM-017 | Membership states v2 (`expired`, `ended` + reason, suspension that stops access) | P0 — ⬜ Sprint 18 |
-| MEM-018 | Members list bulk actions with per-row results | P0 — ⬜ Sprint 18 ⛔ designs |
+| MEM-017 | Membership states v2 (`expired`, `ended` + reason, leave requests approved by leadership, suspension that stops access) | P0 — ⬜ Sprint 18 |
+| MEM-018 | Members list bulk actions and leave-requests queue with per-row results | P0 — ⬜ Sprint 18 ⛔ designs |
 | MEM-019 | Member detail lifecycle timeline and actions | P1 — ⬜ Sprint 18 ⛔ designs |
 | ACC-008 | Block and unblock accounts (`users.block`), sign-in notices | P0 — ⬜ Sprint 18 |
 | ACC-009 | Activation reminders, expired-link resend, onboarding after first sign-in | P1 — ⬜ Sprint 18 |

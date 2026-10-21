@@ -15,7 +15,7 @@ one journey, for the person and for the people who run it.
 The journey: a cycle opens → someone applies (no account needed) → they get a reference and can follow their
 application → a reviewer reads everything on one clear page and decides, or asks for a correction → accepted people get
 an e-mail, set a password and land in a short onboarding → their membership has a term, with reminders before it ends →
-it expires on its own unless renewed → leadership can renew, suspend, end, or block an account, one by one or in bulk →
+it expires on its own unless renewed → a member who wants to leave sends a request that leadership approves or declines → leadership can renew, suspend, end, or block an account, one by one or in bulk →
 whenever someone signs in, they understand their situation.
 
 ## What to design
@@ -37,8 +37,11 @@ whenever someone signs in, they understand their situation.
    new link", and a short onboarding after the first sign-in (confirm your name, add a photo, complete your profile).
 6. **Notices on sign-in**: account blocked (contact the administration), membership suspended (reason category,
    contact), membership expired (ended on a date, request renewal), membership ended. Calm, clear, never scary.
-7. **My membership** in the account area: status, term dates, "ending soon", request renewal, and leave the community
-   (with a confirmation that explains what happens to the profile and positions).
+7. **My membership** in the account area: status, term dates, "ending soon", request renewal, and **ask to leave the
+   community**. A member cannot leave by themselves: they send a leave request (optional reason and preferred last
+   day) and stay a full member until leadership approves it. Design the request dialog (explain what happens to the
+   profile and positions if it is approved), the "request sent, waiting for leadership" state with a withdraw button,
+   and the approved and declined outcomes.
 
 **Dashboard, for reviewers and leadership** (keep the dashboard's feel)
 
@@ -52,15 +55,17 @@ whenever someone signs in, they understand their situation.
     earlier cycle, already a member, previously rejected, blocked account). The application's history. A decision
     area that stays in reach: claim, accept, waitlist, reject, ask for a correction with a message, an internal note,
     and moving to the next application. Make reviewing twenty applications in a row comfortable, on desktop and phone.
-11. **Members list** with lifecycle at a glance (status, term end, "ending soon", activation pending) and selection with
-    bulk actions: renew to a date, suspend, reinstate, end membership, resend activation, e-mail the selected, export.
-    Show the confirmation (how many, who) and the per-row results.
+11. **Members list** with lifecycle at a glance (status, term end, "ending soon", activation pending, leave request
+    pending) and selection with bulk actions: renew to a date, suspend, reinstate, end membership, approve or decline
+    leave requests, resend activation, e-mail the selected, export. Show the confirmation (how many, who) and the
+    per-row results. Add a **leave requests queue** for leadership (count badge, who asked, since when, the member's
+    reason and preferred last day, approve or decline).
 12. **Member detail**: one timeline (applied, decided, activated, positions, renewals, suspensions, end) and the
     actions, each with its dialog: reason (internal), optional message to the member, dates.
 13. **Block / unblock account** dialog, usable for any account, not only members.
 14. **The lifecycle e-mails** in both languages: received (with tracking link), correction requested, accepted
-    (activation), activation reminder, rejected, waitlisted, term reminder, expired, renewed, suspended, reinstated,
-    ended, account blocked and unblocked.
+    (activation), activation reminder, rejected (plain: no note and no reason), waitlisted, term reminder, expired, renewed, suspended, reinstated,
+    ended, leave requested, leave approved, leave declined (plain, no message), account blocked and unblocked.
 
 For every screen: empty, loading, error and success states, and what a person without the permission sees.
 
@@ -68,6 +73,8 @@ For every screen: empty, loading, error and success states, and what a person wi
 
 - Privacy: applicants see only their own application; internal notes are never shown to them; tracking links carry no
   personal data; e-mail and phone never appear on public pages.
+- A rejection is communicated plainly: no note or reason is written to the applicant, and a declined leave request
+  carries no message either. Reviewers and leadership may keep internal notes that members never see.
 - Decisions about people are serious: confirmations name the people and the count, reasons are required where the
   business process asks for them, and bulk results say what was done and what was skipped and why.
 - Arabic is the primary layout; mirror correctly for English. Both themes, 360 px phones to wide desktop, keyboard and
