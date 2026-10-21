@@ -273,7 +273,7 @@ export function ImageCropper({
         onPointerUp={onPointerUp}
         onPointerCancel={onPointerUp}
         onKeyDown={onKeyDown}
-        className="relative aspect-square w-full max-w-md cursor-grab touch-none overflow-hidden rounded-shape-lg bg-accent-soft select-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring active:cursor-grabbing"
+        className="relative mx-auto aspect-square w-[min(100%,26rem,44dvh)] cursor-grab touch-none overflow-hidden rounded-shape-lg bg-accent-soft select-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring active:cursor-grabbing"
       >
         <canvas ref={view} aria-hidden="true" className="absolute inset-0 size-full" />
         {/* The circle: everything outside it is dimmed, a thin grid helps to place the face. */}
@@ -290,7 +290,7 @@ export function ImageCropper({
         </div>
       </div>
 
-      <div className="flex items-center gap-3">
+      <div className="mx-auto flex w-full max-w-md items-center gap-2 sm:gap-3">
         <button
           type="button"
           onClick={() => dispatch({ type: 'rotate' })}
@@ -326,11 +326,11 @@ export function ImageCropper({
           <ZoomIn aria-hidden="true" className="size-5" />
         </button>
       </div>
-      <p id={`${id}-keys`} className="t-body-sm text-muted">
+      <p id={`${id}-keys`} className="t-body-sm text-muted max-sm:hidden">
         {texts.keys}
       </p>
 
-      <div className="flex flex-wrap items-center gap-3">
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3 *:max-sm:w-full">
         <Button
           type="button"
           loading={exporting || busy}
