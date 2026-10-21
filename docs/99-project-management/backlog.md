@@ -217,3 +217,20 @@ Work the team did because the situation changed or the owner asked. Ids are new.
 | RDS-035 | Home members marquee | P1 — ⬜ Sprint 17 ⛔ designs |
 | MOT-001 | Motion foundation (`motion` library, shared presets, View Transitions, reduced motion, tests) | P0 — ⬜ Sprint 17 |
 | MOT-002 | Motion roll-out on Home, event page, members, articles, committees, Join | P1 — ⬜ Sprint 17 ⛔ designs |
+
+### Sprint 18 — Membership lifecycle ([plan](./sprints/sprint-18-membership-lifecycle/plan.md), [process](./sprints/sprint-18-membership-lifecycle/lifecycle.md))
+
+| ID | Story | P |
+| -- | ----- | - |
+| MBR-007 | Applications data v2: split names, reference number, `info_requested`, tracking token | P0 — ⬜ Sprint 18 |
+| MBR-008 | Join form redesign: steps, split names, phone with country, autosave, submission feedback | P0 — ⬜ Sprint 18 ⛔ designs |
+| MBR-009 | Track my application without an account (status, correction, withdraw) | P1 — ⬜ Sprint 18 ⛔ designs |
+| MBR-010 | Applications list redesign with bulk bar and phone cards | P0 — ⬜ Sprint 18 ⛔ designs |
+| MBR-011 | Application review page redesign (all fields, duplicates, history, decision panel, request info) | P0 — ⬜ Sprint 18 ⛔ designs |
+| MEM-016 | Membership term: dates, daily expiry job, reminders, renew (single and bulk) | P0 — ⬜ Sprint 18 |
+| MEM-017 | Membership states v2 (`expired`, `ended` + reason, suspension that stops access) | P0 — ⬜ Sprint 18 |
+| MEM-018 | Members list bulk actions with per-row results | P0 — ⬜ Sprint 18 ⛔ designs |
+| MEM-019 | Member detail lifecycle timeline and actions | P1 — ⬜ Sprint 18 ⛔ designs |
+| ACC-008 | Block and unblock accounts (`users.block`), sign-in notices | P0 — ⬜ Sprint 18 |
+| ACC-009 | Activation reminders, expired-link resend, onboarding after first sign-in | P1 — ⬜ Sprint 18 |
+| NOT-004 | Lifecycle e-mails (new templates, both languages, sent once, retried) | P0 — ⬜ Sprint 18 |

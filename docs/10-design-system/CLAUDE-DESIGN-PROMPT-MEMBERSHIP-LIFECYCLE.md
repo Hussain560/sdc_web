@@ -1,0 +1,84 @@
+# Claude Design brief — The membership lifecycle
+
+You already know our Design System v2 (the Saudi Developer Community, SDC) and the pages you designed for members and
+motion. Use them: same tokens, type, components and motion language, dark-first with a light theme, Arabic first and
+right-to-left, English under `/en`. Build on the system and push it further where these flows need it. You have full
+freedom on layout, flow and interaction; the list below says what we need, not how it must look.
+
+## The idea
+
+Joining the community should feel like being welcomed, not like filling a government form. And running the community
+should feel calm: leaders should see at a glance who is waiting, who is about to expire, and act on many people at once
+without fear of mistakes. Today the pieces exist but they don't form one story. We want the whole lifecycle to read as
+one journey, for the person and for the people who run it.
+
+The journey: a cycle opens → someone applies (no account needed) → they get a reference and can follow their
+application → a reviewer reads everything on one clear page and decides, or asks for a correction → accepted people get
+an e-mail, set a password and land in a short onboarding → their membership has a term, with reminders before it ends →
+it expires on its own unless renewed → leadership can renew, suspend, end, or block an account, one by one or in bulk →
+whenever someone signs in, they understand their situation.
+
+## What to design
+
+**Public, for applicants and members**
+
+1. **Join page (`/join`)** in every state: cycle open (with what happens next and when), scheduled (when it opens),
+   closed (follow us), already applied, already a member.
+2. **The application form.** Steps that feel light on a phone: about you (first, middle and last name in Arabic and in
+   English, e-mail, phone with a country picker), study (status, university, major, track), links and a short bio, the
+   cycle's own questions, then review and consent. Inline validation, a progress feeling, a saved draft. Arabic names
+   can be long; English names are optional in the middle.
+3. **After submitting.** A result moment with the reference number (for example `SDC-26-0142`), the e-mail we wrote to,
+   what happens next and the expected decision date.
+4. **Track my application** (a link from the e-mail, no sign-in): a status timeline, a message from the reviewer when
+   they asked for a correction, editing only the requested parts and resubmitting, and withdrawing. Also "link not
+   valid".
+5. **Activation and first sign-in.** Set a password from the acceptance e-mail, an expired-link page with "send me a
+   new link", and a short onboarding after the first sign-in (confirm your name, add a photo, complete your profile).
+6. **Notices on sign-in**: account blocked (contact the administration), membership suspended (reason category,
+   contact), membership expired (ended on a date, request renewal), membership ended. Calm, clear, never scary.
+7. **My membership** in the account area: status, term dates, "ending soon", request renewal, and leave the community
+   (with a confirmation that explains what happens to the profile and positions).
+
+**Dashboard, for reviewers and leadership** (keep the dashboard's feel)
+
+8. **Cycles** list and form: add the membership term end date per cycle, show the cycle's funnel at a glance (applied,
+   in review, accepted, activated).
+9. **Applications list**: status tabs with counts, cycle switcher, search by name part, e-mail, phone or reference,
+   filters, selection with a bulk bar (accept, waitlist, reject, assign to me) and a per-row result after a bulk
+   decision. On a phone: cards, not a squeezed table.
+10. **Application review page** — the most important screen. Everything the applicant submitted, grouped and easy to
+    scan (identity, contact, study, links, bio, answers to the cycle questions). Warnings (same e-mail or phone in an
+    earlier cycle, already a member, previously rejected, blocked account). The application's history. A decision
+    area that stays in reach: claim, accept, waitlist, reject, ask for a correction with a message, an internal note,
+    and moving to the next application. Make reviewing twenty applications in a row comfortable, on desktop and phone.
+11. **Members list** with lifecycle at a glance (status, term end, "ending soon", activation pending) and selection with
+    bulk actions: renew to a date, suspend, reinstate, end membership, resend activation, e-mail the selected, export.
+    Show the confirmation (how many, who) and the per-row results.
+12. **Member detail**: one timeline (applied, decided, activated, positions, renewals, suspensions, end) and the
+    actions, each with its dialog: reason (internal), optional message to the member, dates.
+13. **Block / unblock account** dialog, usable for any account, not only members.
+14. **The lifecycle e-mails** in both languages: received (with tracking link), correction requested, accepted
+    (activation), activation reminder, rejected, waitlisted, term reminder, expired, renewed, suspended, reinstated,
+    ended, account blocked and unblocked.
+
+For every screen: empty, loading, error and success states, and what a person without the permission sees.
+
+## Things to respect
+
+- Privacy: applicants see only their own application; internal notes are never shown to them; tracking links carry no
+  personal data; e-mail and phone never appear on public pages.
+- Decisions about people are serious: confirmations name the people and the count, reasons are required where the
+  business process asks for them, and bulk results say what was done and what was skipped and why.
+- Arabic is the primary layout; mirror correctly for English. Both themes, 360 px phones to wide desktop, keyboard and
+  screen-reader friendly, AA contrast, the reduced-motion version of every animation.
+- The business rules are in `docs/99-project-management/sprints/sprint-18-membership-lifecycle/lifecycle.md`; follow
+  its states and words, and tell us if a rule makes a screen awkward.
+
+## What we'd like back
+
+For each screen: desktop and phone layouts, the states, new components with their variants, and short behaviour notes.
+For the flows: a map of the journey for the applicant and for the reviewer. Real-looking Arabic and English sample
+content: a mix of strong and weak applications, long names, members ending soon, suspended and expired ones.
+
+Surprise us. If you see a better way to make joining feel welcoming or reviewing feel effortless, propose it.
