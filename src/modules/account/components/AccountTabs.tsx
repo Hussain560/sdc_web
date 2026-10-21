@@ -5,7 +5,6 @@ import { useLanguage } from '@/context/LanguageContext';
 import { cn } from '@/components/ui';
 
 const tabs = [
-  { href: '/account', ar: 'نظرة عامة', en: 'Overview' },
   { href: '/account/profile', ar: 'ملفي الشخصي', en: 'My profile' },
   { href: '/account/roles', ar: 'مناصبي', en: 'My positions' },
   { href: '/account/security', ar: 'الأمان', en: 'Security' },
@@ -16,7 +15,10 @@ export function AccountTabs() {
   const pathname = usePathname();
   const { lang } = useLanguage();
   return (
-    <nav aria-label={lang === 'ar' ? 'قائمة الحساب' : 'Account menu'} className="mb-8 flex gap-2">
+    <nav
+      aria-label={lang === 'ar' ? 'قائمة الحساب' : 'Account menu'}
+      className="mb-8 flex gap-2 overflow-x-auto pb-1"
+    >
       {tabs.map((tab) => {
         const active = pathname === tab.href;
         return (
@@ -25,7 +27,7 @@ export function AccountTabs() {
             href={tab.href}
             aria-current={active ? 'page' : undefined}
             className={cn(
-              'rounded-full border px-4 py-2 text-sm font-medium transition-colors',
+              'shrink-0 rounded-full border px-4 py-2 text-sm font-medium whitespace-nowrap transition-colors',
               active
                 ? 'border-line-accent bg-surface-raised text-accent'
                 : 'border-line text-muted hover:text-text',

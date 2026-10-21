@@ -71,5 +71,5 @@ jobs:
       - run: npm ci
       - run: |
           TITLE="${{ github.event.pull_request.title }}"
-          NORMALIZED_TITLE="$(printf '%s' "$TITLE" | sed -E 's#^([a-z]+)/(.+)$#\1: \2#')"
+          NORMALIZED_TITLE="$(printf '%s' "$TITLE" | sed -E 's#^([A-Za-z]+)/[[:space:]]*(.+)$#\L\1: \2#')"
           printf '%s\n' "$NORMALIZED_TITLE" | npx commitlint

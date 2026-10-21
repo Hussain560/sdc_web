@@ -37,13 +37,19 @@ export function CycleForm({
   initial,
   locked,
   windowLocked,
+  closeEditable,
+  freeEdit,
 }: {
   id?: string;
   initial?: CycleFormValues;
   /** Questions cannot change once the first application arrives. */
   locked?: boolean;
-  /** A running window changes only through extend / close early. */
+  /** A window that is running or ended: the opening time no longer changes. */
   windowLocked?: boolean;
+  /** A running window: the closing time can still move, earlier or later, as long as it is ahead. */
+  closeEditable?: boolean;
+  /** Nobody has applied yet: the dates can be corrected freely, even on a running or closed window. */
+  freeEdit?: boolean;
 }) {
   const { lang } = useLanguage();
   const ar = lang === 'ar';
@@ -178,11 +184,22 @@ export function CycleForm({
         <p className="text-xs text-muted">
           {ar ? 'التوقيت بتوقيت السعودية (UTC+3).' : 'Saudi time (UTC+3).'}
         </p>
-        {windowLocked && (
+        {freeEdit && (
           <Alert tone="info">
             {ar
-              ? 'الفترة جارية — تُعدَّل بالتمديد أو الإغلاق المبكر من قائمة الدورات.'
-              : 'The window is running — change it with Extend or Close early from the cycle list.'}
+              ? 'لم يصل أي طلب بعد، فيمكنك تصحيح التواريخ بحرية. إذا كانت الدورة أُغلقت مبكراً فستتبع التواريخ الجديدة.'
+              : 'No application has arrived yet, so you can correct the dates freely. If the cycle was closed early, it will follow the new dates.'}
+          </Alert>
+        )}
+        {windowLocked && (
+          <Alert tone="info">
+            {closeEditable
+              ? ar
+                ? 'الفترة جارية — وقت الفتح لا يتغيّر، لكن يمكنك تعديل وقت الإغلاق (أبكر أو أبعد) ما دام في المستقبل.'
+                : 'The window is running — the opening time stays, but you can move the closing time (earlier or later) while it is still ahead.'
+              : ar
+                ? 'انتهت الفترة — لتمديدها استخدم «تمديد» من قائمة الدورات.'
+                : 'The window has ended — use Extend from the cycle list to continue it.'}
           </Alert>
         )}
         <div className="grid gap-4 sm:grid-cols-2">
@@ -203,7 +220,7 @@ export function CycleForm({
             value={v.closesAt}
             onChange={(e) => set('closesAt', e.target.value)}
             error={errors.closesAt}
-            disabled={windowLocked}
+            disabled={windowLocked && !closeEditable}
             dir="ltr"
           />
           <Field

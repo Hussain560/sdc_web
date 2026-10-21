@@ -30,8 +30,15 @@ const line = z.string().trim().max(80);
 const link = z.string().trim().max(500);
 const id = z.string().regex(/^\d{0,6}$/);
 
+const name = z.string().trim().max(40);
 const partSchema = z
   .object({
+    first_name_ar: name.min(1),
+    middle_name_ar: name,
+    last_name_ar: name.min(1),
+    first_name_en: name,
+    middle_name_en: name,
+    last_name_en: name,
     phone: z.string().regex(/^(\+[1-9][0-9]{6,14})?$/),
     headline_ar: line,
     headline_en: line,
@@ -85,8 +92,8 @@ function fieldErrors(error: z.ZodError, lang: Lang) {
 }
 
 /**
- * Saves some fields of my profile (a section). Only the keys sent change; links must be https. Names are not among them:
- * they are set when the membership is accepted and only leadership changes them (the database refuses them too).
+ * Saves some fields of my profile (a section). Only the keys sent change; links must be https. Names are accepted by the schema
+ * but only people holding members.edit_own_name may change them: the database refuses everyone else (NAME_LOCKED).
  */
 export async function saveMyProfilePart(
   part: Record<string, unknown>,

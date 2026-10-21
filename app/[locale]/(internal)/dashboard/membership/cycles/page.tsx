@@ -28,7 +28,7 @@ export default async function CyclesPage({ params }: { params: Promise<{ locale:
   const undecided = (c: CycleRow) => (c.counts.submitted ?? 0) + (c.counts.under_review ?? 0);
   const name = (c: CycleRow) => (ar ? c.nameAr : c.nameEn || c.nameAr);
   const range = (c: CycleRow) =>
-    `${formatDate(c.opensAt, lang)} → ${formatDate(c.closeEffective, lang)}`;
+    `${formatDate(c.opensAt, lang)} ${lang === 'ar' ? '←' : '→'} ${formatDate(c.closeEffective, lang)}`;
 
   return (
     <>

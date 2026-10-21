@@ -42,7 +42,7 @@ export function useModal(open: boolean): RefObject<HTMLDialogElement | null> {
 
 export const panelClasses = (size: 'sm' | 'md', sheet: boolean) =>
   cn(
-    'm-auto max-h-[calc(100dvh-2rem)] overflow-y-auto rounded-shape-xl border border-line-accent bg-surface-overlay p-6 text-text shadow-elev-2 md:p-8',
+    'm-auto max-h-[calc(100dvh-2rem)] overflow-y-auto [scrollbar-color:var(--border-strong)_transparent] [scrollbar-width:thin] rounded-shape-xl border border-line-accent bg-surface-overlay p-6 text-text shadow-elev-2 md:p-8',
     size === 'sm' ? 'w-[min(32rem,calc(100vw-2rem))]' : 'w-[min(40rem,calc(100vw-2rem))]',
     'backdrop:bg-scrim backdrop:backdrop-blur-xs',
     sheet &&

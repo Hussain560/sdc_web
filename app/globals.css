@@ -122,3 +122,11 @@ svg {
 .m-snap::-webkit-scrollbar {
   display: none;
 }
+
+/* Native dropdown lists follow the theme: without this some browsers paint the open list with their light default
+ * even in dark mode. */
+option,
+optgroup {
+  background-color: var(--surface);
+  color: var(--text);
+}

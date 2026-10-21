@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import { Alert, Badge } from '@/components/ui';
 import { requireUser } from '@/lib/auth/session';
+import { getAccess } from '@/modules/access/queries';
 import { ProfileForm } from '@/modules/account/components/ProfileForm';
 import { getMyProfile } from '@/modules/account/queries';
 import { getReferenceData } from '@/modules/membership/queries';
@@ -23,11 +24,29 @@ export default async function AccountProfilePage({
   const lang = locale === 'en' ? 'en' : 'ar';
   const ar = lang === 'ar';
   const user = await requireUser('/account/profile');
-  const [profile, editor] = await Promise.all([getMyProfile(user.id), getMyEditorData()]);
+  const [profile, editor, access] = await Promise.all([
+    getMyProfile(user.id),
+    getMyEditorData(),
+    getAccess(),
+  ]);
+  const canEditNames = Boolean(access?.grants['members.edit_own_name']);
   if (!profile) notFound();
 
   // Not a member: the plain account form, as before.
-  if (!editor) return <ProfileForm profile={profile} />;
+  if (!editor)
+    return (
+      <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-2 rounded-shape-xl border border-line bg-surface p-5">
+          <h2 className="text-lg font-bold">{ar ? 'حسابك' : 'Your account'}</h2>
+          <p className="text-muted">
+            {ar
+              ? 'هذا حساب على المنصة وليس عضوية. للانضمام إلى المجتمع قدّم طلبك عند فتح باب التسجيل.'
+              : 'This is an account on the platform, not membership. To join the community, apply when intake is open.'}
+          </p>
+        </div>
+        <ProfileForm profile={profile} />
+      </div>
+    );
 
   const status = editor.status as MemberStatus;
   const st = MEMBER_STATUS_LABEL[status];
@@ -62,6 +81,7 @@ export default async function AccountProfilePage({
           reference={reference}
           catalog={[...catalog.values()]}
           lang={lang}
+          canEditNames={canEditNames}
         />
       )}
       <div className="max-w-3xl">
