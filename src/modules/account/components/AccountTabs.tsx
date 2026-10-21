@@ -6,6 +6,7 @@ import { cn } from '@/components/ui';
 
 const tabs = [
   { href: '/account/profile', ar: 'ملفي الشخصي', en: 'My profile' },
+  { href: '/account/membership', ar: 'عضويتي', en: 'My membership' },
   { href: '/account/roles', ar: 'مناصبي', en: 'My positions' },
   { href: '/account/security', ar: 'الأمان', en: 'Security' },
   { href: '/account/privacy', ar: 'بياناتي', en: 'My data' },

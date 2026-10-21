@@ -84,6 +84,9 @@ export async function signIn(
     return failCode('ACCOUNT_BLOCKED', lang);
   }
 
+  // The first sign-in marks the account as activated at once (the daily job is the safety net).
+  await supabase.rpc('sync_my_activation');
+
   // Without an explicit destination, people with an active position land on the dashboard and
   // everyone else on their account. Uses this client (the new session) because cookies set during
   // this request are not readable by getAccess() yet.
@@ -97,7 +100,16 @@ export async function signIn(
     .eq('user_id', session.user.id)
     .lte('starts_at', now)
     .or(`ends_at.is.null,ends_at.gt.${now}`);
-  return ok({ redirectTo: (count ?? 0) > 0 ? '/dashboard' : '/account' });
+  if ((count ?? 0) > 0) return ok({ redirectTo: '/dashboard' });
+  // A member who has not seen the welcome tour yet starts there (ACC-009).
+  const { data: state } = await supabase.rpc('my_account_state');
+  const member = (
+    state as { member?: { status: string; onboarded_at: string | null } | null } | null
+  )?.member;
+  return ok({
+    redirectTo:
+      member?.status === 'active' && !member.onboarded_at ? '/account/welcome' : '/account',
+  });
 }
 
 // ---------------------------------------------------------------- sign out

@@ -70,6 +70,10 @@ export default function LoginForm({
     const result = await signIn(form, { lang, redirect: redirectTo });
     if (!result.ok) {
       setLoading(false);
+      if (result.code === 'ACCOUNT_BLOCKED') {
+        router.replace('/notice/blocked');
+        return;
+      }
       setProblem({ code: result.code, message: result.message });
       return;
     }
