@@ -101,6 +101,7 @@ export function MemberProfileEditor({
   reference,
   catalog,
   lang,
+  canEditNames,
 }: {
   data: EditorData;
   reference: {
@@ -110,6 +111,8 @@ export function MemberProfileEditor({
   };
   catalog: PublicSkill[];
   lang: Lang;
+  /** True for people holding members.edit_own_name (system administrator, community leader, founders). */
+  canEditNames: boolean;
 }) {
   const t = EDITOR_COPY[lang];
   const en = lang === 'en';
@@ -356,7 +359,7 @@ export function MemberProfileEditor({
             {done.next ? `${t.nextStep}: ${t.checks[done.next as CompletenessCheck]}` : t.complete}
           </p>
         </div>
-        <div className="flex flex-col gap-3 rounded-shape-xl border border-line bg-surface p-5">
+        <div className="flex flex-col gap-3 rounded-shape-xl border border-line bg-surface p-5 max-lg:hidden">
           <h2 className="t-h4">{t.preview}</h2>
           {v.is_directory_visible ? (
             <div aria-hidden="true" className="pointer-events-none">
@@ -377,6 +380,42 @@ export function MemberProfileEditor({
 
       <div className="flex min-w-0 flex-col gap-6">
         <p className="t-body text-muted">{t.lede}</p>
+        <Link
+          href={`/members/${data.id}`}
+          className="inline-flex min-h-11 w-fit items-center rounded-full border border-line-strong px-5 t-body-sm font-semibold lg:hidden"
+        >
+          {t.viewPublic}
+        </Link>
+
+        <nav
+          aria-label={t.jumpLabel}
+          className="sticky top-2 z-(--z-sticky) -mx-1 overflow-x-auto rounded-full border border-line bg-surface/90 p-1 backdrop-blur-md"
+        >
+          <ul className="flex w-max gap-1">
+            {(
+              [
+                ['ed-photo', t.photoTitle],
+                ['ed-names', t.namesTitle],
+                ['ed-about', t.aboutTitle],
+                ['ed-skills', t.skillsTitle],
+                ['ed-projects', t.projectsTitle],
+                ['ed-links', t.linksTitle],
+                ['ed-open', t.openTitle],
+                ['ed-study', t.studyTitle],
+                ['ed-visibility', t.visibilityTitle],
+              ] as const
+            ).map(([id, label]) => (
+              <li key={id}>
+                <a
+                  href={`#${id}`}
+                  className="inline-flex min-h-9 items-center rounded-full px-3.5 t-body-sm font-medium text-muted transition-colors hover:bg-surface-raised hover:text-text focus-visible:outline-2 focus-visible:outline-focus-ring"
+                >
+                  {label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
 
         <Section id="ed-photo" title={t.photoTitle}>
           <PhotoUploader
@@ -391,17 +430,66 @@ export function MemberProfileEditor({
             savedText={t.photoSaved}
             removedText={t.photoRemoved}
           />
+          <div className="border-t border-line pt-3">
+            <Switch
+              label={t.photoShow}
+              hint={t.photoShowHint}
+              checked={v.show_photo}
+              onChange={(c) => {
+                set('show_photo', c);
+                run('photo', () => saveMyProfilePart({ show_photo: c }, { lang }));
+              }}
+            />
+          </div>
         </Section>
 
-        <Section id="ed-names" title={t.namesTitle} lede={t.namesLede}>
-          <Alert tone="info">{t.namesLocked}</Alert>
-          <div className="grid gap-4 sm:grid-cols-3">
-            <Field label={t.firstAr} value={v.first_name_ar} disabled readOnly />
-            <Field label={t.middleAr} value={v.middle_name_ar} disabled readOnly />
-            <Field label={t.lastAr} value={v.last_name_ar} disabled readOnly />
-            <Field label={t.firstEn} value={v.first_name_en} dir="ltr" disabled readOnly />
-            <Field label={t.middleEn} value={v.middle_name_en} dir="ltr" disabled readOnly />
-            <Field label={t.lastEn} value={v.last_name_en} dir="ltr" disabled readOnly />
+        <Section
+          id="ed-names"
+          title={t.namesTitle}
+          lede={canEditNames ? t.namesLedeOpen : t.namesLede}
+          footer={
+            canEditNames
+              ? saveBtn('names', () =>
+                  savePart('names', [
+                    'first_name_ar',
+                    'first_name_en',
+                    'middle_name_ar',
+                    'middle_name_en',
+                    'last_name_ar',
+                    'last_name_en',
+                  ]),
+                )
+              : undefined
+          }
+        >
+          {!canEditNames && <Alert tone="info">{t.namesLocked}</Alert>}
+          <div className="grid gap-x-4 gap-y-4 sm:grid-cols-2">
+            <p className="t-label text-muted max-sm:hidden">{t.arabicCol}</p>
+            <p className="t-label text-muted max-sm:hidden" dir="ltr">
+              {t.englishCol}
+            </p>
+            {(
+              [
+                ['first_name_ar', t.firstAr, false],
+                ['first_name_en', t.firstEn, true],
+                ['middle_name_ar', t.middleAr, false],
+                ['middle_name_en', t.middleEn, true],
+                ['last_name_ar', t.lastAr, false],
+                ['last_name_en', t.lastEn, true],
+              ] as const
+            ).map(([key, label, ltr]) => (
+              <Field
+                key={key}
+                label={label}
+                value={v[key]}
+                dir={ltr ? 'ltr' : undefined}
+                maxLength={40}
+                error={errors[key]}
+                disabled={!canEditNames}
+                readOnly={!canEditNames}
+                onChange={(e) => set(key, e.target.value)}
+              />
+            ))}
           </div>
         </Section>
 

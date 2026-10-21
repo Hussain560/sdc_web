@@ -153,9 +153,7 @@ describe('AddMemberWizard', () => {
     expect(
       await screen.findByRole('heading', { name: 'Khalid Alhajri was added' }),
     ).toBeInTheDocument();
-    expect(
-      screen.getByText(/activation e-mail was sent to khalid.h@example.com/),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/activation e-mail sent to khalid.h@example.com/i)).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'View member' })).toHaveAttribute(
       'href',
       '/dashboard/members/m1',

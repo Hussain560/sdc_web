@@ -1,7 +1,7 @@
 'use client';
 
 import * as m from 'motion/react-m';
-import { CircleAlert, Loader2, UserPlus } from 'lucide-react';
+import { CircleAlert, Loader2, UserPlus, CircleCheck } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import {
   Alert,
@@ -18,6 +18,7 @@ import {
 } from '@/components/ui';
 import { MotionProvider } from '@/components/motion/MotionProvider';
 import { useLanguage } from '@/context/LanguageContext';
+import { formatDate } from '@/lib/format';
 import { Link, useRouter } from '@/i18n/navigation';
 import { toE164, type PhoneCountry } from '@/lib/phone';
 import { withMinimumDuration } from '@/lib/min-duration';
@@ -783,29 +784,6 @@ export function AddMemberWizard({
           `أُضيف ${fullName(values.firstNameAr, values.middleNameAr, values.lastNameAr)}`,
           `${fullName(values.firstNameEn, values.middleNameEn, values.lastNameEn)} was added`,
         )}
-        description={
-          outcome?.kind === 'success'
-            ? [
-                outcome.emailStatus === 'none'
-                  ? L(
-                      'لم يُرسل بريد تفعيل (للحساب القائم).',
-                      'No activation e-mail was needed (existing account).',
-                    )
-                  : L(
-                      `أُرسل بريد التفعيل إلى ${outcome.email}.`,
-                      `The activation e-mail was sent to ${outcome.email}.`,
-                    ),
-                values.roleKey && values.committeeId
-                  ? L(
-                      `${roleName(values.roleKey)} في ${committeeName(values.committeeId)}.`,
-                      `${roleName(values.roleKey)} of ${committeeName(values.committeeId)}.`,
-                    )
-                  : '',
-              ]
-                .filter(Boolean)
-                .join(' ')
-            : undefined
-        }
         actions={
           <>
             <Button
@@ -828,7 +806,36 @@ export function AddMemberWizard({
             )}
           </>
         }
-      />
+      >
+        {outcome?.kind === 'success' && (
+          <ul className="mt-1 flex w-full flex-col gap-2 text-start">
+            {[
+              outcome.emailStatus === 'none'
+                ? L(
+                    'لم يُرسل بريد تفعيل (للحساب القائم).',
+                    'No activation e-mail was needed (existing account).',
+                  )
+                : L(
+                    `أُرسل بريد التفعيل إلى ${outcome.email}`,
+                    `Activation e-mail sent to ${outcome.email}`,
+                  ),
+              values.roleKey && values.committeeId
+                ? L(
+                    `${roleName(values.roleKey)} في ${committeeName(values.committeeId)}${values.startsAt ? ` من ${formatDate(values.startsAt, 'ar')}` : ''}`,
+                    `${roleName(values.roleKey)} of ${committeeName(values.committeeId)}${values.startsAt ? ` since ${formatDate(values.startsAt, 'en')}` : ''}`,
+                  )
+                : '',
+            ]
+              .filter(Boolean)
+              .map((line) => (
+                <li key={line} className="t-body flex items-start gap-2">
+                  <CircleCheck aria-hidden="true" className="mt-1 size-4 shrink-0 text-success" />
+                  <bdi>{line}</bdi>
+                </li>
+              ))}
+          </ul>
+        )}
+      </ResultDialog>
 
       <ResultDialog
         open={outcome?.kind === 'delayed'}
