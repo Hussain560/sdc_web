@@ -42,6 +42,7 @@ import { cn, useToast } from '@/components/ui';
 import type { NavGroupKey, NavIcon, VisibleNavGroup, VisibleNavItem } from '@/config/dashboard-nav';
 import { signOut } from '@/modules/auth/actions';
 import { CrumbsProvider, useCrumbs } from './Crumbs';
+import { ResponsiveTables } from './ResponsiveTables';
 
 const ICONS: Record<NavIcon, LucideIcon> = {
   dashboard: LayoutDashboard,
@@ -698,7 +699,10 @@ function ShellFrameInner({
           </div>
         </header>
 
-        <main className="mx-auto w-full max-w-[1280px] px-4 pb-12 pt-6 lg:px-6">{children}</main>
+        <main className="mx-auto w-full max-w-[1280px] px-4 pb-12 pt-6 lg:px-6">
+          {children}
+          <ResponsiveTables />
+        </main>
       </div>
     </div>
   );

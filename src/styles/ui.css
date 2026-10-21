@@ -99,3 +99,53 @@ html {
     color: CanvasText !important;
   }
 }
+
+/*
+ * Tables become stacked cards on phones (INTERNAL-SCREENS responsive rule). The label of each value is the column
+ * header, copied onto the cell by <ResponsiveTables /> (data-label). A table opts out with data-no-cards.
+ */
+@media (max-width: 767px) {
+  table[data-cards] {
+    min-width: 0 !important;
+    width: 100%;
+  }
+  table[data-cards],
+  table[data-cards] tbody,
+  table[data-cards] tr,
+  table[data-cards] td {
+    display: block;
+  }
+  table[data-cards] thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+  table[data-cards] tr {
+    padding: 0.5rem 1rem;
+    border-bottom: 1px solid var(--color-line);
+  }
+  table[data-cards] tr:last-child {
+    border-bottom: 0;
+  }
+  table[data-cards] td {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.4rem 0;
+    border: 0;
+    text-align: start;
+  }
+  table[data-cards] td[data-label]:not([data-label=''])::before {
+    content: attr(data-label);
+    flex-shrink: 0;
+    max-width: 40%;
+    font-size: 0.75rem;
+    color: var(--color-muted);
+  }
+  table[data-cards] td:empty {
+    display: none;
+  }
+}

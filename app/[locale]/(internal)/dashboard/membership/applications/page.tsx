@@ -149,10 +149,10 @@ export default async function ApplicationsPage({
 
       <form
         method="get"
-        className="mb-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-[minmax(0,1.6fr)_repeat(3,minmax(0,1fr))]"
+        className="mb-4 grid grid-cols-2 gap-3 lg:grid-cols-[minmax(0,1.6fr)_repeat(3,minmax(0,1fr))]"
       >
         {status && <input type="hidden" name="status" value={status} />}
-        <label className="relative sm:col-span-2 lg:col-span-1">
+        <label className="relative col-span-2 lg:col-span-1">
           <span className="sr-only">{ar ? 'بحث' : 'Search'}</span>
           <Search
             size={16}

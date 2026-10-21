@@ -70,30 +70,48 @@ export function TableSkeleton({
   minWidth?: number;
 }) {
   return (
-    <div className="overflow-x-auto rounded-shape-xl border border-line bg-surface">
-      <table className="w-full text-sm" style={{ minWidth }}>
-        <thead className="border-b border-line text-xs text-muted">
-          <tr>
-            {columns.map((c, i) => (
-              <th key={i} scope="col" className="px-4 py-3 text-start font-medium">
-                {c.header}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {Array.from({ length: rows }).map((_, r) => (
-            <tr key={r} className="border-b border-line last:border-0">
+    <>
+      {/* Phones: the same rows as stacked cards, like the loaded list. */}
+      <ul className="flex flex-col gap-3 md:hidden" aria-hidden="true">
+        {Array.from({ length: Math.min(rows, 5) }).map((_, r) => (
+          <li key={r} className="rounded-shape-xl border border-line bg-surface p-4">
+            <div className="flex items-center gap-3">
+              <Skeleton className="size-10 rounded-full" />
+              <div className="flex flex-1 flex-col gap-2">
+                <Skeleton className="h-4 w-40 max-w-full" />
+                <Skeleton className="h-3 w-24" />
+              </div>
+              <Skeleton className="h-6 w-16 rounded-full" />
+            </div>
+            <Skeleton className="mt-4 h-3 w-full" />
+          </li>
+        ))}
+      </ul>
+      <div className="hidden overflow-x-auto rounded-shape-xl border border-line bg-surface md:block">
+        <table className="w-full text-sm" style={{ minWidth }}>
+          <thead className="border-b border-line text-xs text-muted">
+            <tr>
               {columns.map((c, i) => (
-                <td key={i} className="px-4 py-3.5">
-                  <CellSkeleton kind={c.cell} />
-                </td>
+                <th key={i} scope="col" className="px-4 py-3 text-start font-medium">
+                  {c.header}
+                </th>
               ))}
             </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+          </thead>
+          <tbody>
+            {Array.from({ length: rows }).map((_, r) => (
+              <tr key={r} className="border-b border-line last:border-0">
+                {columns.map((c, i) => (
+                  <td key={i} className="px-4 py-3.5">
+                    <CellSkeleton kind={c.cell} />
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </>
   );
 }
 
