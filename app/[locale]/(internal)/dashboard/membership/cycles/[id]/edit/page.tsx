@@ -29,6 +29,7 @@ export default async function EditCyclePage({
         initial={found.values}
         locked={found.hasApplications}
         windowLocked={found.row.phase === 'open' || found.row.phase === 'closed'}
+        closeEditable={found.row.phase === 'open'}
       />
     </>
   );

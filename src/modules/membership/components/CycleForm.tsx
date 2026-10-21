@@ -37,13 +37,16 @@ export function CycleForm({
   initial,
   locked,
   windowLocked,
+  closeEditable,
 }: {
   id?: string;
   initial?: CycleFormValues;
   /** Questions cannot change once the first application arrives. */
   locked?: boolean;
-  /** A running window changes only through extend / close early. */
+  /** A window that is running or ended: the opening time no longer changes. */
   windowLocked?: boolean;
+  /** A running window: the closing time can still move, earlier or later, as long as it is ahead. */
+  closeEditable?: boolean;
 }) {
   const { lang } = useLanguage();
   const ar = lang === 'ar';
@@ -180,9 +183,13 @@ export function CycleForm({
         </p>
         {windowLocked && (
           <Alert tone="info">
-            {ar
-              ? 'الفترة جارية — تُعدَّل بالتمديد أو الإغلاق المبكر من قائمة الدورات.'
-              : 'The window is running — change it with Extend or Close early from the cycle list.'}
+            {closeEditable
+              ? ar
+                ? 'الفترة جارية — وقت الفتح لا يتغيّر، لكن يمكنك تعديل وقت الإغلاق (أبكر أو أبعد) ما دام في المستقبل.'
+                : 'The window is running — the opening time stays, but you can move the closing time (earlier or later) while it is still ahead.'
+              : ar
+                ? 'انتهت الفترة — لتمديدها استخدم «تمديد» من قائمة الدورات.'
+                : 'The window has ended — use Extend from the cycle list to continue it.'}
           </Alert>
         )}
         <div className="grid gap-4 sm:grid-cols-2">
@@ -203,7 +210,7 @@ export function CycleForm({
             value={v.closesAt}
             onChange={(e) => set('closesAt', e.target.value)}
             error={errors.closesAt}
-            disabled={windowLocked}
+            disabled={windowLocked && !closeEditable}
             dir="ltr"
           />
           <Field
