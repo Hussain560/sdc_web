@@ -21,8 +21,8 @@ insert into public.members (id, user_id, status, joined_via, first_name_ar, midd
   ('00000000-0000-0000-0000-00000000ab03', '00000000-0000-0000-0000-00000000aa06', 'active', 'manual', 'مها', null, 'العنزي', 'Maha', 'Alanazi', null, true, null, null, null, null, null),
   ('00000000-0000-0000-0000-00000000ab04', '00000000-0000-0000-0000-00000000aa07', 'active', 'manual', 'سابق', null, 'العضو', 'Former', 'Member', null, false, null, null, null, null, null),
   ('00000000-0000-0000-0000-00000000ab05', null, 'active', 'legacy', 'قديم', null, 'بلا حساب', 'Legacy', 'NoAccount', null, false, null, null, null, null, null);
-update public.members set status = 'suspended', status_reason = 'test' where id = '00000000-0000-0000-0000-00000000ab03';
-update public.members set status = 'inactive' where id = '00000000-0000-0000-0000-00000000ab04';
+update public.members set status = 'suspended', suspension_category = 'conduct' where id = '00000000-0000-0000-0000-00000000ab03';
+update public.members set status = 'expired' where id = '00000000-0000-0000-0000-00000000ab04';
 insert into public.member_skills (member_id, skill_id, position)
   select '00000000-0000-0000-0000-00000000ab01', id, (row_number() over (order by id) - 1)::smallint from public.skills order by id limit 3;
 

@@ -103,20 +103,22 @@ select '00000000-0000-0000-0000-00000000f008', 'committee_member', id from publi
 insert into _k select 'cm', id from public.members where user_id = '00000000-0000-0000-0000-00000000f008';
 set local role authenticated;
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-00000000f002","role":"authenticated"}', true);
-select throws_ok($$select public.set_member_status((select id from _k where k = 'cm'), 'suspended', 'x')$$, 'P0001', 'FORBIDDEN', 'a committee head cannot change member status');
+select throws_ok($$select public.suspend_members(array[(select id from _k where k = 'cm')], 'conduct', 'x')$$, 'P0001', 'FORBIDDEN', 'a committee head cannot change member status');
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-00000000f001","role":"authenticated"}', true);
-select throws_ok($$select public.set_member_status((select id from _k where k = 'cm'), 'suspended')$$, 'P0001', 'REASON_REQUIRED', 'ME-5: a suspension needs a reason');
-select is(public.set_member_status((select id from _k where k = 'cm'), 'suspended', 'Code of conduct'), 'suspended', 'leadership suspends with a reason');
+select is((public.suspend_members(array[(select id from _k where k = 'cm')], 'conduct', null))->0->>'code', 'REASON_REQUIRED', 'ME-5: a suspension needs a reason');
+select is((public.suspend_members(array[(select id from _k where k = 'cm')], 'conduct', 'Code of conduct'))->0->>'ok', 'true', 'leadership suspends with a reason');
 select is((select count(*)::int from public.member_directory where first_name = 'عضو لجنة'), 0, 'a suspended member is hidden');
 select is((select count(*)::int from public.role_assignments where user_id = '00000000-0000-0000-0000-00000000f008' and (ends_at is null or ends_at > now())), 0, 'BR-MBR-011: committee roles ended');
-select throws_ok($$select public.set_member_status((select id from _k where k = 'cm'), 'suspended', 'again')$$, 'P0001', 'INVALID_TRANSITION', 'suspending twice is refused');
-select is(public.set_member_status((select id from _k where k = 'cm'), 'active', 'Resolved'), 'active', 'reinstating needs a reason and works');
+select is((public.suspend_members(array[(select id from _k where k = 'cm')], 'conduct', 'again'))->0->>'code', 'INVALID_TRANSITION', 'suspending twice is refused');
+select is((public.reinstate_members(array[(select id from _k where k = 'cm')], 'Resolved'))->0->>'ok', 'true', 'reinstating works');
 select is((select count(*)::int from public.role_assignments where user_id = '00000000-0000-0000-0000-00000000f008' and (ends_at is null or ends_at > now())), 0, 'roles are not restored automatically');
 
--- a member can leave on their own
+-- a member cannot leave on their own: they ask, leadership decides
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-00000000f003","role":"authenticated"}', true);
-select is(public.set_member_status((select id from public.members where user_id = '00000000-0000-0000-0000-00000000f003'), 'inactive'), 'inactive', 'a member leaves the community');
-select throws_ok($$select public.set_member_status((select id from public.members where user_id = '00000000-0000-0000-0000-00000000f003'), 'active', 'back')$$, 'P0001', 'FORBIDDEN', 'a member cannot reactivate themselves');
+select throws_ok($$select public.end_members(array[(select id from public.members where user_id = '00000000-0000-0000-0000-00000000f003')], 'bye')$$, 'P0001', 'FORBIDDEN', 'a member cannot end their own membership');
+select lives_ok($$select public.request_to_leave('moving')$$, 'a member asks to leave (leadership decides)');
+select is((select status from public.members where user_id = '00000000-0000-0000-0000-00000000f003'), 'active', 'and stays an active member meanwhile');
+select throws_ok($$select public.reinstate_members(array[(select id from public.members where user_id = '00000000-0000-0000-0000-00000000f003')])$$, 'P0001', 'FORBIDDEN', 'a member cannot change member status');
 
 -- =============================================================================== legacy claim flow
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-00000000f001","role":"authenticated"}', true);

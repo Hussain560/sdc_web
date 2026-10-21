@@ -20,7 +20,7 @@ insert into public.members (id, user_id, status, joined_via, first_name_ar, midd
   ('00000000-0000-0000-0000-00000000f103', '00000000-0000-0000-0000-00000000e103', 'active', 'manual', 'عبدالرحمن', 'محمد', 'القحطاني', 'Abdulrahman', 'Mohammed', 'Alqahtani'),
   ('00000000-0000-0000-0000-00000000f104', '00000000-0000-0000-0000-00000000e104', 'active', 'manual', 'سلمى', 'ناصر', 'القحطاني', 'Salma', 'Nasser', 'Alqahtani'),
   ('00000000-0000-0000-0000-00000000f105', '00000000-0000-0000-0000-00000000e105', 'active', 'manual', 'نايف', 'سعد', 'القحطاني', 'Naif', 'Saad', 'Alqahtani'),
-  ('00000000-0000-0000-0000-00000000f107', '00000000-0000-0000-0000-00000000e107', 'inactive', 'manual', 'سابق', null, 'القحطاني', 'Former', null, 'Alqahtani');
+  ('00000000-0000-0000-0000-00000000f107', '00000000-0000-0000-0000-00000000e107', 'expired', 'manual', 'سابق', null, 'القحطاني', 'Former', null, 'Alqahtani');
 -- a member with no account yet
 insert into public.members (id, status, joined_via, first_name_ar, last_name_ar, first_name_en, last_name_en)
   values ('00000000-0000-0000-0000-00000000f108', 'active', 'legacy', 'بلا', 'حساب', 'No', 'Account');
