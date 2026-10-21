@@ -23,7 +23,12 @@ const questions: CycleQuestion[] = [
 const valid = () => ({
   ...emptyApplication(),
   email: 'applicant@example.test',
-  fullNameAr: 'متقدم اختبار',
+  firstNameAr: 'متقدم',
+  lastNameAr: 'اختبار',
+  firstNameEn: 'Test',
+  lastNameEn: 'Applicant',
+  phone: '+966501234567',
+  bioAr: 'مطوّر مهتم بالمجتمع',
   academicStatus: 'student' as const,
   universityId: '1',
   majorId: '2',
@@ -37,10 +42,10 @@ describe('application steps', () => {
     expect(validateApplication(valid(), questions, 'en')).toEqual({});
   });
 
-  it('personal: needs an Arabic name and a plausible phone', () => {
-    const v = { ...valid(), fullNameAr: 'ab', phone: '12', email: 'x' };
+  it('personal: needs both name parts in both languages and a plausible phone', () => {
+    const v = { ...valid(), firstNameAr: '', firstNameEn: '', phone: '12', email: 'x' };
     const e = validateApplicationStep('personal', v, questions, 'en');
-    expect(Object.keys(e)).toEqual(['fullNameAr', 'email', 'phone']);
+    expect(Object.keys(e)).toEqual(['firstNameAr', 'firstNameEn', 'email', 'phone']);
     expect(
       validateApplicationStep('personal', { ...valid(), phone: '+966501234567' }, questions, 'en'),
     ).toEqual({});
@@ -128,6 +133,9 @@ describe('cycle form', () => {
     reviewEndsAt: '',
     capacity: '',
     questions: [],
+    termEndsAt: '',
+    activationDeadlineDays: '7',
+    rubric: [],
     ...over,
   });
 

@@ -1,4 +1,11 @@
 import type { Lang } from '@/modules/auth/messages';
+import {
+  isLifecycleKey,
+  lifecycleCopy,
+  LIFECYCLE_FOOTER,
+  PLAIN_KEYS,
+  type LifecycleKey,
+} from './lifecycle-templates';
 
 /** Every template, in both languages. Values are escaped here, so callers pass raw strings (notifications NO-4). */
 export type TemplateKey =
@@ -17,7 +24,8 @@ export type TemplateKey =
   | 'member.created'
   | 'review.pending'
   | 'committee.assigned'
-  | 'certificate.issued';
+  | 'certificate.issued'
+  | LifecycleKey;
 
 export type TemplateData = {
   name: string;
@@ -44,6 +52,41 @@ export type TemplateData = {
   committeeName?: string | null;
   /** Welcome mails: the community WhatsApp group invitation (omitted when the admins set none). */
   whatsappUrl?: string | null;
+  /** Lifecycle mails (Sprint 18). Dates are already formatted for the recipient's language. */
+  reference?: string;
+  trackingUrl?: string;
+  reviewWindow?: string;
+  decisionBy?: string;
+  infoRequest?: string;
+  infoDeadline?: string;
+  activationDeadline?: string;
+  activationDays?: number;
+  daysLeft?: number;
+  termEnd?: string;
+  /** The category of a suspension (never the internal reason). */
+  reasonLabel?: string;
+  until?: string;
+  /** An optional message from leadership (renewal, suspension, reinstatement, ending). */
+  message?: string | null;
+  lastDay?: string;
+  positionLine?: string | null;
+  contactEmail?: string;
+  /** Mails to leadership: who asked. */
+  requester?: string;
+  digest?: DigestData;
+  /** member.message: the subject and the text written by leadership. */
+  subject?: string;
+  text?: string;
+};
+
+export type DigestData = {
+  lapsed: string[];
+  promoted: string[];
+  endingThisWeek: number;
+  pendingLeave: number;
+  oldestLeaveDays: number;
+  renewalRequests: number;
+  newApplications: number;
 };
 
 export type Rendered = { subject: string; html: string; text: string };
@@ -59,6 +102,7 @@ type Copy = {
   lead: string;
   body: string[];
   action?: { label: string; url?: string };
+  footer?: string;
 };
 
 function copy(key: TemplateKey, lang: Lang, d: TemplateData): Copy {
@@ -139,16 +183,29 @@ function copy(key: TemplateKey, lang: Lang, d: TemplateData): Copy {
       };
     case 'membership.application_received':
       return {
-        subject: ar ? 'تم استلام طلب عضويتك' : 'We received your membership application',
+        subject: d.reference
+          ? ar
+            ? `وصلنا طلبك · ${d.reference}`
+            : `We received your application · ${d.reference}`
+          : ar
+            ? 'وصلنا طلبك'
+            : 'We received your application',
         lead: ar
-          ? `تم استلام طلب انضمامك إلى المجتمع السعودي للمطورين في «${t}».`
-          : `We received your application to join the Saudi Developer Community (“${t}”).`,
+          ? `شكراً لتقديمك على «${t}».${d.reference ? ` رقمك المرجعي ${d.reference}.` : ''}`
+          : `Thanks for applying to “${t}”.${d.reference ? ` Your reference is ${d.reference}.` : ''}`,
         body: [
-          ar
-            ? 'سيراجع الفريق الطلبات بعد إغلاق باب التقديم، وسيصلك القرار بالبريد الإلكتروني. يمكنك متابعة حالة طلبك من حسابك.'
-            : 'The team reviews applications once the window closes and you will get the decision by e-mail. You can follow your status in your account.',
+          d.reviewWindow
+            ? ar
+              ? `نراجع الطلبات ${d.reviewWindow}${d.decisionBy ? `، ويصلك القرار بحلول ${d.decisionBy}` : ''}. تابع طلبك في أي وقت من الرابط أدناه.`
+              : `We review applications ${d.reviewWindow}${d.decisionBy ? ` and you will hear from us by ${d.decisionBy}` : ''}. Follow your application any time from the link below.`
+            : ar
+              ? 'سيراجع الفريق طلبك ويصلك القرار بالبريد الإلكتروني. تابع طلبك في أي وقت من الرابط أدناه.'
+              : 'The team will review your application and you will get the decision by e-mail. Follow your application any time from the link below.',
         ],
-        action: { label: ar ? 'طلبي' : 'My application', url: d.membershipUrl },
+        action: {
+          label: ar ? 'تابع طلبك' : 'Follow your application',
+          url: d.trackingUrl ?? d.membershipUrl,
+        },
       };
     case 'membership.application_accepted':
       return {
@@ -178,27 +235,35 @@ function copy(key: TemplateKey, lang: Lang, d: TemplateData): Copy {
       };
     case 'membership.application_rejected':
       return {
-        subject: ar ? 'بخصوص طلب عضويتك' : 'About your membership application',
+        subject: ar ? 'بخصوص طلب انضمامك' : 'About your application',
         lead: ar
-          ? `نشكرك على اهتمامك بالانضمام إلينا (${t}). لم نتمكن من قبول طلبك في هذه الدورة.`
-          : `Thank you for your interest in joining us (${t}). We were not able to accept your application in this cycle.`,
+          ? `شكراً لاهتمامك بالمجتمع السعودي للمطورين. لم نتمكن من قبول طلبك في «${t}».`
+          : `Thank you for your interest in the Saudi Developer Community. We were not able to accept your application for “${t}”.`,
         body: [
           ar
-            ? 'يسعدنا استقبال طلبك مجددًا في الدورات القادمة، ويمكنك حضور فعالياتنا دون عضوية.'
-            : 'You are welcome to apply again in a future cycle, and you can attend our events without membership.',
+            ? 'يمكنك التقديم مرة أخرى في الدورة القادمة، وفعالياتنا العامة مفتوحة لك دائماً.'
+            : 'You are welcome to apply again in the next intake, and our public events are always open to you.',
         ],
-        action: { label: ar ? 'تصفّح الفعاليات' : 'Browse events', url: d.eventUrl },
       };
     case 'membership.application_waitlisted':
       return {
-        subject: ar ? 'طلب عضويتك على قائمة الانتظار' : 'Your membership application is waitlisted',
+        subject: ar ? 'طلبك في قائمة الانتظار' : 'You are on the waiting list',
         lead: ar
-          ? `أُضيف طلبك في «${t}» إلى قائمة الانتظار.`
-          : `Your application (“${t}”) has been placed on the waiting list.`,
+          ? 'أعجبنا طلبك، لكن مقاعد الدورة اكتملت. أنت الآن في قائمة الانتظار.'
+          : 'We liked your application, but the intake is full. You are now on the waiting list.',
         body: [
-          ar ? 'سنراسلك إذا توفّر مقعد.' : 'We will get in touch if a place becomes available.',
+          d.decisionBy
+            ? ar
+              ? `إذا تحرّر مقعد قبل ${d.decisionBy} نرسل لك بريد القبول مباشرة.`
+              : `If a place opens before ${d.decisionBy}, we will send you the acceptance e-mail right away.`
+            : ar
+              ? 'إذا تحرّر مقعد نرسل لك بريد القبول مباشرة.'
+              : 'If a place opens, we will send you the acceptance e-mail right away.',
         ],
-        action: { label: ar ? 'طلبي' : 'My application', url: d.membershipUrl },
+        action: {
+          label: ar ? 'تابع طلبك' : 'Follow your application',
+          url: d.trackingUrl ?? d.membershipUrl,
+        },
       };
     case 'member.created':
       return {
@@ -296,6 +361,8 @@ function copy(key: TemplateKey, lang: Lang, d: TemplateData): Copy {
         body: details,
         action: { label: ar ? 'عرض الفعالية' : 'View the event', url: d.eventUrl },
       };
+    default:
+      return lifecycleCopy(key as LifecycleKey, lang, d);
   }
 }
 
@@ -404,6 +471,10 @@ export function renderTemplate(key: TemplateKey, lang: Lang, data: TemplateData)
   if (WELCOME_KEYS.includes(key)) return renderWelcome(key, lang, data);
   const c = copy(key, lang, data);
   const ar = lang === 'ar';
+  const footerText =
+    isLifecycleKey(key) || PLAIN_KEYS.includes(key) || key.startsWith('membership.')
+      ? LIFECYCLE_FOOTER[lang]
+      : null;
   const greeting = ar ? `أهلًا بك ${data.name}،` : `Hello ${data.name},`;
   const signoff = ar ? 'شكرًا لك،' : 'Thank you,';
   const team = ar ? 'فريق المجتمع السعودي للمطورين' : 'Saudi Developer Community team';
@@ -429,6 +500,7 @@ export function renderTemplate(key: TemplateKey, lang: Lang, data: TemplateData)
           ${paragraph(c.lead)}
           ${c.body.map(paragraph).join('\n          ')}
           ${button}
+          ${footerText ? `<p style="margin:0 0 16px;font-size:12px;line-height:1.8;color:#666666;">${esc(footerText)}</p>` : ''}
           <hr style="border:none;border-top:1px solid #eeeeee;margin:0 0 16px;">
           <p style="margin:0;font-size:14px;color:#333333;">${esc(signoff)}<br><strong>${esc(team)}</strong></p>
         </td></tr>
@@ -444,6 +516,7 @@ export function renderTemplate(key: TemplateKey, lang: Lang, data: TemplateData)
     c.lead,
     ...c.body,
     ...(c.action?.url ? ['', `${c.action.label}: ${c.action.url}`] : []),
+    ...(footerText ? ['', footerText] : []),
     '',
     signoff,
     team,

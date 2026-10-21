@@ -3,7 +3,18 @@ import { createAdminClient } from '@/lib/supabase/admin';
 import { deliverCertificate } from '@/modules/attendance/certificates';
 import { notifyArticleSubmitted } from './articles';
 import { notifyCommitteeAssigned } from './access';
-import { notifyApplicationDecision, notifyApplicationReceived } from './membership';
+import {
+  notifyAccount,
+  notifyActivationLapsed,
+  notifyActivationReminder,
+  notifyApplicationDecision,
+  notifyApplicationInfoRequested,
+  notifyApplicationReceived,
+  notifyMemberEvent,
+  notifyTermReminder,
+  MEMBER_MAIL_KINDS,
+  type MemberMailKind,
+} from './lifecycle';
 import {
   notifyEventRegistrants,
   notifyRegistration,
@@ -49,12 +60,44 @@ export async function retryEmailLog(logId: string): Promise<RetryOutcome> {
       outcome = res.sent > 0 ? 'sent' : 'failed';
       break;
     }
-    case 'membership_application':
+    case 'membership_application': {
+      const state = log.idempotency_key.split(':').slice(2).join(':');
       outcome =
         log.template_key === 'membership.application_received'
           ? await notifyApplicationReceived(id)
-          : await notifyApplicationDecision(id);
+          : log.template_key === 'membership.info_requested'
+            ? await notifyApplicationInfoRequested(id)
+            : log.template_key === 'membership.activation_reminder'
+              ? await notifyActivationReminder(id, Number(state.split(':')[1] ?? 3))
+              : log.template_key === 'membership.activation_lapsed'
+                ? await notifyActivationLapsed(id)
+                : await notifyApplicationDecision(id);
       break;
+    }
+    case 'member': {
+      const state = log.idempotency_key.split(':').slice(2).join(':');
+      if (log.template_key === 'member.term_reminder') {
+        const [termEnd, days] = state.split(':');
+        outcome = await notifyTermReminder(id, Number(days), termEnd ?? '');
+        break;
+      }
+      const kind = (Object.keys(MEMBER_MAIL_KINDS) as MemberMailKind[]).find(
+        (k) => MEMBER_MAIL_KINDS[k] === log.template_key,
+      );
+      if (!kind) return 'unsupported';
+      outcome = await notifyMemberEvent(id, kind);
+      break;
+    }
+    case 'profile': {
+      const state = log.idempotency_key.split(':').slice(2).join(':');
+      const [kind, stamp] = state.split(':');
+      outcome = await notifyAccount(
+        id,
+        kind === 'unblocked' ? 'unblocked' : 'blocked',
+        stamp ?? '',
+      );
+      break;
+    }
     case 'article': {
       const res = await notifyArticleSubmitted(id.split(':')[0] ?? '');
       outcome = res.sent > 0 ? 'sent' : 'failed';

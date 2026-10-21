@@ -1,6 +1,8 @@
-import { ExternalLink, Eye, EyeOff, Mail, Phone } from 'lucide-react';
+import { nowMs } from '@/lib/now';
+import { CalendarClock, ExternalLink, Eye, EyeOff, Mail, Phone } from 'lucide-react';
 import { notFound } from 'next/navigation';
 import { Avatar, Badge, EmptyState, Tabs, type TabItem } from '@/components/ui';
+import { Timeline } from '@/components/patterns/Timeline';
 import { SetCrumbs } from '@/components/layout/DashboardShell/Crumbs';
 import { Forbidden } from '@/components/layout/Forbidden';
 import { Link } from '@/i18n/navigation';
@@ -18,12 +20,14 @@ import { CompletenessBar } from '@/modules/members/components/CompletenessBar';
 import { EditMemberDialog } from '@/modules/members/components/EditMemberDialog';
 import { MemberActions } from '@/modules/members/components/MemberActions';
 import { memberPhotoUrl, memberThumbUrl } from '@/modules/members/photo-url';
-import { MEMBER_STATUS_LABEL } from '@/modules/members/schemas';
+import { END_REASON_LABEL, MEMBER_STATUS_LABEL } from '@/modules/members/schemas';
+import { MemberTermCards } from '@/modules/members/components/MemberTermCards';
+import { buildMemberTimeline, type TimelineFilter } from '@/modules/members/member-timeline';
 import { ACADEMIC_LABEL, type AcademicStatus } from '@/modules/membership/types';
 import { getReferenceData } from '@/modules/membership/queries';
 
-type Search = { tab?: string };
-const TABS = ['profile', 'positions', 'participation', 'requests', 'log'] as const;
+type Search = { tab?: string; f?: string };
+const TABS = ['timeline', 'profile', 'positions', 'participation', 'requests', 'log'] as const;
 type TabKey = (typeof TABS)[number];
 
 const VIA = {
@@ -92,13 +96,15 @@ export default async function MemberAdminPage({
   const sp = await searchParams;
   const tab: TabKey = (TABS as readonly string[]).includes(sp.tab ?? '')
     ? (sp.tab as TabKey)
-    : 'profile';
+    : 'timeline';
 
   const detail = await getAdminMember(id);
   if (!detail) notFound();
   const { member: m, account } = detail;
 
   const canManage = can(access, 'members.manage');
+  const canBlock = can(access, 'users.block');
+  const canCreate = can(access, 'members.create');
   const canAssign = can(access, 'roles.assign');
   const isAdmin = access.positions.some((p) => p.role === 'system_admin');
   const [reference, committees, roles, labels] = await Promise.all([
@@ -117,11 +123,20 @@ export default async function MemberAdminPage({
   const photo = memberPhotoUrl(m.photoPath);
   const active = detail.positions.filter((p) => p.active);
   const top = active[0];
+  const daysLeft = m.termEndsAt
+    ? Math.ceil((Date.parse(m.termEndsAt) - nowMs()) / 86_400_000)
+    : null;
+  const endingSoon = m.status === 'active' && daysLeft !== null && daysLeft <= 30;
   const st = !account
     ? { tone: 'warning' as const, text: L('لم يُربط بحساب', 'Not linked') }
-    : m.status === 'active' && !account.activated
-      ? { tone: 'info' as const, text: L('لم يُفعَّل الحساب', 'Not activated') }
-      : { tone: MEMBER_STATUS_LABEL[m.status].tone, text: MEMBER_STATUS_LABEL[m.status][lang] };
+    : account.blocked
+      ? { tone: 'danger' as const, text: L('الحساب محظور', 'Account blocked') }
+      : m.status === 'active' && !account.activated
+        ? { tone: 'info' as const, text: L('بانتظار التفعيل', 'Waiting to activate') }
+        : { tone: MEMBER_STATUS_LABEL[m.status].tone, text: MEMBER_STATUS_LABEL[m.status][lang] };
+  const filter: TimelineFilter = sp.f === 'decisions' || sp.f === 'positions' ? sp.f : 'all';
+  const timelineItems = buildMemberTimeline(detail, lang, filter);
+  const filterHref = (f: string) => (f === 'all' ? '?' : `?f=${f}`);
 
   const completeness = completenessOf({
     photoPath: m.photoPath,
@@ -140,8 +155,9 @@ export default async function MemberAdminPage({
     links: L('رابط واحد', 'one link'),
   };
 
-  const tabHref = (k: TabKey) => (k === 'profile' ? '?' : `?tab=${k}`);
+  const tabHref = (k: TabKey) => (k === 'timeline' ? '?' : `?tab=${k}`);
   const tabs: TabItem[] = [
+    { key: 'timeline', label: L('السجل الكامل', 'Full history'), href: tabHref('timeline') },
     { key: 'profile', label: L('الملف', 'Profile'), href: tabHref('profile') },
     {
       key: 'positions',
@@ -161,7 +177,7 @@ export default async function MemberAdminPage({
       href: tabHref('requests'),
       count: detail.applications.length,
     },
-    { key: 'log', label: L('السجل', 'Log'), href: tabHref('log') },
+    { key: 'log', label: L('سجل التدقيق', 'Audit log'), href: tabHref('log') },
   ];
 
   const card = 'rounded-xl border border-line bg-surface p-5';
@@ -185,6 +201,20 @@ export default async function MemberAdminPage({
             <div className="flex flex-wrap items-center gap-2">
               <h1 className="t-h3">{name}</h1>
               <Badge tone={st.tone}>{st.text}</Badge>
+              {endingSoon && daysLeft !== null && (
+                <Badge tone="warning" icon={<CalendarClock />}>
+                  {L(
+                    `تنتهي بعد ${Math.max(0, daysLeft)} يوماً`,
+                    `Ends in ${Math.max(0, daysLeft)} days`,
+                  )}
+                </Badge>
+              )}
+              {m.status === 'ended' && m.endReason && (
+                <Badge>{END_REASON_LABEL[m.endReason]?.[lang] ?? m.endReason}</Badge>
+              )}
+              {detail.leaveRequest && (
+                <Badge tone="info">{L('طلب مغادرة معلّق', 'Leave request pending')}</Badge>
+              )}
               <Badge tone="neutral" icon={m.listed ? <Eye /> : <EyeOff />}>
                 {m.listed
                   ? L('ظاهر في الدليل', 'Visible in the directory')
@@ -203,6 +233,7 @@ export default async function MemberAdminPage({
                       .filter(Boolean)
                       .join(' · ')
                   : L('بلا لجنة', 'No committee'),
+                m.memberNo,
                 `${L('عضو منذ', 'Member since')} ${formatDate(m.joinedAt, lang)}`,
                 m.cycleNameAr ? m.cycleNameAr : '',
               ]
@@ -259,11 +290,22 @@ export default async function MemberAdminPage({
             />
           )}
           <MemberActions
-            id={m.id}
-            status={m.status}
+            subject={{
+              id: m.id,
+              userId: account?.userId ?? null,
+              nameAr,
+              nameEn,
+              status: m.status,
+              termEndsAt: m.termEndsAt,
+              blocked: account?.blocked,
+              activated: account?.activated,
+              leave: detail.leaveRequest,
+            }}
             linked={!!account}
             claimEmail={null}
             canManage={canManage}
+            canBlock={canBlock}
+            canCreate={canCreate}
           />
         </div>
       </header>
@@ -271,6 +313,44 @@ export default async function MemberAdminPage({
       <div className="grid gap-5 lg:grid-cols-[1fr_340px]">
         <div className="min-w-0">
           <Tabs items={tabs} active={tab} label={L('أقسام العضو', 'Member sections')} />
+
+          {tab === 'timeline' && (
+            <section className={card} aria-labelledby="mem-timeline">
+              <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+                <h2 id="mem-timeline" className="t-h4">
+                  {L('السجل الكامل', 'Full history')}
+                </h2>
+                <nav
+                  aria-label={L('تصفية السجل', 'Filter the history')}
+                  className="inline-flex rounded-full bg-surface-raised p-1 text-sm"
+                >
+                  {(['all', 'decisions', 'positions'] as const).map((f) => (
+                    <Link
+                      key={f}
+                      href={filterHref(f)}
+                      aria-current={filter === f ? 'true' : undefined}
+                      className={
+                        filter === f
+                          ? 'rounded-full bg-accent px-4 py-1.5 font-semibold text-on-accent'
+                          : 'rounded-full px-4 py-1.5 text-muted hover:text-text'
+                      }
+                    >
+                      {f === 'all'
+                        ? L('الكل', 'All')
+                        : f === 'decisions'
+                          ? L('القرارات', 'Decisions')
+                          : L('المناصب', 'Positions')}
+                    </Link>
+                  ))}
+                </nav>
+              </div>
+              {timelineItems.length === 0 ? (
+                <EmptyState title={L('لا أحداث بعد', 'No events yet')} variant="no-data" />
+              ) : (
+                <Timeline items={timelineItems} label={L('السجل الكامل', 'Full history')} />
+              )}
+            </section>
+          )}
 
           {tab === 'profile' && (
             <div className="flex flex-col gap-5">
@@ -508,6 +588,7 @@ export default async function MemberAdminPage({
         </div>
 
         <aside className="flex flex-col gap-5">
+          <MemberTermCards detail={detail} lang={lang} />
           <section className={card} aria-labelledby="acct">
             <h2 id="acct" className="t-h4 mb-2">
               {L('الحساب والاتصال', 'Account and contact')}
@@ -541,6 +622,12 @@ export default async function MemberAdminPage({
                       </span>
                     ) : null,
                   )}
+                {row(
+                  L('البطاقة', 'Card'),
+                  m.cardActive ? L('صالحة', 'Valid') : L('غير فعّالة', 'Not active'),
+                )}
+                {account.blocked &&
+                  row(L('الحظر', 'Block'), <Badge tone="danger">{L('محظور', 'Blocked')}</Badge>)}
                 {row(
                   L('الحساب', 'Account'),
                   account.activated ? (
@@ -586,7 +673,6 @@ export default async function MemberAdminPage({
               )}
               {row(L('التخصص', 'Major'), ar ? m.majorAr : (m.majorEn ?? m.majorAr))}
               {row(L('المسار', 'Track'), ar ? m.trackAr : (m.trackEn ?? m.trackAr))}
-              {m.statusReason && row(L('سبب الحالة', 'Status reason'), m.statusReason)}
             </dl>
           </section>
 

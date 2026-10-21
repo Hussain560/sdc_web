@@ -68,26 +68,28 @@ _(filled as they happen)_
 
 | Story | Status | Notes |
 | ----- | ------ | ----- |
-| MBR-007 | ⬜ | |
-| MBR-008 | ⬜ | |
-| MBR-009 | ⬜ | |
-| MBR-010 | ⬜ | |
-| MBR-011 | ⬜ | |
-| MBR-012 | ⬜ | |
-| MBR-013 | ⬜ | |
-| MEM-016 | ⬜ | |
-| MEM-017 | ⬜ | |
-| MEM-018 | ⬜ | |
-| MEM-019 | ⬜ | |
-| MEM-020 | ⬜ | |
-| ACC-008 | ⬜ | |
-| ACC-009 | ⬜ | |
-| NOT-004 | ⬜ | |
+| MBR-007 | ✔️ database | migration 20270411000000 + pgTAP 27 (43 checks) |
+| MBR-008 | 🔶 | server (apply v2, schemas, mail) done; form UI pending |
+| MBR-009 | 🔶 | RPCs + pgTAP done; tracking page UI pending |
+| MBR-010 | 🔶 | list, bulk bar, phone cards written; needs browser check |
+| MBR-011 | 🔶 | review page + panel (score, decision, undo, shortcuts) written; needs browser check |
+| MBR-012 | ✔️ database / 🔶 UI | rubric editor in the cycle form, scoring panel in review |
+| MBR-013 | ✔️ database / 🔶 UI | daily job + pgTAP 30; waiting page written |
+| MEM-016 | ✔️ database / 🔶 server | cron route written (/api/cron/membership-daily) |
+| MEM-017 | ✔️ database / 🔶 UI | pgTAP 29; lifecycle actions written |
+| MEM-018 | 🔶 | actions done; members list v2 pending |
+| MEM-019 | ⬜ | member detail timeline pending |
+| MEM-020 | ✔️ database / ⬜ UI | card + verify page pending |
+| ACC-008 | ✔️ database / 🔶 | login + session block check done; notices UI pending |
+| ACC-009 | ✔️ database / ⬜ UI | onboarding + activation pages pending |
+| NOT-004 | ✔️ | 17 lifecycle templates + member.message in AR/EN; retry route extended; unit tests pending |
 | Internal responsiveness / skeletons / cards / motion pass | ⬜ | |
 
 ## Verification commands run
 
-_(each command with its result)_
+- `npx supabase db reset` — the 52 migrations apply from scratch (ok).
+- `npx supabase test db` — 34 files, 1843+ assertions, PASS (new files 27–30: 43 + 44 + 79 + 44).
+- `npx tsc --noEmit` — see the final run at the end.
 
 ## What is left or risky
 

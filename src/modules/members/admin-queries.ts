@@ -9,10 +9,13 @@ import type { MemberStatus } from './schemas';
 export const ADMIN_MEMBER_TABS = [
   'all',
   'active',
+  'ending_soon',
   'not_activated',
   'suspended',
-  'inactive',
+  'expired',
+  'ended',
   'unclaimed',
+  'leave_requests',
 ] as const;
 export type AdminMemberTab = (typeof ADMIN_MEMBER_TABS)[number];
 
@@ -29,6 +32,20 @@ export type AdminMemberRow = {
   listed: boolean;
   completeness: number;
   joinedAt: string;
+  memberNo: string;
+  termEndsAt: string | null;
+  daysLeft: number | null;
+  endingSoon: boolean;
+  endReason: string | null;
+  suspensionCategory: string | null;
+  suspendedUntil: string | null;
+  leavesOn: string | null;
+  leaveRequest: {
+    id: string;
+    createdAt: string;
+    reason: string | null;
+    preferredLastDay: string | null;
+  } | null;
   committeeAr: string | null;
   committeeEn: string | null;
   roleAr: string | null;
@@ -39,7 +56,15 @@ export type AdminMemberList = {
   total: number;
   rows: AdminMemberRow[];
   counts: Record<
-    'all' | 'active' | 'inactive' | 'suspended' | 'not_activated' | 'unclaimed',
+    | 'all'
+    | 'active'
+    | 'ending_soon'
+    | 'not_activated'
+    | 'suspended'
+    | 'expired'
+    | 'ended'
+    | 'unclaimed'
+    | 'leave_requests',
     number
   >;
   kpis: { active: number; listed: number; avgCompleteness: number; lowCompleteness: number };
@@ -89,10 +114,13 @@ export async function listAdminMembers(
     counts: {
       all: num(d.counts.all),
       active: num(d.counts.active),
-      inactive: num(d.counts.inactive),
-      suspended: num(d.counts.suspended),
+      ending_soon: num(d.counts.ending_soon),
       not_activated: num(d.counts.not_activated),
+      suspended: num(d.counts.suspended),
+      expired: num(d.counts.expired),
+      ended: num(d.counts.ended),
       unclaimed: num(d.counts.unclaimed),
+      leave_requests: num(d.counts.leave_requests),
     },
     kpis: {
       active: num(d.kpis.active),
@@ -113,6 +141,24 @@ export async function listAdminMembers(
       listed: !!r.listed,
       completeness: num(r.completeness),
       joinedAt: String(r.joined_at),
+      memberNo: String(r.member_no ?? ''),
+      termEndsAt: (r.term_ends_at as string | null) ?? null,
+      daysLeft: r.days_left === null || r.days_left === undefined ? null : num(r.days_left),
+      endingSoon: !!r.ending_soon,
+      endReason: (r.end_reason as string | null) ?? null,
+      suspensionCategory: (r.suspension_category as string | null) ?? null,
+      suspendedUntil: (r.suspended_until as string | null) ?? null,
+      leavesOn: (r.leaves_on as string | null) ?? null,
+      leaveRequest: r.leave_request
+        ? {
+            id: String((r.leave_request as Record<string, unknown>).id),
+            createdAt: String((r.leave_request as Record<string, unknown>).created_at),
+            reason: ((r.leave_request as Record<string, unknown>).reason as string | null) ?? null,
+            preferredLastDay:
+              ((r.leave_request as Record<string, unknown>).preferred_last_day as string | null) ??
+              null,
+          }
+        : null,
       committeeAr: (r.committee_ar as string | null) ?? null,
       committeeEn: (r.committee_en as string | null) ?? null,
       roleAr: (r.role_ar as string | null) ?? null,
@@ -125,7 +171,18 @@ export type AdminMemberDetail = {
   member: {
     id: string;
     status: MemberStatus;
-    statusReason: string | null;
+    memberNo: string;
+    termStartsAt: string | null;
+    termEndsAt: string | null;
+    endReason: string | null;
+    suspensionCategory: string | null;
+    suspendedUntil: string | null;
+    leavesOn: string | null;
+    endedAt: string | null;
+    activatedAt: string | null;
+    onboardedAt: string | null;
+    renewalRequestedAt: string | null;
+    cardActive: boolean;
     joinedAt: string;
     joinedVia: 'application' | 'legacy' | 'manual';
     legacy: boolean;
@@ -158,11 +215,26 @@ export type AdminMemberDetail = {
     email: string | null;
     phone: string | null;
     activated: boolean;
+    blocked: boolean;
+    blockedAt: string | null;
     createdAt: string | null;
     lastSignInAt: string | null;
   } | null;
   completeness: number;
   canContact: boolean;
+  leaveRequest: {
+    id: string;
+    createdAt: string;
+    reason: string | null;
+    preferredLastDay: string | null;
+  } | null;
+  timeline: Array<{
+    id: number;
+    at: string;
+    kind: string;
+    data: Record<string, unknown>;
+    actorAr: string | null;
+  }>;
   skills: Array<{ slug: string; nameAr: string; nameEn: string; category: string }>;
   projects: Array<{ id: string; titleAr: string; titleEn: string | null; url: string }>;
   positions: Array<{
@@ -190,11 +262,13 @@ export type AdminMemberDetail = {
   }>;
   applications: Array<{
     id: string;
+    reference: string | null;
     cycleAr: string;
     cycleEn: string | null;
     status: string;
     submittedAt: string | null;
     decidedAt: string | null;
+    scoreAverage: number | null;
   }>;
   log: Array<{ at: string; action: string; actorAr: string | null }>;
 };
@@ -205,7 +279,18 @@ type RawDetail = {
   member: {
     id: string;
     status: MemberStatus;
-    status_reason: Str;
+    member_no: string;
+    term_starts_at: Str;
+    term_ends_at: Str;
+    end_reason: Str;
+    suspension_category: Str;
+    suspended_until: Str;
+    leaves_on: Str;
+    ended_at: Str;
+    activated_at: Str;
+    onboarded_at: Str;
+    renewal_requested_at: Str;
+    card_active: boolean;
     joined_at: string;
     joined_via: 'application' | 'legacy' | 'manual';
     legacy: boolean;
@@ -238,11 +323,21 @@ type RawDetail = {
     email: Str;
     phone: Str;
     activated: boolean;
+    blocked: boolean;
+    blocked_at: Str;
     created_at: Str;
     last_sign_in_at: Str;
   } | null;
   completeness: number;
   can_contact: boolean;
+  leave_request: { id: string; created_at: string; reason: Str; preferred_last_day: Str } | null;
+  timeline: Array<{
+    id: number;
+    at: string;
+    kind: string;
+    data: Record<string, unknown> | null;
+    actor_ar: Str;
+  }> | null;
   skills: Array<{ slug: string; name_ar: string; name_en: string; category: string }> | null;
   projects: Array<{ id: string; title_ar: string; title_en: Str; url: string }> | null;
   positions: Array<{
@@ -270,11 +365,13 @@ type RawDetail = {
   }> | null;
   applications: Array<{
     id: string;
+    reference: Str;
     cycle_ar: string;
     cycle_en: Str;
     status: string;
     submitted_at: Str;
     decided_at: Str;
+    score_average: number | null;
   }> | null;
   log: Array<{ at: string; action: string; actor_ar: Str }> | null;
 };
@@ -293,7 +390,18 @@ export async function getAdminMember(id: string): Promise<AdminMemberDetail | nu
     member: {
       id: m.id,
       status: m.status,
-      statusReason: m.status_reason,
+      memberNo: m.member_no,
+      termStartsAt: m.term_starts_at,
+      termEndsAt: m.term_ends_at,
+      endReason: m.end_reason,
+      suspensionCategory: m.suspension_category,
+      suspendedUntil: m.suspended_until,
+      leavesOn: m.leaves_on,
+      endedAt: m.ended_at,
+      activatedAt: m.activated_at,
+      onboardedAt: m.onboarded_at,
+      renewalRequestedAt: m.renewal_requested_at,
+      cardActive: !!m.card_active,
       joinedAt: m.joined_at,
       joinedVia: m.joined_via,
       legacy: !!m.legacy,
@@ -327,12 +435,29 @@ export async function getAdminMember(id: string): Promise<AdminMemberDetail | nu
           email: d.account.email,
           phone: d.account.phone,
           activated: !!d.account.activated,
+          blocked: !!d.account.blocked,
+          blockedAt: d.account.blocked_at,
           createdAt: d.account.created_at,
           lastSignInAt: d.account.last_sign_in_at,
         }
       : null,
     completeness: num(d.completeness),
     canContact: !!d.can_contact,
+    leaveRequest: d.leave_request
+      ? {
+          id: d.leave_request.id,
+          createdAt: d.leave_request.created_at,
+          reason: d.leave_request.reason,
+          preferredLastDay: d.leave_request.preferred_last_day,
+        }
+      : null,
+    timeline: (d.timeline ?? []).map((t) => ({
+      id: t.id,
+      at: t.at,
+      kind: t.kind,
+      data: t.data ?? {},
+      actorAr: t.actor_ar,
+    })),
     skills: (d.skills ?? []).map((s) => ({
       slug: s.slug,
       nameAr: s.name_ar,
@@ -370,11 +495,13 @@ export async function getAdminMember(id: string): Promise<AdminMemberDetail | nu
     })),
     applications: (d.applications ?? []).map((a) => ({
       id: a.id,
+      reference: a.reference,
       cycleAr: a.cycle_ar,
       cycleEn: a.cycle_en,
       status: a.status,
       submittedAt: a.submitted_at,
       decidedAt: a.decided_at,
+      scoreAverage: a.score_average === null ? null : Number(a.score_average),
     })),
     log: (d.log ?? []).map((l) => ({ at: l.at, action: l.action, actorAr: l.actor_ar })),
   };

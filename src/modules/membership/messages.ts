@@ -23,9 +23,47 @@ const MEMBERSHIP_CODES = [
   'ALREADY_CLAIMED',
   'RATE_LIMITED',
   'TOO_FAST',
+  'TOKEN_INVALID',
+  'SELF_ACTION',
+  'HIGHER_ROLE',
+  'UNDO_EXPIRED',
+  'ALREADY_PENDING',
+  'NO_ACCOUNT',
+  'RUBRIC_LOCKED',
+  'REASON_REQUIRED',
+  'NOT_A_MEMBER',
 ] as const satisfies readonly ErrorCode[];
 
+/** Messages shared by the application review and the member lifecycle (one wording for the same refusal). */
+export const LIFECYCLE_MESSAGES: Partial<Record<ErrorCode, Record<Lang, string>>> = {
+  SELF_ACTION: {
+    ar: 'لا يمكنك تنفيذ هذا الإجراء على نفسك.',
+    en: "You can't do this to yourself.",
+  },
+  HIGHER_ROLE: {
+    ar: 'لا يمكنك تنفيذ هذا الإجراء على شخص بمنصب أعلى.',
+    en: "You can't do this to someone with a higher role.",
+  },
+  UNDO_EXPIRED: { ar: 'انتهت مهلة التراجع.', en: 'The undo window has passed.' },
+  ALREADY_PENDING: {
+    ar: 'لديك طلب قائم بالفعل.',
+    en: 'You already have a pending request.',
+  },
+  NO_ACCOUNT: {
+    ar: 'تعذّر تجهيز حساب المتقدم. حاول مرة أخرى.',
+    en: "The applicant's account could not be prepared. Try again.",
+  },
+  RUBRIC_LOCKED: {
+    ar: 'لا يمكن تعديل معايير التقييم بعد بدء التقييم.',
+    en: "The rubric can't be changed once scoring has started.",
+  },
+  TOKEN_INVALID: { ar: 'هذا الرابط غير صالح.', en: 'This link is not valid.' },
+  REASON_REQUIRED: { ar: 'يرجى كتابة السبب.', en: 'Please provide a reason.' },
+  NOT_A_MEMBER: { ar: 'هذه الصفحة للأعضاء فقط.', en: 'This page is for members only.' },
+};
+
 const messages: Partial<Record<ErrorCode, Record<Lang, string>>> = {
+  ...LIFECYCLE_MESSAGES,
   EMAIL_NOT_CONFIRMED: {
     ar: 'أكّد بريدك الإلكتروني قبل التقديم.',
     en: 'Confirm your e-mail address before applying.',

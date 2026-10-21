@@ -1,5 +1,6 @@
 import type { ErrorCode } from '@/lib/result';
 import { accessMessage } from '@/modules/access/messages';
+import { LIFECYCLE_MESSAGES } from '@/modules/membership/messages';
 import type { Lang } from '@/modules/auth/messages';
 
 const MEMBER_CODES = [
@@ -23,9 +24,13 @@ const MEMBER_CODES = [
   'NAME_LOCKED',
   'FILE_TOO_LARGE',
   'FILE_TYPE',
+  'SELF_ACTION',
+  'HIGHER_ROLE',
+  'ALREADY_PENDING',
 ] as const satisfies readonly ErrorCode[];
 
 const messages: Partial<Record<ErrorCode, Record<Lang, string>>> = {
+  ...LIFECYCLE_MESSAGES,
   NOT_A_MEMBER: { ar: 'هذه الصفحة للأعضاء فقط.', en: 'This page is for members only.' },
   REASON_REQUIRED: { ar: 'يرجى كتابة السبب.', en: 'Please provide a reason.' },
   INVALID_TRANSITION: {

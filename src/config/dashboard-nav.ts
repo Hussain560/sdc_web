@@ -24,7 +24,10 @@ export type NavIcon =
   | 'mail'
   | 'list'
   | 'settings'
-  | 'badge';
+  | 'badge'
+  | 'hourglass'
+  | 'inbox'
+  | 'exit';
 
 type Requirement = { permission: PermissionKey; scope: 'any' | 'global' | 'committee' };
 
@@ -43,8 +46,13 @@ type NavItemDef = {
   noPosition?: boolean;
   /** Committee-scoped items append `?committee=<id>`. */
   scoped?: boolean;
+  /** Which live count this item shows as a badge (needs the counts passed to visibleNav). */
+  badge?: NavBadgeKey;
   children?: NavItemDef[];
 };
+
+export type NavBadgeKey = 'applications' | 'waitlist' | 'leave';
+export type NavCounts = Partial<Record<NavBadgeKey, number>>;
 
 type NavGroupDef = { key: NavGroupKey; label: Localized; items: NavItemDef[] };
 
@@ -176,7 +184,7 @@ export const DASHBOARD_NAV: NavGroupDef[] = [
     items: [
       {
         key: 'membership-cycles',
-        label: { ar: 'دورات الاستقبال', en: 'Intake cycles' },
+        label: { ar: 'دورات العضوية', en: 'Membership cycles' },
         href: '/dashboard/membership/cycles',
         icon: 'card',
         requires: { permission: 'membership.manage_cycles', scope: 'any' },
@@ -184,10 +192,20 @@ export const DASHBOARD_NAV: NavGroupDef[] = [
       },
       {
         key: 'membership-applications',
-        label: { ar: 'طلبات العضوية', en: 'Applications' },
+        label: { ar: 'الطلبات', en: 'Applications' },
         href: '/dashboard/membership/applications',
-        icon: 'clipboard',
+        icon: 'inbox',
         requires: { permission: 'membership.review', scope: 'any' },
+        badge: 'applications',
+        ready: true,
+      },
+      {
+        key: 'membership-waitlist',
+        label: { ar: 'الانتظار والتفعيل', en: 'Waiting & activation' },
+        href: '/dashboard/membership/waitlist',
+        icon: 'hourglass',
+        requires: { permission: 'membership.review', scope: 'any' },
+        badge: 'waitlist',
         ready: true,
       },
       {
@@ -196,6 +214,15 @@ export const DASHBOARD_NAV: NavGroupDef[] = [
         href: '/dashboard/members',
         icon: 'users',
         requires: { permission: 'members.view', scope: 'any' },
+        ready: true,
+      },
+      {
+        key: 'membership-leave',
+        label: { ar: 'طلبات المغادرة', en: 'Leave requests' },
+        href: '/dashboard/membership/leave-requests',
+        icon: 'exit',
+        requires: { permission: 'members.manage', scope: 'any' },
+        badge: 'leave',
         ready: true,
       },
     ],
@@ -270,6 +297,8 @@ export type VisibleNavItem = {
   label: Localized;
   href: string;
   icon: NavIcon;
+  /** Live count shown next to the label (omitted when zero). */
+  badge?: number;
   children?: VisibleNavItem[];
 };
 export type VisibleNavGroup = { key: NavGroupKey; label: Localized; items: VisibleNavItem[] };
@@ -290,7 +319,11 @@ function allowed(access: AccessContext, req: Requirement | undefined): boolean {
 }
 
 /** Removes unready items, items the user may not use, then empty parents and empty groups. */
-export function visibleNav(access: AccessContext, committeeId?: string): VisibleNavGroup[] {
+export function visibleNav(
+  access: AccessContext,
+  committeeId?: string,
+  counts: NavCounts = {},
+): VisibleNavGroup[] {
   const filter = (item: NavItemDef): VisibleNavItem | null => {
     if (!item.ready) return null;
     if (item.needsPosition && access.positions.length === 0) return null;
@@ -305,6 +338,7 @@ export function visibleNav(access: AccessContext, committeeId?: string): Visible
       label: item.label,
       href: item.scoped && committeeId ? `${item.href}?committee=${committeeId}` : item.href,
       icon: item.icon,
+      ...(item.badge && (counts[item.badge] ?? 0) > 0 ? { badge: counts[item.badge] } : {}),
       ...(children ? { children } : {}),
     };
   };

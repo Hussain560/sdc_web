@@ -21,7 +21,6 @@ import {
   ACADEMIC_STATUSES,
   type ReferenceOption,
 } from '@/modules/membership/types';
-import { setMemberStatus } from '../../actions';
 import {
   LINK_KEYS,
   OPEN_TO_KEYS,
@@ -126,7 +125,6 @@ export function MemberProfileEditor({
   const [busy, setBusy] = useState<string | null>(null);
   const [, startTransition] = useTransition();
   const [query, setQuery] = useState('');
-  const [leaving, setLeaving] = useState(false);
   const phoneParts = splitInternational(data.values.phone);
   const [phoneCountry, setPhoneCountry] = useState<PhoneCountry>(
     phoneParts?.country ?? DEFAULT_PHONE_COUNTRY,
@@ -927,36 +925,13 @@ export function MemberProfileEditor({
         </Section>
 
         <div className="flex flex-wrap items-center gap-3">
-          {leaving ? (
-            <span className="flex items-center gap-2 text-sm">
-              {t.leaveSure}
-              <Button
-                type="button"
-                variant="danger"
-                size="sm"
-                loading={busy === 'leave'}
-                onClick={() => {
-                  setBusy('leave');
-                  startTransition(async () => {
-                    const r = await setMemberStatus({ id: data.id, status: 'inactive' }, { lang });
-                    setBusy(null);
-                    if (!r.ok) return void toast.error(r.message);
-                    setLeaving(false);
-                    router.refresh();
-                  });
-                }}
-              >
-                {t.leaveYes}
-              </Button>
-              <Button type="button" variant="ghost" size="sm" onClick={() => setLeaving(false)}>
-                {t.back}
-              </Button>
-            </span>
-          ) : (
-            <Button type="button" variant="ghost" onClick={() => setLeaving(true)}>
-              {t.leave}
-            </Button>
-          )}
+          {/* A member never ends their own membership: they ask from "My membership" and leadership decides. */}
+          <Link
+            href="/account/membership"
+            className="text-sm text-muted underline underline-offset-4 hover:text-text"
+          >
+            {t.leave}
+          </Link>
         </div>
       </div>
     </div>

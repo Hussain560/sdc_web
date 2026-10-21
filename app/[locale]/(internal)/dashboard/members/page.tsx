@@ -1,26 +1,21 @@
-import { ChevronLeft, ChevronRight, Eye, EyeOff, Shield, Users } from 'lucide-react';
-import { Avatar, Badge, EmptyState, Pagination, Tabs, type TabItem } from '@/components/ui';
+import { Download, Shield, Users } from 'lucide-react';
+import { EmptyState, LinkButton, Pagination, Tabs, type TabItem } from '@/components/ui';
 import { Forbidden } from '@/components/layout/Forbidden';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { Link } from '@/i18n/navigation';
 import { can, canGlobal } from '@/lib/auth/permissions';
 import { requireUser } from '@/lib/auth/session';
-import { formatDate } from '@/lib/format';
 import { pageMeta, parsePage } from '@/lib/pagination';
 import { getAccess } from '@/modules/access/queries';
 import { listCommittees, listRoles } from '@/modules/access/admin-queries';
 import {
   ADMIN_MEMBER_TABS,
   listAdminMembers,
-  type AdminMemberRow,
   type AdminMemberTab,
 } from '@/modules/members/admin-queries';
 import { AddMemberWizard } from '@/modules/members/components/AddMemberWizard';
-import { CompletenessBar } from '@/modules/members/components/CompletenessBar';
-import { MemberActions } from '@/modules/members/components/MemberActions';
+import { MembersTable } from '@/modules/members/components/MembersTable';
 import { WIZARD_ROLE_KEYS } from '@/modules/members/new-member';
-import { memberThumbUrl } from '@/modules/members/photo-url';
-import { MEMBER_STATUS_LABEL } from '@/modules/members/schemas';
 import { getReferenceData } from '@/modules/membership/queries';
 
 type Search = {
@@ -37,16 +32,6 @@ type Search = {
 
 const selectClass =
   'h-11 w-full rounded-xl border border-line-strong bg-field px-3 text-sm text-text focus-visible:outline-2 focus-visible:outline-focus-ring';
-
-/** Status chip of a row: not activated and unclaimed are not member statuses but things leadership acts on. */
-function statusOf(r: AdminMemberRow, lang: 'ar' | 'en') {
-  if (!r.linked)
-    return { tone: 'warning' as const, text: lang === 'ar' ? 'لم يُربط بحساب' : 'Not linked' };
-  if (r.status === 'active' && !r.activated)
-    return { tone: 'info' as const, text: lang === 'ar' ? 'لم يُفعَّل الحساب' : 'Not activated' };
-  const st = MEMBER_STATUS_LABEL[r.status];
-  return { tone: st.tone, text: st[lang] };
-}
 
 // MEM-015 (screen 19, Sprint 17): every member record, including hidden and moved ones, with what leadership needs to
 // act: committee and position, account state, profile completeness, directory visibility.
@@ -111,22 +96,26 @@ export default async function MembersAdminPage({
   };
   const tabLabels: Record<AdminMemberTab, string> = {
     all: L('الكل', 'All'),
-    active: L('نشط', 'Active'),
-    not_activated: L('لم يُفعَّل', 'Not activated'),
-    suspended: L('موقوف', 'Suspended'),
-    inactive: L('غير نشط', 'Inactive'),
-    unclaimed: L('لم يُطالَب به', 'Unclaimed'),
+    active: L('نشطة', 'Active'),
+    ending_soon: L('تنتهي قريباً', 'Ending soon'),
+    not_activated: L('بانتظار التفعيل', 'Waiting to activate'),
+    suspended: L('موقوفة', 'Suspended'),
+    expired: L('منتهية المدة', 'Term ended'),
+    ended: L('انتهت', 'Ended'),
+    unclaimed: L('لم يُطالَب بها', 'Unclaimed'),
+    leave_requests: L('طلبات المغادرة', 'Leave requests'),
   };
   const tabs: TabItem[] = ADMIN_MEMBER_TABS.map((k) => ({
     key: k,
     label: tabLabels[k],
     href: keep(k === 'all' ? {} : { status: k }),
     count: list.counts[k],
-    tone: k === 'unclaimed' || k === 'not_activated' ? ('warning' as const) : undefined,
+    tone:
+      k === 'unclaimed' || k === 'not_activated' || k === 'leave_requests' || k === 'ending_soon'
+        ? ('warning' as const)
+        : undefined,
   }));
   const hasFilters = !!(sp.q || sp.committee || sp.track || sp.completeness);
-  const Arrow = ar ? ChevronLeft : ChevronRight;
-  const nameOf = (r: AdminMemberRow) => (ar ? r.nameAr : (r.nameEn ?? r.nameAr));
 
   const kpi = (label: string, value: string | number, hint?: string) => (
     <div className="rounded-xl border border-line bg-surface p-4">
@@ -141,20 +130,31 @@ export default async function MembersAdminPage({
       <PageHeader
         title={L('الأعضاء', 'Members')}
         description={L(
-          'كل سجلات الأعضاء، بما فيها المخفية والمنقولة من الموقع السابق.',
-          'Every member record, including hidden ones and those moved from the old site.',
+          'حالة كل عضو ومدته في لمحة. حدّد عدة أعضاء لإجراء جماعي.',
+          'Every member’s status and term at a glance. Select several members for a bulk action.',
         )}
         readOnly={!canManage && !canCreate}
         readOnlyLabel={L('عرض فقط', 'View only')}
         action={
-          canCreate ? (
-            <AddMemberWizard
-              reference={reference}
-              committees={committees}
-              roles={wizardRoles}
-              canAssign={canAssign}
-            />
-          ) : undefined
+          <div className="flex flex-wrap items-center gap-2">
+            {canManage && (
+              <LinkButton
+                href={`/api/members/export${tab === 'all' ? '' : `?status=${tab}`}`}
+                variant="secondary"
+                iconStart={<Download size={16} aria-hidden="true" />}
+              >
+                {L('تصدير', 'Export')}
+              </LinkButton>
+            )}
+            {canCreate && (
+              <AddMemberWizard
+                reference={reference}
+                committees={committees}
+                roles={wizardRoles}
+                canAssign={canAssign}
+              />
+            )}
+          </div>
         }
       />
 
@@ -270,144 +270,13 @@ export default async function MembersAdminPage({
           }
         />
       ) : (
-        <>
-          {/* Phones get cards, wider screens a table. */}
-          <ul className="flex flex-col gap-3 md:hidden">
-            {list.rows.map((r) => {
-              const st = statusOf(r, lang);
-              return (
-                <li key={r.id} className="rounded-xl border border-line bg-surface p-3">
-                  <Link href={`/dashboard/members/${r.id}`} className="flex items-center gap-3">
-                    <Avatar name={nameOf(r)} src={memberThumbUrl(r.photoPath)} size={56} />
-                    <span className="min-w-0 flex-1">
-                      <span className="block truncate font-semibold">{nameOf(r)}</span>
-                      <span className="block truncate text-sm text-muted">
-                        {[ar ? r.committeeAr : r.committeeEn, ar ? r.roleAr : r.roleEn]
-                          .filter(Boolean)
-                          .join(' · ') || L('بلا لجنة', 'No committee')}
-                      </span>
-                    </span>
-                  </Link>
-                  <div className="mt-3 flex items-center gap-3">
-                    <CompletenessBar
-                      percent={r.completeness}
-                      label={L('اكتمال الملف', 'Profile completeness')}
-                      className="flex-1"
-                    />
-                    <Badge tone={st.tone}>{st.text}</Badge>
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
-
-          <div className="hidden overflow-x-auto rounded-xl border border-line bg-surface md:block">
-            <table className="w-full min-w-[960px] text-sm">
-              <thead className="border-b border-line bg-surface-raised text-xs text-muted">
-                <tr>
-                  {[
-                    L('العضو', 'Member'),
-                    L('اللجنة والمنصب', 'Committee and position'),
-                    L('الحالة', 'Status'),
-                    L('اكتمال الملف', 'Profile'),
-                    L('في الدليل', 'In directory'),
-                    L('انضم', 'Joined'),
-                    '',
-                  ].map((h, i) => (
-                    <th key={i} scope="col" className="px-4 py-2.5 text-start text-xs font-medium">
-                      {h}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {list.rows.map((r) => {
-                  const st = statusOf(r, lang);
-                  const committee = ar ? r.committeeAr : r.committeeEn;
-                  const role = ar ? r.roleAr : r.roleEn;
-                  return (
-                    <tr
-                      key={r.id}
-                      className="border-b border-line align-middle transition-colors last:border-0 hover:bg-surface-raised"
-                    >
-                      <td className="px-4 py-3">
-                        <div className="flex items-center gap-3">
-                          <Avatar name={nameOf(r)} src={memberThumbUrl(r.photoPath)} size={40} />
-                          <div className="min-w-0">
-                            <Link
-                              href={`/dashboard/members/${r.id}`}
-                              className="block truncate font-semibold hover:text-accent-text focus-visible:outline-2 focus-visible:outline-focus-ring"
-                            >
-                              {nameOf(r)}
-                            </Link>
-                            {list.canContact && (
-                              <p dir="ltr" className="truncate text-start text-xs text-muted">
-                                {r.email ?? L('لم يُربط بحساب', 'Not linked to an account')}
-                              </p>
-                            )}
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-4 py-3">
-                        {committee || role ? (
-                          <>
-                            <p>{committee ?? '—'}</p>
-                            <p className="text-xs text-muted">{role}</p>
-                          </>
-                        ) : (
-                          <span className="text-muted">{L('بلا لجنة', 'No committee')}</span>
-                        )}
-                      </td>
-                      <td className="px-4 py-3">
-                        <Badge tone={st.tone}>{st.text}</Badge>
-                      </td>
-                      <td className="w-56 px-4 py-3">
-                        <CompletenessBar
-                          percent={r.completeness}
-                          label={L('اكتمال الملف', 'Profile completeness')}
-                        />
-                      </td>
-                      <td className="px-4 py-3 text-muted">
-                        <span className="inline-flex items-center gap-1.5">
-                          {r.listed ? (
-                            <Eye aria-hidden="true" className="size-4" />
-                          ) : (
-                            <EyeOff aria-hidden="true" className="size-4" />
-                          )}
-                          {r.listed ? L('ظاهر', 'Visible') : L('مخفي', 'Hidden')}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3 whitespace-nowrap tabular-nums text-muted">
-                        {formatDate(r.joinedAt, lang)}
-                      </td>
-                      <td className="px-4 py-3">
-                        <div className="flex items-center justify-end gap-2 whitespace-nowrap">
-                          {/* A record with no account is waiting for its owner: the invite is one click away. */}
-                          {!r.linked && (
-                            <MemberActions
-                              id={r.id}
-                              status={r.status}
-                              linked={false}
-                              claimEmail={null}
-                              canManage={canManage}
-                            />
-                          )}
-                          <Link
-                            href={`/dashboard/members/${r.id}`}
-                            aria-label={`${L('فتح', 'Open')} ${nameOf(r)}`}
-                            className="inline-flex size-11 shrink-0 items-center justify-center rounded-full border border-line text-muted hover:bg-surface-raised hover:text-text focus-visible:outline-2 focus-visible:outline-focus-ring"
-                          >
-                            <Arrow aria-hidden="true" className="size-5" />
-                          </Link>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        </>
+        <MembersTable
+          rows={list.rows}
+          tab={tab}
+          canManage={canManage}
+          canContact={list.canContact}
+          canCreate={canCreate}
+        />
       )}
       <Pagination meta={meta} searchParams={sp} lang={lang} />
 

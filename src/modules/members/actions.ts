@@ -12,12 +12,7 @@ import { sendClaimInviteMail, sendMemberCreatedMail } from '@/modules/notificati
 import { can } from '@/lib/auth/permissions';
 import { memberCode, memberMessage } from './messages';
 import { WIZARD_ROLE_KEYS } from './new-member';
-import {
-  toProfilePayload,
-  validateProfile,
-  type MemberStatus,
-  type ProfileValues,
-} from './schemas';
+import { toProfilePayload, validateProfile, type ProfileValues } from './schemas';
 
 /** Member Server Actions: authenticate → validate → ONE database function (authoritative) → Result. */
 const langOf = (v: unknown): Lang => (isLang(v) ? v : 'ar');
@@ -48,24 +43,6 @@ export async function updateMyMemberProfile(
   if (error) return dbFailure(error, lang);
   refresh();
   return ok(undefined);
-}
-
-export async function setMemberStatus(
-  input: { id: string; status: MemberStatus; reason?: string },
-  ctx: { lang: Lang },
-): Promise<Result<{ status: string }>> {
-  const lang = langOf(ctx?.lang);
-  if (!UUID.safeParse(input?.id).success) return failCode('NOT_FOUND', lang);
-  if (!(await getAccess())) return failCode('UNAUTHENTICATED', lang);
-  const supabase = await createClient();
-  const { data, error } = await supabase.rpc('set_member_status', {
-    p_id: input.id,
-    p_status: input.status,
-    p_reason: input.reason?.trim() || undefined,
-  });
-  if (error) return dbFailure(error, lang);
-  refresh();
-  return ok({ status: data as string });
 }
 
 /** Leadership sends a one-time claim link to a legacy member's known e-mail (7 days, single use). */

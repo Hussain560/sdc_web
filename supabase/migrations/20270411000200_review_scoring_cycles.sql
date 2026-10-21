@@ -171,6 +171,17 @@ as $$
 $$;
 revoke all on function private.application_score(uuid) from public, anon, authenticated;
 
+-- The same numbers for the views leadership reads: the caller must hold membership.review.
+create or replace function private.application_score_visible(p_app uuid)
+returns table (average numeric, reviewers integer)
+language sql
+stable
+security definer
+set search_path = ''
+as $$ select s.average, s.reviewers from private.application_score(p_app) s where private.has_permission('membership.review') $$;
+revoke all on function private.application_score_visible(uuid) from public, anon;
+grant execute on function private.application_score_visible(uuid) to authenticated;
+
 create or replace function public.save_application_score(p_app uuid, p_scores jsonb, p_comment text default null)
 returns jsonb
 language plpgsql
@@ -466,8 +477,16 @@ select a.id, a.cycle_id, a.user_id, a.status, a.full_name_ar, a.full_name_en, a.
        a.wants_directory_listing, a.email,
        a.reference, a.first_name_ar, a.middle_name_ar, a.last_name_ar, a.first_name_en, a.middle_name_en, a.last_name_en,
        a.phone, a.locale, a.resubmitted_at, a.info_requested_at, a.info_request, a.accepted_at, a.lapsed_at,
-       (select s.average from private.application_score(a.id) s) as score_average,
-       coalesce((select s.reviewers from private.application_score(a.id) s), 0) as score_reviewers
+       (select s.average from private.application_score_visible(a.id) s) as score_average,
+       coalesce((select s.reviewers from private.application_score_visible(a.id) s), 0) as score_reviewers,
+       (select p.full_name_ar from public.profiles p where p.id = a.reviewer_id) as reviewer_name,
+       (select count(*) from public.membership_applications o where lower(o.email) = lower(a.email) and o.id <> a.id)::integer as earlier_count,
+       (select count(*) from public.membership_applications o where lower(o.email) = lower(a.email) and o.id <> a.id and o.status = 'rejected')::integer as earlier_rejected,
+       exists (select 1 from public.members m join public.profiles pr on pr.id = m.user_id
+                where lower(pr.email) = lower(a.email) and m.status in ('active', 'suspended', 'expired')) as is_member,
+       exists (select 1 from public.profiles pr where lower(pr.email) = lower(a.email) and pr.blocked_at is not null) as is_blocked,
+       a.sub_major_id, a.portfolio_url, a.github_url, a.linkedin_url, a.x_url,
+       a.bio_ar, a.bio_en, a.answers, a.consent_version, a.consent_at, a.info_fields
 from public.membership_applications a
 where private.has_permission('membership.review');
 revoke all on public.membership_review_queue from anon, authenticated;
@@ -493,9 +512,9 @@ grant select on public.membership_cycle_funnel to authenticated;
 -- Waitlist order: best score first when the cycle has a rubric, otherwise order of submission (Q-L9).
 create or replace view public.membership_waitlist as
 select a.id as application_id, a.cycle_id, a.full_name_ar, a.full_name_en, a.reference, a.submitted_at,
-       (select s.average from private.application_score(a.id) s) as score_average,
+       (select s.average from private.application_score_visible(a.id) s) as score_average,
        row_number() over (partition by a.cycle_id order by
-         case when jsonb_array_length(c.rubric) > 0 then (select s.average from private.application_score(a.id) s) end desc nulls last,
+         case when jsonb_array_length(c.rubric) > 0 then (select s.average from private.application_score_visible(a.id) s) end desc nulls last,
          a.submitted_at, a.id)::integer as position
   from public.membership_applications a
   join public.membership_cycles c on c.id = a.cycle_id

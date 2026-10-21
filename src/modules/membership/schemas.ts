@@ -9,10 +9,12 @@ import {
 } from './types';
 
 const m = {
-  nameAr: {
-    ar: 'اكتب اسمك بالعربية (3 أحرف على الأقل).',
-    en: 'Enter your name in Arabic (at least 3 characters).',
-  },
+  firstAr: { ar: 'اكتب اسمك الأول بالعربية.', en: 'Enter your first name in Arabic.' },
+  lastAr: { ar: 'اكتب اسم العائلة بالعربية.', en: 'Enter your family name in Arabic.' },
+  firstEn: { ar: 'اكتب اسمك الأول بالإنجليزية.', en: 'Enter your first name in English.' },
+  lastEn: { ar: 'اكتب اسم العائلة بالإنجليزية.', en: 'Enter your family name in English.' },
+  bioRequired: { ar: 'اكتب نبذة قصيرة عنك.', en: 'Write a short bio about yourself.' },
+  phoneRequired: { ar: 'أدخل رقم الجوال.', en: 'Enter your phone number.' },
   email: {
     ar: 'اكتب بريدًا إلكترونيًا صحيحًا — سيصلك عليه القرار ورابط تفعيل الحساب.',
     en: 'Enter a valid e-mail — the decision and your account activation link are sent there.',
@@ -45,6 +47,18 @@ const m = {
   },
   capacity: { ar: 'الحد الأقصى رقم موجب.', en: 'The limit must be a positive number.' },
   questions: { ar: 'راجع الأسئلة الإضافية.', en: 'Check the extra questions.' },
+  term: {
+    ar: 'نهاية العضوية يجب أن تكون بعد إغلاق باب التقديم.',
+    en: 'The membership end must be after applications close.',
+  },
+  deadline: {
+    ar: 'مهلة التفعيل من 1 إلى 30 يوماً.',
+    en: 'The activation period is 1 to 30 days.',
+  },
+  rubric: {
+    ar: 'راجع معايير التقييم: حتى 6 معايير، لكل منها اسم بالعربية ووزن.',
+    en: 'Check the rubric: up to 6 criteria, each with an Arabic name and a weight.',
+  },
 } as const;
 
 const url = (lang: Lang) =>
@@ -73,10 +87,22 @@ export function validateApplicationStep(
   };
 
   if (step === 'personal') {
-    if (v.fullNameAr.trim().length < 3) add('fullNameAr', m.nameAr[lang]);
+    if (!v.firstNameAr.trim()) add('firstNameAr', m.firstAr[lang]);
+    if (!v.lastNameAr.trim()) add('lastNameAr', m.lastAr[lang]);
+    if (!v.firstNameEn.trim()) add('firstNameEn', m.firstEn[lang]);
+    if (!v.lastNameEn.trim()) add('lastNameEn', m.lastEn[lang]);
+    for (const [field, value] of [
+      ['firstNameAr', v.firstNameAr],
+      ['middleNameAr', v.middleNameAr],
+      ['lastNameAr', v.lastNameAr],
+      ['firstNameEn', v.firstNameEn],
+      ['middleNameEn', v.middleNameEn],
+      ['lastNameEn', v.lastNameEn],
+    ] as const)
+      if (value.length > 100) add(field, m.nameLong[lang]);
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.email.trim())) add('email', m.email[lang]);
-    if (v.fullNameAr.length > 100 || v.fullNameEn.length > 100) add('fullNameAr', m.nameLong[lang]);
-    if (v.phone.trim() && !/^\+?[0-9]{8,15}$/.test(v.phone.trim())) add('phone', m.phone[lang]);
+    if (!v.phone.trim()) add('phone', m.phoneRequired[lang]);
+    else if (!/^\+?[0-9]{8,15}$/.test(v.phone.trim())) add('phone', m.phone[lang]);
   }
   if (step === 'academic') {
     if (!(ACADEMIC_STATUSES as readonly string[]).includes(v.academicStatus))
@@ -87,6 +113,7 @@ export function validateApplicationStep(
     if (!v.trackId) add('trackId', m.track[lang]);
   }
   if (step === 'links') {
+    if (!v.bioAr.trim() && !v.bioEn.trim()) add('bioAr', m.bioRequired[lang]);
     if (v.bioAr.length > 1000 || v.bioEn.length > 1000) add('bioAr', m.bio[lang]);
     for (const [field, value] of [
       ['portfolioUrl', v.portfolioUrl],
@@ -128,8 +155,12 @@ export function toApplicationPayload(v: ApplicationValues, consentVersion: strin
   if (v.majorId === OTHER) answers.other_major = v.otherMajor.trim();
   return {
     email: v.email.trim(),
-    full_name_ar: v.fullNameAr.trim(),
-    full_name_en: v.fullNameEn.trim(),
+    first_name_ar: v.firstNameAr.trim(),
+    middle_name_ar: v.middleNameAr.trim(),
+    last_name_ar: v.lastNameAr.trim(),
+    first_name_en: v.firstNameEn.trim(),
+    middle_name_en: v.middleNameEn.trim(),
+    last_name_en: v.lastNameEn.trim(),
     phone: v.phone.trim(),
     academic_status: v.academicStatus,
     university_id: v.universityId === OTHER ? '' : v.universityId,
@@ -161,8 +192,12 @@ export function fromApplicationRow(r: Record<string, unknown>): ApplicationValue
   const { other_university, other_major, ...rest } = answers as Record<string, string | string[]>;
   return {
     email: s('email'),
-    fullNameAr: s('full_name_ar'),
-    fullNameEn: s('full_name_en'),
+    firstNameAr: s('first_name_ar') || s('full_name_ar').split(' ')[0] || '',
+    middleNameAr: s('middle_name_ar'),
+    lastNameAr: s('last_name_ar'),
+    firstNameEn: s('first_name_en'),
+    middleNameEn: s('middle_name_en'),
+    lastNameEn: s('last_name_en'),
     phone: s('phone'),
     academicStatus: (s('academic_status') as ApplicationValues['academicStatus']) || '',
     universityId: n('university_id') || (typeof other_university === 'string' ? OTHER : ''),
@@ -215,7 +250,34 @@ export function validateCycle(v: CycleFormValues, lang: Lang): Record<string, st
     !z.array(questionSchema).safeParse(v.questions.map(cleanQuestion)).success
   )
     errors.questions = m.questions[lang];
+  if (v.termEndsAt && v.closesAt && v.termEndsAt <= v.closesAt.slice(0, 10))
+    errors.termEndsAt = m.term[lang];
+  const days = Number(v.activationDeadlineDays || '7');
+  if (!Number.isInteger(days) || days < 1 || days > 30)
+    errors.activationDeadlineDays = m.deadline[lang];
+  if (!z.array(rubricSchema).max(6).safeParse(v.rubric).success) errors.rubric = m.rubric[lang];
   return errors;
+}
+
+const rubricSchema = z.object({
+  key: z.string().regex(/^[a-z][a-z0-9_]{0,23}$/),
+  label_ar: z.string().trim().min(2).max(80),
+  label_en: z.string().trim().max(80),
+  weight: z.union([z.literal(1), z.literal(2), z.literal(3)]),
+});
+
+/** A key made from a label (or a counter) that satisfies the database rule. */
+export function rubricKey(label: string, taken: string[]): string {
+  const base =
+    label
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '_')
+      .replace(/^_+|_+$/g, '')
+      .slice(0, 18) || 'criterion';
+  let key = /^[a-z]/.test(base) ? base : `c_${base}`;
+  let n = 1;
+  while (taken.includes(key)) key = `${base.slice(0, 18)}_${(n += 1)}`;
+  return key;
 }
 
 const cleanQuestion = (q: CycleQuestion): CycleQuestion => ({
@@ -236,6 +298,14 @@ export function toCyclePayload(v: CycleFormValues) {
     opens_at: riyadhToIso(v.opensAt),
     closes_at: riyadhToIso(v.closesAt),
     review_ends_at: riyadhToIso(v.reviewEndsAt),
+    term_ends_at: v.termEndsAt,
+    activation_deadline_days: v.activationDeadlineDays.trim() || '7',
+    rubric: v.rubric.map((r) => ({
+      key: r.key,
+      label_ar: r.label_ar.trim(),
+      label_en: r.label_en.trim(),
+      weight: r.weight,
+    })),
     capacity: v.capacity.trim(),
     questions: v.questions.map(cleanQuestion),
   };

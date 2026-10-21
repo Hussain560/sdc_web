@@ -1,13 +1,15 @@
 import { createClient } from '@/lib/supabase/server';
 import { createPublicClient } from '@/lib/supabase/public';
 import type { Json } from '@/lib/supabase/database.types';
-import type {
-  ApplicationStatus,
-  CycleFormValues,
-  CyclePhase,
-  CycleQuestion,
-  PublicCycle,
-  ReferenceOption,
+import {
+  DEFAULT_RUBRIC,
+  type ApplicationStatus,
+  type CycleFormValues,
+  type CyclePhase,
+  type CycleQuestion,
+  type PublicCycle,
+  type ReferenceOption,
+  type RubricCriterion,
 } from './types';
 import { isoToRiyadh } from './schemas';
 
@@ -23,6 +25,10 @@ type PhaseRow = {
   status: string | null;
   phase: string | null;
   questions: Json | null;
+  review_ends_at: string | null;
+  capacity: number | null;
+  activation_deadline_days: number | null;
+  term_ends_at: string | null;
 };
 
 const toPublic = (r: PhaseRow): PublicCycle => ({
@@ -37,6 +43,10 @@ const toPublic = (r: PhaseRow): PublicCycle => ({
   status: r.status as PublicCycle['status'],
   phase: r.phase as PublicCycle['phase'],
   questions: (Array.isArray(r.questions) ? r.questions : []) as unknown as CycleQuestion[],
+  reviewEndsAt: r.review_ends_at,
+  capacity: r.capacity,
+  activationDeadlineDays: r.activation_deadline_days ?? 7,
+  termEndsAt: r.term_ends_at,
 });
 
 /**
@@ -56,64 +66,6 @@ export async function getJoinCycle(): Promise<PublicCycle | null> {
     rows[0] ??
     null
   );
-}
-
-export type MyApplication = {
-  id: string;
-  cycleId: string;
-  status: ApplicationStatus;
-  submittedAt: string;
-  decidedAt: string | null;
-  row: Record<string, unknown>;
-};
-
-/** The signed-in person's application in a cycle (the view hides the internal decision note, MA-5). */
-export async function getMyApplication(cycleId: string): Promise<MyApplication | null> {
-  const supabase = await createClient();
-  const { data } = await supabase
-    .from('my_membership_application')
-    .select('*')
-    .eq('cycle_id', cycleId)
-    .maybeSingle();
-  if (!data) return null;
-  return {
-    id: data.id!,
-    cycleId: data.cycle_id!,
-    status: data.status as ApplicationStatus,
-    submittedAt: data.submitted_at!,
-    decidedAt: data.decided_at,
-    row: data as Record<string, unknown>,
-  };
-}
-
-export type MyApplicationSummary = MyApplication & { cycle: PublicCycle };
-
-export async function listMyApplications(): Promise<MyApplicationSummary[]> {
-  const supabase = await createClient();
-  const { data } = await supabase
-    .from('my_membership_application')
-    .select('*')
-    .order('submitted_at', { ascending: false });
-  if (!data || data.length === 0) return [];
-  const { data: cycles } = await supabase
-    .from('membership_cycle_phase')
-    .select('*')
-    .in(
-      'id',
-      data.map((a) => a.cycle_id!),
-    );
-  const byId = new Map(((cycles ?? []) as PhaseRow[]).map((c) => [c.id!, toPublic(c)]));
-  return data
-    .filter((a) => byId.has(a.cycle_id!))
-    .map((a) => ({
-      id: a.id!,
-      cycleId: a.cycle_id!,
-      status: a.status as ApplicationStatus,
-      submittedAt: a.submitted_at!,
-      decidedAt: a.decided_at,
-      row: a as Record<string, unknown>,
-      cycle: byId.get(a.cycle_id!)!,
-    }));
 }
 
 export async function getReferenceData(): Promise<{
@@ -167,6 +119,15 @@ export async function getReferenceData(): Promise<{
 }
 
 // ----------------------------------------------------------------------------------------------- dashboard
+export type CycleFunnel = {
+  applied: number;
+  inReview: number;
+  accepted: number;
+  activated: number;
+  lapsed: number;
+  waitlisted: number;
+};
+
 export type CycleRow = {
   id: string;
   nameAr: string;
@@ -178,10 +139,17 @@ export type CycleRow = {
   closeEffective: string;
   reviewEndsAt: string | null;
   capacity: number | null;
+  /** yyyy-mm-dd the membership of this cycle ends (null: one year after acceptance). */
+  termEndsAt: string | null;
+  activationDeadlineDays: number;
+  rubric: RubricCriterion[];
   status: 'draft' | 'published' | 'completed';
   phase: CyclePhase;
   counts: Partial<Record<ApplicationStatus, number>>;
+  funnel: CycleFunnel;
   total: number;
+  /** Members of this cycle who are still active (completed cycles). */
+  stillActive: number;
   updatedAt: string;
 };
 
@@ -201,21 +169,44 @@ const phaseOf = (r: {
   return now < end ? 'open' : 'closed';
 };
 
-/** Cycles for the dashboard (manage_cycles holders read the table; counts come from the invoker view). */
+const rubricOf = (v: unknown): RubricCriterion[] =>
+  (Array.isArray(v) ? v : []).map((x) => {
+    const r = x as Partial<RubricCriterion>;
+    return {
+      key: String(r.key ?? ''),
+      label_ar: String(r.label_ar ?? ''),
+      label_en: String(r.label_en ?? ''),
+      weight: (r.weight === 2 || r.weight === 3 ? r.weight : 1) as RubricCriterion['weight'],
+    };
+  });
+
+/** Cycles for the dashboard (manage_cycles holders read the table; counts and the funnel come from guarded views). */
 export async function listCycles(): Promise<CycleRow[]> {
   const supabase = await createClient();
-  const [{ data: cycles }, { data: counts }] = await Promise.all([
-    supabase.from('membership_cycles').select('*').order('opens_at', { ascending: false }),
-    supabase.from('membership_cycle_counts').select('cycle_id, status, total'),
-  ]);
+  const [{ data: cycles }, { data: counts }, { data: funnels }, { data: joined }] =
+    await Promise.all([
+      supabase.from('membership_cycles').select('*').order('opens_at', { ascending: false }),
+      supabase.from('membership_cycle_counts').select('cycle_id, status, total'),
+      supabase.from('membership_cycle_funnel').select('*'),
+      supabase
+        .from('members')
+        .select('joined_cycle_id')
+        .eq('status', 'active')
+        .not('joined_cycle_id', 'is', null),
+    ]);
   const byCycle = new Map<string, Partial<Record<ApplicationStatus, number>>>();
   for (const c of counts ?? []) {
     const m = byCycle.get(c.cycle_id!) ?? {};
     m[c.status as ApplicationStatus] = c.total ?? 0;
     byCycle.set(c.cycle_id!, m);
   }
+  const funnelOf = new Map((funnels ?? []).map((f) => [f.cycle_id!, f]));
+  const active = new Map<string, number>();
+  for (const m of joined ?? [])
+    active.set(m.joined_cycle_id!, (active.get(m.joined_cycle_id!) ?? 0) + 1);
   return (cycles ?? []).map((c) => {
     const cnt = byCycle.get(c.id) ?? {};
+    const f = funnelOf.get(c.id);
     return {
       id: c.id,
       nameAr: c.name_ar,
@@ -227,10 +218,22 @@ export async function listCycles(): Promise<CycleRow[]> {
         c.closed_early_at && c.closed_early_at < c.closes_at ? c.closed_early_at : c.closes_at,
       reviewEndsAt: c.review_ends_at,
       capacity: c.capacity,
+      termEndsAt: c.term_ends_at,
+      activationDeadlineDays: c.activation_deadline_days,
+      rubric: rubricOf(c.rubric),
       status: c.status as CycleRow['status'],
       phase: phaseOf(c),
       counts: cnt,
+      funnel: {
+        applied: f?.applied ?? 0,
+        inReview: f?.in_review ?? 0,
+        accepted: f?.accepted ?? 0,
+        activated: f?.activated ?? 0,
+        lapsed: f?.lapsed ?? 0,
+        waitlisted: f?.waitlisted ?? 0,
+      },
       total: Object.values(cnt).reduce((a, b) => a + (b ?? 0), 0),
+      stillActive: active.get(c.id) ?? 0,
       updatedAt: c.updated_at,
     };
   });
@@ -260,6 +263,22 @@ export async function getCycleForEdit(
       questions: (Array.isArray(data.questions)
         ? data.questions
         : []) as unknown as CycleQuestion[],
+      termEndsAt: data.term_ends_at ?? '',
+      activationDeadlineDays: String(data.activation_deadline_days),
+      rubric: rubricOf(data.rubric),
     },
   };
+}
+
+export { DEFAULT_RUBRIC };
+
+/** True once any reviewer has scored an application of this cycle (the rubric is then fixed). */
+export async function cycleHasScores(cycleId: string): Promise<boolean> {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from('application_scores')
+    .select('application_id, membership_applications!inner(cycle_id)')
+    .eq('membership_applications.cycle_id', cycleId)
+    .limit(1);
+  return (data ?? []).length > 0;
 }

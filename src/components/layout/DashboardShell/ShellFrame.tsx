@@ -16,6 +16,8 @@ import {
   LogOut,
   Mail,
   Menu,
+  Hourglass,
+  Inbox,
   PanelLeftClose,
   PanelLeftOpen,
   Moon,
@@ -58,6 +60,9 @@ const ICONS: Record<NavIcon, LucideIcon> = {
   list: ListTree,
   settings: Settings,
   badge: BadgeCheck,
+  hourglass: Hourglass,
+  inbox: Inbox,
+  exit: LogOut,
 };
 
 const GROUP_ICONS: Partial<Record<NavGroupKey, LucideIcon>> = {
@@ -77,6 +82,7 @@ const ACCOUNT_LINKS = [
     icon: Ticket,
     label: { ar: 'تسجيلاتي', en: 'My registrations' },
   },
+  { href: '/account/membership', icon: IdCard, label: { ar: 'عضويتي', en: 'My membership' } },
   { href: '/account/roles', icon: BadgeCheck, label: { ar: 'مناصبي', en: 'My positions' } },
   { href: '/account/security', icon: ShieldCheck, label: { ar: 'الأمان', en: 'Security' } },
   { href: '/account/privacy', icon: ShieldCheck, label: { ar: 'بياناتي', en: 'My data' } },
@@ -142,7 +148,17 @@ function NavItem({
           active ? 'text-on-accent-soft' : 'text-muted group-hover:text-text',
         )}
       />
-      <span className={cn('truncate', collapsed && 'sr-only')}>{item.label[lang]}</span>
+      <span className={cn('flex-1 truncate', collapsed && 'sr-only')}>{item.label[lang]}</span>
+      {item.badge ? (
+        <span
+          className={cn(
+            'rounded-full bg-accent-soft px-2 text-xs font-semibold tabular-nums text-on-accent-soft',
+            collapsed && 'sr-only',
+          )}
+        >
+          {item.badge}
+        </span>
+      ) : null}
     </Link>
   );
 }

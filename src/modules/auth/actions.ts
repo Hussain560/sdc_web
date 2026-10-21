@@ -42,6 +42,8 @@ function codeFromAuthError(error: AuthError): ErrorCode {
       return 'EMAIL_IN_USE';
     case 'otp_expired':
       return 'LINK_EXPIRED';
+    case 'user_banned':
+      return 'ACCOUNT_BLOCKED';
     default:
       return error.status === 429 ? 'RATE_LIMITED' : 'INTERNAL';
   }
@@ -68,6 +70,18 @@ export async function signIn(
   if (error) {
     const code = codeFromAuthError(error);
     return failCode(code === 'INTERNAL' ? 'INVALID_CREDENTIALS' : code, lang);
+  }
+
+  // A blocked account is refused even if the ban was not applied in the auth service: the sign-in ends here and
+  // the person sees the blocked notice (ACC-008).
+  const { data: blocked } = await supabase
+    .from('profiles')
+    .select('blocked_at')
+    .eq('id', session.user.id)
+    .maybeSingle();
+  if (blocked?.blocked_at) {
+    await supabase.auth.signOut();
+    return failCode('ACCOUNT_BLOCKED', lang);
   }
 
   // Without an explicit destination, people with an active position land on the dashboard and

@@ -36,6 +36,7 @@
 | `roles.view` | Access | View all role assignments | global |
 | `roles.assign` | Access | Assign/end roles (subject to anti-escalation) | global |
 | `users.view` | Access | Search users and view accounts | global |
+| `users.block` | Access | Block and unblock accounts (sessions end, the sign-in shows a notice; never on yourself or a higher role) | global |
 | `reports.view_community` | Reports | Community dashboard | global |
 | `reports.view_committee` | Reports | Committee dashboard | committee |
 | `reference_data.manage` | Admin | Universities, majors, tracks, tags | global |
@@ -78,6 +79,7 @@ Ownership rights (no permission key): read/update own profile; read/cancel own r
 | roles.view | ✅ | ✅ | ✅ | — | — | — | — |
 | roles.assign | ✅ | — | ✅ (non-global roles only) | — | — | — | — |
 | users.view | ✅ | — | ✅ | — | — | — | — |
+| users.block | ✅ | — | ✅ | — | — | — | — |
 | reports.view_community | ✅ | ✅ | ✅ | ✅ | — | — | — |
 | reports.view_committee | ✅ | ✅ | ✅ | ✅ | ◐ | ◐ | — |
 | reference_data.manage | ✅ | — | ✅ | — | — | — | — |

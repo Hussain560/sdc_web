@@ -78,6 +78,13 @@ export type ErrorCode =
   | 'REGISTRATION_CANCELLED'
   | 'LIMIT_REACHED'
   | 'NAME_LOCKED'
+  | 'SELF_ACTION'
+  | 'HIGHER_ROLE'
+  | 'UNDO_EXPIRED'
+  | 'ALREADY_PENDING'
+  | 'NO_ACCOUNT'
+  | 'RUBRIC_LOCKED'
+  | 'ACCOUNT_BLOCKED'
   | 'INTERNAL';
 
 export type Result<T = void> =

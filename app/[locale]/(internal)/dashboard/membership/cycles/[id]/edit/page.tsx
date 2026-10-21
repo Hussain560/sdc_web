@@ -5,7 +5,7 @@ import { canGlobal } from '@/lib/auth/permissions';
 import { requireUser } from '@/lib/auth/session';
 import { getAccess } from '@/modules/access/queries';
 import { CycleForm } from '@/modules/membership/components/CycleForm';
-import { getCycleForEdit } from '@/modules/membership/queries';
+import { cycleHasScores, getCycleForEdit } from '@/modules/membership/queries';
 
 export default async function EditCyclePage({
   params,
@@ -21,6 +21,7 @@ export default async function EditCyclePage({
 
   const found = await getCycleForEdit(id);
   if (!found || found.row.status === 'completed') notFound();
+  const rubricLocked = await cycleHasScores(id);
   return (
     <>
       <PageHeader title={ar ? 'تعديل الدورة' : 'Edit cycle'} />
@@ -31,6 +32,7 @@ export default async function EditCyclePage({
         windowLocked={
           found.hasApplications && (found.row.phase === 'open' || found.row.phase === 'closed')
         }
+        rubricLocked={rubricLocked}
         closeEditable={found.row.phase === 'open'}
         freeEdit={
           !found.hasApplications && (found.row.phase === 'open' || found.row.phase === 'closed')

@@ -115,6 +115,20 @@ alter table public.term_reminders enable row level security;
 alter table public.activation_reminders enable row level security;
 revoke all on table public.term_reminders, public.activation_reminders from anon, authenticated;
 
+-- The activation list for leadership: accepted people who have not activated yet and the lapsed ones (restorable).
+create or replace view public.membership_activation_queue as
+select a.id as application_id, a.cycle_id, a.status, a.reference, a.full_name_ar, a.full_name_en, a.accepted_at, a.lapsed_at,
+       c.activation_deadline_days,
+       coalesce((select array_agg(r.day order by r.day) from public.activation_reminders r where r.application_id = a.id), '{}'::smallint[]) as reminders,
+       (m.activated_at is not null) as activated
+  from public.membership_applications a
+  join public.membership_cycles c on c.id = a.cycle_id
+  left join public.members m on m.application_id = a.id
+ where a.status in ('accepted', 'lapsed') and private.has_permission('membership.review')
+   and (a.status = 'lapsed' or m.activated_at is null);
+revoke all on public.membership_activation_queue from anon, authenticated;
+grant select on public.membership_activation_queue to authenticated;
+
 -- ------------------------------------------------------------------------------------------ 3. the system accept (waitlist promotion)
 create or replace function public.system_accept_applications(p_ids uuid[], p_reason text default 'activation_lapsed')
 returns jsonb

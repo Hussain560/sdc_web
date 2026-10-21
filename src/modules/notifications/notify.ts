@@ -11,7 +11,8 @@ export type NotifyInput = {
   /** The state the mail announces (e.g. a decision timestamp). Same state ⇒ same key ⇒ never sent twice (NO-3). */
   state: string;
   recipient: { userId: string | null; email: string; locale: Lang };
-  data: TemplateData;
+  /** Data for the template. A function is awaited only after the send is claimed (so a duplicate never prepares anything, e.g. mints a link). */
+  data: TemplateData | (() => Promise<TemplateData>);
 };
 
 export type NotifyOutcome = 'sent' | 'failed' | 'duplicate' | 'skipped';
@@ -52,7 +53,8 @@ export async function notify(input: NotifyInput): Promise<NotifyOutcome> {
   if (claim.error || !claim.data) return claim.error?.code === '23505' ? 'duplicate' : 'failed';
 
   try {
-    const mail = renderTemplate(input.templateKey, input.recipient.locale, input.data);
+    const data = typeof input.data === 'function' ? await input.data() : input.data;
+    const mail = renderTemplate(input.templateKey, input.recipient.locale, data);
     const res = await sendMail({ to: input.recipient.email, ...mail });
     await db
       .from('email_logs')

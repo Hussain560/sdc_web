@@ -12,6 +12,17 @@ export const getUser = cache(async (): Promise<User | null> => {
   const supabase = await createClient();
   const { data, error } = await supabase.auth.getUser();
   if (error || !data.user) return null;
+  // A blocked account is signed out on its next request (the auth ban and the ended sessions do the same; this is
+  // the check that cannot be skipped).
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('blocked_at')
+    .eq('id', data.user.id)
+    .maybeSingle();
+  if (profile?.blocked_at) {
+    await supabase.auth.signOut().catch(() => undefined);
+    return null;
+  }
   return data.user;
 });
 

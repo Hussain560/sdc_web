@@ -1,21 +1,58 @@
+import {
+  ArrowLeft,
+  ArrowRight,
+  BadgeCheck,
+  ChevronLeft,
+  ChevronRight,
+  CircleCheck,
+  ClockAlert,
+  FileText,
+  History,
+  Hourglass,
+  Inbox,
+  ListChecks,
+  Lock,
+  Mail,
+  PenLine,
+  RotateCcw,
+  Search,
+  Send,
+  Undo2,
+  UserRound,
+  XCircle,
+  ExternalLink,
+  TriangleAlert,
+} from 'lucide-react';
 import { notFound } from 'next/navigation';
-import { Badge, Card } from '@/components/ui';
+import type { ReactNode } from 'react';
+import { Avatar, Badge } from '@/components/ui';
+import { SetCrumbs } from '@/components/layout/DashboardShell/Crumbs';
 import { Forbidden } from '@/components/layout/Forbidden';
-import { PageHeader } from '@/components/layout/PageHeader';
+import { CopyButton } from '@/components/patterns/CopyButton';
+import { Timeline, type TimelineItem } from '@/components/patterns/Timeline';
 import { Link } from '@/i18n/navigation';
 import { canGlobal } from '@/lib/auth/permissions';
 import { requireUser } from '@/lib/auth/session';
 import { formatDate } from '@/lib/format';
 import { getAccess } from '@/modules/access/queries';
-import { ApplicationsTable } from '@/modules/membership/components/ApplicationsTable';
-import { getApplicationDetail } from '@/modules/membership/review-queries';
+import { ReviewPanel } from '@/modules/membership/components/ReviewPanel';
+import { getApplicationDetail, getQueueNeighbours } from '@/modules/membership/review-queries';
 import {
   ACADEMIC_LABEL,
   APPLICATION_STATUS_LABEL,
   type AcademicStatus,
 } from '@/modules/membership/types';
 
-// Application drawer as a page (screen 18): everything the applicant submitted, answers, consent, and decisions.
+const dateTime = (iso: string, lang: 'ar' | 'en') =>
+  new Intl.DateTimeFormat(lang === 'ar' ? 'ar-SA-u-ca-gregory-nu-latn' : 'en-GB', {
+    day: 'numeric',
+    month: 'long',
+    hour: 'numeric',
+    minute: '2-digit',
+    timeZone: 'Asia/Riyadh',
+  }).format(new Date(iso));
+
+// MBR-011 (screen 18): everything the applicant submitted on one calm page, the history, the scoring and the decision.
 export default async function ApplicationPage({
   params,
 }: {
@@ -28,107 +65,454 @@ export default async function ApplicationPage({
   const access = await getAccess();
   if (!access || !canGlobal(access, 'membership.review')) return <Forbidden />;
   if (!/^[0-9a-f-]{36}$/i.test(id)) notFound();
-  const a = await getApplicationDetail(id);
+  const a = await getApplicationDetail(id, user.id);
   if (!a) notFound();
+  const nb = await getQueueNeighbours({
+    id: a.id,
+    cycleId: a.cycleId,
+    status: a.status,
+    submittedAt: a.submittedAt,
+  });
 
+  const name = ar ? a.fullNameAr : a.fullNameEn || a.fullNameAr;
   const st = APPLICATION_STATUS_LABEL[a.status];
-  const rows: Array<[string, string]> = [
-    [ar ? 'البريد' : 'E-mail', a.email],
-    [ar ? 'الجوال' : 'Mobile', a.phone ?? '—'],
-    [
-      ar ? 'الحالة' : 'Status',
-      ACADEMIC_LABEL[a.academicStatus as AcademicStatus]?.[lang] ?? a.academicStatus,
-    ],
-    [
-      ar ? 'الجامعة' : 'University',
-      a.university ??
-        (a.otherUniversity ? `${a.otherUniversity} (${ar ? 'مكتوبة' : 'typed'})` : '—'),
-    ],
-    [
-      ar ? 'التخصص' : 'Major',
-      a.major ?? (a.otherMajor ? `${a.otherMajor} (${ar ? 'مكتوب' : 'typed'})` : '—'),
-    ],
-    [ar ? 'التخصص الدقيق' : 'Sub-major', a.subMajor ?? '—'],
-    [ar ? 'المسار' : 'Track', a.track ?? '—'],
-    [ar ? 'اللجنة المفضلة' : 'Preferred committee', a.preferredCommittee ?? '—'],
-    [
-      ar ? 'الدليل' : 'Directory',
-      a.wantsDirectoryListing ? (ar ? 'يرغب بالظهور' : 'Wants to be listed') : ar ? 'لا' : 'No',
-    ],
-    [ar ? 'الموافقة' : 'Consent', `${a.consentVersion} · ${formatDate(a.consentAt, lang)}`],
+  const isOwn = access.email.toLowerCase() === a.email.toLowerCase();
+  const NextIcon = ar ? ChevronLeft : ChevronRight;
+  const PrevIcon = ar ? ChevronRight : ChevronLeft;
+  const BackIcon = ar ? ArrowRight : ArrowLeft;
+
+  const fixable = [
+    { key: 'github_url', label: 'GitHub' },
+    { key: 'portfolio_url', label: ar ? 'رابط المعرض' : 'Portfolio link' },
+    { key: 'linkedin_url', label: 'LinkedIn' },
+    { key: 'x_url', label: 'X' },
+    { key: 'bio_ar', label: ar ? 'النبذة بالعربية' : 'Bio in Arabic' },
+    { key: 'bio_en', label: ar ? 'النبذة بالإنجليزية' : 'Bio in English' },
+    ...a.questions.map((q) => ({
+      key: `q:${q.key}`,
+      label: ar ? q.label_ar : q.label_en || q.label_ar,
+    })),
   ];
+
+  const kinds: Record<
+    string,
+    { icon: ReactNode; ar: string; en: string; tone?: TimelineItem['tone'] }
+  > = {
+    submitted: { icon: <Send />, ar: 'أرسل الطلب', en: 'Submitted the application' },
+    claimed: { icon: <UserRound />, ar: 'استلمه للمراجعة', en: 'Claimed it for review' },
+    released: {
+      icon: <Undo2 />,
+      ar: 'أفلت الطلب',
+      en: 'Released the application',
+      tone: 'pending',
+    },
+    info_requested: {
+      icon: <PenLine />,
+      ar: 'طلب تعديلاً من المتقدّم',
+      en: 'Asked the applicant to edit',
+      tone: 'warn',
+    },
+    resubmitted: {
+      icon: <RotateCcw />,
+      ar: 'أعاد المتقدّم الإرسال',
+      en: 'The applicant resubmitted',
+    },
+    scored: { icon: <ListChecks />, ar: 'قيّمه', en: 'Scored it' },
+    accepted: { icon: <CircleCheck />, ar: 'قبل الطلب', en: 'Accepted the application' },
+    rejected: {
+      icon: <XCircle />,
+      ar: 'لم يقبل الطلب',
+      en: 'Did not accept the application',
+      tone: 'pending',
+    },
+    waitlisted: {
+      icon: <Hourglass />,
+      ar: 'نقله إلى الانتظار',
+      en: 'Moved it to the waiting list',
+      tone: 'warn',
+    },
+    withdrawn: {
+      icon: <Undo2 />,
+      ar: 'سحب المتقدّم الطلب',
+      en: 'The applicant withdrew',
+      tone: 'pending',
+    },
+    decision_undone: {
+      icon: <Undo2 />,
+      ar: 'تراجع عن القرار',
+      en: 'Undid the decision',
+      tone: 'pending',
+    },
+    lapsed: { icon: <ClockAlert />, ar: 'سقط التفعيل', en: 'Activation lapsed', tone: 'danger' },
+    restored: { icon: <RotateCcw />, ar: 'أُعيد المقعد', en: 'The place was restored' },
+  };
+  const history: TimelineItem[] = a.history.map((h) => {
+    const k: { icon: ReactNode; ar: string; en: string; tone?: TimelineItem['tone'] } = kinds[
+      h.kind
+    ] ?? { icon: <FileText />, ar: h.kind, en: h.kind };
+    const avg =
+      typeof h.data.average === 'number' ? ` ${(h.data.average as number).toFixed(1)}` : '';
+    return {
+      key: h.id,
+      icon: k.icon,
+      tone: k.tone ?? 'done',
+      title: `${h.actorName ? `${h.actorName} · ` : ''}${ar ? k.ar : k.en}${avg}`,
+      detail: dateTime(h.at, lang),
+    };
+  });
+
+  const card = 'rounded-shape-xl border border-line bg-surface p-5';
+  const h2 = 'mb-3 flex items-center gap-2 font-bold';
+  const row = 'grid grid-cols-[7.5rem_1fr] items-start gap-3 py-2 text-sm sm:grid-cols-[9rem_1fr]';
+
+  const warnings: string[] = [];
+  if (a.earlierCount > 0)
+    warnings.push(
+      ar
+        ? `قدّم بالبريد نفسه من قبل (${a.earlierCount}${a.earlierRejected ? `، رُفض منها ${a.earlierRejected}` : ''}).`
+        : `Applied with the same e-mail before (${a.earlierCount}${a.earlierRejected ? `, ${a.earlierRejected} rejected` : ''}).`,
+    );
+  if (a.isMember)
+    warnings.push(
+      ar ? 'هذا البريد لعضو في المجتمع بالفعل.' : 'This e-mail already belongs to a member.',
+    );
+  if (a.isBlocked)
+    warnings.push(ar ? 'حساب مرتبط بهذا البريد محظور.' : 'An account with this e-mail is blocked.');
 
   return (
     <>
-      <PageHeader
-        title={ar ? a.fullNameAr : a.fullNameEn || a.fullNameAr}
-        description={`${a.cycleName} · ${formatDate(a.submittedAt, lang)}`}
-        action={<Badge tone={st.tone}>{st.label[lang]}</Badge>}
-      />
-      <div className="flex flex-col gap-4">
-        <Card>
-          <dl className="grid gap-3 text-sm sm:grid-cols-2">
-            {rows.map(([k, v]) => (
-              <div key={k}>
-                <dt className="text-muted">{k}</dt>
-                <dd className="font-medium">{v}</dd>
-              </div>
+      <SetCrumbs items={[{ label: name }]} />
+
+      {/* Top bar: back, position in the queue, previous / next, the shortcuts */}
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+        <Link
+          href="/dashboard/membership/applications"
+          className="inline-flex min-h-11 items-center gap-2 text-sm text-muted hover:text-text"
+        >
+          <BackIcon size={16} aria-hidden="true" />
+          {ar ? 'الطلبات' : 'Applications'}
+        </Link>
+        <div className="flex items-center gap-2">
+          <span className="text-sm text-muted tabular-nums">
+            {ar
+              ? `${nb.position} من ${nb.total} في «${st.label.ar}»`
+              : `${nb.position} of ${nb.total} in “${st.label.en}”`}
+          </span>
+          {nb.prevId ? (
+            <Link
+              href={`/dashboard/membership/applications/${nb.prevId}`}
+              aria-label={ar ? 'الطلب السابق' : 'Previous application'}
+              className="flex size-11 items-center justify-center rounded-full border-[1.5px] border-line-strong hover:border-accent"
+            >
+              <PrevIcon size={16} aria-hidden="true" />
+            </Link>
+          ) : (
+            <span
+              aria-hidden="true"
+              className="flex size-11 items-center justify-center rounded-full border-[1.5px] border-line text-muted opacity-45"
+            >
+              <PrevIcon size={16} />
+            </span>
+          )}
+          {nb.nextId ? (
+            <Link
+              href={`/dashboard/membership/applications/${nb.nextId}`}
+              aria-label={ar ? 'الطلب التالي' : 'Next application'}
+              className="flex size-11 items-center justify-center rounded-full border-[1.5px] border-line-strong hover:border-accent"
+            >
+              <NextIcon size={16} aria-hidden="true" />
+            </Link>
+          ) : (
+            <span
+              aria-hidden="true"
+              className="flex size-11 items-center justify-center rounded-full border-[1.5px] border-line text-muted opacity-45"
+            >
+              <NextIcon size={16} />
+            </span>
+          )}
+        </div>
+      </div>
+
+      {/* Title */}
+      <header className="mb-5 flex flex-wrap items-center gap-4">
+        <Avatar name={name} size={56} />
+        <div className="min-w-0 flex-1">
+          <h1 className="t-h3 break-words">{name}</h1>
+          <p className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted">
+            <Badge tone={st.tone}>{st.label[lang]}</Badge>
+            <span dir="ltr" className="inline-flex items-center font-mono">
+              {a.reference}
+              <CopyButton
+                value={a.reference}
+                label={ar ? 'نسخ الرقم المرجعي' : 'Copy the reference'}
+              />
+            </span>
+            <span>
+              {ar ? 'قُدّم ' : 'Submitted '}
+              {formatDate(a.submittedAt, lang)} · {ar ? a.cycleName : a.cycleNameEn || a.cycleName}
+            </span>
+          </p>
+        </div>
+      </header>
+
+      {warnings.length > 0 && (
+        <div role="alert" className="mb-5 flex gap-3 rounded-shape-xl bg-warning-soft p-4 text-sm">
+          <TriangleAlert size={18} aria-hidden="true" className="mt-0.5 shrink-0 text-warning" />
+          <ul className="flex flex-col gap-1">
+            {warnings.map((w) => (
+              <li key={w}>{w}</li>
             ))}
-          </dl>
-        </Card>
-        {(a.bioAr || a.bioEn || a.links.length > 0) && (
-          <Card className="flex flex-col gap-3 text-sm">
-            {a.bioAr && <p>{a.bioAr}</p>}
-            {a.bioEn && <p dir="ltr">{a.bioEn}</p>}
-            {a.links.length > 0 && (
-              <ul className="flex flex-wrap gap-4">
-                {a.links.map((l) => (
-                  <li key={l.label}>
-                    <a
-                      href={l.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-accent underline"
-                    >
-                      {l.label}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </Card>
-        )}
-        {a.questions.length > 0 && (
-          <Card className="flex flex-col gap-3 text-sm">
-            <h2 className="font-bold">{ar ? 'إجابات الأسئلة' : 'Answers'}</h2>
-            {a.questions.map((q) => {
-              const v = a.answers[q.key];
-              return (
-                <div key={q.key}>
-                  <p className="text-muted">{ar ? q.label_ar : q.label_en || q.label_ar}</p>
-                  <p>{Array.isArray(v) ? v.join('، ') : v || '—'}</p>
+          </ul>
+        </div>
+      )}
+
+      {a.status === 'info_requested' && a.infoRequest && (
+        <div className="mb-5 flex gap-3 rounded-shape-xl bg-warning-soft p-4 text-sm">
+          <PenLine size={18} aria-hidden="true" className="mt-0.5 shrink-0 text-warning" />
+          <div>
+            <p className="font-semibold">
+              {ar ? 'بانتظار تعديل المتقدّم' : 'Waiting for the applicant to edit'}
+            </p>
+            <p className="mt-1">«{a.infoRequest}»</p>
+          </div>
+        </div>
+      )}
+
+      <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_22rem]">
+        <div className="flex min-w-0 flex-col gap-5">
+          {/* Identity and contact */}
+          <section className={card} aria-labelledby="rv-identity">
+            <h2 id="rv-identity" className={h2}>
+              <UserRound size={17} aria-hidden="true" />
+              {ar ? 'الهوية والتواصل' : 'Identity & contact'}
+            </h2>
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[28rem] text-sm">
+                <thead className="text-xs text-muted">
+                  <tr>
+                    <th scope="col" className="w-20 py-2 text-start font-medium" />
+                    <th scope="col" className="py-2 text-start font-medium">
+                      {ar ? 'الأول' : 'First'}
+                    </th>
+                    <th scope="col" className="py-2 text-start font-medium">
+                      {ar ? 'الأوسط' : 'Middle'}
+                    </th>
+                    <th scope="col" className="py-2 text-start font-medium">
+                      {ar ? 'العائلة' : 'Family'}
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr className="border-t border-line">
+                    <th scope="row" className="py-2 text-start font-medium text-muted">
+                      {ar ? 'عربي' : 'Arabic'}
+                    </th>
+                    <td className="py-2">{a.firstNameAr ?? a.fullNameAr}</td>
+                    <td className="py-2">{a.middleNameAr ?? '—'}</td>
+                    <td className="py-2">{a.lastNameAr ?? '—'}</td>
+                  </tr>
+                  <tr className="border-t border-line" dir="ltr">
+                    <th scope="row" className="py-2 text-start font-medium text-muted">
+                      English
+                    </th>
+                    <td className="py-2">{a.firstNameEn ?? a.fullNameEn ?? '—'}</td>
+                    <td className="py-2">{a.middleNameEn ?? '—'}</td>
+                    <td className="py-2">{a.lastNameEn ?? '—'}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <dl className="mt-2 divide-y divide-line border-t border-line">
+              <div className={row}>
+                <dt className="flex items-center gap-1.5 text-muted">
+                  <Mail size={14} aria-hidden="true" />
+                  {ar ? 'البريد' : 'E-mail'}
+                </dt>
+                <dd
+                  className="flex items-center gap-1 break-all"
+                  dir="ltr"
+                  style={{ textAlign: 'start' }}
+                >
+                  {a.email}
+                  <CopyButton value={a.email} label={ar ? 'نسخ البريد' : 'Copy the e-mail'} />
+                </dd>
+              </div>
+              <div className={row}>
+                <dt className="text-muted">{ar ? 'الجوال' : 'Phone'}</dt>
+                <dd className="flex items-center gap-1" dir="ltr" style={{ textAlign: 'start' }}>
+                  {a.phone ?? '—'}
+                  {a.phone && (
+                    <CopyButton value={a.phone} label={ar ? 'نسخ الجوال' : 'Copy the phone'} />
+                  )}
+                </dd>
+              </div>
+            </dl>
+          </section>
+
+          {/* Study */}
+          <section className={card} aria-labelledby="rv-study">
+            <h2 id="rv-study" className={h2}>
+              <BadgeCheck size={17} aria-hidden="true" />
+              {ar ? 'الدراسة' : 'Study & work'}
+            </h2>
+            <dl className="divide-y divide-line">
+              {(
+                [
+                  [
+                    ar ? 'الوضع' : 'Status',
+                    ACADEMIC_LABEL[a.academicStatus as AcademicStatus]?.[lang] ?? a.academicStatus,
+                  ],
+                  [
+                    ar ? 'الجامعة' : 'University',
+                    a.university ??
+                      (a.otherUniversity
+                        ? `${a.otherUniversity} (${ar ? 'مكتوبة' : 'typed'})`
+                        : '—'),
+                  ],
+                  [
+                    ar ? 'التخصص' : 'Major',
+                    a.major ?? (a.otherMajor ? `${a.otherMajor} (${ar ? 'مكتوب' : 'typed'})` : '—'),
+                  ],
+                  [ar ? 'التخصص الدقيق' : 'Sub-major', a.subMajor ?? '—'],
+                  [ar ? 'المسار' : 'Track', a.track ?? '—'],
+                  [ar ? 'اللجنة المفضلة' : 'Preferred committee', a.preferredCommittee ?? '—'],
+                  [
+                    ar ? 'الدليل' : 'Directory',
+                    a.wantsDirectoryListing
+                      ? ar
+                        ? 'يرغب بالظهور'
+                        : 'Wants to be listed'
+                      : ar
+                        ? 'لا'
+                        : 'No',
+                  ],
+                ] as Array<[string, string]>
+              ).map(([k, v]) => (
+                <div key={k} className={row}>
+                  <dt className="text-muted">{k}</dt>
+                  <dd className="font-medium">{v}</dd>
                 </div>
-              );
-            })}
-          </Card>
-        )}
-        {a.decisionNote && (
-          <Card className="text-sm">
-            <p className="text-muted">{ar ? 'ملاحظة داخلية' : 'Internal note'}</p>
-            <p>{a.decisionNote}</p>
-          </Card>
-        )}
-        <ApplicationsTable
-          rows={[a]}
+              ))}
+            </dl>
+          </section>
+
+          {/* Links and bio */}
+          {(a.links.length > 0 || a.bioAr || a.bioEn) && (
+            <section className={card} aria-labelledby="rv-links">
+              <h2 id="rv-links" className={h2}>
+                <ExternalLink size={17} aria-hidden="true" />
+                {ar ? 'الروابط والنبذة' : 'Links & bio'}
+              </h2>
+              {a.links.length > 0 && (
+                <ul className="mb-3 flex flex-wrap gap-2">
+                  {a.links.map((l) => (
+                    <li key={l.label}>
+                      <a
+                        href={l.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        dir="ltr"
+                        className="inline-flex min-h-9 max-w-full items-center gap-1.5 rounded-full border-[1.5px] border-line-strong px-3 text-sm hover:border-accent"
+                      >
+                        <span className="truncate">{l.url.replace(/^https:\/\//, '')}</span>
+                        <ExternalLink
+                          size={13}
+                          aria-hidden="true"
+                          className="shrink-0 rtl:-scale-x-100"
+                        />
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              )}
+              {[a.bioAr, a.bioEn].filter(Boolean).map((b, i) => (
+                <div
+                  key={i}
+                  dir={i === 0 && a.bioAr ? 'rtl' : 'ltr'}
+                  className="mt-2 rounded-shape-lg bg-surface-raised p-4 text-sm leading-7"
+                >
+                  <p>{b}</p>
+                  <p className="mt-2 text-xs text-muted">
+                    {(b ?? '').length} {ar ? 'حرفاً' : 'characters'}
+                  </p>
+                </div>
+              ))}
+            </section>
+          )}
+
+          {/* Cycle answers */}
+          {a.questions.length > 0 && (
+            <section className={card} aria-labelledby="rv-answers">
+              <h2 id="rv-answers" className={h2}>
+                <Inbox size={17} aria-hidden="true" />
+                {ar ? 'إجابات أسئلة الدورة' : 'Answers to the cycle questions'}
+              </h2>
+              <dl className="flex flex-col gap-4">
+                {a.questions.map((q) => {
+                  const v = a.answers[q.key];
+                  return (
+                    <div key={q.key}>
+                      <dt className="text-sm font-semibold">
+                        {ar ? q.label_ar : q.label_en || q.label_ar}
+                      </dt>
+                      <dd className="mt-1 rounded-shape-lg bg-surface-raised p-3 text-sm leading-7">
+                        {Array.isArray(v) ? v.join(ar ? '، ' : ', ') : v || '—'}
+                      </dd>
+                    </div>
+                  );
+                })}
+              </dl>
+            </section>
+          )}
+
+          {a.decisionNote && (
+            <section className={card}>
+              <h2 className={h2}>
+                <Lock size={16} aria-hidden="true" />
+                {ar ? 'ملاحظة داخلية' : 'Internal note'}
+              </h2>
+              <p className="text-sm">{a.decisionNote}</p>
+              <p className="mt-2 text-xs text-muted">
+                {ar ? 'لا يراها المتقدّم أبداً.' : 'The applicant never sees it.'}
+              </p>
+            </section>
+          )}
+
+          {/* History */}
+          <section className={card} aria-labelledby="rv-history">
+            <h2 id="rv-history" className={h2}>
+              <History size={17} aria-hidden="true" />
+              {ar ? 'سجل الطلب' : 'Application history'}
+            </h2>
+            <Timeline items={history} label={ar ? 'سجل الطلب' : 'Application history'} />
+            <p className="mt-4 flex items-center gap-1.5 text-xs text-muted">
+              <Search size={12} aria-hidden="true" />
+              {ar
+                ? `الموافقة على الخصوصية: ${a.consentVersion} · ${formatDate(a.consentAt, lang)}`
+                : `Privacy consent: ${a.consentVersion} · ${formatDate(a.consentAt, lang)}`}
+            </p>
+          </section>
+        </div>
+
+        <ReviewPanel
+          id={a.id}
+          status={a.status}
+          reviewerId={a.reviewerId}
+          reviewerName={a.reviewerName}
           userId={user.id}
           isAdmin={access.positions.some((p) => p.role === 'system_admin')}
+          isOwn={isOwn}
+          rubric={a.rubric}
+          scores={a.scores}
+          capacity={
+            a.cycleCapacity ? { accepted: a.cycleAccepted, capacity: a.cycleCapacity } : null
+          }
+          nextId={nb.nextId}
+          prevId={nb.prevId}
+          fixable={fixable}
         />
-        <p>
-          <Link href="/dashboard/membership/applications" className="text-sm text-accent underline">
-            {ar ? '← كل الطلبات' : '← All applications'}
-          </Link>
-        </p>
       </div>
+      <div className="h-24 md:hidden" aria-hidden="true" />
     </>
   );
 }

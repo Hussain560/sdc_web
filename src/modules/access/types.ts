@@ -27,6 +27,7 @@ export const PERMISSION_KEYS = [
   'roles.view',
   'roles.assign',
   'users.view',
+  'users.block',
   'reports.view_community',
   'reports.view_committee',
   'reference_data.manage',

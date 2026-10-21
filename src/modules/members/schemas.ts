@@ -105,14 +105,35 @@ export const emptyProfile = (): ProfileValues => ({
   showParticipation: false,
 });
 
-export const MEMBER_STATUSES = ['active', 'inactive', 'suspended'] as const;
+export const MEMBER_STATUSES = ['active', 'suspended', 'expired', 'ended'] as const;
 export type MemberStatus = (typeof MEMBER_STATUSES)[number];
 
 export const MEMBER_STATUS_LABEL: Record<
   MemberStatus,
-  { ar: string; en: string; tone: 'accent' | 'neutral' | 'danger' }
+  { ar: string; en: string; tone: 'accent' | 'neutral' | 'danger' | 'warning' }
 > = {
-  active: { ar: 'نشط', en: 'Active', tone: 'accent' },
-  inactive: { ar: 'غير نشط', en: 'Inactive', tone: 'neutral' },
-  suspended: { ar: 'موقوف', en: 'Suspended', tone: 'danger' },
+  active: { ar: 'نشطة', en: 'Active', tone: 'accent' },
+  suspended: { ar: 'موقوفة', en: 'Suspended', tone: 'warning' },
+  expired: { ar: 'منتهية المدة', en: 'Term ended', tone: 'neutral' },
+  ended: { ar: 'انتهت', en: 'Ended', tone: 'neutral' },
+};
+
+/** Why a membership ended (shown next to "Ended"). */
+export const END_REASON_LABEL: Record<string, { ar: string; en: string }> = {
+  left: { ar: 'غادر', en: 'Left' },
+  terminated: { ar: 'أُنهيت', en: 'Terminated' },
+  not_renewed: { ar: 'لم تُجدّد', en: 'Not renewed' },
+  legacy: { ar: 'سجل قديم', en: 'Legacy record' },
+  lapsed: { ar: 'سقط التفعيل', en: 'Activation lapsed' },
+};
+
+export const SUSPENSION_CATEGORIES = ['conduct', 'inactivity', 'administrative', 'other'] as const;
+export const SUSPENSION_CATEGORY_LABEL: Record<
+  (typeof SUSPENSION_CATEGORIES)[number],
+  { ar: string; en: string }
+> = {
+  conduct: { ar: 'عدم الالتزام بإرشادات المجتمع', en: 'Not following the community guidelines' },
+  inactivity: { ar: 'عدم النشاط', en: 'Inactivity' },
+  administrative: { ar: 'إجراء إداري', en: 'An administrative matter' },
+  other: { ar: 'سبب آخر', en: 'Another reason' },
 };

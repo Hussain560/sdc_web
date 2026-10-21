@@ -20,6 +20,10 @@ const errors: Partial<Record<ErrorCode, Bilingual>> = {
     ar: 'ليس لديك صلاحية لهذا الإجراء.',
     en: "You don't have permission for this action.",
   },
+  ACCOUNT_BLOCKED: {
+    ar: 'حسابك موقوف عن الدخول. تواصل مع إدارة المجتمع.',
+    en: 'Your account is blocked. Contact the community administration.',
+  },
   INVALID_CREDENTIALS: {
     ar: 'البريد الإلكتروني أو كلمة المرور غير صحيحة. حاول مرة أخرى.',
     en: 'Incorrect email or password. Please try again.',

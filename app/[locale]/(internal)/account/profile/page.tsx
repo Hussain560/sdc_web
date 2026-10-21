@@ -68,11 +68,18 @@ export default async function AccountProfilePage({
             : 'Your membership is suspended. Contact the community leadership.'}
         </Alert>
       )}
-      {status === 'inactive' && (
+      {status === 'expired' && (
+        <Alert tone="warning">
+          {ar
+            ? 'انتهت مدة عضويتك. اطلب التجديد من صفحة «عضويتي» لتعود نشطة.'
+            : 'Your membership term ended. Request a renewal from “My membership” to make it active again.'}
+        </Alert>
+      )}
+      {status === 'ended' && (
         <Alert tone="info">
           {ar
-            ? 'عضويتك غير نشطة. يمكنك التقديم مجددًا في دورة الاستقبال القادمة.'
-            : 'Your membership is inactive. You can apply again in the next intake.'}
+            ? 'انتهت عضويتك. حسابك باقٍ لشهاداتك، ويمكنك التقديم مجدداً في دورة الاستقبال القادمة.'
+            : 'Your membership has ended. Your account stays for your certificates, and you can apply again in the next intake.'}
         </Alert>
       )}
       {canEdit && reference && catalog && (

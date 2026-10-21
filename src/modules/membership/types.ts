@@ -50,23 +50,27 @@ export const PHASE_LABEL: Record<
 export const APPLICATION_STATUSES = [
   'submitted',
   'under_review',
+  'info_requested',
   'accepted',
   'rejected',
   'waitlisted',
   'withdrawn',
+  'lapsed',
 ] as const;
 export type ApplicationStatus = (typeof APPLICATION_STATUSES)[number];
 
 export const APPLICATION_STATUS_LABEL: Record<
   ApplicationStatus,
-  { label: Localized; tone: 'neutral' | 'accent' | 'warning' | 'danger' }
+  { label: Localized; tone: 'neutral' | 'accent' | 'warning' | 'danger' | 'info' }
 > = {
-  submitted: { label: { ar: 'مُستلم', en: 'Received' }, tone: 'neutral' },
-  under_review: { label: { ar: 'قيد المراجعة', en: 'Under review' }, tone: 'warning' },
+  submitted: { label: { ar: 'جديد', en: 'New' }, tone: 'info' },
+  under_review: { label: { ar: 'قيد المراجعة', en: 'Under review' }, tone: 'neutral' },
+  info_requested: { label: { ar: 'طلب تعديل', en: 'Edit requested' }, tone: 'warning' },
   accepted: { label: { ar: 'مقبول', en: 'Accepted' }, tone: 'accent' },
-  rejected: { label: { ar: 'غير مقبول', en: 'Not accepted' }, tone: 'danger' },
-  waitlisted: { label: { ar: 'قائمة الانتظار', en: 'Waitlisted' }, tone: 'neutral' },
+  rejected: { label: { ar: 'غير مقبول', en: 'Not accepted' }, tone: 'neutral' },
+  waitlisted: { label: { ar: 'الانتظار', en: 'Waitlist' }, tone: 'warning' },
   withdrawn: { label: { ar: 'مسحوب', en: 'Withdrawn' }, tone: 'neutral' },
+  lapsed: { label: { ar: 'سقط التفعيل', en: 'Lapsed' }, tone: 'danger' },
 };
 
 /** Version of the privacy notice the applicant accepts (OPEN Q-031: final text pending). */
@@ -85,13 +89,24 @@ export type PublicCycle = {
   status: 'published' | 'completed';
   phase: Exclude<CyclePhase, 'draft'>;
   questions: CycleQuestion[];
+  /** The date the decision is expected (told to applicants). */
+  reviewEndsAt: string | null;
+  /** Places of the cycle (told to applicants). */
+  capacity: number | null;
+  activationDeadlineDays: number;
+  termEndsAt: string | null;
 };
 
 /** Values of the 5-step application form. Strings are kept as typed; numbers are chosen ids. */
 export type ApplicationValues = {
   email: string;
-  fullNameAr: string;
-  fullNameEn: string;
+  firstNameAr: string;
+  middleNameAr: string;
+  lastNameAr: string;
+  firstNameEn: string;
+  middleNameEn: string;
+  lastNameEn: string;
+  /** International format (E.164) from the phone field. */
   phone: string;
   academicStatus: AcademicStatus | '';
   universityId: string;
@@ -114,8 +129,12 @@ export type ApplicationValues = {
 
 export const emptyApplication = (): ApplicationValues => ({
   email: '',
-  fullNameAr: '',
-  fullNameEn: '',
+  firstNameAr: '',
+  middleNameAr: '',
+  lastNameAr: '',
+  firstNameEn: '',
+  middleNameEn: '',
+  lastNameEn: '',
   phone: '',
   academicStatus: '',
   universityId: '',
@@ -147,7 +166,44 @@ export type CycleFormValues = {
   reviewEndsAt: string;
   capacity: string;
   questions: CycleQuestion[];
+  /** yyyy-mm-dd: the day the membership of this cycle ends (empty: one year after acceptance). */
+  termEndsAt: string;
+  /** Days an accepted person has to activate before the place goes to the waiting list. */
+  activationDeadlineDays: string;
+  /** Reviewer rubric: empty means scoring is off for the cycle. */
+  rubric: RubricCriterion[];
 };
+
+export const RUBRIC_WEIGHTS = [1, 2, 3] as const;
+export type RubricWeight = (typeof RUBRIC_WEIGHTS)[number];
+
+/** One scoring criterion of a cycle (up to 6): reviewers give 1 to 5 for each. */
+export type RubricCriterion = {
+  key: string;
+  label_ar: string;
+  label_en: string;
+  weight: RubricWeight;
+};
+
+export const MAX_RUBRIC = 6;
+
+/** The default set offered by the cycle form. */
+export const DEFAULT_RUBRIC: RubricCriterion[] = [
+  { key: 'motivation', label_ar: 'الدافع', label_en: 'Motivation', weight: 2 },
+  {
+    key: 'experience',
+    label_ar: 'الخبرة أو الرغبة في التعلّم',
+    label_en: 'Experience or eagerness',
+    weight: 1,
+  },
+  { key: 'work', label_ar: 'الأعمال والروابط', label_en: 'Work and links', weight: 1 },
+  {
+    key: 'participation',
+    label_ar: 'المشاركة المتوقعة',
+    label_en: 'Expected participation',
+    weight: 1,
+  },
+];
 
 export type ReferenceOption = {
   id: number;

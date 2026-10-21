@@ -48,6 +48,17 @@
   }
 }
 
+/* A confirmation that pops in (the result of a form, a check mark). */
+@keyframes m-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+}
+.m-pop {
+  animation: m-pop var(--duration-base) cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
 /* M1 page enter: server-rendered, first screen only. The first five children follow each other by 60 ms. */
 .m-enter > * {
   animation: m-rise var(--duration-base) var(--ease-out) both;
@@ -259,6 +270,7 @@
 @media (prefers-reduced-motion: reduce) {
   .m-enter > *,
   .m-reveal,
+  .m-pop,
   .m-stagger > *,
   .m-in,
   .m-count,
