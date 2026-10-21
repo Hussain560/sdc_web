@@ -359,7 +359,7 @@ export function MemberProfileEditor({
             {done.next ? `${t.nextStep}: ${t.checks[done.next as CompletenessCheck]}` : t.complete}
           </p>
         </div>
-        <div className="flex flex-col gap-3 rounded-shape-xl border border-line bg-surface p-5">
+        <div className="flex flex-col gap-3 rounded-shape-xl border border-line bg-surface p-5 max-lg:hidden">
           <h2 className="t-h4">{t.preview}</h2>
           {v.is_directory_visible ? (
             <div aria-hidden="true" className="pointer-events-none">
@@ -380,6 +380,12 @@ export function MemberProfileEditor({
 
       <div className="flex min-w-0 flex-col gap-6">
         <p className="t-body text-muted">{t.lede}</p>
+        <Link
+          href={`/members/${data.id}`}
+          className="inline-flex min-h-11 w-fit items-center rounded-full border border-line-strong px-5 t-body-sm font-semibold lg:hidden"
+        >
+          {t.viewPublic}
+        </Link>
 
         <nav
           aria-label={t.jumpLabel}
