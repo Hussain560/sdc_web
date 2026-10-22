@@ -393,17 +393,28 @@ export function ApplicationsTable({
         onClose={() => setPending(null)}
         busy={busy}
         title={pending ? title[pending] : ''}
+        footerAlign="start"
         footer={
           <>
-            <Button variant="ghost" onClick={() => setPending(null)} disabled={busy}>
-              {ar ? 'تراجع' : 'Back'}
-            </Button>
             <Button
               variant={pending === 'reject' ? 'destructive' : 'primary'}
               onClick={run}
               loading={busy}
             >
-              {ar ? 'تأكيد' : 'Confirm'}
+              {pending === 'accept'
+                ? ar
+                  ? `قبول ${selected.size}`
+                  : `Accept ${selected.size}`
+                : pending === 'reject'
+                  ? ar
+                    ? `عدم قبول ${selected.size}`
+                    : `Reject ${selected.size}`
+                  : ar
+                    ? `نقل ${selected.size} للانتظار`
+                    : `Move ${selected.size} to the waitlist`}
+            </Button>
+            <Button variant="secondary" onClick={() => setPending(null)} disabled={busy}>
+              {ar ? 'تراجع' : 'Back'}
             </Button>
           </>
         }

@@ -13,12 +13,12 @@ import {
   RefreshCw,
   UserRoundX,
 } from 'lucide-react';
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
 import { Avatar, Badge, Button, cn } from '@/components/ui';
 import { ActionMenu, type MenuItem } from '@/components/patterns/ActionMenu';
 import { BulkBar } from '@/components/patterns/BulkBar';
 import { useLanguage } from '@/context/LanguageContext';
-import { Link } from '@/i18n/navigation';
+import { Link, useRouter } from '@/i18n/navigation';
 import { formatDate } from '@/lib/format';
 import type { AdminMemberRow } from '../admin-queries';
 import { END_REASON_LABEL, MEMBER_STATUS_LABEL } from '../schemas';
@@ -112,6 +112,7 @@ export function MembersTable({
   const ar = lang === 'ar';
   const L = (a: string, e: string) => (ar ? a : e);
   const Arrow = ar ? ChevronLeft : ChevronRight;
+  const router = useRouter();
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [action, setAction] = useState<MemberActionKind | null>(null);
   const [targets, setTargets] = useState<ActionTarget[]>([]);
@@ -149,6 +150,18 @@ export function MembersTable({
     setTargets(list.map(toTarget));
     setAction(kind);
   };
+
+  const openRow = (id: string) => (e: React.MouseEvent) => {
+    if ((e.target as HTMLElement).closest('a,button,input,label,select,textarea')) return;
+    router.push(`/dashboard/members/${id}`);
+  };
+  const decideLeave = (r: AdminMemberRow, kind: 'leave_approve' | 'leave_decline') => {
+    setTargets([{ ...toTarget(r), actionId: r.leaveRequest!.id }]);
+    setAction(kind);
+  };
+  const dayOf = (iso: string) => formatDate(iso, lang);
+  // The people whose term ends within 30 days, for the one-tap "renew them all" bar of the ending-soon tab.
+  const ending = rows.filter((r) => r.status === 'active' && r.endingSoon);
 
   const menuFor = (r: AdminMemberRow): MenuItem[] => {
     const items: MenuItem[] = [
@@ -342,6 +355,22 @@ export function MembersTable({
 
   return (
     <div className="flex flex-col gap-3">
+      {canManage && tab === 'ending_soon' && ending.length > 0 && (
+        <div className="m-enter flex flex-wrap items-center justify-between gap-3 rounded-shape-xl bg-warning-soft p-4">
+          <p className="text-sm font-medium">
+            {L(
+              `${ending.length} عضواً تنتهي مدتهم خلال 30 يوماً.`,
+              `${ending.length} members' terms end within 30 days.`,
+            )}
+          </p>
+          <Button
+            iconStart={<RefreshCw size={15} aria-hidden="true" />}
+            onClick={() => start('renew', ending)}
+          >
+            {L(`تجديد الـ ${ending.length}`, `Renew all ${ending.length}`)}
+          </Button>
+        </div>
+      )}
       {canManage && (
         <BulkBar
           count={selected.size}
@@ -358,8 +387,9 @@ export function MembersTable({
           return (
             <li
               key={r.id}
+              onClick={openRow(r.id)}
               data-selected={selected.has(r.id) || undefined}
-              className="rounded-shape-xl border border-line bg-surface p-3 data-[selected]:border-accent data-[selected]:bg-accent-soft/40"
+              className="cursor-pointer rounded-shape-xl border border-line bg-surface p-3 data-[selected]:border-accent data-[selected]:bg-accent-soft/40"
             >
               <div className="flex items-start gap-3">
                 {canManage && r.status !== 'ended' && (
@@ -488,133 +518,177 @@ export function MembersTable({
               </th>
             </tr>
           </thead>
-          <tbody>
-            {rows.map((r) => {
+          <tbody className="m-stagger">
+            {rows.map((r, i) => {
               const st = stateOf(r, ar, lang);
               return (
-                <tr
-                  key={r.id}
-                  data-selected={selected.has(r.id) || undefined}
-                  className="border-b border-line align-middle transition-colors last:border-0 hover:bg-surface-raised data-[selected]:bg-accent-soft/40"
-                >
-                  {canManage && (
-                    <td className="ps-4">
-                      <input
-                        type="checkbox"
-                        aria-label={L(`تحديد ${nameOf(r)}`, `Select ${nameOf(r)}`)}
-                        checked={selected.has(r.id)}
-                        disabled={r.status === 'ended' && !leaveTab}
-                        onChange={() => toggle(r.id)}
-                        className="size-4 accent-[var(--accent)]"
+                <Fragment key={r.id}>
+                  <tr
+                    onClick={openRow(r.id)}
+                    style={{ ['--i' as string]: Math.min(i, 9) }}
+                    data-selected={selected.has(r.id) || undefined}
+                    className={cn(
+                      'cursor-pointer align-middle transition-colors hover:bg-surface-raised data-[selected]:bg-accent-soft/40',
+                      !(r.leaveRequest && canManage) && 'border-b border-line last:border-0',
+                    )}
+                  >
+                    {canManage && (
+                      <td className="ps-4">
+                        <input
+                          type="checkbox"
+                          aria-label={L(`تحديد ${nameOf(r)}`, `Select ${nameOf(r)}`)}
+                          checked={selected.has(r.id)}
+                          disabled={r.status === 'ended' && !leaveTab}
+                          onChange={() => toggle(r.id)}
+                          className="size-4 accent-[var(--accent)]"
+                        />
+                      </td>
+                    )}
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-3">
+                        <Avatar name={nameOf(r)} src={memberThumbUrl(r.photoPath)} size={40} />
+                        <div className="min-w-0">
+                          <Link
+                            href={`/dashboard/members/${r.id}`}
+                            className="block max-w-[15rem] truncate font-semibold hover:text-accent-text focus-visible:outline-2 focus-visible:outline-focus-ring"
+                          >
+                            {nameOf(r)}
+                          </Link>
+                          <p dir="ltr" className="truncate text-start font-mono text-xs text-muted">
+                            {r.memberNo}
+                            {canContact && r.email ? ` · ${r.email}` : ''}
+                          </p>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-4 py-3">
+                      {r.committeeAr || r.roleAr ? (
+                        <>
+                          <p>{(ar ? r.committeeAr : r.committeeEn) ?? '—'}</p>
+                          <p className="text-xs text-muted">{ar ? r.roleAr : r.roleEn}</p>
+                        </>
+                      ) : (
+                        <span className="text-muted">{L('بلا لجنة', 'No committee')}</span>
+                      )}
+                    </td>
+                    <td className="px-4 py-3">
+                      <Badge tone={st.tone}>{st.text}</Badge>
+                      {st.sub && (
+                        <p
+                          className={cn(
+                            'mt-1 text-xs font-medium',
+                            st.subTone === 'warning'
+                              ? 'text-warning'
+                              : st.subTone === 'info'
+                                ? 'text-info'
+                                : 'text-muted',
+                          )}
+                        >
+                          {st.sub}
+                        </p>
+                      )}
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap">{termCell(r)}</td>
+                    <td className="w-48 px-4 py-3">
+                      <CompletenessBar
+                        percent={r.completeness}
+                        label={L('اكتمال الملف', 'Profile completeness')}
                       />
                     </td>
-                  )}
-                  <td className="px-4 py-3">
-                    <div className="flex items-center gap-3">
-                      <Avatar name={nameOf(r)} src={memberThumbUrl(r.photoPath)} size={40} />
-                      <div className="min-w-0">
-                        <Link
-                          href={`/dashboard/members/${r.id}`}
-                          className="block max-w-[15rem] truncate font-semibold hover:text-accent-text focus-visible:outline-2 focus-visible:outline-focus-ring"
-                        >
-                          {nameOf(r)}
-                        </Link>
-                        <p dir="ltr" className="truncate text-start font-mono text-xs text-muted">
-                          {r.memberNo}
-                          {canContact && r.email ? ` · ${r.email}` : ''}
-                        </p>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-4 py-3">
-                    {r.committeeAr || r.roleAr ? (
-                      <>
-                        <p>{(ar ? r.committeeAr : r.committeeEn) ?? '—'}</p>
-                        <p className="text-xs text-muted">{ar ? r.roleAr : r.roleEn}</p>
-                      </>
-                    ) : (
-                      <span className="text-muted">{L('بلا لجنة', 'No committee')}</span>
-                    )}
-                  </td>
-                  <td className="px-4 py-3">
-                    <Badge tone={st.tone}>{st.text}</Badge>
-                    {st.sub && (
-                      <p
-                        className={cn(
-                          'mt-1 text-xs font-medium',
-                          st.subTone === 'warning'
-                            ? 'text-warning'
-                            : st.subTone === 'info'
-                              ? 'text-info'
-                              : 'text-muted',
+                    <td className="px-4 py-3 text-muted">
+                      <span className="inline-flex items-center gap-1.5">
+                        {r.listed ? (
+                          <Eye aria-hidden="true" className="size-4" />
+                        ) : (
+                          <EyeOff aria-hidden="true" className="size-4" />
                         )}
-                      >
-                        {st.sub}
-                      </p>
-                    )}
-                  </td>
-                  <td className="px-4 py-3 whitespace-nowrap">{termCell(r)}</td>
-                  <td className="w-48 px-4 py-3">
-                    <CompletenessBar
-                      percent={r.completeness}
-                      label={L('اكتمال الملف', 'Profile completeness')}
-                    />
-                  </td>
-                  <td className="px-4 py-3 text-muted">
-                    <span className="inline-flex items-center gap-1.5">
-                      {r.listed ? (
-                        <Eye aria-hidden="true" className="size-4" />
-                      ) : (
-                        <EyeOff aria-hidden="true" className="size-4" />
-                      )}
-                      {r.listed ? L('ظاهر', 'Visible') : L('مخفي', 'Hidden')}
-                    </span>
-                  </td>
-                  <td className="px-2 py-2">
-                    <div className="flex items-center justify-end gap-1">
-                      {r.leaveRequest && canManage && leaveTab ? (
-                        <>
-                          <Button
-                            size="sm"
-                            onClick={() => {
-                              setTargets([{ ...toTarget(r), actionId: r.leaveRequest!.id }]);
-                              setAction('leave_approve');
+                        {r.listed ? L('ظاهر', 'Visible') : L('مخفي', 'Hidden')}
+                      </span>
+                    </td>
+                    <td className="px-2 py-2">
+                      <div className="flex items-center justify-end gap-1">
+                        {r.leaveRequest && canManage && leaveTab ? (
+                          <>
+                            <Button
+                              size="sm"
+                              onClick={() => {
+                                setTargets([{ ...toTarget(r), actionId: r.leaveRequest!.id }]);
+                                setAction('leave_approve');
+                              }}
+                            >
+                              {L('موافقة', 'Approve')}
+                            </Button>
+                          </>
+                        ) : null}
+                        {!r.linked && canManage && (
+                          <MemberActions
+                            compact
+                            subject={{
+                              id: r.id,
+                              nameAr: r.nameAr,
+                              nameEn: r.nameEn,
+                              status: r.status,
                             }}
-                          >
-                            {L('موافقة', 'Approve')}
-                          </Button>
-                        </>
-                      ) : null}
-                      {!r.linked && canManage && (
-                        <MemberActions
-                          compact
-                          subject={{
-                            id: r.id,
-                            nameAr: r.nameAr,
-                            nameEn: r.nameEn,
-                            status: r.status,
-                          }}
-                          linked={false}
-                          claimEmail={null}
-                          canManage
+                            linked={false}
+                            claimEmail={null}
+                            canManage
+                          />
+                        )}
+                        <ActionMenu
+                          label={L(`إجراءات ${nameOf(r)}`, `Actions for ${nameOf(r)}`)}
+                          items={menuFor(r)}
                         />
-                      )}
-                      <ActionMenu
-                        label={L(`إجراءات ${nameOf(r)}`, `Actions for ${nameOf(r)}`)}
-                        items={menuFor(r)}
-                      />
-                      {!canManage && (
-                        <Link
-                          href={`/dashboard/members/${r.id}`}
-                          aria-label={`${L('فتح', 'Open')} ${nameOf(r)}`}
-                          className="inline-flex size-11 shrink-0 items-center justify-center rounded-full border border-line text-muted hover:bg-surface-raised hover:text-text"
-                        >
-                          <Arrow aria-hidden="true" className="size-5" />
-                        </Link>
-                      )}
-                    </div>
-                  </td>
-                </tr>
+                        {!canManage && (
+                          <Link
+                            href={`/dashboard/members/${r.id}`}
+                            aria-label={`${L('فتح', 'Open')} ${nameOf(r)}`}
+                            className="inline-flex size-11 shrink-0 items-center justify-center rounded-full border border-line text-muted hover:bg-surface-raised hover:text-text"
+                          >
+                            <Arrow aria-hidden="true" className="size-5" />
+                          </Link>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                  {r.leaveRequest && canManage && (
+                    <tr className="border-b border-line last:border-0">
+                      <td colSpan={canManage ? 8 : 7} className="px-4 pb-4 pt-0">
+                        <div className="m-pop flex flex-wrap items-center gap-3 rounded-shape-lg bg-info-soft p-4">
+                          <LogOut size={18} aria-hidden="true" className="shrink-0 text-info" />
+                          <div className="min-w-0 flex-1">
+                            <p className="text-sm font-bold">
+                              {L(
+                                'طلب مغادرة بانتظار قرارك',
+                                'Leave request waiting for your decision',
+                              )}
+                              <span className="ms-2 font-normal text-muted">
+                                {L('منذ', 'since')} {dayOf(r.leaveRequest.createdAt)}
+                                {r.leaveRequest.preferredLastDay
+                                  ? ` · ${L('يفضّل آخر يوم', 'prefers the last day')} ${dayOf(r.leaveRequest.preferredLastDay)}`
+                                  : ''}
+                              </span>
+                            </p>
+                            <p className="mt-0.5 text-sm">
+                              {r.leaveRequest.reason ?? L('لم يذكر سبباً.', 'No reason given.')}
+                            </p>
+                          </div>
+                          <div className="flex gap-2">
+                            <Button size="sm" onClick={() => decideLeave(r, 'leave_approve')}>
+                              {L('موافقة', 'Approve')}
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="secondary"
+                              onClick={() => decideLeave(r, 'leave_decline')}
+                            >
+                              {L('رفض', 'Decline')}
+                            </Button>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                </Fragment>
               );
             })}
           </tbody>

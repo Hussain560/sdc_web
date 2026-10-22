@@ -30,7 +30,7 @@ export function PageHeader({
   );
 }
 
-export type SkeletonCell = 'user' | 'badge' | 'text' | 'date' | 'action';
+export type SkeletonCell = 'user' | 'badge' | 'text' | 'date' | 'action' | 'score' | 'two-lines';
 export type SkeletonColumn = { header: string; cell: SkeletonCell };
 
 function CellSkeleton({ kind }: { kind: SkeletonCell }) {
@@ -49,6 +49,20 @@ function CellSkeleton({ kind }: { kind: SkeletonCell }) {
       return <Skeleton className="h-6 w-24 rounded-full" />;
     case 'date':
       return <Skeleton className="h-3.5 w-20" />;
+    case 'score':
+      return (
+        <div className="flex items-center gap-2">
+          <Skeleton className="h-1.5 w-14 rounded-full" />
+          <Skeleton className="h-3.5 w-8" />
+        </div>
+      );
+    case 'two-lines':
+      return (
+        <div className="flex flex-col gap-1.5">
+          <Skeleton className="h-3.5 w-36" />
+          <Skeleton className="h-3 w-24" />
+        </div>
+      );
     case 'action':
       return <Skeleton className="ms-auto h-8 w-20 rounded-full" />;
     default:
@@ -64,10 +78,13 @@ export function TableSkeleton({
   columns,
   rows = 8,
   minWidth = 720,
+  selectable = false,
 }: {
   columns: SkeletonColumn[];
   rows?: number;
   minWidth?: number;
+  /** A leading check-box column, like the lists with bulk actions. */
+  selectable?: boolean;
 }) {
   return (
     <>
@@ -91,6 +108,11 @@ export function TableSkeleton({
         <table className="w-full text-sm" style={{ minWidth }}>
           <thead className="border-b border-line text-xs text-muted">
             <tr>
+              {selectable && (
+                <th scope="col" className="w-12 ps-4">
+                  <Skeleton className="size-4 rounded" />
+                </th>
+              )}
               {columns.map((c, i) => (
                 <th key={i} scope="col" className="px-4 py-3 text-start font-medium">
                   {c.header}
@@ -101,6 +123,11 @@ export function TableSkeleton({
           <tbody>
             {Array.from({ length: rows }).map((_, r) => (
               <tr key={r} className="border-b border-line last:border-0">
+                {selectable && (
+                  <td className="ps-4">
+                    <Skeleton className="size-4 rounded" />
+                  </td>
+                )}
                 {columns.map((c, i) => (
                   <td key={i} className="px-4 py-3.5">
                     <CellSkeleton kind={c.cell} />
@@ -121,13 +148,24 @@ export function TablePageSkeleton({
   rows = 8,
   tabs = 0,
   filters = 0,
+  inlineFilters = 0,
   action = false,
+  actions = 0,
+  selectable = false,
+  kpis = 0,
 }: {
   columns: SkeletonColumn[];
   rows?: number;
   tabs?: number;
+  /** A row of summary cards under the header. */
+  kpis?: number;
   filters?: number;
+  /** One row of label-less pill fields (the membership lists). */
+  inlineFilters?: number;
   action?: boolean;
+  /** Several buttons at the header's inline-end (a select and an export…). */
+  actions?: number;
+  selectable?: boolean;
 }) {
   return (
     <div aria-busy="true" aria-live="polite">
@@ -137,11 +175,36 @@ export function TablePageSkeleton({
           <Skeleton className="h-4 w-80 max-w-full" />
         </div>
         {action && <Skeleton className="h-10 w-36 rounded-full" />}
+        {actions > 0 && (
+          <div className="flex gap-3">
+            {Array.from({ length: actions }).map((_, i) => (
+              <Skeleton key={i} className="h-11 w-40 rounded-full" />
+            ))}
+          </div>
+        )}
       </div>
+      {kpis > 0 && (
+        <div className="mb-5 grid grid-cols-2 gap-3 lg:grid-cols-4">
+          {Array.from({ length: kpis }).map((_, i) => (
+            <div key={i} className="rounded-xl border border-line bg-surface p-4">
+              <Skeleton className="h-3.5 w-28" />
+              <Skeleton className="mt-3 h-8 w-16" />
+            </div>
+          ))}
+        </div>
+      )}
       {tabs > 0 && (
         <div className="mb-4 flex gap-2">
           {Array.from({ length: tabs }).map((_, i) => (
             <Skeleton key={i} className="h-9 w-28 rounded-full" />
+          ))}
+        </div>
+      )}
+      {inlineFilters > 0 && (
+        <div className="mb-5 flex flex-wrap gap-3">
+          <Skeleton className="h-11 min-w-60 flex-[2_1_18rem] rounded-full" />
+          {Array.from({ length: inlineFilters - 1 }).map((_, i) => (
+            <Skeleton key={i} className="h-11 min-w-40 flex-[1_1_10rem] rounded-full" />
           ))}
         </div>
       )}
@@ -156,7 +219,7 @@ export function TablePageSkeleton({
           <Skeleton className="h-10 w-20 rounded-full" />
         </div>
       )}
-      <TableSkeleton columns={columns} rows={rows} />
+      <TableSkeleton columns={columns} rows={rows} selectable={selectable} />
       <div className="mt-4 flex items-center justify-between">
         <Skeleton className="h-4 w-36" />
         <div className="flex gap-1">

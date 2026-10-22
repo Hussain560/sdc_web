@@ -654,14 +654,12 @@ export function MemberActionDialogs({
         onClose={onClose}
         busy={busy}
         size="md"
+        footerAlign="start"
         title={c?.title ?? ''}
         description={who}
         closeLabel={ar ? 'إغلاق' : 'Close'}
         footer={
           <>
-            <Button variant="ghost" onClick={onClose} disabled={busy}>
-              {ar ? 'تراجع' : 'Cancel'}
-            </Button>
             <Button
               variant={c?.destructive ? 'destructive' : 'primary'}
               onClick={run}
@@ -669,6 +667,9 @@ export function MemberActionDialogs({
               disabled={!c?.ok}
             >
               {c?.primary}
+            </Button>
+            <Button variant="secondary" onClick={onClose} disabled={busy}>
+              {ar ? 'تراجع' : 'Cancel'}
             </Button>
           </>
         }

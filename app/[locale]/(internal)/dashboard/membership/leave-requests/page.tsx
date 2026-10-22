@@ -7,7 +7,7 @@ import { requireUser } from '@/lib/auth/session';
 import { pageMeta, parsePage } from '@/lib/pagination';
 import { getAccess } from '@/modules/access/queries';
 import { listAdminMembers } from '@/modules/members/admin-queries';
-import { MembersTable } from '@/modules/members/components/MembersTable';
+import { LeaveRequestsList } from '@/modules/members/components/LeaveRequestsList';
 
 // MEM-017 / MEM-018: the leave requests waiting for leadership. A member never ends their own membership: they ask,
 // and a leader (never the member themselves) approves or declines, one by one or in bulk.
@@ -49,13 +49,7 @@ export default async function LeaveRequestsPage({
           }
         />
       ) : (
-        <MembersTable
-          rows={list.rows}
-          tab="leave_requests"
-          canManage
-          canContact={list.canContact}
-          canCreate={false}
-        />
+        <LeaveRequestsList rows={list.rows} />
       )}
       <Pagination meta={meta} searchParams={sp} lang={ar ? 'ar' : 'en'} />
     </>

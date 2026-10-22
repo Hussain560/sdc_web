@@ -34,7 +34,7 @@ import {
   LoaderCircle,
   type LucideIcon,
 } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { Link, usePathname, useRouter } from '@/i18n/navigation';
 import { useLanguage } from '@/context/LanguageContext';
 import { useTheme } from '@/context/ThemeContext';
@@ -42,6 +42,7 @@ import { cn, useToast } from '@/components/ui';
 import type { NavGroupKey, NavIcon, VisibleNavGroup, VisibleNavItem } from '@/config/dashboard-nav';
 import { signOut } from '@/modules/auth/actions';
 import { CrumbsProvider, useCrumbs } from './Crumbs';
+import { NavFeedback } from './NavFeedback';
 import { ResponsiveTables } from './ResponsiveTables';
 
 const ICONS: Record<NavIcon, LucideIcon> = {
@@ -702,6 +703,9 @@ function ShellFrameInner({
         <main className="mx-auto w-full max-w-[1280px] px-4 pb-12 pt-6 lg:px-6">
           {children}
           <ResponsiveTables />
+          <Suspense fallback={null}>
+            <NavFeedback />
+          </Suspense>
         </main>
       </div>
     </div>

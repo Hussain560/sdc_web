@@ -16,6 +16,8 @@ export interface DialogProps {
   description?: string;
   /** Action row at the inline-end: secondary first, primary last. Stacks on phones with the primary on top. */
   footer?: ReactNode;
+  /** Where the footer buttons sit on wide screens: `end` (default) or `start` (primary first, as in the member dialogs). */
+  footerAlign?: 'start' | 'end';
   /** Translated "Close". When set, a close button is shown at the inline-end of the header. */
   closeLabel?: string;
   /**
@@ -59,6 +61,7 @@ export function Dialog({
   size = 'sm',
   description,
   footer,
+  footerAlign = 'end',
   closeLabel,
   busy,
   busyHint,
@@ -112,7 +115,9 @@ export function Dialog({
       </div>
       <div inert={busy || undefined}>{children}</div>
       {(footer || (busy && busyHint)) && (
-        <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-end">
+        <div
+          className={`mt-6 flex gap-3 sm:flex-row sm:items-center ${footerAlign === 'start' ? 'flex-col sm:justify-start' : 'flex-col-reverse sm:justify-end'}`}
+        >
           {busy && busyHint && (
             <p role="status" className="t-body-sm me-auto text-muted">
               {busyHint}

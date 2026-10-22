@@ -333,3 +333,64 @@
     animation: none !important;
   }
 }
+
+/* Navigation feedback (NavFeedback): a bar across the top and a dimmed page while a link, tab or filter loads. */
+.nav-bar {
+  position: fixed;
+  inset-inline: 0;
+  top: 0;
+  z-index: 100;
+  height: 3px;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--duration-fast) var(--ease-out);
+}
+.nav-bar::after {
+  content: '';
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  width: 40%;
+  border-radius: 999px;
+  background: var(--color-accent);
+  animation: m-nav-run 1.1s var(--ease-standard) infinite;
+}
+html[data-navigating] .nav-bar {
+  opacity: 1;
+}
+html[data-navigating] main > :not(.nav-bar) {
+  opacity: 0.55;
+  transition: opacity var(--duration-base) var(--ease-out);
+  cursor: progress;
+}
+html[data-navigating] main a,
+html[data-navigating] main button {
+  cursor: progress;
+}
+@keyframes m-nav-run {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(250%);
+  }
+}
+[dir='rtl'] .nav-bar::after {
+  animation-name: m-nav-run-rtl;
+}
+@keyframes m-nav-run-rtl {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(-250%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .nav-bar::after {
+    animation: none;
+    width: 100%;
+    opacity: 0.6;
+  }
+}
