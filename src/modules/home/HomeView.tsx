@@ -2,10 +2,10 @@ import type { CSSProperties } from 'react';
 import { PageMain } from '@/components/motion/PageMain';
 import { Words } from '@/components/motion/Words';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
-import Image from 'next/image';
 import { CtaBand } from '@/components/patterns/CtaBand';
 import { SectionHeader } from '@/components/patterns/SectionHeader';
 import { StatsRow } from '@/components/patterns/StatsRow';
+import { AnimatedBrandVideo } from '@/components/patterns/AnimatedBrandVideo';
 import { LinkButton } from '@/components/ui/Button';
 import { StatusPill } from '@/components/ui/StatusPill';
 import { TextLink } from '@/components/ui/TextLink';
@@ -123,24 +123,7 @@ export function HomeView({
                 className="m-parallax absolute inset-0 -z-10 bg-[radial-gradient(60%_60%_at_50%_50%,color-mix(in_srgb,var(--signal)_14%,transparent),transparent)]"
                 style={{ '--m-par': '48px' } as CSSProperties}
               />
-              <Image
-                src="/brand/hero-mark-dark.png"
-                alt=""
-                width={546}
-                height={380}
-                priority
-                sizes="(max-width: 1024px) 60vw, 480px"
-                className="logo-on-dark m-parallax h-auto w-3/5 lg:w-full"
-              />
-              <Image
-                src="/brand/hero-mark-light.png"
-                alt=""
-                width={1504}
-                height={1046}
-                priority
-                sizes="(max-width: 1024px) 60vw, 480px"
-                className="logo-on-light m-parallax h-auto w-3/5 rounded-shape-xl lg:w-full"
-              />
+              <AnimatedBrandVideo className="m-parallax aspect-[546/380] h-auto w-[70%] object-contain lg:w-[115%]" />
             </div>
           </div>
           {sections.stats.length > 0 && (

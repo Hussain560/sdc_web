@@ -115,6 +115,10 @@ export default function LoginForm({
       )}
 
       <form method="post" onSubmit={onSubmit} className="flex flex-col gap-5">
+        <TextLink href="/" variant="standalone" className="min-h-11 text-muted">
+          <Back aria-hidden="true" className="size-4" />
+          {s.back}
+        </TextLink>
         <Field
           label={s.email}
           name="email"
@@ -154,10 +158,6 @@ export default function LoginForm({
             <Forward aria-hidden="true" className="size-4" />
           </TextLink>
         </p>
-        <TextLink href="/" variant="standalone" className="min-h-11 text-muted">
-          <Back aria-hidden="true" className="size-4" />
-          {s.back}
-        </TextLink>
       </div>
     </>
   );

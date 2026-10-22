@@ -1,8 +1,8 @@
-import Image from 'next/image';
 import type { ReactNode } from 'react';
 import { LocaleSwitch } from '@/components/layout/LocaleSwitch';
 import { Logo } from '@/components/layout/Logo';
 import { ThemeSwitch } from '@/components/layout/ThemeSwitch';
+import { AuthPanel } from './AuthPanel';
 
 /**
  * Split layout of the auth pages (patterns §14, PUBLIC-SCREENS-V2/05-auth.md): the form on the inline-start side
@@ -18,12 +18,7 @@ export function AuthShell({
 }) {
   return (
     <div className="min-h-dvh lg:grid lg:grid-cols-[1fr_45%] lg:gap-4 lg:p-4">
-      <div
-        aria-hidden="true"
-        className="motif-dots flex h-24 items-center justify-center rounded-b-shape-2xl bg-band text-muted lg:hidden"
-      >
-        <Image src="/assets/brand/sdc-mark.png" alt="" width={48} height={48} className="size-12" />
-      </div>
+      <AuthPanel />
 
       <div className="flex min-h-[calc(100dvh-6rem)] flex-col px-4 py-4 lg:min-h-0 lg:px-12 lg:py-6">
         <div className="flex items-center justify-between">
@@ -40,21 +35,6 @@ export function AuthShell({
           {children}
         </main>
       </div>
-
-      <aside
-        aria-hidden="true"
-        className="motif-dots relative hidden items-center justify-center overflow-hidden rounded-shape-2xl bg-band text-muted lg:flex"
-      >
-        <div className="flex items-center gap-4">
-          <Image
-            src="/assets/brand/sdc-mark.png"
-            alt=""
-            width={160}
-            height={160}
-            className="size-40"
-          />
-        </div>
-      </aside>
     </div>
   );
 }

@@ -16,6 +16,7 @@ import Image from 'next/image';
 import type { CSSProperties } from 'react';
 import { CapsuleCover } from '@/components/patterns/CapsuleMark';
 import { SectionHeader } from '@/components/patterns/SectionHeader';
+import { AnimatedBrandVideo } from '@/components/patterns/AnimatedBrandVideo';
 import { SiteFooter } from '@/components/layout/SiteFooter';
 import { SiteHeader } from '@/components/layout/SiteHeader';
 import { Breadcrumb } from '@/components/ui/Breadcrumb';
@@ -108,22 +109,7 @@ export function AboutView({ lang, data }: { lang: Lang; data: AboutData }) {
               className="absolute start-0 bottom-0 size-24 rounded-full bg-brand opacity-55"
             />
             <div className="motif-dots relative aspect-[4/3] overflow-hidden rounded-shape-2xl border border-line bg-band text-muted">
-              <Image
-                src="/brand/hero-mark-dark.png"
-                alt=""
-                fill
-                priority
-                sizes="(min-width: 1024px) 40vw, 90vw"
-                className="logo-on-dark m-float object-cover"
-              />
-              <Image
-                src="/brand/hero-mark-light.png"
-                alt=""
-                fill
-                priority
-                sizes="(min-width: 1024px) 40vw, 90vw"
-                className="logo-on-light m-float object-cover"
-              />
+              <AnimatedBrandVideo className="m-float absolute inset-0 m-auto size-[82%] object-contain" />
             </div>
           </div>
         </header>
@@ -335,14 +321,8 @@ export function AboutView({ lang, data }: { lang: Lang; data: AboutData }) {
             </section>
           )}
 
-          <section
-            aria-labelledby="ab-val"
-            className={cn(
-              section,
-              'grid items-start gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.8fr)] lg:gap-16',
-            )}
-          >
-            <div className="m-reveal flex flex-col gap-3 lg:sticky lg:top-28">
+          <section aria-labelledby="ab-val" className={`${section} flex flex-col gap-8`}>
+            <div className="m-reveal flex flex-col gap-3">
               <h2 id="ab-val" className="t-h2 flex items-center gap-3">
                 <span aria-hidden="true" className="signal-dots" />
                 {t.values}
@@ -384,7 +364,11 @@ export function AboutView({ lang, data }: { lang: Lang; data: AboutData }) {
                       </span>
                       <span aria-hidden="true" className="h-0.5 flex-1 bg-line-accent" />
                     </div>
-                    <Card variant="poster" interactive className="flex flex-col gap-3 p-2 pb-5">
+                    <Card
+                      variant="poster"
+                      interactive
+                      className="flex flex-1 flex-col gap-3 p-2 pb-5"
+                    >
                       <div className="aspect-[4/3] overflow-hidden rounded-shape-lg bg-surface-raised">
                         {e.cover !== FALLBACK_COVER ? (
                           // eslint-disable-next-line @next/next/no-img-element
@@ -399,11 +383,11 @@ export function AboutView({ lang, data }: { lang: Lang; data: AboutData }) {
                           <CapsuleCover />
                         )}
                       </div>
-                      <div className="flex flex-col gap-1 px-3">
+                      <div className="flex flex-1 flex-col gap-1 px-3">
                         <span className="t-caption text-muted">
                           {`${monthYear.format(new Date(`${e.startDate}T00:00:00Z`))} · ${ev.types[e.type] ?? e.type}`}
                         </span>
-                        <h3 className="t-h4 text-[1.125rem]">
+                        <h3 className="t-h4 mt-auto text-[1.125rem]">
                           <CardLink href={`/events/${e.slug}`}>{eventTitle(e, lang)}</CardLink>
                         </h3>
                       </div>
