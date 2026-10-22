@@ -1,5 +1,5 @@
 import { nowMs } from '@/lib/now';
-import { CalendarClock, ExternalLink, Eye, EyeOff, Mail, Phone } from 'lucide-react';
+import { CalendarClock, ExternalLink, Eye, EyeOff, Lock, Mail, Phone } from 'lucide-react';
 import { notFound } from 'next/navigation';
 import { Avatar, Badge, EmptyState, Tabs, type TabItem } from '@/components/ui';
 import { Timeline } from '@/components/patterns/Timeline';
@@ -181,7 +181,7 @@ export default async function MemberAdminPage({
     { key: 'log', label: L('سجل التدقيق', 'Audit log'), href: tabHref('log') },
   ];
 
-  const card = 'rounded-xl border border-line bg-surface p-5';
+  const card = 'rounded-shape-2xl border border-line bg-surface p-5';
   const row = (label: string, value: React.ReactNode) => (
     <div className="flex items-start justify-between gap-4 border-b border-line py-2.5 last:border-0">
       <dt className="text-sm text-muted">{label}</dt>
@@ -345,7 +345,6 @@ export default async function MemberAdminPage({
                   ))}
                 </nav>
               </div>
-              {canManage && <MemberNoteForm id={id} />}
               {timelineItems.length === 0 ? (
                 <EmptyState title={L('لا أحداث بعد', 'No events yet')} variant="no-data" />
               ) : (
@@ -591,6 +590,21 @@ export default async function MemberAdminPage({
 
         <aside className="flex flex-col gap-5">
           <MemberTermCards detail={detail} lang={lang} />
+          {canManage && (
+            <section className={card} aria-labelledby="notes">
+              <h2 id="notes" className="t-h4 mb-1 flex items-center gap-2">
+                <Lock size={16} aria-hidden="true" />
+                {L('ملاحظات داخلية', 'Internal notes')}
+              </h2>
+              <p className="mb-3 text-sm text-muted">
+                {L(
+                  'تراها القيادة فقط، ولا تصل العضو بأي شكل.',
+                  'Only leadership sees them; the member never does.',
+                )}
+              </p>
+              <MemberNoteForm id={id} />
+            </section>
+          )}
           <section className={card} aria-labelledby="acct">
             <h2 id="acct" className="t-h4 mb-2">
               {L('الحساب والاتصال', 'Account and contact')}

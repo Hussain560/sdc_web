@@ -17,7 +17,7 @@ export function MemberNoteForm({ id }: { id: string }) {
   const [pending, start] = useTransition();
   return (
     <form
-      className="mb-4 flex flex-col gap-2"
+      className="flex flex-col gap-2"
       onSubmit={(e) => {
         e.preventDefault();
         start(async () => {

@@ -49,13 +49,12 @@ insert into public.member_projects (member_id, position, title_ar, title_en, des
 
 -- No committee position is granted here: dev.regular stays a regular member (no position) on purpose.
 
--- events she took part in (presenter of one, attended two)
+-- events she took part in (presenter of one published event)
 insert into public.event_presenters (event_id, profile_id)
-select 'a3fa7f3f-b824-4521-831f-3a5b571ffd2c', user_id from me on conflict do nothing;
-commit;
+select e.id, (select user_id from me) from public.events e where e.status = 'published' order by e.created_at limit 1
+on conflict do nothing;
 
 -- one published article she wrote (the profile lists it)
-begin;
 insert into public.article_authors (article_id, position, user_id)
 select a.id, 0, (select user_id from me)
 from public.articles a where a.status = 'published' order by a.published_at desc nulls last limit 1

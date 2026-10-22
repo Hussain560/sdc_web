@@ -166,3 +166,40 @@ npm run e2e                   # visual gate; NOTE: baselines were already stale 
 ```
 
 Reset the demo data at any time: `npx supabase db reset && npm run db:lifecycle`.
+
+## 12. Member data for the member page (`npm run db:lifecycle` loads it)
+
+Open **Dashboard → العضوية → الأعضاء** (`/dashboard/members`), search the name, click the row (the whole row opens the record).
+The record is the "سجل العضو" screen: header with actions, the current-term card, account, internal notes, and the
+**full history** timeline.
+
+| Name (search)             | Login                            | What the record shows                                                                      |
+| ------------------------- | -------------------------------- | ------------------------------------------------------------------------------------------ |
+| ماجد علي القرني           | `dev.expiring@example.test`      | Ends in 12 days (amber term card), a pause and reinstatement, a note, a renewal request    |
+| لجين محمد السلمي          | `dev.expired@example.test`       | Expired yesterday ("Renew" is the main action)                                             |
+| بدر خالد العنزي           | `dev.suspended@example.test`     | Suspended (category + internal reason in the history)                                      |
+| سلمى ناصر الدوسري         | `dev.ended@example.test`         | Ended after a leave request: request → approval → ended                                    |
+| عبدالعزيز سعد الحمدان     | `dev.leaving@example.test`       | **Pending leave request**: a decision card in the list and on `/dashboard/membership/leave-requests` |
+| ماهر عبدالله الزهراني     | `dev.blocked@example.test`       | Blocked account (history shows the block; unblock from the record)                         |
+| ريم سعد الحربي            | `dev.newmember@example.test`     | Joined two days ago, not yet onboarded (welcome tour on first sign-in)                     |
+| نورة عبدالله القحطاني     | `dev.regular@example.test`       | Complete public profile: photo fields, skills, projects, links, a presented event          |
+
+Eight more unlinked members become: 3 **ending soon** (5, 20 and 28 days), 2 **expired**, 1 **suspended**, 2 **ended**
+(not renewed, terminated) — so every tab of the members list has rows. In the **Ending soon** tab a bar offers
+"Renew all N".
+
+## 13. Where each redesigned screen is
+
+| Screen                                  | Where                                                                      |
+| --------------------------------------- | -------------------------------------------------------------------------- |
+| Applications list (selection, bulk bar) | `/dashboard/membership/applications` — click a row or "مراجعة"              |
+| Review page (score, decision, history)  | open any application; shortcuts A W I R and J K                            |
+| Member record "سجل العضو"               | `/dashboard/members/<id>`                                                  |
+| Action dialogs (renew, suspend, end, block, leave…) | members list ⋮ menu or the record header                     |
+| Leave requests                          | `/dashboard/membership/leave-requests` (cards) and the members list        |
+| Waiting list                            | `/dashboard/membership/waitlist`                                           |
+| Phone versions                          | any of the above at 375 px wide (cards, bottom bars)                       |
+
+**System-status feedback:** click a tab, a filter or any link in the dashboard: a thin bar runs across the top and the
+page dims until the new content arrives; decided rows pulse once; saving a score shows "saved at HH:MM". Loading
+skeletons have the same shape as each page (including the phone card version).
