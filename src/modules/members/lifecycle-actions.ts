@@ -470,3 +470,20 @@ export async function resendActivations(
   });
   return ok({ queued: parsed.data.ids.length });
 }
+
+/** A short internal note on the member's history (members.manage). Never e-mailed, never shown to the member. */
+export async function addMemberNote(
+  input: { id: string; note: string },
+  ctx: { lang: Lang },
+): Promise<Result> {
+  const lang = langOf(ctx?.lang);
+  const parsed = z.object({ id: UUID, note: text(1000).min(1) }).safeParse(input);
+  if (!parsed.success) return failCode('VALIDATION_FAILED', lang);
+  if (!(await getAccess())) return failCode('UNAUTHENTICATED', lang);
+  const { error } = await (
+    await createClient()
+  ).rpc('add_member_note', { p_member: parsed.data.id, p_note: parsed.data.note });
+  if (error) return dbFailure(error, lang);
+  refresh();
+  return ok(undefined);
+}

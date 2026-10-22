@@ -22,6 +22,7 @@ import { MemberActions } from '@/modules/members/components/MemberActions';
 import { memberPhotoUrl, memberThumbUrl } from '@/modules/members/photo-url';
 import { END_REASON_LABEL, MEMBER_STATUS_LABEL } from '@/modules/members/schemas';
 import { MemberTermCards } from '@/modules/members/components/MemberTermCards';
+import { MemberNoteForm } from '@/modules/members/components/MemberNoteForm';
 import { buildMemberTimeline, type TimelineFilter } from '@/modules/members/member-timeline';
 import { ACADEMIC_LABEL, type AcademicStatus } from '@/modules/membership/types';
 import { getReferenceData } from '@/modules/membership/queries';
@@ -344,6 +345,7 @@ export default async function MemberAdminPage({
                   ))}
                 </nav>
               </div>
+              {canManage && <MemberNoteForm id={id} />}
               {timelineItems.length === 0 ? (
                 <EmptyState title={L('لا أحداث بعد', 'No events yet')} variant="no-data" />
               ) : (

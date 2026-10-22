@@ -3,9 +3,30 @@
 > Written while the work happens (unattended run). Branch: `feat/sprint-18-membership-lifecycle`. Nothing is pushed.
 > Legend: ⬜ todo · 🔶 in progress · ✅ done · ✔️ verified (tests or screenshots)
 
-## Summary (filled at the end)
+## Summary
 
-_Pending — see "Final summary" at the bottom when the run finishes._
+**Built:** the whole membership lifecycle on a new database layer (8 migrations, pgTAP files 27–30 plus updated 03/08/19/21/25),
+server actions, 18 AR/EN e-mail templates with an undo outbox and a daily idempotent job (`/api/cron/membership-daily`),
+the public journey (join states, 5-step form with draft, tracking page, activation, verification page, blocked notice),
+the dashboard (cycles with rubric and funnel, applications with bulk actions, review with scoring and shortcuts, waiting list,
+members with term/suspend/end/renew/block, leave requests, member timeline with notes), the member area (my membership with
+card and QR, full-screen/print card, renewal and leave requests, welcome tour, status notices) and the navigation group
+"العضوية" with live counts. After the sprint: tables become labelled cards on phones (one shared pattern), skeletons for the
+new routes and the account area, and the new screens use the existing motion classes (`m-enter`, `m-pop`, `m-reveal`).
+
+**Verified:** `npm run check` (format, lint, tsc, tokens, contrast, 600+ unit tests) green; `npx supabase test db` green;
+browser pass on the real pages (applications, my membership, card, verification, 17 routes without server errors,
+no horizontal scroll at 375 px on every measured dashboard/account route).
+
+**The owner must decide / know:**
+1. Playwright baselines of the public pages were already out of date before this sprint (the `about` baseline shows the old
+   page). 100 visual tests fail for that reason; `e2e:update` was NOT run. Re-baseline from a freshly seeded database when
+   you approve (see the e2e documentation).
+2. `temp.txt` in the project root holds keys for a hosted Supabase project; it is untracked and now excluded locally
+   (`.git/info/exclude`). Consider deleting it and rotating those keys.
+3. Open questions Q-L1…Q-L10 below were answered with the listed defaults.
+4. Not done in this run: new Playwright journeys and new visual baselines for the new pages, a pixel comparison of every
+   board at 1440/390/360 in light and dark, and a full keyboard/AA pass. See "What is left or risky".
 
 ## Implementation map
 
@@ -68,29 +89,44 @@ _(filled as they happen)_
 
 | Story | Status | Notes |
 | ----- | ------ | ----- |
-| MBR-007 | ✔️ database | migration 20270411000000 + pgTAP 27 (43 checks) |
-| MBR-008 | 🔶 | server (apply v2, schemas, mail) done; form UI pending |
-| MBR-009 | 🔶 | RPCs + pgTAP done; tracking page UI pending |
-| MBR-010 | 🔶 | list, bulk bar, phone cards written; needs browser check |
-| MBR-011 | 🔶 | review page + panel (score, decision, undo, shortcuts) written; needs browser check |
-| MBR-012 | ✔️ database / 🔶 UI | rubric editor in the cycle form, scoring panel in review |
-| MBR-013 | ✔️ database / 🔶 UI | daily job + pgTAP 30; waiting page written |
-| MEM-016 | ✔️ database / 🔶 server | cron route written (/api/cron/membership-daily) |
-| MEM-017 | ✔️ database / 🔶 UI | pgTAP 29; lifecycle actions written |
-| MEM-018 | 🔶 | actions done; members list v2 pending |
-| MEM-019 | ⬜ | member detail timeline pending |
-| MEM-020 | ✔️ database / ⬜ UI | card + verify page pending |
-| ACC-008 | ✔️ database / 🔶 | login + session block check done; notices UI pending |
-| ACC-009 | ✔️ database / ⬜ UI | onboarding + activation pages pending |
-| NOT-004 | ✔️ | 17 lifecycle templates + member.message in AR/EN; retry route extended; unit tests pending |
-| Internal responsiveness / skeletons / cards / motion pass | ⬜ | |
+| MBR-007 | ✔️ | migration + pgTAP 27 |
+| MBR-008 | ✅ | 5-step form, draft in the browser, result with reference and calendar file |
+| MBR-009 | ✅ | `/join/status/[token]`, edit asked parts, withdraw, resend activation |
+| MBR-010 | ✅ | list, filters, bulk bar naming people, results dialog, phone cards |
+| MBR-011 | ✅ | review page, score, decision, undo toast, shortcuts, info request |
+| MBR-012 | ✅ | rubric editor, scoring (visible to reviewers only) |
+| MBR-013 | ✔️ database / ✅ UI | daily job pgTAP 30; waiting list page with digest preview |
+| MEM-016 | ✅ | term end, reminders 30/7/1 (subject text covered by unit tests), expiry job |
+| MEM-017 | ✅ | states, leave requests (member asks, leadership decides, no self-decision) |
+| MEM-018 | ✅ | bulk suspend/reinstate/end/renew with per-row results |
+| MEM-019 | ✅ | timeline tab and internal notes |
+| MEM-020 | ✅ | card with QR, full screen, print, rotate code, public verification |
+| ACC-008 | ✅ | block/unblock, sign-in refusal, blocked notice, status dialog |
+| ACC-009 | ✅ | welcome tour, first-sign-in activation sync, redirect to the tour |
+| NOT-004 | ✔️ | 18 templates + digest, AR/EN, plain rejection/declined/lapsed/blocked; 54 unit tests |
+| Internal responsiveness / skeletons / cards / motion | ✅ | `ResponsiveTables`, skeleton cards, loading files, motion classes |
 
 ## Verification commands run
 
 - `npx supabase db reset` — the 52 migrations apply from scratch (ok).
 - `npx supabase test db` — 34 files, 1843+ assertions, PASS (new files 27–30: 43 + 44 + 79 + 44).
-- `npx tsc --noEmit` — see the final run at the end.
+- `npm run check` — green (format, lint 0 errors, tsc, token and contrast checks, vitest all passing).
+- `npm run e2e` — 259 passed, 100 failed, 129 skipped. Every failure is a screenshot or contrast check on pages this sprint
+  did not restyle (baselines were stale before the sprint). No snapshot was updated.
+- Browser: signed in as the local leader; applications, my membership (card + QR), verification page, 17 routes fetched
+  without server errors; phone width 375 px: no page-level horizontal scroll on the dashboard and account routes measured.
+
+## Deviations from the design
+
+- Suspension ends committee positions (D3) rather than pausing them.
+- Tables use one generic phone-card pattern (labels from the column headers) instead of a hand-made card list per table.
 
 ## What is left or risky
 
-_(filled at the end)_
+- New Playwright journeys (applicant, reviewer, leadership, notices) and baselines for the new pages are not written.
+- The boards were compared by eye in the browser only; a systematic 1440/390/360 light/dark comparison and a keyboard/AA
+  sweep of every new screen is still to do.
+- `ResponsiveTables` adds data labels after hydration with a MutationObserver; tables that render richer first cells show
+  them as one block. Review on devices.
+- The reset-password "welcome" screen kept its existing design (no strength meter yet).
+- Data files are local-only seeds: `supabase/dev-lifecycle-seed.sql`.
