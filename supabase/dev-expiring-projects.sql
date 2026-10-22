@@ -14,3 +14,6 @@ cross join (values
 where p.email = 'dev.expiring@example.test'
 on conflict (id) do nothing;
 commit;
+
+-- Sprint 18 demo: major for the expiring member (run after the photo script)
+update public.members set major_id = 1 where id = 'aa1688fe-b3cc-4ec8-b891-5cf7e8718564';
