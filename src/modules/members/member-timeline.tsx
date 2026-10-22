@@ -12,7 +12,7 @@ import {
   Send,
   ShieldBan,
   ShieldCheck,
-  Sparkles,
+  ClipboardCheck,
   Undo2,
   UsersRound,
 } from 'lucide-react';
@@ -174,7 +174,7 @@ export function buildMemberTimeline(
         add('account', <Send />, L('طلب التجديد', 'Asked for a renewal'), { tone: 'now' });
         break;
       case 'onboarded':
-        add('account', <Sparkles />, L('أكمل التهيئة', 'Finished the welcome steps'));
+        add('account', <ClipboardCheck />, L('أكمل التهيئة', 'Finished the welcome steps'));
         break;
       case 'blocked':
         add('account', <ShieldBan />, L('حُظر الحساب', 'The account was blocked'), {
