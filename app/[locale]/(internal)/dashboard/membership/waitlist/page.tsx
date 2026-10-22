@@ -155,8 +155,8 @@ export default async function WaitlistPage({
           <p className="flex items-start gap-2 rounded-shape-lg bg-surface-raised p-3 text-xs text-muted">
             <ShieldCheck size={14} aria-hidden="true" className="mt-0.5 shrink-0" />
             {ar
-              ? 'المهمة اليومية لا تتجاوز سعة الدورة، وتُعاد بأمان، ولها وضع تجربة. كل ترقية تُسجّل بالسبب activation_lapsed.'
-              : 'The daily job never exceeds the cycle capacity, is safe to re-run, and has a dry-run mode. Every promotion is logged with the reason activation_lapsed.'}
+              ? 'المهمة اليومية لا تتجاوز سعة الدورة، وتُعاد بأمان، ولها وضع تجربة. كل ترقية تُسجَّل في سجل العضو.'
+              : 'The daily job never exceeds the cycle capacity, is safe to re-run, and has a dry-run mode. Every promotion is recorded in the members’ history.'}
           </p>
         </aside>
       </div>

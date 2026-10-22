@@ -60,6 +60,14 @@ const personas = [
   // A community member with no position: sees the member area, not the dashboard.
   { email: 'dev.regular@example.test', name: 'عضو مجتمع تجريبي', role: null, member: true },
   { email: 'dev.plain@example.test', name: 'مستخدم عادي تجريبي', role: null },
+  // Sprint 18 lifecycle personas: their states are set by supabase/dev-lifecycle-people.sql.
+  { email: 'dev.newmember@example.test', name: 'عضو جديد تجريبي', role: null, member: true },
+  { email: 'dev.expiring@example.test', name: 'عضو تنتهي مدته قريباً', role: null, member: true },
+  { email: 'dev.expired@example.test', name: 'عضو انتهت مدته', role: null, member: true },
+  { email: 'dev.suspended@example.test', name: 'عضو موقوف', role: null, member: true },
+  { email: 'dev.ended@example.test', name: 'عضو منتهية عضويته', role: null, member: true },
+  { email: 'dev.leaving@example.test', name: 'عضو طلب المغادرة', role: null, member: true },
+  { email: 'dev.blocked@example.test', name: 'حساب محظور', role: null, member: true },
 ];
 
 const db = new pg.Client({ connectionString: env.DB_URL });
