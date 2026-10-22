@@ -47,21 +47,18 @@ describe('ValuesList', () => {
     ['Second value', 'Second text'],
   ] as const;
 
-  it('opens the first row and wires aria-expanded to its panel', () => {
+  it('shows every value and its text at once, with no button to press', () => {
     render(<ValuesList items={items} />);
-    const first = screen.getByRole('button', { name: /First value/ });
-    expect(first).toHaveAttribute('aria-expanded', 'true');
-    expect(first.getAttribute('aria-controls')).toBe(screen.getByText('First text').id);
-    expect(screen.getByText('Second text')).not.toBeVisible();
+    expect(screen.getByRole('heading', { name: 'First value' })).toBeVisible();
+    expect(screen.getByRole('heading', { name: 'Second value' })).toBeVisible();
+    expect(screen.getByText('First text')).toBeVisible();
+    expect(screen.getByText('Second text')).toBeVisible();
+    expect(screen.queryByRole('button')).toBeNull();
   });
 
-  it('opens one row at a time and can close the open one', () => {
+  it('keeps the values as an ordered list of cards', () => {
     render(<ValuesList items={items} />);
-    fireEvent.click(screen.getByRole('button', { name: /Second value/ }));
-    expect(screen.getByText('Second text')).toBeVisible();
-    expect(screen.getByText('First text')).not.toBeVisible();
-    fireEvent.click(screen.getByRole('button', { name: /Second value/ }));
-    expect(screen.getByText('Second text')).not.toBeVisible();
+    expect(screen.getAllByRole('listitem')).toHaveLength(2);
   });
 });
 
