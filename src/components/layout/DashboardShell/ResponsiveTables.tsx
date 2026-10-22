@@ -32,31 +32,40 @@ export function ResponsiveTables() {
           table.setAttribute('data-cards', '');
         });
     };
-    apply();
-    // Rows that arrive later (sorting, paging, streaming) get their labels too.
-    const main = document.querySelector('main');
-    if (!main) return;
-    const observer = new MutationObserver(() => {
-      observer.disconnect();
-      document.querySelectorAll('main table[data-cards] tbody tr').forEach((tr) => {
-        const table = tr.closest('table');
-        const heads = [...(table?.querySelectorAll('thead th') ?? [])].map(
-          (th) => th.textContent?.trim() ?? '',
-        );
-        [...tr.children].forEach((cell, i) => {
-          if (
-            cell instanceof HTMLElement &&
-            cell.tagName === 'TD' &&
-            !cell.hasAttribute('data-label')
-          )
-            cell.dataset.label = heads[i] ?? '';
-        });
-      });
+    // Wait until hydration is over: changing attributes of server-rendered markup before React has claimed it
+    // would be reported as a hydration mismatch.
+    let observer: MutationObserver | undefined;
+    const begin = () => {
       apply();
+      // Rows that arrive later (sorting, paging, streaming) get their labels too.
+      const main = document.querySelector('main');
+      if (!main) return;
+      observer = new MutationObserver(() => {
+        observer?.disconnect();
+        document.querySelectorAll('main table[data-cards] tbody tr').forEach((tr) => {
+          const table = tr.closest('table');
+          const heads = [...(table?.querySelectorAll('thead th') ?? [])].map(
+            (th) => th.textContent?.trim() ?? '',
+          );
+          [...tr.children].forEach((cell, i) => {
+            if (
+              cell instanceof HTMLElement &&
+              cell.tagName === 'TD' &&
+              !cell.hasAttribute('data-label')
+            )
+              cell.dataset.label = heads[i] ?? '';
+          });
+        });
+        apply();
+        observer?.observe(main, { childList: true, subtree: true });
+      });
       observer.observe(main, { childList: true, subtree: true });
-    });
-    observer.observe(main, { childList: true, subtree: true });
-    return () => observer.disconnect();
+    };
+    const timer = setTimeout(begin, 1500);
+    return () => {
+      clearTimeout(timer);
+      observer?.disconnect();
+    };
   }, [pathname]);
   return null;
 }

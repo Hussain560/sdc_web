@@ -5,6 +5,7 @@ import { Avatar, Badge, EmptyState, Tabs, type TabItem } from '@/components/ui';
 import { Timeline } from '@/components/patterns/Timeline';
 import { SetCrumbs } from '@/components/layout/DashboardShell/Crumbs';
 import { Forbidden } from '@/components/layout/Forbidden';
+import { getSkillCatalog } from '@/modules/members/public';
 import { Link } from '@/i18n/navigation';
 import { can, canGlobal } from '@/lib/auth/permissions';
 import { requireUser } from '@/lib/auth/session';
@@ -108,11 +109,12 @@ export default async function MemberAdminPage({
   const canCreate = can(access, 'members.create');
   const canAssign = can(access, 'roles.assign');
   const isAdmin = access.positions.some((p) => p.role === 'system_admin');
-  const [reference, committees, roles, labels] = await Promise.all([
+  const [reference, committees, roles, labels, skillCatalog] = await Promise.all([
     getReferenceData(),
     canAssign ? listCommittees() : Promise.resolve([]),
     canAssign ? listRoles() : Promise.resolve([]),
     canAssign ? listPermissionLabels() : Promise.resolve({}),
+    getSkillCatalog(),
   ]);
   const grantable = roles.filter((r) => isAdmin || !PROTECTED_GLOBAL_ROLES.includes(r.key));
 
@@ -269,6 +271,7 @@ export default async function MemberAdminPage({
               memberId={m.id}
               reference={reference}
               canEditPhone={detail.canContact}
+              skillCatalog={[...skillCatalog.values()]}
               initial={{
                 firstNameAr: m.firstNameAr,
                 middleNameAr: m.middleNameAr ?? '',
@@ -287,6 +290,22 @@ export default async function MemberAdminPage({
                 ),
                 subMajorId: '',
                 trackId: String(reference.tracks.find((t) => t.nameAr === m.trackAr)?.id ?? ''),
+                headlineAr: m.headlineAr ?? '',
+                headlineEn: m.headlineEn ?? '',
+                aboutAr: m.aboutAr ?? '',
+                aboutEn: m.aboutEn ?? '',
+                openTo: m.openTo ?? [],
+                links: {
+                  linkedin_url: m.links.linkedin ?? '',
+                  github_url: m.links.github ?? '',
+                  x_url: m.links.x ?? '',
+                  portfolio_url: m.links.portfolio ?? '',
+                  website_url: m.links.website ?? '',
+                  behance_url: m.links.behance ?? '',
+                  dribbble_url: m.links.dribbble ?? '',
+                  youtube_url: m.links.youtube ?? '',
+                },
+                skills: detail.skills.map((x) => x.slug),
               }}
             />
           )}

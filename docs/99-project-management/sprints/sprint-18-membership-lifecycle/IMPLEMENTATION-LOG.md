@@ -131,3 +131,11 @@ _(filled as they happen)_
 - The reset-password "welcome" screen kept its existing design (no strength meter yet).
 - Data files are local-only seeds: `supabase/dev-lifecycle-seed.sql`.
 - `npx supabase db reset` then `npx supabase test db` — 34 files, 1881 assertions, PASS. (A from-scratch ordering bug — block columns used before they were created — was found and fixed; seeds left in the DB make 05/26 fail, so test on a clean reset.)
+
+## Decision change after Q-M8 (owner request)
+
+Sprint 17 kept the public blocks of a profile with the member alone. The owner asked that leadership can edit the whole
+member data. Migration `20270411000900_staff_profile_edit.sql` extends `admin_update_member` (headline, about, open to,
+links) and adds `admin_set_member_skills`, `admin_member_projects`, `admin_save_member_project`,
+`admin_delete_member_project`, all `members.manage` and audited. The visibility switches and the photo are still the
+member's. UI: the four-step "Edit data" wizard on the member record. pgTAP 25 covers it (72 assertions).

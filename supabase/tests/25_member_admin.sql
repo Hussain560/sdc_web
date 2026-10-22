@@ -106,12 +106,33 @@ select is((select first_name_ar from public.members where id = '00000000-0000-00
 select throws_ok($$select public.admin_update_member('00000000-0000-0000-0000-00000000ab02', '{"first_name_ar":""}'::jsonb)$$, 'P0001', 'VALIDATION_FAILED', 'an empty Arabic first name is refused');
 select throws_ok($$select public.admin_update_member('00000000-0000-0000-0000-00000000ab02', '{"phone":"0559876543"}'::jsonb)$$, 'P0001', 'VALIDATION_FAILED', 'a phone must be international');
 select throws_ok($$select public.admin_update_member(gen_random_uuid(), '{}'::jsonb)$$, 'P0001', 'NOT_FOUND', 'an unknown member');
-select lives_ok($$select public.admin_update_member('00000000-0000-0000-0000-00000000ab01', '{"headline_en":"Hijacked","show_about":false}'::jsonb)$$, 'public profile keys sent by leadership are ignored');
-select is((select headline_en from public.members where id = '00000000-0000-0000-0000-00000000ab01'), 'Frontend developer', 'the member own public blocks are not changed by leadership');
+select lives_ok($$select public.admin_update_member('00000000-0000-0000-0000-00000000ab01', '{"headline_en":"Staff headline","about_ar":"نبذة من القيادة","open_to":["mentoring","speaking"],"github_url":"https://github.com/staff-fixed","show_about":true}'::jsonb)$$, 'leadership edits the public text, open-to and links');
+select is((select headline_en || '|' || about_ar || '|' || array_to_string(open_to, ',') || '|' || github_url from public.members where id = '00000000-0000-0000-0000-00000000ab01'), 'Staff headline|نبذة من القيادة|mentoring,speaking|https://github.com/staff-fixed', 'saved');
+select is((select show_about from public.members where id = '00000000-0000-0000-0000-00000000ab01'), false, 'the visibility switches stay with the member (show_about ignored)');
+select is((select show_links from public.members where id = '00000000-0000-0000-0000-00000000ab01'), true, 'a filled link turns the links block on');
+
+-- skills
+select lives_ok($$select public.admin_set_member_skills('00000000-0000-0000-0000-00000000ab01', array['react','typescript','figma'])$$, 'leadership sets the skills');
+select is((select string_agg(s.slug, ',' order by ms.position) from public.member_skills ms join public.skills s on s.id = ms.skill_id where ms.member_id = '00000000-0000-0000-0000-00000000ab01'), 'react,typescript,figma', 'in the order given');
+select throws_ok($$select public.admin_set_member_skills('00000000-0000-0000-0000-00000000ab01', array['react','react'])$$, 'P0001', 'VALIDATION_FAILED', 'duplicates are refused');
+select throws_ok($$select public.admin_set_member_skills('00000000-0000-0000-0000-00000000ab01', array['no-such-skill'])$$, 'P0001', 'VALIDATION_FAILED', 'unknown skills are refused');
+select throws_ok($$select public.admin_set_member_skills(gen_random_uuid(), array['react'])$$, 'P0001', 'NOT_FOUND', 'an unknown member');
+
+-- projects
+select lives_ok($$select public.admin_save_member_project('00000000-0000-0000-0000-00000000ab01', '{"title_ar":"مشروع","title_en":"Project","description_ar":"وصف","url":"https://example.test/p"}'::jsonb)$$, 'leadership adds a project');
+select is((select count(*)::int from public.member_projects where member_id = '00000000-0000-0000-0000-00000000ab01'), 1, 'one project');
+select is((select jsonb_array_length(public.admin_member_projects('00000000-0000-0000-0000-00000000ab01'))), 1, 'the editor can read it back with its descriptions');
+select lives_ok($$select public.admin_save_member_project('00000000-0000-0000-0000-00000000ab01', jsonb_build_object('id', (select id from public.member_projects where member_id = '00000000-0000-0000-0000-00000000ab01'), 'title_ar', 'مشروع معدّل', 'url', 'https://example.test/q'))$$, 'and edits it');
+select is((select title_ar from public.member_projects where member_id = '00000000-0000-0000-0000-00000000ab01'), 'مشروع معدّل', 'edited');
+select throws_ok($$select public.admin_save_member_project('00000000-0000-0000-0000-00000000ab01', '{"title_ar":"x","url":""}'::jsonb)$$, 'P0001', 'VALIDATION_FAILED', 'a project needs a title and a link');
+select lives_ok($$select public.admin_delete_member_project('00000000-0000-0000-0000-00000000ab01', (select id from public.member_projects where member_id = '00000000-0000-0000-0000-00000000ab01'))$$, 'and deletes it');
+select is((select count(*)::int from public.member_projects where member_id = '00000000-0000-0000-0000-00000000ab01'), 0, 'gone');
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-00000000aa02","role":"authenticated"}', true);
 select throws_ok($$select public.admin_update_member('00000000-0000-0000-0000-00000000ab02', '{"middle_name_ar":"x"}'::jsonb)$$, 'P0001', 'FORBIDDEN', 'a founder can view but not edit members');
+select throws_ok($$select public.admin_set_member_skills('00000000-0000-0000-0000-00000000ab01', array['react'])$$, 'P0001', 'FORBIDDEN', 'a founder cannot set skills');
+select throws_ok($$select public.admin_save_member_project('00000000-0000-0000-0000-00000000ab01', '{"title_ar":"x","url":"https://e.test"}'::jsonb)$$, 'P0001', 'FORBIDDEN', 'a founder cannot add projects');
 reset role;
-select is((select count(*)::int from public.audit_logs where action = 'member.updated_by_staff'), 2, 'each correction is audited (the ignored one too)');
+select is((select count(*)::int from public.audit_logs where action = 'member.updated_by_staff'), 2, 'each correction is audited');
 
 select * from finish();
 rollback;

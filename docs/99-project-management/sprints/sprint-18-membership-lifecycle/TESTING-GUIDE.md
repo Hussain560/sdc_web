@@ -203,3 +203,18 @@ Eight more unlinked members become: 3 **ending soon** (5, 20 and 28 days), 2 **e
 **System-status feedback:** click a tab, a filter or any link in the dashboard: a thin bar runs across the top and the
 page dims until the new content arrives; decided rows pulse once; saving a score shows "saved at HH:MM". Loading
 skeletons have the same shape as each page (including the phone card version).
+
+## 14. Leadership edits the whole member profile
+
+On a member record (`/dashboard/members/<id>`) press **تعديل البيانات / Edit data**. A four-step wizard opens (same look as
+"Add member"):
+
+1. **Identity and contact**: Arabic and English names, phone.
+2. **Study**: status, university, track, major, sub-major.
+3. **Public profile**: headline and about (AR/EN), "open to", the eight links.
+4. **Skills and projects**: pick up to 12 skills; add, edit or delete up to 6 projects (projects save at once).
+
+"Save now" / "Save" writes steps 1–3 and the skills; each change is audited (`member.updated_by_staff`,
+`member.skills_updated_by_staff`, `member.project_saved_by_staff`). The **photo and the visibility switches stay with the
+member** (what is shown in the directory is still their choice). Needs `members.manage` (leader, system admin); the phone
+also needs `members.view_contact`. A founder or committee head can open the record but not edit.

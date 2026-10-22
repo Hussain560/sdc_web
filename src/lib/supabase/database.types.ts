@@ -2046,11 +2046,23 @@ isOneToOne: false
             "add_member_note":
 { Args: { "p_member": string,"p_note": string }; Returns: undefined
                            },
+"admin_delete_member_project":
+{ Args: { "p_member": string,"p_project": string }; Returns: undefined
+                           },
 "admin_list_members":
 { Args: { "p_committee"?: string,"p_completeness"?: string,"p_from"?: number,"p_q"?: string,"p_status"?: string,"p_to"?: number,"p_track"?: number }; Returns: Json
                            },
 "admin_member_detail":
 { Args: { "p_id": string }; Returns: Json
+                           },
+"admin_member_projects":
+{ Args: { "p_id": string }; Returns: Json
+                           },
+"admin_save_member_project":
+{ Args: { "p": Json,"p_member": string }; Returns: string
+                           },
+"admin_set_member_skills":
+{ Args: { "p_id": string,"p_slugs": (string)[] }; Returns: undefined
                            },
 "admin_update_member":
 { Args: { "p": Json,"p_id": string }; Returns: undefined

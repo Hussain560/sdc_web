@@ -352,13 +352,41 @@ const staffEditSchema = z.object({
   majorId: optionalDigits,
   subMajorId: optionalDigits,
   trackId: optionalDigits,
+  /** The public text of the profile (leadership may edit it; the visibility switches stay with the member). */
+  headlineAr: z.string().trim().max(80).optional(),
+  headlineEn: z.string().trim().max(80).optional(),
+  aboutAr: z.string().trim().max(1000).optional(),
+  aboutEn: z.string().trim().max(1000).optional(),
+  openTo: z
+    .array(z.enum(['internship', 'job', 'freelance', 'mentoring', 'speaking', 'collaboration']))
+    .max(6)
+    .optional(),
+  links: z
+    .partialRecord(
+      z.enum([
+        'portfolio_url',
+        'github_url',
+        'linkedin_url',
+        'x_url',
+        'website_url',
+        'behance_url',
+        'dribbble_url',
+        'youtube_url',
+      ]),
+      z
+        .string()
+        .trim()
+        .max(500)
+        .regex(/^(https:\/\/\S+)?$/),
+    )
+    .optional(),
 });
 export type StaffEditInput = z.input<typeof staffEditSchema>;
 
 /**
- * Leadership corrects a member's names, phone and academic data (Q-M8: the public blocks of the profile belong to the
- * member alone). One database function checks `members.manage` (and `members.view_contact` for the phone) and audits
- * the change.
+ * Leadership edits a member's names, phone, academic data and the public text of the profile (headline, about, open
+ * to, links). The visibility switches and the photo stay with the member. One database function checks
+ * `members.manage` (and `members.view_contact` for the phone) and audits the change.
  */
 export async function updateMemberByStaff(
   id: string,
@@ -394,8 +422,123 @@ export async function updateMemberByStaff(
       major_id: v.majorId ?? '',
       sub_major_id: v.subMajorId ?? '',
       track_id: v.trackId ?? '',
+      ...(v.headlineAr !== undefined ? { headline_ar: v.headlineAr } : {}),
+      ...(v.headlineEn !== undefined ? { headline_en: v.headlineEn } : {}),
+      ...(v.aboutAr !== undefined ? { about_ar: v.aboutAr } : {}),
+      ...(v.aboutEn !== undefined ? { about_en: v.aboutEn } : {}),
+      ...(v.openTo !== undefined ? { open_to: v.openTo } : {}),
+      ...(v.links ?? {}),
     } as never,
   });
+  if (error) return dbFailure(error, lang);
+  refresh();
+  return ok(undefined);
+}
+
+async function staffGuard(lang: Lang): Promise<Result<never> | null> {
+  const access = await getAccess();
+  if (!access) return failCode('UNAUTHENTICATED', lang);
+  if (!can(access, 'members.manage')) return failCode('FORBIDDEN', lang);
+  return null;
+}
+
+/** Leadership sets a member's skills, in order (members.manage; at most 12). */
+export async function setMemberSkillsByStaff(
+  id: string,
+  slugs: string[],
+  ctx: { lang: Lang },
+): Promise<Result> {
+  const lang = langOf(ctx?.lang);
+  if (!UUID.safeParse(id).success) return failCode('NOT_FOUND', lang);
+  const parsed = z
+    .array(z.string().regex(/^[a-z0-9-]{1,60}$/))
+    .max(12)
+    .safeParse(slugs);
+  if (!parsed.success) return failCode('VALIDATION_FAILED', lang);
+  const denied = await staffGuard(lang);
+  if (denied) return denied;
+  const { error } = await (
+    await createClient()
+  ).rpc('admin_set_member_skills', { p_id: id, p_slugs: parsed.data });
+  if (error) return dbFailure(error, lang);
+  refresh();
+  return ok(undefined);
+}
+
+const staffProjectSchema = z.object({
+  id: z.uuid().optional(),
+  title_ar: z.string().trim().min(1).max(80),
+  title_en: z.string().trim().max(80),
+  description_ar: z.string().trim().max(300),
+  description_en: z.string().trim().max(300),
+  url: z
+    .string()
+    .trim()
+    .max(500)
+    .regex(/^https:\/\/\S+$/),
+});
+export type StaffProjectInput = z.input<typeof staffProjectSchema>;
+
+/** The member's projects with their descriptions, for the leadership editor. */
+export async function getMemberProjectsForStaff(
+  id: string,
+  ctx: { lang: Lang },
+): Promise<Result<Array<StaffProjectInput & { id: string }>>> {
+  const lang = langOf(ctx?.lang);
+  if (!UUID.safeParse(id).success) return failCode('NOT_FOUND', lang);
+  const denied = await staffGuard(lang);
+  if (denied) return denied;
+  const { data, error } = await (await createClient()).rpc('admin_member_projects', { p_id: id });
+  if (error) return dbFailure(error, lang);
+  return ok(
+    ((data ?? []) as Array<Record<string, string | null>>).map((p) => ({
+      id: String(p.id),
+      title_ar: p.title_ar ?? '',
+      title_en: p.title_en ?? '',
+      description_ar: p.description_ar ?? '',
+      description_en: p.description_en ?? '',
+      url: p.url ?? '',
+    })),
+  );
+}
+
+export async function saveMemberProjectByStaff(
+  memberId: string,
+  input: StaffProjectInput,
+  ctx: { lang: Lang },
+): Promise<Result<{ id: string }>> {
+  const lang = langOf(ctx?.lang);
+  if (!UUID.safeParse(memberId).success) return failCode('NOT_FOUND', lang);
+  const parsed = staffProjectSchema.safeParse(input);
+  if (!parsed.success) {
+    const errors: Record<string, string> = {};
+    for (const i of parsed.error.issues)
+      errors[String(i.path[0])] ??= memberMessage('VALIDATION_FAILED', lang);
+    return fail('VALIDATION_FAILED', memberMessage('VALIDATION_FAILED', lang), errors);
+  }
+  const denied = await staffGuard(lang);
+  if (denied) return denied;
+  const { data, error } = await (
+    await createClient()
+  ).rpc('admin_save_member_project', { p_member: memberId, p: parsed.data as never });
+  if (error) return dbFailure(error, lang);
+  refresh();
+  return ok({ id: String(data) });
+}
+
+export async function deleteMemberProjectByStaff(
+  memberId: string,
+  projectId: string,
+  ctx: { lang: Lang },
+): Promise<Result> {
+  const lang = langOf(ctx?.lang);
+  if (!UUID.safeParse(memberId).success || !UUID.safeParse(projectId).success)
+    return failCode('NOT_FOUND', lang);
+  const denied = await staffGuard(lang);
+  if (denied) return denied;
+  const { error } = await (
+    await createClient()
+  ).rpc('admin_delete_member_project', { p_member: memberId, p_project: projectId });
   if (error) return dbFailure(error, lang);
   refresh();
   return ok(undefined);
