@@ -25,7 +25,11 @@ import { END_REASON_LABEL, MEMBER_STATUS_LABEL } from '@/modules/members/schemas
 import { MemberTermCards } from '@/modules/members/components/MemberTermCards';
 import { MemberNoteForm } from '@/modules/members/components/MemberNoteForm';
 import { buildMemberTimeline, type TimelineFilter } from '@/modules/members/member-timeline';
-import { ACADEMIC_LABEL, type AcademicStatus } from '@/modules/membership/types';
+import {
+  APPLICATION_STATUS_LABEL,
+  ACADEMIC_LABEL,
+  type AcademicStatus,
+} from '@/modules/membership/types';
 import { getReferenceData } from '@/modules/membership/queries';
 
 type Search = { tab?: string; f?: string };
@@ -69,6 +73,23 @@ const ACTION_LABEL: Record<string, { ar: string; en: string }> = {
   'member.skills_updated': { ar: 'حدّث العضو مهاراته', en: 'Member updated their skills' },
   'role.assigned': { ar: 'عُيّن في منصب', en: 'Position assigned' },
   'role.ended': { ar: 'انتهى منصب', en: 'Position ended' },
+  'member.activated': { ar: 'فعّل حسابه', en: 'Activated the account' },
+  'member.renewal_requested': { ar: 'طلب التجديد', en: 'Asked for a renewal' },
+  'member.role_changed': { ar: 'تغيّر منصبه في اللجنة', en: 'Committee position changed' },
+  'member.renewed': { ar: 'جُدّدت العضوية', en: 'Membership renewed' },
+  'member.suspended': { ar: 'أُوقفت العضوية', en: 'Membership suspended' },
+  'member.reinstated': { ar: 'أُعيدت العضوية', en: 'Membership reinstated' },
+  'member.ended': { ar: 'انتهت العضوية', en: 'Membership ended' },
+  'member.note_added': { ar: 'أُضيفت ملاحظة داخلية', en: 'Internal note added' },
+  'member.project_saved_by_staff': { ar: 'حفظت القيادة مشروعاً', en: 'Leadership saved a project' },
+  'member.project_deleted_by_staff': {
+    ar: 'حذفت القيادة مشروعاً',
+    en: 'Leadership deleted a project',
+  },
+  'member.skills_updated_by_staff': {
+    ar: 'حدّثت القيادة المهارات',
+    en: 'Leadership updated the skills',
+  },
 };
 
 const REG_STATUS: Record<string, { ar: string; en: string }> = {
@@ -578,7 +599,15 @@ export default async function MemberAdminPage({
                           : ''}
                       </p>
                     </div>
-                    <Badge>{a.status}</Badge>
+                    <Badge
+                      tone={
+                        APPLICATION_STATUS_LABEL[a.status as keyof typeof APPLICATION_STATUS_LABEL]
+                          ?.tone
+                      }
+                    >
+                      {APPLICATION_STATUS_LABEL[a.status as keyof typeof APPLICATION_STATUS_LABEL]
+                        ?.label[lang] ?? a.status}
+                    </Badge>
                   </li>
                 ))}
               </ul>

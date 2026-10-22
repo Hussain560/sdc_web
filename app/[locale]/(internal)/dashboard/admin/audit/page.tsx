@@ -7,6 +7,13 @@ import { can } from '@/lib/auth/permissions';
 import { requireUser } from '@/lib/auth/session';
 import { pageMeta, parsePage } from '@/lib/pagination';
 import { getAccess } from '@/modules/access/queries';
+import {
+  actionGroupLabel,
+  actionLabel,
+  entityLabel,
+  fieldLabel,
+  valueLabel,
+} from '@/modules/admin/audit-labels';
 import { cleanAuditFilter, getAuditFacets, listAuditLogs } from '@/modules/admin/queries';
 
 type Search = Record<string, string | undefined>;
@@ -17,12 +24,6 @@ const when = (iso: string, lang: 'ar' | 'en') =>
     timeStyle: 'short',
     timeZone: 'Asia/Riyadh',
   }).format(new Date(iso));
-
-const show = (v: unknown): string => {
-  if (v === null || v === undefined) return '—';
-  if (typeof v === 'object') return JSON.stringify(v);
-  return String(v);
-};
 
 // ACC-005 (screen 24 §1): the append-only audit log. Permission: audit.view (system administrator only by default).
 export default async function AuditLogPage({
@@ -85,22 +86,22 @@ export default async function AuditLogPage({
         </label>
         <label className="flex flex-col gap-1 text-xs text-muted">
           {ar ? 'الإجراء' : 'Action'}
-          <select name="action" defaultValue={filter.action ?? ''} dir="ltr" className={input}>
+          <select name="action" defaultValue={filter.action ?? ''} className={input}>
             <option value="">{ar ? 'الكل' : 'All'}</option>
             {facets.actions.map((a) => (
               <option key={a} value={a}>
-                {a}
+                {actionGroupLabel(a, lang)}
               </option>
             ))}
           </select>
         </label>
         <label className="flex flex-col gap-1 text-xs text-muted">
           {ar ? 'الكيان' : 'Entity'}
-          <select name="entity" defaultValue={filter.entity ?? ''} dir="ltr" className={input}>
+          <select name="entity" defaultValue={filter.entity ?? ''} className={input}>
             <option value="">{ar ? 'الكل' : 'All'}</option>
             {facets.entities.map((e) => (
               <option key={e} value={e}>
-                {e}
+                {entityLabel(e, lang)}
               </option>
             ))}
           </select>
@@ -173,13 +174,14 @@ export default async function AuditLogPage({
                           ? 'النظام'
                           : 'System'}
                     </td>
-                    <td className="px-4 py-3 font-mono text-xs" dir="ltr">
-                      {r.action}
+                    <td className="px-4 py-3 font-semibold" title={r.action}>
+                      {actionLabel(r.action, lang)}
                     </td>
-                    <td className="px-4 py-3 text-xs" dir="ltr">
-                      <span className="text-muted">{r.entityType}</span>
-                      <br />
-                      <span className="break-all">{r.entityId}</span>
+                    <td className="px-4 py-3 text-sm" title={`${r.entityType} ${r.entityId}`}>
+                      <span>{entityLabel(r.entityType, lang)}</span>
+                      <span dir="ltr" className="ms-2 font-mono text-xs text-muted">
+                        #{r.entityId.slice(-6)}
+                      </span>
                     </td>
                     <td className="px-4 py-3">
                       {entries.length === 0 ? (
@@ -187,16 +189,21 @@ export default async function AuditLogPage({
                       ) : (
                         <details>
                           <summary className="cursor-pointer text-xs font-semibold text-accent">
-                            {ar ? `${entries.length} حقول` : `${entries.length} fields`}
+                            {ar
+                              ? entries.length === 1
+                                ? 'حقل واحد'
+                                : entries.length === 2
+                                  ? 'حقلان'
+                                  : entries.length <= 10
+                                    ? `${entries.length} حقول`
+                                    : `${entries.length} حقلاً`
+                              : `${entries.length} field${entries.length === 1 ? '' : 's'}`}
                           </summary>
-                          <dl
-                            className="mt-2 grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 text-xs"
-                            dir="ltr"
-                          >
+                          <dl className="mt-2 grid grid-cols-[auto_1fr] gap-x-4 gap-y-1.5 text-sm">
                             {entries.map(([k, v]) => (
                               <div key={k} className="contents">
-                                <dt className="text-muted">{k}</dt>
-                                <dd className="break-all">{show(v)}</dd>
+                                <dt className="text-muted">{fieldLabel(k, lang)}</dt>
+                                <dd className="break-words">{valueLabel(k, v, lang)}</dd>
                               </div>
                             ))}
                           </dl>

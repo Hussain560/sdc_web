@@ -20,6 +20,9 @@ for (const f of [
   'supabase/dev-full-member.sql',
   'supabase/dev-lifecycle-members.sql',
   'supabase/dev-expiring-projects.sql',
+  'supabase/dev-expiring-tabs.sql',
+  'supabase/dev-email-logs.sql',
+  'supabase/dev-audit-logs.sql',
 ]) {
   console.log('loading', f);
   psql(f);

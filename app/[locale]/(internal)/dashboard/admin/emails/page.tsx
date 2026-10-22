@@ -1,3 +1,4 @@
+import { emailEntityLabel, emailErrorLabel, templateLabel } from '@/modules/admin/email-labels';
 import { MailCheck } from 'lucide-react';
 import { Badge, EmptyState, Pagination, Tabs, type TabItem } from '@/components/ui';
 import { Forbidden } from '@/components/layout/Forbidden';
@@ -150,13 +151,12 @@ export default async function EmailLogPage({
           <select
             name="template"
             defaultValue={sp.template ?? ''}
-            dir="ltr"
             className="h-9 rounded-lg border border-line bg-surface px-3 text-sm text-text focus-visible:outline-2 focus-visible:outline-focus-ring"
           >
             <option value="">{ar ? 'الكل' : 'All'}</option>
             {templates.map((t) => (
               <option key={t} value={t}>
-                {t}
+                {templateLabel(t, lang)}
               </option>
             ))}
           </select>
@@ -230,10 +230,14 @@ export default async function EmailLogPage({
                       </div>
                     </td>
                     <td className="px-4 py-3">
-                      <code dir="ltr" className="text-xs">
-                        {r.templateKey}
-                      </code>
-                      {r.entityType && <div className="text-xs text-muted">{r.entityType}</div>}
+                      <span className="font-medium" title={r.templateKey}>
+                        {templateLabel(r.templateKey, lang)}
+                      </span>
+                      {r.entityType && (
+                        <div className="text-xs text-muted">
+                          {emailEntityLabel(r.entityType, lang)}
+                        </div>
+                      )}
                     </td>
                     <td className="px-4 py-3">
                       <Badge tone={st.tone}>{st[lang]}</Badge>
@@ -242,7 +246,7 @@ export default async function EmailLogPage({
                           className="mt-1 max-w-xs truncate text-xs text-danger"
                           title={r.errorMessage ?? undefined}
                         >
-                          ↳ {r.errorCode}
+                          ↳ {emailErrorLabel(r.errorCode, lang)}
                           {r.state === 'retrying'
                             ? ar
                               ? ' — ستُعاد تلقائيًا'

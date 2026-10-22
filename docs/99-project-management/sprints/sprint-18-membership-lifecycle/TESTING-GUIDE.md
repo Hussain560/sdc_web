@@ -218,3 +218,12 @@ On a member record (`/dashboard/members/<id>`) press **تعديل البيانا
 `member.skills_updated_by_staff`, `member.project_saved_by_staff`). The **photo and the visibility switches stay with the
 member** (what is shown in the directory is still their choice). Needs `members.manage` (leader, system admin); the phone
 also needs `members.view_contact`. A founder or committee head can open the record but not edit.
+
+## 15. Admin logs with data (sign in as `dev.admin@example.test`)
+
+- **Audit log** `/dashboard/admin/audit`: about 40 rows (applications, cycles, members, positions, committees, events,
+  privacy, settings). Action, entity and the field details are shown in words (no technical keys); the filters list
+  action groups ("الأعضاء", "المناصب والصلاحيات"…) and entities by name.
+- **E-mail log** `/dashboard/admin/emails`: 28 rows covering every lifecycle template, sent, skipped, in progress,
+  retrying (2), failed for good (2) and recovered (1). Templates, entities and error reasons are shown in words.
+- Loaded by `npm run db:lifecycle` (`dev-email-logs.sql`, `dev-audit-logs.sql`); only the leader and admin see them.
