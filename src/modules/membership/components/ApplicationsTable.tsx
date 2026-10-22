@@ -1,6 +1,6 @@
 'use client';
 
-import { Check, ClockAlert, Hourglass, TriangleAlert, X } from 'lucide-react';
+import { Check, ChevronLeft, ClockAlert, Hourglass, TriangleAlert, X } from 'lucide-react';
 import { useState, useTransition } from 'react';
 import { Avatar, Badge, Button, Dialog, Textarea, cn, useToast } from '@/components/ui';
 import { BulkBar } from '@/components/patterns/BulkBar';
@@ -49,10 +49,13 @@ export function ApplicationsTable({
   rows,
   userId,
   hasRubric,
+  seatsLeft = null,
 }: {
   rows: ReviewApplication[];
   userId: string;
   hasRubric: boolean;
+  /** Places still free in the cycle (null: no capacity set). */
+  seatsLeft?: number | null;
 }) {
   const { lang } = useLanguage();
   const ar = lang === 'ar';
@@ -67,6 +70,9 @@ export function ApplicationsTable({
     message?: string;
   }> | null>(null);
   const [busy, startTransition] = useTransition();
+  const [resultTitle, setResultTitle] = useState('');
+  // Rows that were just decided pulse once, so the change is seen where it happened.
+  const [flash, setFlash] = useState<Set<string>>(new Set());
 
   const open = (r: ReviewApplication) =>
     ['submitted', 'under_review', 'waitlisted'].includes(r.status);
@@ -101,6 +107,18 @@ export function ApplicationsTable({
         message: o.code ? membershipMessage(o.code, lang) : undefined,
       }));
       const failed = list.filter((x) => !x.ok);
+      const word = {
+        accept: ['قُبل', 'accepted'],
+        reject: ['رُفض', 'rejected'],
+        waitlist: ['نُقل', 'moved'],
+      }[decision];
+      setResultTitle(
+        ar
+          ? `النتيجة: ${word[0]} ${list.length - failed.length}${failed.length ? `، وتُخطّي ${failed.length}` : ''}`
+          : `Result: ${list.length - failed.length} ${word[1]}${failed.length ? `, ${failed.length} skipped` : ''}`,
+      );
+      setFlash(new Set(list.filter((x) => x.ok).map((x) => x.id)));
+      setTimeout(() => setFlash(new Set()), 1800);
       if (failed.length === 0) {
         toast.success(
           ar ? `تم تنفيذ القرار على ${list.length}.` : `Decision applied to ${list.length}.`,
@@ -136,48 +154,67 @@ export function ApplicationsTable({
         ? 'أنت'
         : 'You'
       : (r.reviewerName ?? (ar ? 'غير مسند' : 'Unassigned'));
-  const th = 'px-4 py-3 text-start text-xs font-medium';
+  const th = 'px-4 py-3.5 text-start text-sm font-medium';
+  const href = (id: string) => `/dashboard/membership/applications/${id}`;
+  // The whole row opens the application; the check box, links and buttons keep their own meaning.
+  const openRow = (id: string) => (e: React.MouseEvent) => {
+    if ((e.target as HTMLElement).closest('a,button,input,label,select,textarea')) return;
+    router.push(href(id));
+  };
+  const reviewLabel = (r: ReviewApplication) =>
+    open(r) ? (ar ? 'مراجعة' : 'Review') : ar ? 'عرض' : 'View';
+  const reviewBtn =
+    'inline-flex min-h-10 items-center gap-1.5 rounded-full border-[1.5px] border-line-strong px-4 text-sm font-semibold transition-colors hover:border-accent hover:bg-accent-soft focus-visible:outline-2 focus-visible:outline-focus-ring';
+  const pill =
+    'inline-flex min-h-11 items-center gap-1.5 rounded-full px-4 text-sm font-semibold text-on-brand transition-colors hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-focus-ring disabled:opacity-50';
+  const shortDate = (iso: string) =>
+    new Intl.DateTimeFormat(ar ? 'ar-SA-u-ca-gregory-nu-latn' : 'en-GB', {
+      day: 'numeric',
+      month: 'long',
+      timeZone: 'Asia/Riyadh',
+    }).format(new Date(iso));
 
   return (
     <div className="flex flex-col gap-3">
       <BulkBar
+        floating
         count={selected.size}
         onClear={() => setSelected(new Set())}
-        hint={ar ? 'حدّد طلبات لاتخاذ قرار جماعي' : 'Select applications to decide in bulk'}
         actions={
           <>
-            <Button
-              size="sm"
-              disabled={busy}
-              onClick={() => setPending('accept')}
-              iconStart={<Check size={15} aria-hidden="true" />}
-            >
-              {ar ? 'قبول' : 'Accept'}
-            </Button>
-            <Button
-              size="sm"
-              variant="secondary"
-              disabled={busy}
-              onClick={() => setPending('waitlist')}
-              iconStart={<Hourglass size={15} aria-hidden="true" />}
-            >
-              {ar ? 'انتظار' : 'Waitlist'}
-            </Button>
-            <Button
-              size="sm"
-              variant="destructive"
+            <button
+              type="button"
               disabled={busy}
               onClick={() => setPending('reject')}
-              iconStart={<X size={15} aria-hidden="true" />}
+              className={pill}
             >
-              {ar ? 'رفض' : 'Reject'}
-            </Button>
+              <X size={15} aria-hidden="true" />
+              {ar ? 'عدم قبول' : 'Reject'}
+            </button>
+            <button
+              type="button"
+              disabled={busy}
+              onClick={() => setPending('waitlist')}
+              className={pill}
+            >
+              <Hourglass size={15} aria-hidden="true" />
+              {ar ? 'قائمة الانتظار' : 'Waitlist'}
+            </button>
+            <button
+              type="button"
+              disabled={busy}
+              onClick={() => setPending('accept')}
+              className={cn(pill, 'bg-accent text-on-accent hover:bg-accent-hover')}
+            >
+              <Check size={15} aria-hidden="true" />
+              {ar ? 'قبول' : 'Accept'}
+            </button>
           </>
         }
       />
 
       {/* Wide screens: the table */}
-      <div className="hidden overflow-x-auto rounded-shape-xl border border-line bg-surface md:block">
+      <div className="hidden overflow-x-auto rounded-shape-2xl border border-line bg-surface md:block">
         <table className="w-full min-w-[860px] text-sm">
           <thead className="border-b border-line bg-surface-raised text-muted">
             <tr>
@@ -213,14 +250,22 @@ export function ApplicationsTable({
               <th scope="col" className={th}>
                 {ar ? 'قُدّم' : 'Submitted'}
               </th>
+              <th scope="col" className={th}>
+                <span className="sr-only">{ar ? 'إجراء' : 'Action'}</span>
+              </th>
             </tr>
           </thead>
-          <tbody>
-            {rows.map((r) => (
+          <tbody className="m-stagger">
+            {rows.map((r, i) => (
               <tr
                 key={r.id}
+                onClick={openRow(r.id)}
                 data-selected={selected.has(r.id) || undefined}
-                className="border-b border-line align-middle transition-colors last:border-0 hover:bg-surface-raised data-[selected]:bg-accent-soft/40"
+                style={{ ['--i' as string]: Math.min(i, 9) }}
+                className={cn(
+                  'cursor-pointer border-b border-line align-middle transition-colors last:border-0 hover:bg-surface-raised data-[selected]:bg-accent-soft/40',
+                  flash.has(r.id) && 'm-pop bg-accent-soft',
+                )}
               >
                 <td className="ps-4">
                   <input
@@ -234,13 +279,13 @@ export function ApplicationsTable({
                     className="size-4 accent-[var(--accent)]"
                   />
                 </td>
-                <td className="px-4 py-3">
+                <td className="px-4 py-4">
                   <div className="flex items-center gap-3">
                     <Avatar name={applicantName(r, ar)} />
                     <div className="min-w-0">
                       <Link
                         href={`/dashboard/membership/applications/${r.id}`}
-                        className="block max-w-[16rem] truncate font-semibold hover:text-accent-text"
+                        className="block max-w-[18rem] truncate text-base font-bold hover:text-accent-text"
                       >
                         {applicantName(r, ar)}
                       </Link>
@@ -264,19 +309,23 @@ export function ApplicationsTable({
                     </div>
                   </div>
                 </td>
-                <td className="px-4 py-3 text-muted">
+                <td className="px-4 py-4 text-muted">
                   <span className="block max-w-[14rem] truncate">{study(r)}</span>
                   <span className="block max-w-[14rem] truncate text-xs">{r.track ?? ''}</span>
                 </td>
-                <td className="px-4 py-3">{statusBadge(r)}</td>
-                <td className="px-4 py-3">
+                <td className="px-4 py-4">{statusBadge(r)}</td>
+                <td className="px-4 py-4">
                   {hasRubric ? (
                     <ScoreMeter value={r.scoreAverage} reviewers={r.scoreReviewers} />
                   ) : null}
                 </td>
-                <td className={cn('px-4 py-3', !r.reviewerId && 'text-muted')}>{reviewer(r)}</td>
-                <td className="px-4 py-3 text-muted tabular-nums">
-                  {formatDate(r.submittedAt, lang)}
+                <td className={cn('px-4 py-4', !r.reviewerId && 'text-muted')}>{reviewer(r)}</td>
+                <td className="px-4 py-4 text-muted tabular-nums">{shortDate(r.submittedAt)}</td>
+                <td className="px-4 py-4">
+                  <Link href={href(r.id)} className={reviewBtn}>
+                    {reviewLabel(r)}
+                    <ChevronLeft size={15} aria-hidden="true" className="ltr:rotate-180" />
+                  </Link>
                 </td>
               </tr>
             ))}
@@ -289,8 +338,9 @@ export function ApplicationsTable({
         {rows.map((r) => (
           <li
             key={r.id}
+            onClick={openRow(r.id)}
             data-selected={selected.has(r.id) || undefined}
-            className="rounded-shape-xl border border-line bg-surface p-3 data-[selected]:border-accent data-[selected]:bg-accent-soft/40"
+            className="cursor-pointer rounded-shape-xl border border-line bg-surface p-3 data-[selected]:border-accent data-[selected]:bg-accent-soft/40"
           >
             <div className="flex items-start gap-3">
               <input
@@ -331,6 +381,9 @@ export function ApplicationsTable({
                 <p className="text-lg font-bold tabular-nums">{r.scoreAverage.toFixed(1)}</p>
               )}
             </div>
+            <Link href={href(r.id)} className={cn(reviewBtn, 'mt-3 w-full justify-center')}>
+              {reviewLabel(r)}
+            </Link>
           </li>
         ))}
       </ul>
@@ -340,11 +393,6 @@ export function ApplicationsTable({
         onClose={() => setPending(null)}
         busy={busy}
         title={pending ? title[pending] : ''}
-        description={
-          ar
-            ? `${selected.size} طلب: ${shown}${rest > 0 ? ` و${rest} آخرين` : ''}.`
-            : `${selected.size} application${selected.size === 1 ? '' : 's'}: ${shown}${rest > 0 ? ` and ${rest} more` : ''}.`
-        }
         footer={
           <>
             <Button variant="ghost" onClick={() => setPending(null)} disabled={busy}>
@@ -360,7 +408,49 @@ export function ApplicationsTable({
           </>
         }
       >
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-4">
+          <ul className="flex max-h-56 flex-col gap-2 overflow-y-auto">
+            {[...selected].slice(0, 8).map((id) => (
+              <li
+                key={id}
+                className="flex items-center justify-between gap-3 rounded-shape-lg bg-surface-raised px-4 py-3"
+              >
+                <span className="font-semibold">{nameOf(id)}</span>
+                <span dir="ltr" className="font-mono text-xs text-muted">
+                  {byId.get(id)?.reference}
+                </span>
+              </li>
+            ))}
+            {selected.size > 8 && (
+              <li className="px-1 text-sm text-muted">
+                {ar ? `و${selected.size - 8} آخرين` : `and ${selected.size - 8} more`}
+              </li>
+            )}
+          </ul>
+          {pending === 'accept' && seatsLeft !== null && selected.size > seatsLeft && (
+            <div
+              role="alert"
+              className="flex gap-3 rounded-shape-lg bg-warning-soft p-4 text-warning"
+            >
+              <TriangleAlert size={20} aria-hidden="true" className="mt-0.5 shrink-0" />
+              <div>
+                <p className="font-bold">
+                  {ar
+                    ? seatsLeft === 0
+                      ? 'لا مقاعد متبقية'
+                      : `بقي ${seatsLeft} ${seatsLeft === 2 ? 'مقعدان' : 'مقاعد'} فقط`
+                    : seatsLeft === 0
+                      ? 'No places left'
+                      : `Only ${seatsLeft} place${seatsLeft === 1 ? '' : 's'} left`}
+                </p>
+                <p className="text-sm">
+                  {ar
+                    ? 'يُقبل الأوائل بالترتيب المعروض، ويُتخطّى الباقون مع السبب. يصل كل مقبول بريد تفعيل واحد.'
+                    : 'The first ones in the listed order are accepted and the rest are skipped with the reason. Each accepted person gets one activation e-mail.'}
+                </p>
+              </div>
+            </div>
+          )}
           <p className="text-sm text-muted">
             {pending === 'reject'
               ? ar
@@ -387,7 +477,7 @@ export function ApplicationsTable({
       <ResultsDialog
         open={results !== null}
         onClose={() => setResults(null)}
-        title={ar ? 'نتيجة القرار الجماعي' : 'Bulk decision result'}
+        title={resultTitle || (ar ? 'نتيجة القرار الجماعي' : 'Bulk decision result')}
         results={results ?? []}
         nameOf={nameOf}
       />

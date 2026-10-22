@@ -40,7 +40,7 @@ const TAB_ORDER = [
   'withdrawn',
 ] as const;
 const field =
-  'h-11 w-full rounded-shape-md border border-line-strong bg-field px-3 text-sm text-text placeholder:text-muted focus-visible:outline-2 focus-visible:outline-focus-ring';
+  'h-11 w-full rounded-full border border-line-strong bg-field px-4 text-sm text-text placeholder:text-muted focus-visible:outline-2 focus-visible:outline-focus-ring';
 
 // MBR-004 / MBR-010 (screen 18): the reviewer queue. Permission: membership.review (global).
 export default async function ApplicationsPage({
@@ -135,9 +135,28 @@ export default async function ApplicationsPage({
               : 'Review applications and decide. Applicants are e-mailed automatically.'
         }
         action={
-          canExport ? (
-            <ExportButton href={exportHref} filename="membership-applications.csv" />
-          ) : undefined
+          <div className="flex flex-wrap items-center gap-3">
+            <label className="sr-only" htmlFor="app-cycle">
+              {ar ? 'الدورة' : 'Cycle'}
+            </label>
+            <FilterSelect
+              auto
+              id="app-cycle"
+              form="app-filters"
+              name="cycle"
+              defaultValue={sp.cycle ?? defaultCycle?.id ?? 'all'}
+              className={`${field} min-w-56`}
+            >
+              <option value="all">{ar ? 'كل الدورات' : 'All cycles'}</option>
+              {cycles.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {(ar ? c.nameAr : c.nameEn || c.nameAr) +
+                    (c.phase === 'open' ? (ar ? ' (مفتوحة)' : ' (open)') : '')}
+                </option>
+              ))}
+            </FilterSelect>
+            {canExport && <ExportButton href={exportHref} filename="membership-applications.csv" />}
+          </div>
         }
       />
 
@@ -148,11 +167,13 @@ export default async function ApplicationsPage({
       />
 
       <form
+        id="app-filters"
         method="get"
-        className="mb-4 grid grid-cols-2 gap-3 lg:grid-cols-[minmax(0,1.6fr)_repeat(3,minmax(0,1fr))]"
+        role="search"
+        className="mb-5 flex flex-wrap items-center gap-3"
       >
         {status && <input type="hidden" name="status" value={status} />}
-        <label className="relative col-span-2 lg:col-span-1">
+        <label className="relative min-w-60 flex-[2_1_18rem]">
           <span className="sr-only">{ar ? 'بحث' : 'Search'}</span>
           <Search
             size={16}
@@ -167,27 +188,11 @@ export default async function ApplicationsPage({
                 ? 'جزء من الاسم، البريد، الجوال، أو الرقم المرجعي'
                 : 'Part of a name, e-mail, phone or reference'
             }
-            className={`${field} ps-9`}
+            className={`${field} ps-10`}
           />
         </label>
-        <label className="flex flex-col gap-1 text-xs text-muted">
-          {ar ? 'الدورة' : 'Cycle'}
-          <FilterSelect
-            auto
-            name="cycle"
-            defaultValue={sp.cycle ?? defaultCycle?.id ?? 'all'}
-            className={field}
-          >
-            <option value="all">{ar ? 'كل الدورات' : 'All cycles'}</option>
-            {cycles.map((c) => (
-              <option key={c.id} value={c.id}>
-                {ar ? c.nameAr : c.nameEn || c.nameAr}
-              </option>
-            ))}
-          </FilterSelect>
-        </label>
-        <label className="flex flex-col gap-1 text-xs text-muted">
-          {ar ? 'المسار' : 'Track'}
+        <label className="flex-[1_1_10rem]">
+          <span className="sr-only">{ar ? 'المسار' : 'Track'}</span>
           <FilterSelect auto name="track" defaultValue={sp.track ?? ''} className={field}>
             <option value="">{ar ? 'كل المسارات' : 'All tracks'}</option>
             {reference.tracks.map((t) => (
@@ -197,16 +202,16 @@ export default async function ApplicationsPage({
             ))}
           </FilterSelect>
         </label>
-        <label className="flex flex-col gap-1 text-xs text-muted">
-          {ar ? 'المراجع' : 'Reviewer'}
+        <label className="flex-[1_1_10rem]">
+          <span className="sr-only">{ar ? 'المراجع' : 'Reviewer'}</span>
           <FilterSelect auto name="reviewer" defaultValue={sp.reviewer ?? ''} className={field}>
             <option value="">{ar ? 'كل المراجعين' : 'All reviewers'}</option>
             <option value="me">{ar ? 'أنا' : 'Me'}</option>
             <option value="none">{ar ? 'غير مسند' : 'Unassigned'}</option>
           </FilterSelect>
         </label>
-        <label className="flex flex-col gap-1 text-xs text-muted">
-          {ar ? 'الترتيب' : 'Sort'}
+        <label className="flex-[1_1_10rem]">
+          <span className="sr-only">{ar ? 'الترتيب' : 'Sort'}</span>
           <FilterSelect auto name="sort" defaultValue={sort} className={field}>
             <option value="oldest">{ar ? 'الأقدم أولاً' : 'Oldest first'}</option>
             <option value="newest">{ar ? 'الأحدث أولاً' : 'Newest first'}</option>
@@ -215,28 +220,24 @@ export default async function ApplicationsPage({
             )}
           </FilterSelect>
         </label>
-        <div className="flex items-end gap-3 sm:col-span-2 lg:col-span-4">
-          <button
-            type="submit"
-            className="inline-flex min-h-11 items-center rounded-full border-[1.5px] border-line-strong px-5 text-sm font-semibold hover:border-accent hover:bg-surface-raised focus-visible:outline-2 focus-visible:outline-focus-ring"
+        {/* Enter in the search box submits; the selects submit on change. */}
+        <button type="submit" className="sr-only">
+          {ar ? 'تطبيق' : 'Apply'}
+        </button>
+        {filtered && (
+          <Link
+            href={
+              status
+                ? `?status=${status}${sp.cycle ? `&cycle=${sp.cycle}` : ''}`
+                : sp.cycle
+                  ? `?cycle=${sp.cycle}`
+                  : '?'
+            }
+            className="inline-flex min-h-11 items-center text-sm font-medium text-accent-text hover:underline"
           >
-            {ar ? 'تطبيق' : 'Apply'}
-          </button>
-          {filtered && (
-            <Link
-              href={
-                status
-                  ? `?status=${status}${sp.cycle ? `&cycle=${sp.cycle}` : ''}`
-                  : sp.cycle
-                    ? `?cycle=${sp.cycle}`
-                    : '?'
-              }
-              className="text-sm text-muted hover:text-text"
-            >
-              {ar ? 'مسح التصفية' : 'Reset filters'}
-            </Link>
-          )}
-        </div>
+            {ar ? 'مسح التصفية' : 'Reset filters'}
+          </Link>
+        )}
       </form>
 
       {rows.length === 0 ? (
@@ -268,6 +269,9 @@ export default async function ApplicationsPage({
           rows={rows}
           userId={user.id}
           hasRubric={(cycle?.rubric.length ?? 0) > 0}
+          seatsLeft={
+            cycle && cycle.capacity !== null ? Math.max(0, cycle.capacity - cycle.accepted) : null
+          }
         />
       )}
       <Pagination meta={meta} searchParams={sp} lang={lang} />

@@ -1,8 +1,8 @@
 'use client';
 
-import { Flag, Hand, Keyboard, Star } from 'lucide-react';
+import { CircleCheck, Flag, Hand, Keyboard, Star } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useState, useTransition } from 'react';
-import { Alert, Button, Checkbox, Dialog, Textarea, cn, useToast } from '@/components/ui';
+import { Alert, Avatar, Button, Checkbox, Dialog, Textarea, cn, useToast } from '@/components/ui';
 import { useLanguage } from '@/context/LanguageContext';
 import { useRouter } from '@/i18n/navigation';
 import { membershipMessage } from '../messages';
@@ -73,6 +73,7 @@ export function ReviewPanel(p: ReviewPanelProps) {
   const [infoText, setInfoText] = useState('');
   const [infoFields, setInfoFields] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [savedAt, setSavedAt] = useState<string | null>(null);
 
   const decidable = OPEN.includes(p.status) && !p.isOwn;
   const claimedByOther = p.status === 'under_review' && p.reviewerId !== p.userId && !p.isAdmin;
@@ -192,7 +193,16 @@ export function ReviewPanel(p: ReviewPanelProps) {
     startTransition(async () => {
       const r = await saveScore({ id: p.id, scores, comment }, { lang });
       if (!r.ok) toast.error(r.message);
-      else toast.success(ar ? 'حُفظ تقييمك.' : 'Your score is saved.');
+      else {
+        toast.success(ar ? 'حُفظ تقييمك.' : 'Your score is saved.');
+        setSavedAt(
+          new Intl.DateTimeFormat(ar ? 'ar-SA-u-nu-latn' : 'en-GB', {
+            hour: 'numeric',
+            minute: '2-digit',
+            timeZone: 'Asia/Riyadh',
+          }).format(new Date()),
+        );
+      }
       router.refresh();
     });
 
@@ -220,7 +230,11 @@ export function ReviewPanel(p: ReviewPanelProps) {
 
   const kbd =
     'inline-flex h-5 min-w-5 items-center justify-center rounded-md border border-line-strong px-1 font-mono text-[11px] text-muted';
-  const decisionBtn = 'min-h-11 justify-between px-4';
+  const decisionBtn =
+    'flex min-h-12 items-center justify-between gap-2 rounded-full border-[1.5px] px-4 text-sm font-bold transition-colors focus-visible:outline-2 focus-visible:outline-focus-ring disabled:cursor-not-allowed disabled:opacity-50';
+  const btnPrimary = 'border-transparent bg-accent text-on-accent hover:bg-accent-hover';
+  const btnQuiet = 'border-line-strong hover:border-accent hover:bg-accent-soft';
+  const btnDanger = 'border-line-strong text-danger hover:border-danger hover:bg-danger-soft';
 
   const decisionCard = (
     <section
@@ -253,10 +267,15 @@ export function ReviewPanel(p: ReviewPanelProps) {
         </p>
       ) : (
         <>
-          <p className="flex items-center gap-2 text-sm text-muted">
+          <p
+            className={cn(
+              'flex flex-wrap items-center gap-2 rounded-shape-lg px-3 py-2 text-sm',
+              p.status === 'under_review' ? 'bg-accent-soft' : 'bg-surface-raised text-muted',
+            )}
+          >
             {p.status === 'under_review' ? (
               <>
-                <Hand size={15} aria-hidden="true" />
+                <Hand size={15} aria-hidden="true" className="text-accent-text" />
                 {p.reviewerId === p.userId
                   ? ar
                     ? 'أنت تراجع هذا الطلب'
@@ -288,10 +307,11 @@ export function ReviewPanel(p: ReviewPanelProps) {
           </p>
           {error && <Alert tone="danger">{error}</Alert>}
           <div className="grid grid-cols-2 gap-2">
-            <Button
-              className={decisionBtn}
+            <button
+              type="button"
+              className={cn(decisionBtn, btnPrimary)}
               disabled={busy || claimedByOther || full}
-              disabledReason={
+              title={
                 full
                   ? ar
                     ? 'اكتمل العدد المحدد للقبول'
@@ -302,34 +322,34 @@ export function ReviewPanel(p: ReviewPanelProps) {
             >
               <span>{ar ? 'قبول' : 'Accept'}</span>
               <span className={kbd}>A</span>
-            </Button>
-            <Button
-              variant="secondary"
-              className={decisionBtn}
+            </button>
+            <button
+              type="button"
+              className={cn(decisionBtn, btnQuiet)}
               disabled={busy || claimedByOther}
               onClick={() => ask('waitlist')}
             >
               <span>{ar ? 'انتظار' : 'Waitlist'}</span>
               <span className={kbd}>W</span>
-            </Button>
-            <Button
-              variant="secondary"
-              className={decisionBtn}
-              disabled={busy || claimedByOther}
-              onClick={() => setInfoOpen(true)}
-            >
-              <span>{ar ? 'طلب تعديل' : 'Ask to edit'}</span>
-              <span className={kbd}>I</span>
-            </Button>
-            <Button
-              variant="destructive"
-              className={decisionBtn}
+            </button>
+            <button
+              type="button"
+              className={cn(decisionBtn, btnDanger)}
               disabled={busy || claimedByOther}
               onClick={() => ask('reject')}
             >
               <span>{ar ? 'عدم قبول' : 'Reject'}</span>
               <span className={kbd}>R</span>
-            </Button>
+            </button>
+            <button
+              type="button"
+              className={cn(decisionBtn, btnQuiet)}
+              disabled={busy || claimedByOther}
+              onClick={() => setInfoOpen(true)}
+            >
+              <span>{ar ? 'طلب تعديل' : 'Ask to edit'}</span>
+              <span className={kbd}>I</span>
+            </button>
           </div>
           <Textarea
             label={ar ? 'ملاحظة داخلية' : 'Internal note'}
@@ -367,7 +387,7 @@ export function ReviewPanel(p: ReviewPanelProps) {
             {ar ? 'تقييم' : 'Score'}
           </h2>
           <p className="text-sm text-muted tabular-nums">
-            <span className="text-2xl font-bold text-text">
+            <span className="text-3xl font-extrabold text-accent-text">
               {mean === null ? '—' : mean.toFixed(1)}
             </span>{' '}
             / 5
@@ -418,6 +438,15 @@ export function ReviewPanel(p: ReviewPanelProps) {
             <Button variant="secondary" disabled={!scoreComplete || busy} onClick={saveMyScore}>
               {ar ? 'حفظ التقييم' : 'Save my score'}
             </Button>
+            {savedAt && (
+              <p
+                role="status"
+                className="m-pop flex items-center gap-1.5 text-sm font-medium text-success"
+              >
+                <CircleCheck size={15} aria-hidden="true" />
+                {ar ? `حُفظ تقييمك ${savedAt}` : `Your score was saved at ${savedAt}`}
+              </p>
+            )}
           </>
         )}
         {others.length > 0 && (
@@ -425,7 +454,10 @@ export function ReviewPanel(p: ReviewPanelProps) {
             {others.map((s) => (
               <li key={s.reviewerId} className="text-sm">
                 <p className="flex items-center justify-between gap-2">
-                  <span className="font-medium">{s.reviewerName}</span>
+                  <span className="flex items-center gap-2 font-medium">
+                    <Avatar name={s.reviewerName ?? '?'} size={24} />
+                    {s.reviewerName}
+                  </span>
                   <span className="font-bold tabular-nums">
                     {weightedMean(s.scores, p.rubric)?.toFixed(1) ?? '—'}
                   </span>

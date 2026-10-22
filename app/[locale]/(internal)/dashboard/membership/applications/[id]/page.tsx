@@ -161,7 +161,7 @@ export default async function ApplicationPage({
     };
   });
 
-  const card = 'rounded-shape-xl border border-line bg-surface p-5';
+  const card = 'm-reveal rounded-shape-2xl border border-line bg-surface p-5 md:p-6';
   const h2 = 'mb-3 flex items-center gap-2 font-bold';
   const row = 'grid grid-cols-[7.5rem_1fr] items-start gap-3 py-2 text-sm sm:grid-cols-[9rem_1fr]';
 
@@ -192,6 +192,28 @@ export default async function ApplicationPage({
           <BackIcon size={16} aria-hidden="true" />
           {ar ? 'الطلبات' : 'Applications'}
         </Link>
+        <ul
+          aria-label={ar ? 'اختصارات لوحة المفاتيح' : 'Keyboard shortcuts'}
+          className="order-last hidden flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted lg:order-none lg:flex"
+        >
+          {(
+            [
+              ['A', ar ? 'قبول' : 'Accept'],
+              ['W', ar ? 'انتظار' : 'Waitlist'],
+              ['I', ar ? 'تعديل' : 'Edit'],
+              ['R', ar ? 'عدم قبول' : 'Reject'],
+              ['J', ar ? 'السابق' : 'Prev'],
+              ['K', ar ? 'التالي' : 'Next'],
+            ] as const
+          ).map(([k, l]) => (
+            <li key={k} className="inline-flex items-center gap-1.5">
+              <kbd className="inline-flex h-6 min-w-6 items-center justify-center rounded-md border border-line-strong px-1 font-mono text-xs">
+                {k}
+              </kbd>
+              {l}
+            </li>
+          ))}
+        </ul>
         <div className="flex items-center gap-2">
           <span className="text-sm text-muted tabular-nums">
             {ar
@@ -235,9 +257,9 @@ export default async function ApplicationPage({
 
       {/* Title */}
       <header className="mb-5 flex flex-wrap items-center gap-4">
-        <Avatar name={name} size={56} />
+        <Avatar name={name} size={72} />
         <div className="min-w-0 flex-1">
-          <h1 className="t-h3 break-words">{name}</h1>
+          <h1 className="t-h2 break-words">{name}</h1>
           <p className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted">
             <Badge tone={st.tone}>{st.label[lang]}</Badge>
             <span dir="ltr" className="inline-flex items-center font-mono">
