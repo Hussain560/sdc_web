@@ -5,7 +5,7 @@
 
 ## Summary
 
-**Built:** the whole membership lifecycle on a new database layer (8 migrations, pgTAP files 27–30 plus updated 03/08/19/21/25),
+**Built:** the whole membership lifecycle on a new database layer (8 migrations, pgTAP files 27–30 (1881 assertions across 34 files, passing) plus updated 03/08/19/21/25),
 server actions, 18 AR/EN e-mail templates with an undo outbox and a daily idempotent job (`/api/cron/membership-daily`),
 the public journey (join states, 5-step form with draft, tracking page, activation, verification page, blocked notice),
 the dashboard (cycles with rubric and funnel, applications with bulk actions, review with scoring and shortcuts, waiting list,
@@ -130,3 +130,4 @@ _(filled as they happen)_
   them as one block. Review on devices.
 - The reset-password "welcome" screen kept its existing design (no strength meter yet).
 - Data files are local-only seeds: `supabase/dev-lifecycle-seed.sql`.
+- `npx supabase db reset` then `npx supabase test db` — 34 files, 1881 assertions, PASS. (A from-scratch ordering bug — block columns used before they were created — was found and fixed; seeds left in the DB make 05/26 fail, so test on a clean reset.)

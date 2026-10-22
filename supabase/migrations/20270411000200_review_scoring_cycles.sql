@@ -1,6 +1,12 @@
 -- Sprint 18 · MBR-010, MBR-011, MBR-012, MBR-013 — review v2: claim, decisions (with a short undo window), info
 -- requests, reviewer scoring, cycle settings (term end, activation deadline, rubric), funnel and waitlist reads.
 
+-- The block columns are used by the review queue view below; the block functions come in the next migration.
+alter table public.profiles
+  add column if not exists blocked_at     timestamptz,
+  add column if not exists blocked_by     uuid references public.profiles (id) on delete set null,
+  add column if not exists blocked_reason text check (char_length(blocked_reason) <= 500);
+
 -- ------------------------------------------------------------------------------------------ 1. rubric validation, cycle save v3
 create or replace function private.validate_rubric(p_rubric jsonb)
 returns void

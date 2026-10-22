@@ -11,9 +11,9 @@ on conflict do nothing;
 
 -- ------------------------------------------------------------------------------------------ 2. blocked accounts
 alter table public.profiles
-  add column blocked_at     timestamptz,
-  add column blocked_by     uuid references public.profiles (id) on delete set null,
-  add column blocked_reason text check (char_length(blocked_reason) <= 500);
+  add column if not exists blocked_at     timestamptz,
+  add column if not exists blocked_by     uuid references public.profiles (id) on delete set null,
+  add column if not exists blocked_reason text check (char_length(blocked_reason) <= 500);
 
 -- A blocked person must not read their own block reason through the profile row: it is internal.
 -- (The members table no longer holds internal reasons either; see member_lifecycle.)
