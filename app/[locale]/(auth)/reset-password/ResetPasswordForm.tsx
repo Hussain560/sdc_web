@@ -32,7 +32,7 @@ const TEXT = {
     request: 'اطلب رابطاً جديداً',
     accepted: 'قُبلت عضويتك',
     welcomeTitle: (n: string) => (n ? `أهلاً ${n}، لنفعّل حسابك` : 'لنفعّل حسابك'),
-    welcomeFor: (e: string) => `اختر كلمة مرور لحساب ${e}`,
+    welcomeFor: (e: string) => `اختر كلمة مرور لحساب ${e} `,
     passwordLabel: 'كلمة المرور',
     again: 'أعد كتابتها',
     activate: 'فعّل حسابي',
@@ -64,7 +64,7 @@ const TEXT = {
     accepted: 'Your membership is accepted',
     welcomeTitle: (n: string) =>
       n ? `Welcome ${n}, let’s activate your account` : 'Let’s activate your account',
-    welcomeFor: (e: string) => `Choose a password for ${e}`,
+    welcomeFor: (e: string) => `Choose a password for ${e} `,
     passwordLabel: 'Password',
     again: 'Type it again',
     activate: 'Activate my account',
@@ -214,23 +214,26 @@ export default function ResetPasswordForm({
   }
 
   return (
-    <div
-      className={
-        welcome
-          ? 'flex flex-col gap-5 rounded-shape-2xl border border-line bg-surface p-6 md:p-8'
-          : 'flex flex-col gap-6'
-      }
-    >
+    <div className={'flex flex-col gap-6'}>
       {welcome && (
         <span className="inline-flex w-fit items-center gap-1.5 rounded-full bg-accent-soft px-3 py-1 text-sm font-semibold text-accent-text">
           <Check size={14} aria-hidden="true" />
           {s.accepted}
         </span>
       )}
-      <AuthHeading
-        title={welcome ? s.welcomeTitle(name) : s.title}
-        lede={welcome ? s.welcomeFor(email) : s.lede}
-      />
+      {welcome ? (
+        <div className="flex flex-col gap-2">
+          <h1 className="t-h2">{s.welcomeTitle(name)}</h1>
+          <p className="text-muted">
+            {s.welcomeFor('')}
+            <bdi dir="ltr" className="font-semibold text-text">
+              {email}
+            </bdi>
+          </p>
+        </div>
+      ) : (
+        <AuthHeading title={s.title} lede={s.lede} />
+      )}
       {formError && <Alert tone="danger">{formError}</Alert>}
       <form method="post" onSubmit={onSubmit} className="flex flex-col gap-5">
         <PasswordField
