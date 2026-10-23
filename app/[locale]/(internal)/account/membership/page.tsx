@@ -111,7 +111,7 @@ export default async function MyMembershipPage({
         </Alert>
       )}
 
-      <div className="grid gap-5 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] lg:items-start">
+      <div className="grid gap-5 xl:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] xl:items-start">
         <div className="flex flex-col gap-4">
           <div className="m-pop">
             <MembershipCard data={card} lang={lang} />

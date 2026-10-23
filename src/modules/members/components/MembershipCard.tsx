@@ -58,9 +58,11 @@ export function MembershipCard({
     </span>
   );
   const facts = (
-    <dl className={`grid gap-3 text-sm ${full ? 'grid-cols-2 text-start' : 'grid-cols-3'}`}>
+    <dl
+      className={`grid gap-3 text-sm ${full ? 'grid-cols-2 text-start' : 'grid-cols-3 gap-4 border-t border-current/20 pt-4'}`}
+    >
       <div className={full ? 'col-span-2' : ''}>
-        <dt className="opacity-75">{L('رقم العضوية', 'Member no.')}</dt>
+        <dt className="text-xs opacity-75 sm:text-sm">{L('رقم العضوية', 'Member no.')}</dt>
         <dd
           dir="ltr"
           className="whitespace-nowrap font-mono font-semibold tracking-wide"
@@ -70,11 +72,11 @@ export function MembershipCard({
         </dd>
       </div>
       <div>
-        <dt className="opacity-75">{L('عضو منذ', 'Member since')}</dt>
+        <dt className="text-xs opacity-75 sm:text-sm">{L('عضو منذ', 'Member since')}</dt>
         <dd className="font-semibold">{formatDate(data.joinedAt, lang)}</dd>
       </div>
       <div>
-        <dt className="opacity-75">{L('صالحة حتى', 'Valid until')}</dt>
+        <dt className="text-xs opacity-75 sm:text-sm">{L('صالحة حتى', 'Valid until')}</dt>
         <dd className="font-semibold">
           {data.termEndsAt ? formatDate(data.termEndsAt, lang) : '—'}
         </dd>
@@ -160,8 +162,8 @@ export function MembershipCard({
         <div className="sm:me-[40%]">{statusPill}</div>
       </div>
 
-      <div className="grid flex-1 items-center gap-5 sm:grid-cols-[1fr_auto] sm:gap-6">
-        <div className="flex min-w-0 flex-col gap-6 sm:gap-8">
+      <div className="grid flex-1 gap-5 sm:grid-cols-[1fr_auto] sm:grid-rows-[1fr_auto] sm:gap-x-6 sm:gap-y-4">
+        <div className="flex min-w-0 flex-col justify-center sm:row-start-1">
           <div className="flex items-center gap-4">
             <Avatar
               name={nameMain}
@@ -182,9 +184,11 @@ export function MembershipCard({
               )}
             </div>
           </div>
-          {facts}
         </div>
-        <div className="flex justify-center">{qr}</div>
+        <div className="sm:col-start-1 sm:row-start-2 sm:self-end">{facts}</div>
+        <div className="order-last flex items-center justify-center sm:order-none sm:col-start-2 sm:row-span-2 sm:row-start-1">
+          {qr}
+        </div>
       </div>
     </div>
   );
