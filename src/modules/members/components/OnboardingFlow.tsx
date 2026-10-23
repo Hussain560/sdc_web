@@ -306,8 +306,11 @@ export function OnboardingFlow(p: OnboardingProps) {
   const stepBody = (() => {
     if (done)
       return (
-        <div className="flex flex-col items-center gap-6 text-center">
-          <div className="w-full" style={{ perspective: 1400 }}>
+        <div className="flex flex-col items-center gap-4 text-center">
+          <div
+            className="w-full max-w-[clamp(20rem,calc((100dvh-22rem)*1.53),34rem)]"
+            style={{ perspective: 1400 }}
+          >
             <div className="m-flip">
               <MembershipCard
                 data={{ ...p.card, photoUrl: vis.photo ? (photo ?? p.card.photoUrl) : null }}
@@ -315,8 +318,8 @@ export function OnboardingFlow(p: OnboardingProps) {
               />
             </div>
           </div>
-          <h1 className="t-h1">{s.readyTitle}</h1>
-          <p className="t-lede max-w-md text-muted">{s.readyBody(pct)}</p>
+          <h1 className="t-h2">{s.readyTitle}</h1>
+          <p className="max-w-md text-muted">{s.readyBody(pct)}</p>
           <div className="grid w-full max-w-sm grid-cols-5 gap-2" aria-hidden="true">
             {[0, 1, 2, 3, 4].map((n) => (
               <span
@@ -637,9 +640,9 @@ export function OnboardingFlow(p: OnboardingProps) {
         <main
           id="main"
           className={cn(
-            'flex w-full flex-1 flex-col gap-6 px-4 py-6 lg:m-auto lg:flex-none lg:px-0 lg:py-10',
+            'flex w-full flex-1 flex-col gap-6 px-4 py-6 lg:m-auto lg:flex-none lg:px-0',
             !done && 'max-lg:pb-28',
-            done ? 'lg:max-w-2xl' : 'lg:max-w-(--container-tight)',
+            done ? 'lg:max-w-2xl lg:py-4' : 'lg:max-w-(--container-tight) lg:py-10',
           )}
         >
           <div key={i} className="m-enter flex flex-col gap-6">
