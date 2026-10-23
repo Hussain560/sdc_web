@@ -34,7 +34,7 @@ test('my data shows the member record and the application; the profile holds the
     await signInAndWait(page, who.email, undefined, '/en/login');
 
     // On screen: the member record with the phone, then the application and the answer that was given.
-    await gotoReady(page, '/en/account/privacy');
+    await gotoReady(page, '/en/account/membership');
     await expect(page.getByRole('heading', { name: 'Member record' })).toBeVisible();
     await expect(page.getByText('+966555000222')).toBeVisible();
     await expect(page.getByRole('heading', { name: /Membership application/ })).toBeVisible();

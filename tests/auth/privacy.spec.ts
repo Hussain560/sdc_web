@@ -39,7 +39,7 @@ test('a member downloads their data and an administrator completes their deletio
 
     // the member downloads the JSON
     await signInAndWait(page, subject.email, undefined, '/en/login');
-    await gotoReady(page, '/en/account/privacy');
+    await gotoReady(page, '/en/account/membership');
     const [download] = await Promise.all([
       page.waitForEvent('download'),
       page.getByRole('button', { name: 'Download' }).click(),

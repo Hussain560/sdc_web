@@ -3,6 +3,7 @@ import { IdCard, UsersRound } from 'lucide-react';
 import { Alert, Badge, EmptyState } from '@/components/ui';
 import { Link } from '@/i18n/navigation';
 import { requireUser } from '@/lib/auth/session';
+import { getAccess } from '@/modules/access/queries';
 import { formatDate } from '@/lib/format';
 import { MembershipCard } from '@/modules/members/components/MembershipCard';
 import {
@@ -11,6 +12,7 @@ import {
   RenewalButton,
 } from '@/modules/members/components/MyMembershipActions';
 import { getMyMembership } from '@/modules/members/my-membership';
+import { MyDataSection } from '@/modules/privacy/components/MyDataSection';
 import { MEMBER_STATUS_LABEL } from '@/modules/members/schemas';
 
 const DAY = 86_400_000;
@@ -27,9 +29,11 @@ export default async function MyMembershipPage({
   await requireUser('/account/membership');
   const mine = await getMyMembership(lang);
 
-  if (!mine)
+  if (!mine) {
+    const access = await getAccess();
+    const held = access?.positions ?? [];
     return (
-      <div className="m-enter flex flex-col gap-4">
+      <div data-wide className="m-enter flex flex-col gap-5">
         <h1 className="text-2xl font-extrabold">{L('عضويتي', 'My membership')}</h1>
         <EmptyState
           icon={<IdCard size={36} aria-hidden="true" />}
@@ -47,8 +51,41 @@ export default async function MyMembershipPage({
             </Link>
           }
         />
+        {held.length > 0 && (
+          <section
+            className="rounded-shape-2xl border border-line bg-surface p-6"
+            aria-labelledby="positions-title"
+          >
+            <h2 id="positions-title" className="text-xl font-extrabold">
+              {L('مناصبي', 'My positions')}
+            </h2>
+            <ul className="mt-4 flex flex-col gap-3">
+              {held.map((x) => (
+                <li key={x.assignmentId} className="flex items-center gap-3">
+                  <span
+                    aria-hidden="true"
+                    className="flex size-12 shrink-0 items-center justify-center rounded-shape-lg bg-accent-soft text-accent-text"
+                  >
+                    <UsersRound size={20} />
+                  </span>
+                  <div className="min-w-0">
+                    <p className="font-bold">
+                      {x.title?.[lang] ?? x.roleName[lang]}
+                      {x.committeeName ? ` • ${x.committeeName[lang]}` : ''}
+                    </p>
+                    <p className="text-sm text-muted">
+                      {L('منذ', 'Since')} {formatDate(x.startsAt, lang)}
+                    </p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+        <MyDataSection lang={lang} />
       </div>
     );
+  }
 
   const { state, card, lastLeave } = mine;
   const days = state.termEndsAt ? Math.ceil((Date.parse(state.termEndsAt) - nowMs()) / DAY) : null;
@@ -237,6 +274,7 @@ export default async function MyMembershipPage({
           )}
         </div>
       </div>
+      <MyDataSection lang={lang} />
     </div>
   );
 }

@@ -85,9 +85,7 @@ const ACCOUNT_LINKS = [
     label: { ar: 'تسجيلاتي', en: 'My registrations' },
   },
   { href: '/account/membership', icon: IdCard, label: { ar: 'عضويتي', en: 'My membership' } },
-  { href: '/account/roles', icon: BadgeCheck, label: { ar: 'مناصبي', en: 'My positions' } },
   { href: '/account/security', icon: ShieldCheck, label: { ar: 'الأمان', en: 'Security' } },
-  { href: '/account/privacy', icon: ShieldCheck, label: { ar: 'بياناتي', en: 'My data' } },
 ] as const;
 
 export type ShellUser = {
