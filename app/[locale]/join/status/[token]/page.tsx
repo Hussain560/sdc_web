@@ -269,52 +269,41 @@ export default async function TrackingPage({
   return (
     <div className="min-h-dvh bg-canvas">
       <FocusedHeader title={L('متابعة طلب الانضمام', 'Follow your application')} />
-      <main className="mx-auto grid max-w-[1200px] items-start gap-6 px-4 py-8 md:px-8 md:py-10 lg:grid-cols-[22rem_minmax(0,1fr)]">
-        <aside className="order-2 flex flex-col gap-5 lg:order-1">
-          <section className="rounded-shape-xl border border-line bg-surface p-5">
+      <main className="mx-auto flex max-w-3xl flex-col gap-5 px-4 py-8 md:py-10">
+        <section className="m-enter flex flex-wrap items-center justify-between gap-x-6 gap-y-1 rounded-shape-xl border border-line bg-surface px-5 py-4">
+          <div>
             <p className="text-sm text-muted">{L('الرقم المرجعي', 'Reference number')}</p>
-            <p dir="ltr" className="my-1 text-start font-mono text-3xl font-bold tracking-[0.04em]">
+            <p dir="ltr" className="text-start font-mono text-2xl font-bold tracking-[0.04em]">
               {t.reference}
             </p>
-            <p className="text-sm text-muted">{cycleName}</p>
-          </section>
-          <section
-            className="rounded-shape-xl border border-line bg-surface p-5"
-            aria-labelledby="trk-timeline"
-          >
-            <h2 id="trk-timeline" className="sr-only">
-              {L('مسار الطلب', 'Application timeline')}
-            </h2>
-            <Timeline items={items} label={L('مسار الطلب', 'Application timeline')} />
-          </section>
-          {t.withdrawable && (
-            <div className="px-2">
-              <WithdrawButton token={token} />
-            </div>
-          )}
-          <p className="flex items-start gap-2 rounded-shape-lg bg-surface-raised p-3 text-sm text-muted">
-            <Lock size={15} aria-hidden="true" className="mt-0.5 shrink-0" />
-            {L(
-              'هذا الرابط خاص بك. لا يحمل بياناتك الشخصية، فلا تشاركه.',
-              'This link is yours. It carries no personal data, so do not share it.',
-            )}
-          </p>
-        </aside>
+          </div>
+          <p className="text-sm text-muted">{cycleName}</p>
+        </section>
 
-        <div className="order-1 flex min-w-0 flex-col gap-5 lg:order-2">
+        <div className="flex min-w-0 flex-col gap-5">
           <section className="m-enter relative overflow-hidden rounded-shape-xl border border-line bg-surface p-6 md:p-8">
             <span
               aria-hidden="true"
               className={`absolute inset-x-0 top-0 h-1.5 ${bar[hero.bar]}`}
             />
-            <span
-              className={`mb-4 inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm font-semibold ${hero.chipClass}`}
-            >
-              {hero.chipIcon}
-              {hero.chip}
-            </span>
+            <div className="mb-4 flex justify-end">
+              <span
+                className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm font-semibold ${hero.chipClass}`}
+              >
+                {hero.chipIcon}
+                {hero.chip}
+              </span>
+            </div>
             <h1 className="t-h1">{hero.title(first)}</h1>
             <p className="t-lede mt-3 text-muted">{hero.text}</p>
+            <h2 id="trk-timeline" className="sr-only">
+              {L('مسار الطلب', 'Application timeline')}
+            </h2>
+            <Timeline
+              className="mt-7"
+              items={items}
+              label={L('مسار الطلب', 'Application timeline')}
+            />
           </section>
 
           {t.status === 'info_requested' && t.infoRequest && (
@@ -358,6 +347,18 @@ export default async function TrackingPage({
               </LinkButton>
             </div>
           )}
+          {t.withdrawable && (
+            <div>
+              <WithdrawButton token={token} />
+            </div>
+          )}
+          <p className="flex items-start gap-2 rounded-shape-lg bg-surface-raised p-3 text-sm text-muted">
+            <Lock size={15} aria-hidden="true" className="mt-0.5 shrink-0" />
+            {L(
+              'هذا الرابط خاص بك. لا يحمل بياناتك الشخصية، فلا تشاركه.',
+              'This link is yours. It carries no personal data, so do not share it.',
+            )}
+          </p>
           <p className="text-sm text-muted" style={{ '--i': 0 } as CSSProperties}>
             {L(
               `أُرسل طلبك ${formatDate(t.submittedAt, lang)}. نراسلك على ${t.emailMasked}.`,

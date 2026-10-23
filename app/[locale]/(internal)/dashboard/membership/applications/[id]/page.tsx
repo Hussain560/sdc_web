@@ -40,6 +40,8 @@ import { getApplicationDetail, getQueueNeighbours } from '@/modules/membership/r
 import {
   ACADEMIC_LABEL,
   APPLICATION_STATUS_LABEL,
+  GENDER_LABEL,
+  STUDY_YEAR_LABEL,
   type AcademicStatus,
 } from '@/modules/membership/types';
 
@@ -333,13 +335,19 @@ export default async function ApplicationPage({
                     <td className="py-2">{a.middleNameAr ?? '—'}</td>
                     <td className="py-2">{a.lastNameAr ?? '—'}</td>
                   </tr>
-                  <tr className="border-t border-line" dir="ltr">
+                  <tr className="border-t border-line">
                     <th scope="row" className="py-2 text-start font-medium text-muted">
                       English
                     </th>
-                    <td className="py-2">{a.firstNameEn ?? a.fullNameEn ?? '—'}</td>
-                    <td className="py-2">{a.middleNameEn ?? '—'}</td>
-                    <td className="py-2">{a.lastNameEn ?? '—'}</td>
+                    <td dir="ltr" className="py-2 text-left">
+                      {a.firstNameEn ?? a.fullNameEn ?? '—'}
+                    </td>
+                    <td dir="ltr" className="py-2 text-left">
+                      {a.middleNameEn ?? '—'}
+                    </td>
+                    <td dir="ltr" className="py-2 text-left">
+                      {a.lastNameEn ?? '—'}
+                    </td>
                   </tr>
                 </tbody>
               </table>
@@ -357,6 +365,12 @@ export default async function ApplicationPage({
                 >
                   {a.email}
                   <CopyButton value={a.email} label={ar ? 'نسخ البريد' : 'Copy the e-mail'} />
+                </dd>
+              </div>
+              <div className={row}>
+                <dt className="text-muted">{ar ? 'الجنس' : 'Gender'}</dt>
+                <dd>
+                  {a.gender ? GENDER_LABEL[a.gender as keyof typeof GENDER_LABEL]?.[lang] : '—'}
                 </dd>
               </div>
               <div className={row}>
@@ -384,6 +398,16 @@ export default async function ApplicationPage({
                     ar ? 'الوضع' : 'Status',
                     ACADEMIC_LABEL[a.academicStatus as AcademicStatus]?.[lang] ?? a.academicStatus,
                   ],
+                  ...(a.studyYear
+                    ? ([
+                        [
+                          ar ? 'السنة الدراسية' : 'Year of study',
+                          STUDY_YEAR_LABEL[String(a.studyYear) as keyof typeof STUDY_YEAR_LABEL]?.[
+                            lang
+                          ] ?? String(a.studyYear),
+                        ],
+                      ] as Array<[string, string]>)
+                    : []),
                   [
                     ar ? 'الجامعة' : 'University',
                     a.university ??

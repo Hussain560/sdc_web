@@ -19,6 +19,9 @@ import { DEFAULT_PHONE_COUNTRY, splitInternational, toE164, type PhoneCountry } 
 import {
   ACADEMIC_LABEL,
   ACADEMIC_STATUSES,
+  GENDER_LABEL,
+  STUDY_YEARS,
+  STUDY_YEAR_LABEL,
   type ReferenceOption,
 } from '@/modules/membership/types';
 import {
@@ -829,6 +832,7 @@ export function MemberProfileEditor({
           footer={saveBtn('study', () =>
             savePart('study', [
               'academic_status',
+              'study_year',
               'university_id',
               'major_id',
               'sub_major_id',
@@ -840,8 +844,40 @@ export function MemberProfileEditor({
             label={t.status}
             value={v.academic_status}
             options={ACADEMIC_STATUSES.map((s) => ({ value: s, label: ACADEMIC_LABEL[s][lang] }))}
-            onChange={(x) => set('academic_status', x as string)}
+            onChange={(x) =>
+              setV((cur) => ({
+                ...cur,
+                academic_status: x as string,
+                // Only a student has a year of study.
+                study_year: x === 'student' ? cur.study_year : '',
+              }))
+            }
           />
+          {v.academic_status === 'student' && (
+            <Select
+              label={lang === 'ar' ? 'السنة الدراسية' : 'Year of study'}
+              value={v.study_year}
+              onChange={(e) => set('study_year', e.target.value)}
+            >
+              <option value="">—</option>
+              {STUDY_YEARS.map((y) => (
+                <option key={y} value={y}>
+                  {STUDY_YEAR_LABEL[y][lang]}
+                </option>
+              ))}
+            </Select>
+          )}
+          {v.gender && (
+            <p className="t-body-sm flex flex-wrap items-center gap-2 text-muted">
+              <span className="font-semibold text-text">{lang === 'ar' ? 'الجنس' : 'Gender'}:</span>
+              {GENDER_LABEL[v.gender as keyof typeof GENDER_LABEL]?.[lang] ?? v.gender}
+              <span>
+                {lang === 'ar'
+                  ? '— لا يظهر لأحد غيرك وقيادة المجتمع، ويعدّله مدير النظام فقط.'
+                  : '— visible only to you and community leadership; only an administrator can change it.'}
+              </span>
+            </p>
+          )}
           <div className="grid gap-4 sm:grid-cols-2">
             <Select
               label={t.university}

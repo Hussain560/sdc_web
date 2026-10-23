@@ -28,6 +28,8 @@ import { buildMemberTimeline, type TimelineFilter } from '@/modules/members/memb
 import {
   APPLICATION_STATUS_LABEL,
   ACADEMIC_LABEL,
+  GENDER_LABEL,
+  STUDY_YEAR_LABEL,
   type AcademicStatus,
 } from '@/modules/membership/types';
 import { getReferenceData } from '@/modules/membership/queries';
@@ -303,6 +305,8 @@ export default async function MemberAdminPage({
                 phoneCountry: phoneParts?.country ?? DEFAULT_PHONE_COUNTRY,
                 phone: phoneParts?.national ?? '',
                 academicStatus: (m.academicStatus ?? '') as AcademicStatus | '',
+                gender: (m.gender ?? '') as 'male' | 'female' | '',
+                studyYear: m.studyYear ? String(m.studyYear) : '',
                 universityId: String(
                   reference.universities.find((u) => u.nameAr === m.universityAr)?.id ?? '',
                 ),
@@ -731,6 +735,17 @@ export default async function MemberAdminPage({
                   ? ACADEMIC_LABEL[m.academicStatus as AcademicStatus]?.[lang]
                   : null,
               )}
+              {m.studyYear &&
+                row(
+                  L('السنة الدراسية', 'Year of study'),
+                  STUDY_YEAR_LABEL[String(m.studyYear) as keyof typeof STUDY_YEAR_LABEL]?.[lang],
+                )}
+              {detail.canContact &&
+                m.gender &&
+                row(
+                  L('الجنس', 'Gender'),
+                  GENDER_LABEL[m.gender as keyof typeof GENDER_LABEL]?.[lang],
+                )}
               {row(
                 L('الجامعة', 'University'),
                 ar ? m.universityAr : (m.universityEn ?? m.universityAr),

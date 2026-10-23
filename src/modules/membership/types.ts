@@ -1,6 +1,25 @@
 import { PRIVACY_VERSION } from '@/modules/privacy/content';
 import type { Localized } from '@/modules/access/types';
 
+export const GENDERS = ['male', 'female'] as const;
+export type Gender = (typeof GENDERS)[number];
+export const GENDER_LABEL: Record<Gender, Localized> = {
+  male: { ar: 'ذكر', en: 'Male' },
+  female: { ar: 'أنثى', en: 'Female' },
+};
+
+/** The study year of a student (1 to 7: some programmes last six or seven years). */
+export const STUDY_YEARS = ['1', '2', '3', '4', '5', '6', '7'] as const;
+export const STUDY_YEAR_LABEL: Record<(typeof STUDY_YEARS)[number], Localized> = {
+  '1': { ar: 'الأولى', en: 'First year' },
+  '2': { ar: 'الثانية', en: 'Second year' },
+  '3': { ar: 'الثالثة', en: 'Third year' },
+  '4': { ar: 'الرابعة', en: 'Fourth year' },
+  '5': { ar: 'الخامسة', en: 'Fifth year' },
+  '6': { ar: 'السادسة', en: 'Sixth year' },
+  '7': { ar: 'السابعة', en: 'Seventh year' },
+};
+
 export const ACADEMIC_STATUSES = ['student', 'graduate', 'employee', 'other'] as const;
 export type AcademicStatus = (typeof ACADEMIC_STATUSES)[number];
 
@@ -29,6 +48,8 @@ export type CycleQuestion = {
   label_ar: string;
   label_en?: string;
   options?: string[];
+  /** A short line under each option of a single choice, in the same order as `options`. */
+  option_hints?: string[];
 };
 
 export type CyclePhase = 'draft' | 'scheduled' | 'open' | 'closed' | 'completed';
@@ -108,7 +129,11 @@ export type ApplicationValues = {
   lastNameEn: string;
   /** International format (E.164) from the phone field. */
   phone: string;
+  /** Private: only the review team and, later, leadership and the member see it. */
+  gender: Gender | '';
   academicStatus: AcademicStatus | '';
+  /** The year of study (a student only), as the digit. */
+  studyYear: string;
   universityId: string;
   otherUniversity: string;
   majorId: string;
@@ -136,7 +161,9 @@ export const emptyApplication = (): ApplicationValues => ({
   middleNameEn: '',
   lastNameEn: '',
   phone: '',
+  gender: '',
   academicStatus: '',
+  studyYear: '',
   universityId: '',
   otherUniversity: '',
   majorId: '',

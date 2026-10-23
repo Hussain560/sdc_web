@@ -39,6 +39,10 @@ import {
 import {
   ACADEMIC_LABEL,
   ACADEMIC_STATUSES,
+  GENDERS,
+  GENDER_LABEL,
+  STUDY_YEARS,
+  STUDY_YEAR_LABEL,
   emptyApplication,
   type ApplicationValues,
   type CycleQuestion,
@@ -588,6 +592,20 @@ export function ApplicationForm({
                     error={err('phone')}
                   />
                 </div>
+                <Chips
+                  id="field-gender"
+                  label={L('الجنس', 'Gender')}
+                  value={values.gender as string}
+                  options={GENDERS.map((g) => ({ value: g, label: GENDER_LABEL[g][lang] }))}
+                  onChange={(v) => set('gender', v as ApplicationValues['gender'])}
+                  error={err('gender')}
+                />
+                <p className="-mt-3 text-sm text-muted">
+                  {L(
+                    'لا يظهر في ملفك العام. يراه فريق المراجعة وقيادة المجتمع فقط.',
+                    'Never shown on your public profile. Only the review team and community leadership see it.',
+                  )}
+                </p>
               </>
             )}
 
@@ -613,6 +631,23 @@ export function ApplicationForm({
                   onChange={(v) => set('academicStatus', v as ApplicationValues['academicStatus'])}
                   error={err('academicStatus')}
                 />
+                {values.academicStatus === 'student' && (
+                  <Select
+                    id="field-studyYear"
+                    label={L('السنة الدراسية', 'Year of study')}
+                    requiredLabel={L('مطلوب', 'required')}
+                    value={values.studyYear}
+                    onChange={(e) => set('studyYear', e.target.value)}
+                    error={err('studyYear')}
+                  >
+                    <option value="">{L('اختر…', 'Choose…')}</option>
+                    {STUDY_YEARS.map((y) => (
+                      <option key={y} value={y}>
+                        {STUDY_YEAR_LABEL[y][lang]}
+                      </option>
+                    ))}
+                  </Select>
+                )}
                 <div className="grid gap-4 md:grid-cols-2">
                   <Select
                     id="field-universityId"
@@ -985,6 +1020,73 @@ export function ApplicationForm({
   );
 }
 
+/** Radio cards for a single choice: a bordered card per option, the chosen one tinted, with an optional hint line. */
+function ChoiceCards({
+  id,
+  legend,
+  value,
+  options,
+  onChange,
+  error,
+}: {
+  id: string;
+  legend: string;
+  value: string;
+  options: Array<{ value: string; label: string; hint?: string }>;
+  onChange: (v: string) => void;
+  error?: string;
+}) {
+  return (
+    <fieldset id={id} className="flex flex-col gap-3">
+      <legend className="mb-1 text-sm font-semibold">{legend}</legend>
+      <div className={cn('grid gap-3', options.length === 2 ? 'sm:grid-cols-2' : 'sm:grid-cols-3')}>
+        {options.map((o) => (
+          <label
+            key={o.value}
+            className={cn(
+              'flex min-h-16 cursor-pointer items-start gap-3 rounded-shape-xl border-[1.5px] p-4 transition-colors',
+              'focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-focus-ring',
+              value === o.value
+                ? 'border-accent bg-accent-soft'
+                : error
+                  ? 'border-danger'
+                  : 'border-line hover:border-line-strong',
+            )}
+          >
+            <input
+              type="radio"
+              name={id}
+              value={o.value}
+              checked={value === o.value}
+              onChange={() => onChange(o.value)}
+              className="peer sr-only"
+            />
+            <span
+              aria-hidden="true"
+              className={cn(
+                'mt-0.5 inline-flex size-5 shrink-0 items-center justify-center rounded-full border-[1.5px] bg-field',
+                'after:size-2 after:rounded-full after:bg-accent after:opacity-0',
+                value === o.value
+                  ? 'border-accent border-2 after:opacity-100'
+                  : 'border-line-strong',
+              )}
+            />
+            <span className="flex flex-col">
+              <span className="font-semibold">{o.label}</span>
+              {o.hint && <span className="text-sm text-muted">{o.hint}</span>}
+            </span>
+          </label>
+        ))}
+      </div>
+      {error && (
+        <p role="alert" className="text-sm text-danger">
+          {error}
+        </p>
+      )}
+    </fieldset>
+  );
+}
+
 function QuestionField({
   q,
   value,
@@ -1016,11 +1118,15 @@ function QuestionField({
     );
   if (q.type === 'single_choice')
     return (
-      <Chips
+      <ChoiceCards
         id={`field-q:${q.key}`}
-        label={`${label}${q.required ? ' *' : ''}`}
+        legend={`${label}${q.required ? ' ' + (ar ? '(مطلوب)' : '(required)') : ''}`}
         value={typeof value === 'string' ? value : ''}
-        options={(q.options ?? []).map((o) => ({ value: o, label: o }))}
+        options={(q.options ?? []).map((o, i) => ({
+          value: o,
+          label: o,
+          hint: q.option_hints?.[i],
+        }))}
         onChange={(v) => onChange(v)}
         error={error}
       />
@@ -1109,6 +1215,7 @@ function ReviewSummary({
         [ar ? 'الاسم' : 'Name', nameAr],
         [ar ? 'بالإنجليزية' : 'In English', nameEn],
         [ar ? 'الجوال' : 'Phone', values.phone || '—'],
+        [ar ? 'الجنس' : 'Gender', values.gender ? GENDER_LABEL[values.gender][lang] : '—'],
       ],
     },
     {
@@ -1119,6 +1226,14 @@ function ReviewSummary({
           ar ? 'الوضع' : 'Status',
           values.academicStatus ? ACADEMIC_LABEL[values.academicStatus][lang] : '—',
         ],
+        ...(values.academicStatus === 'student' && values.studyYear
+          ? ([
+              [
+                ar ? 'السنة الدراسية' : 'Year of study',
+                STUDY_YEAR_LABEL[values.studyYear as (typeof STUDY_YEARS)[number]][lang],
+              ],
+            ] as Array<[string, string]>)
+          : []),
         [
           ar ? 'الجامعة' : 'University',
           find(reference.universities, values.universityId, values.otherUniversity),

@@ -48,6 +48,7 @@ const partSchema = z
       .array(z.enum(['internship', 'job', 'freelance', 'mentoring', 'speaking', 'collaboration']))
       .max(6),
     academic_status: z.string().max(40),
+    study_year: z.string().regex(/^[1-7]?$/),
     university_id: id,
     major_id: id,
     sub_major_id: id,

@@ -348,6 +348,13 @@ const staffEditSchema = z.object({
     .regex(/^(\+[1-9]\d{6,14})?$/)
     .optional(),
   academicStatus: z.enum(['student', 'graduate', 'employee', 'other']),
+  /** Leadership only: male | female, or empty to clear. */
+  gender: z.enum(['male', 'female', '']).optional(),
+  /** 1 to 7 for a student, empty otherwise. */
+  studyYear: z
+    .string()
+    .regex(/^[1-7]?$/)
+    .optional(),
   universityId: optionalDigits,
   majorId: optionalDigits,
   subMajorId: optionalDigits,
@@ -422,6 +429,10 @@ export async function updateMemberByStaff(
       major_id: v.majorId ?? '',
       sub_major_id: v.subMajorId ?? '',
       track_id: v.trackId ?? '',
+      ...(v.gender !== undefined ? { gender: v.gender } : {}),
+      ...(v.studyYear !== undefined
+        ? { study_year: v.academicStatus === 'student' ? v.studyYear : '' }
+        : {}),
       ...(v.headlineAr !== undefined ? { headline_ar: v.headlineAr } : {}),
       ...(v.headlineEn !== undefined ? { headline_en: v.headlineEn } : {}),
       ...(v.aboutAr !== undefined ? { about_ar: v.aboutAr } : {}),

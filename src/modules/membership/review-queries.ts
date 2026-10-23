@@ -18,6 +18,8 @@ export type ReviewApplication = {
   email: string;
   phone: string | null;
   academicStatus: string;
+  gender: string | null;
+  studyYear: number | null;
   university: string | null;
   major: string | null;
   track: string | null;
@@ -67,6 +69,8 @@ type QueueRow = {
   email: string | null;
   phone: string | null;
   academic_status: string | null;
+  gender: string | null;
+  study_year: number | null;
   university_id: number | null;
   major_id: number | null;
   track_id: number | null;
@@ -116,6 +120,8 @@ function toRow(a: QueueRow, names: Awaited<ReturnType<typeof referenceNames>>): 
     email: a.email!,
     phone: a.phone,
     academicStatus: a.academic_status!,
+    gender: a.gender,
+    studyYear: a.study_year,
     university: a.university_id ? (names.uni.get(a.university_id) ?? null) : null,
     major: a.major_id ? (names.maj.get(a.major_id) ?? null) : null,
     track: a.track_id ? (names.trk.get(a.track_id) ?? null) : null,

@@ -44,6 +44,10 @@ export type EditorValues = {
   about_en: string;
   open_to: string[];
   academic_status: string;
+  /** 1 to 7 for a student, empty otherwise (the member edits it). */
+  study_year: string;
+  /** Private and read-only for the member: only leadership changes it. */
+  gender: string;
   university_id: string;
   major_id: string;
   sub_major_id: string;

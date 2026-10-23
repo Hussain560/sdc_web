@@ -2,7 +2,9 @@ import { z } from 'zod';
 import type { Lang } from '@/modules/auth/messages';
 import {
   ACADEMIC_STATUSES,
+  GENDERS,
   QUESTION_TYPES,
+  STUDY_YEARS,
   type ApplicationValues,
   type CycleFormValues,
   type CycleQuestion,
@@ -24,6 +26,8 @@ const m = {
     ar: 'رقم الجوال غير صحيح (أرقام فقط، مع + اختياريًا).',
     en: 'Invalid phone number (digits only, optional leading +).',
   },
+  gender: { ar: 'اختر الجنس.', en: 'Choose your gender.' },
+  studyYear: { ar: 'اختر السنة الدراسية.', en: 'Choose your year of study.' },
   status: { ar: 'اختر حالتك الدراسية أو المهنية.', en: 'Choose your academic or work status.' },
   university: { ar: 'اختر الجامعة أو اكتبها.', en: 'Choose or type your university.' },
   major: { ar: 'اختر التخصص أو اكتبه.', en: 'Choose or type your major.' },
@@ -103,10 +107,13 @@ export function validateApplicationStep(
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.email.trim())) add('email', m.email[lang]);
     if (!v.phone.trim()) add('phone', m.phoneRequired[lang]);
     else if (!/^\+?[0-9]{8,15}$/.test(v.phone.trim())) add('phone', m.phone[lang]);
+    if (!(GENDERS as readonly string[]).includes(v.gender)) add('gender', m.gender[lang]);
   }
   if (step === 'academic') {
     if (!(ACADEMIC_STATUSES as readonly string[]).includes(v.academicStatus))
       add('academicStatus', m.status[lang]);
+    if (v.academicStatus === 'student' && !(STUDY_YEARS as readonly string[]).includes(v.studyYear))
+      add('studyYear', m.studyYear[lang]);
     if (!v.universityId || (v.universityId === OTHER && !v.otherUniversity.trim()))
       add('universityId', m.university[lang]);
     if (!v.majorId || (v.majorId === OTHER && !v.otherMajor.trim())) add('majorId', m.major[lang]);
@@ -162,7 +169,10 @@ export function toApplicationPayload(v: ApplicationValues, consentVersion: strin
     middle_name_en: v.middleNameEn.trim(),
     last_name_en: v.lastNameEn.trim(),
     phone: v.phone.trim(),
+    gender: v.gender,
     academic_status: v.academicStatus,
+    // Only a student has a year of study.
+    study_year: v.academicStatus === 'student' ? v.studyYear : '',
     university_id: v.universityId === OTHER ? '' : v.universityId,
     major_id: v.majorId === OTHER ? '' : v.majorId,
     sub_major_id: v.majorId === OTHER ? '' : v.subMajorId,
@@ -199,7 +209,9 @@ export function fromApplicationRow(r: Record<string, unknown>): ApplicationValue
     middleNameEn: s('middle_name_en'),
     lastNameEn: s('last_name_en'),
     phone: s('phone'),
+    gender: (s('gender') as ApplicationValues['gender']) || '',
     academicStatus: (s('academic_status') as ApplicationValues['academicStatus']) || '',
+    studyYear: n('study_year'),
     universityId: n('university_id') || (typeof other_university === 'string' ? OTHER : ''),
     otherUniversity: typeof other_university === 'string' ? other_university : '',
     majorId: n('major_id') || (typeof other_major === 'string' ? OTHER : ''),
@@ -227,6 +239,7 @@ const questionSchema = z.object({
   label_ar: z.string().trim().min(2).max(200),
   label_en: z.string().trim().max(200).optional(),
   options: z.array(z.string().trim().min(1).max(100)).min(2).max(12).optional(),
+  option_hints: z.array(z.string().trim().max(100)).max(12).optional(),
 });
 
 /** yyyy-mm-ddThh:mm (Riyadh wall-clock) → ISO instant with the +03:00 offset (no daylight saving). */
@@ -287,6 +300,7 @@ const cleanQuestion = (q: CycleQuestion): CycleQuestion => ({
   label_ar: q.label_ar,
   ...(q.label_en ? { label_en: q.label_en } : {}),
   ...(q.type === 'single_choice' || q.type === 'multi_choice' ? { options: q.options ?? [] } : {}),
+  ...(q.type === 'single_choice' && q.option_hints?.length ? { option_hints: q.option_hints } : {}),
 });
 
 export function toCyclePayload(v: CycleFormValues) {

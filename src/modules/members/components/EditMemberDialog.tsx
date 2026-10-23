@@ -21,6 +21,10 @@ import { toE164, type PhoneCountry } from '@/lib/phone';
 import {
   ACADEMIC_LABEL,
   ACADEMIC_STATUSES,
+  GENDERS,
+  GENDER_LABEL,
+  STUDY_YEARS,
+  STUDY_YEAR_LABEL,
   type AcademicStatus,
   type ReferenceOption,
 } from '@/modules/membership/types';
@@ -46,6 +50,9 @@ export type EditMemberValues = {
   phoneCountry: PhoneCountry;
   phone: string;
   academicStatus: AcademicStatus | '';
+  /** Private; null when the viewer may not see it. */
+  gender: 'male' | 'female' | '';
+  studyYear: string;
   universityId: string;
   majorId: string;
   subMajorId: string;
@@ -241,6 +248,8 @@ export function EditMemberDialog({
           lastNameEn: v.lastNameEn,
           ...(canEditPhone ? { phone: phone ?? '' } : {}),
           academicStatus: v.academicStatus as 'student',
+          gender: v.gender,
+          studyYear: v.studyYear,
           universityId: v.universityId,
           majorId: v.majorId,
           subMajorId: v.subMajorId,
@@ -361,6 +370,14 @@ export function EditMemberDialog({
           </div>
         </div>
         {canEditPhone && (
+          <Chips
+            label={L('الجنس', 'Gender')}
+            value={v.gender}
+            options={GENDERS.map((g) => ({ value: g, label: GENDER_LABEL[g][lang] }))}
+            onChange={(x) => set('gender', x as 'male' | 'female')}
+          />
+        )}
+        {canEditPhone && (
           <PhoneField
             label={L('الجوال', 'Phone')}
             optionalLabel={L('اختياري', 'optional')}
@@ -384,6 +401,20 @@ export function EditMemberDialog({
           onChange={(x) => set('academicStatus', x)}
           error={errors.academicStatus}
         />
+        {v.academicStatus === 'student' && (
+          <Select
+            label={L('السنة الدراسية', 'Year of study')}
+            value={v.studyYear}
+            onChange={(e) => set('studyYear', e.target.value)}
+          >
+            <option value="">—</option>
+            {STUDY_YEARS.map((y) => (
+              <option key={y} value={y}>
+                {STUDY_YEAR_LABEL[y][lang]}
+              </option>
+            ))}
+          </Select>
+        )}
         <div className="grid gap-4 md:grid-cols-2">
           <Select
             label={L('الجامعة', 'University')}

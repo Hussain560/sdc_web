@@ -46,6 +46,8 @@ export async function getMyEditorData(): Promise<EditorData | null> {
       about_en: s(m.about_en),
       open_to: m.open_to ?? [],
       academic_status: s(m.academic_status),
+      study_year: n(m.study_year),
+      gender: s(m.gender),
       university_id: n(m.university_id),
       major_id: n(m.major_id),
       sub_major_id: n(m.sub_major_id),

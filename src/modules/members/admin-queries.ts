@@ -194,6 +194,9 @@ export type AdminMemberDetail = {
     middleNameEn: string | null;
     lastNameEn: string | null;
     academicStatus: string | null;
+    /** Private: null unless the viewer may see contact data (members.view_contact). */
+    gender: string | null;
+    studyYear: number | null;
     universityAr: string | null;
     universityEn: string | null;
     majorAr: string | null;
@@ -302,6 +305,8 @@ type RawDetail = {
     middle_name_en: Str;
     last_name_en: Str;
     academic_status: Str;
+    gender: Str;
+    study_year: number | null;
     university_ar: Str;
     university_en: Str;
     major_ar: Str;
@@ -413,6 +418,8 @@ export async function getAdminMember(id: string): Promise<AdminMemberDetail | nu
       middleNameEn: m.middle_name_en,
       lastNameEn: m.last_name_en,
       academicStatus: m.academic_status,
+      gender: m.gender,
+      studyYear: m.study_year,
       universityAr: m.university_ar,
       universityEn: m.university_en,
       majorAr: m.major_ar,

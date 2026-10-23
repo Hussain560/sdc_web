@@ -28,6 +28,8 @@ const valid = () => ({
   firstNameEn: 'Test',
   lastNameEn: 'Applicant',
   phone: '+966501234567',
+  gender: 'female' as const,
+  studyYear: '3',
   bioAr: 'مطوّر مهتم بالمجتمع',
   academicStatus: 'student' as const,
   universityId: '1',
@@ -49,6 +51,37 @@ describe('application steps', () => {
     expect(
       validateApplicationStep('personal', { ...valid(), phone: '+966501234567' }, questions, 'en'),
     ).toEqual({});
+  });
+
+  it('personal: the gender is required', () => {
+    const e = validateApplicationStep('personal', { ...valid(), gender: '' }, questions, 'en');
+    expect(Object.keys(e)).toEqual(['gender']);
+  });
+
+  it('academic: a student must choose the year of study, others do not', () => {
+    const student = validateApplicationStep(
+      'academic',
+      { ...valid(), studyYear: '' },
+      questions,
+      'en',
+    );
+    expect(Object.keys(student)).toEqual(['studyYear']);
+    expect(
+      validateApplicationStep(
+        'academic',
+        { ...valid(), academicStatus: 'employee', studyYear: '' },
+        questions,
+        'en',
+      ),
+    ).toEqual({});
+  });
+
+  it('the payload sends the year only for a student', () => {
+    expect(toApplicationPayload(valid(), 'v1').study_year).toBe('3');
+    expect(toApplicationPayload({ ...valid(), academicStatus: 'graduate' }, 'v1').study_year).toBe(
+      '',
+    );
+    expect(toApplicationPayload(valid(), 'v1').gender).toBe('female');
   });
 
   it('academic: "other" needs the typed value', () => {

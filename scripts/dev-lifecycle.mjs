@@ -16,6 +16,8 @@ for (const f of [
   'supabase/dev-fill-fake-members.sql',
   'supabase/dev-lifecycle-seed.sql',
   'supabase/dev-lifecycle-more.sql',
+  'supabase/dev-cycle-questions.sql',
+  'supabase/dev-winter-applications.sql',
   'supabase/dev-lifecycle-people.sql',
   'supabase/dev-full-member.sql',
   'supabase/dev-lifecycle-members.sql',
@@ -23,6 +25,7 @@ for (const f of [
   'supabase/dev-expiring-tabs.sql',
   'supabase/dev-email-logs.sql',
   'supabase/dev-audit-logs.sql',
+  'supabase/dev-open-cycle.sql',
 ]) {
   console.log('loading', f);
   psql(f);
