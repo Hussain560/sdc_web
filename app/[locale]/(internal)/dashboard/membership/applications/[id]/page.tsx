@@ -537,6 +537,7 @@ export default async function ApplicationPage({
 
         <ReviewPanel
           id={a.id}
+          name={name}
           status={a.status}
           reviewerId={a.reviewerId}
           reviewerName={a.reviewerName}

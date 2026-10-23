@@ -21,6 +21,8 @@ type Decision = 'accept' | 'waitlist' | 'reject';
 
 export type ReviewPanelProps = {
   id: string;
+  /** The applicant's name, so the confirmation says whose request it was. */
+  name: string;
   status: string;
   reviewerId: string | null;
   reviewerName: string | null;
@@ -126,18 +128,22 @@ export function ReviewPanel(p: ReviewPanelProps) {
           setError(membershipMessage(out?.code ?? 'INTERNAL', lang));
           return;
         }
-        const label =
+        const moved = Boolean(openNext && p.nextId);
+        const verb =
           decision === 'accept'
             ? ar
-              ? 'تم قبول الطلب'
+              ? 'قُبل طلب'
               : 'Accepted'
             : decision === 'reject'
               ? ar
-                ? 'رُفض الطلب'
+                ? 'رُفض طلب'
                 : 'Rejected'
               : ar
-                ? 'نُقل إلى الانتظار'
-                : 'Moved to the waiting list';
+                ? 'نُقل إلى الانتظار طلب'
+                : 'Moved to the waiting list:';
+        const label = `${verb} ${p.name}${
+          moved ? (ar ? '. فتحنا الطلب التالي.' : '. Opened the next request.') : ''
+        }`;
         toast.success(label, {
           label: ar ? 'تراجع' : 'Undo',
           onClick: () => {
