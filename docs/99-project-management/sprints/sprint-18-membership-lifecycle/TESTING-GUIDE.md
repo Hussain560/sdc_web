@@ -27,7 +27,7 @@ Password for **every** demo account: `Dev!Passw0rd1`. Mail goes to Mailpit: **ht
 | `dev.admin@example.test`                    | System admin: full access, can override a claim                                           |
 | `dev.head@example.test`                     | Committee head: dashboard without membership review                                       |
 | `dev.regular@example.test`                  | Active member, no position: member area only                                              |
-| `dev.newmember@example.test`                | **New member, never signed in before**: lands on the welcome tour (`/account/welcome`)    |
+| `dev.newmember@example.test`                | **New member, never signed in before**: lands on the welcome tour (`/welcome`)    |
 | `dev.expiring@example.test`                 | Term ends in **12 days**: sees "Request a renewal"                                        |
 | `dev.expired@example.test`                  | **Expired** yesterday: notice dialog, card not valid                                      |
 | `dev.suspended@example.test`                | **Suspended** (category "Inactivity" visible, internal reason hidden)                     |
@@ -120,7 +120,7 @@ curl -H "Authorization: Bearer $CRON_SECRET" "http://localhost:3000/api/cron/mem
 
 1. Accept an application whose e-mail has no account (any seeded applicant) and let the undo window pass.
 2. Mailpit → the acceptance mail has the **activation link** → open it → choose a password (the welcome variant).
-3. Sign in → you land on **`/account/welcome`** (5 steps, saved one by one, skippable; reopen it by going to the URL).
+3. Sign in → you land on **`/welcome`** (5 steps, saved one by one, skippable; reopen it by going to the URL).
 4. After the first sign-in the account counts as **activated**; the waiting-list clock stops for that person.
 
 ## 8. Member journey
@@ -240,7 +240,7 @@ also needs `members.view_contact`. A founder or committee head can open the reco
 2. **Received mail.** In Mailpit, open the "استلام طلب العضوية" e-mail. It has the tracking link (`/join/status/…`). Open it: the page shows the status "received".
 3. **Admin accepts.** Sign out, then sign in as `dev.admin@example.test` (password `Dev!Passw0rd1`). Go to **العضوية → الطلبات**, select the new application (or open it with "مراجعة"). Use **قبول**. You have 6 seconds to press **تراجع** (undo) before the decision mail is released.
 4. **Acceptance mail.** In Mailpit, open "قبول طلب العضوية". It contains the **activation link**.
-5. **Activate the account.** Open the activation link. Choose a password (the welcome screen). You are signed in and see the welcome tour at `/account/welcome`.
+5. **Activate the account.** Open the activation link. Choose a password (the welcome screen). You are signed in and see the welcome tour at `/welcome`.
 6. **Member is active.** Go to `/account/membership`: the card with QR, the term, and the leave/renewal options. As admin, the member appears in **العضوية → الأعضاء**, with the timeline showing: application, acceptance, activation.
 7. **Other mails.** Waitlist, rejection and activation-reminder mails are in the same inbox. To trigger the daily jobs (activation reminders, lapsed activations, term reminders), run:
    ```bash

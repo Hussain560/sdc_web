@@ -107,8 +107,7 @@ export async function signIn(
     state as { member?: { status: string; onboarded_at: string | null } | null } | null
   )?.member;
   return ok({
-    redirectTo:
-      member?.status === 'active' && !member.onboarded_at ? '/account/welcome' : '/account',
+    redirectTo: member?.status === 'active' && !member.onboarded_at ? '/welcome' : '/account',
   });
 }
 

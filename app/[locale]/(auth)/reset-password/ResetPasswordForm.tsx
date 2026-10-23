@@ -1,12 +1,13 @@
 'use client';
 
-import { CircleCheck, TriangleAlert } from 'lucide-react';
+import { Check, CircleCheck, TriangleAlert } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
-import { Alert, Button, LinkButton, PasswordField } from '@/components/ui';
+import { Alert, Button, LinkButton, PasswordField, TextLink } from '@/components/ui';
 import { useLanguage } from '@/context/LanguageContext';
 import { useRouter } from '@/i18n/navigation';
 import { updatePassword } from '@/modules/auth/actions';
 import { AuthHeading } from '@/modules/auth/components/AuthShell';
+import { PasswordStrength } from '@/modules/auth/components/PasswordStrength';
 import { fieldErrorsOf, updatePasswordSchema } from '@/modules/auth/schemas';
 
 const TEXT = {
@@ -29,6 +30,16 @@ const TEXT = {
     expiredTitle: 'انتهت صلاحية الرابط',
     expiredBody: 'رابط إعادة التعيين غير صالح أو انتهت صلاحيته.',
     request: 'اطلب رابطاً جديداً',
+    accepted: 'قُبلت عضويتك',
+    welcomeTitle: (n: string) => (n ? `أهلاً ${n}، لنفعّل حسابك` : 'لنفعّل حسابك'),
+    welcomeFor: (e: string) => `اختر كلمة مرور لحساب ${e}`,
+    passwordLabel: 'كلمة المرور',
+    again: 'أعد كتابتها',
+    activate: 'فعّل حسابي',
+    readyTitle: 'حسابك جاهز',
+    readyBody: 'أصبحت عضواً في المجتمع. لنأخذ دقيقتين لنجهّز ملفك.',
+    start: 'لنبدأ',
+    later: 'لاحقاً، خذني إلى حسابي',
   },
   en: {
     title: 'Set a new password',
@@ -50,6 +61,17 @@ const TEXT = {
     expiredTitle: 'This link has expired',
     expiredBody: 'The reset link is invalid or has expired.',
     request: 'Request a new link',
+    accepted: 'Your membership is accepted',
+    welcomeTitle: (n: string) =>
+      n ? `Welcome ${n}, let’s activate your account` : 'Let’s activate your account',
+    welcomeFor: (e: string) => `Choose a password for ${e}`,
+    passwordLabel: 'Password',
+    again: 'Type it again',
+    activate: 'Activate my account',
+    readyTitle: 'Your account is ready',
+    readyBody: 'You are a member of the community. Let’s take two minutes to set up your profile.',
+    start: 'Let’s start',
+    later: 'Later, take me to my account',
   },
 } as const;
 
@@ -90,9 +112,13 @@ function Result({
 export default function ResetPasswordForm({
   hasSession,
   welcome = false,
+  name = '',
+  email = '',
 }: {
   hasSession: boolean;
   welcome?: boolean;
+  name?: string;
+  email?: string;
 }) {
   const { lang } = useLanguage();
   const s = TEXT[lang];
@@ -116,7 +142,11 @@ export default function ResetPasswordForm({
     setErrors({});
     setLoading(true);
     // endSession: the recovery session ends so the user signs in with the new password.
-    const result = await updatePassword({ password, confirmPassword }, { lang, endSession: true });
+    const result = await updatePassword(
+      { password, confirmPassword },
+      // A new member goes straight on to the set-up; a reset ends the recovery session so they sign in again.
+      { lang, endSession: !welcome },
+    );
     setLoading(false);
     if (!result.ok) {
       setErrors(result.fieldErrors ?? {});
@@ -124,10 +154,33 @@ export default function ResetPasswordForm({
       return;
     }
     setDone(true);
-    setTimeout(() => {
-      router.replace('/login');
-      router.refresh();
-    }, 3000);
+    if (!welcome)
+      setTimeout(() => {
+        router.replace('/login');
+        router.refresh();
+      }, 3000);
+  }
+
+  if (done && welcome) {
+    return (
+      <div
+        role="status"
+        className="m-pop flex flex-col items-center gap-4 rounded-shape-2xl bg-accent-soft p-8 text-center"
+      >
+        <span
+          aria-hidden="true"
+          className="flex size-20 items-center justify-center rounded-full bg-accent text-on-accent"
+        >
+          <Check size={36} />
+        </span>
+        <h1 className="t-h1">{s.readyTitle}</h1>
+        <p className="t-lede text-muted">{s.readyBody}</p>
+        <LinkButton href="/welcome" size="lg">
+          {s.start}
+        </LinkButton>
+        <TextLink href="/account/membership">{s.later}</TextLink>
+      </div>
+    );
   }
 
   if (done) {
@@ -161,27 +214,39 @@ export default function ResetPasswordForm({
   }
 
   return (
-    <>
+    <div
+      className={
+        welcome
+          ? 'flex flex-col gap-5 rounded-shape-2xl border border-line bg-surface p-6 md:p-8'
+          : 'flex flex-col gap-6'
+      }
+    >
+      {welcome && (
+        <span className="inline-flex w-fit items-center gap-1.5 rounded-full bg-accent-soft px-3 py-1 text-sm font-semibold text-accent-text">
+          <Check size={14} aria-hidden="true" />
+          {s.accepted}
+        </span>
+      )}
       <AuthHeading
-        title={welcome ? s.titleWelcome : s.title}
-        lede={welcome ? s.ledeWelcome : s.lede}
+        title={welcome ? s.welcomeTitle(name) : s.title}
+        lede={welcome ? s.welcomeFor(email) : s.lede}
       />
       {formError && <Alert tone="danger">{formError}</Alert>}
       <form method="post" onSubmit={onSubmit} className="flex flex-col gap-5">
         <PasswordField
-          label={s.newPassword}
+          label={welcome ? s.passwordLabel : s.newPassword}
           name="password"
           autoComplete="new-password"
           showLabel={s.show}
           hideLabel={s.hide}
-          hint={s.hint}
           error={errors.password}
           required
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
+        <PasswordStrength value={password} lang={lang} />
         <PasswordField
-          label={s.confirm}
+          label={welcome ? s.again : s.confirm}
           name="confirmPassword"
           autoComplete="new-password"
           showLabel={s.show}
@@ -192,9 +257,9 @@ export default function ResetPasswordForm({
           onChange={(e) => setConfirmPassword(e.target.value)}
         />
         <Button type="submit" size="lg" fullWidth loading={loading}>
-          {loading ? s.submitting : s.submit}
+          {loading ? s.submitting : welcome ? s.activate : s.submit}
         </Button>
       </form>
-    </>
+    </div>
   );
 }
