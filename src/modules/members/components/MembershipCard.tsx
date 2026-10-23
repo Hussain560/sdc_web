@@ -36,14 +36,14 @@ export function MembershipCard({
   const nameOther = ar ? data.nameEn : data.nameAr;
   const qr = data.qrSvg ? (
     <div
-      className={`rounded-shape-lg bg-white p-2.5 ${full ? 'size-60' : 'size-40 sm:size-48'} [&>svg]:size-full`}
+      className={`rounded-shape-lg bg-white p-2.5 ${full ? 'size-60' : 'size-32 sm:size-40 lg:size-48'} [&>svg]:size-full`}
       role="img"
       aria-label={L('رمز التحقق من العضوية', 'Membership verification code')}
       dangerouslySetInnerHTML={{ __html: data.qrSvg }}
     />
   ) : (
     <div
-      className={`flex items-center justify-center rounded-shape-lg bg-white/60 text-center text-sm text-on-brand ${full ? 'size-60' : 'size-40 sm:size-48'}`}
+      className={`flex items-center justify-center rounded-shape-lg bg-white/60 text-center text-sm text-on-brand ${full ? 'size-60' : 'size-32 sm:size-40 lg:size-48'}`}
     >
       {L('الرمز غير فعّال', 'Code not active')}
     </div>
@@ -63,7 +63,7 @@ export function MembershipCard({
         <dt className="opacity-75">{L('رقم العضوية', 'Member no.')}</dt>
         <dd
           dir="ltr"
-          className="font-mono font-semibold tracking-wide"
+          className="whitespace-nowrap font-mono font-semibold tracking-wide"
           style={{ textAlign: 'start' }}
         >
           {data.memberNo}
@@ -121,69 +121,60 @@ export function MembershipCard({
       </div>
     );
 
-  // The wide card (design: "عضويتي"): the brand mark large behind everything, status and logo on top, the person and
-  // the three facts on the start side, the QR code on the end side.
+  // The wide card (design: "عضويتي"): a plastic card in proportion. The brand mark sits large behind everything, the
+  // status and the small logo are on top, the person and the three facts on the start side, the QR code on the end side.
   return (
     <div
-      className="relative isolate overflow-hidden rounded-shape-2xl bg-brand p-5 text-on-brand shadow-elev-2 sm:p-8"
+      className="relative isolate flex flex-col gap-5 overflow-hidden rounded-shape-2xl bg-brand p-5 text-on-brand shadow-elev-2 sm:aspect-[1.53] sm:gap-0 sm:p-8"
       aria-label={L('بطاقة العضوية', 'Membership card')}
       role="group"
     >
-      {/* The brand X as two soft strokes across the card, like the printed card. */}
-      <span
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src="/assets/brand/sdc-mark.svg"
+        alt=""
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 -z-10 overflow-hidden"
-      >
-        <span
-          className="absolute rounded-full bg-black/[0.16]"
-          style={{
-            top: '-30%',
-            insetInlineStart: '34%',
-            width: '13%',
-            height: '125%',
-            transform: 'rotate(-34deg)',
-          }}
-        />
-        <span
-          className="absolute rounded-full bg-black/[0.11]"
-          style={{
-            top: '-30%',
-            insetInlineStart: '34%',
-            width: '13%',
-            height: '125%',
-            transform: 'rotate(34deg)',
-          }}
-        />
-      </span>
+        className="pointer-events-none absolute -z-10"
+        style={{
+          top: '-22%',
+          insetInlineStart: '22%',
+          height: '150%',
+          width: 'auto',
+          maxWidth: 'none',
+          opacity: 0.2,
+        }}
+      />
       <div
         className="motif-dots pointer-events-none absolute inset-0 -z-10 opacity-40"
         aria-hidden="true"
       />
-      <div className="mb-4 flex items-center justify-end gap-3">
-        {statusPill}
+
+      <div className="flex items-start justify-between gap-3">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="/assets/brand/sdc-mark.svg"
           alt=""
           aria-hidden="true"
-          style={{ height: 36, width: 'auto' }}
+          style={{ height: 40, width: 'auto' }}
         />
+        <div className="sm:me-[40%]">{statusPill}</div>
       </div>
-      <div className="grid items-center gap-6 sm:grid-cols-[1fr_auto]">
-        <div className="flex min-w-0 flex-col gap-8">
+
+      <div className="grid flex-1 items-center gap-5 sm:grid-cols-[1fr_auto] sm:gap-6">
+        <div className="flex min-w-0 flex-col gap-6 sm:gap-8">
           <div className="flex items-center gap-4">
             <Avatar
               name={nameMain}
               src={data.photoUrl}
               size={72}
-              className="ring-2 ring-white/60"
+              className="shrink-0 ring-[3px] ring-white/60 sm:size-24! sm:text-3xl!"
             />
             <div className="min-w-0">
               <p className="text-2xl font-extrabold leading-tight sm:text-3xl">{nameMain}</p>
               {nameOther && (
                 <p
                   dir={ar ? 'ltr' : 'rtl'}
-                  className="mt-0.5 text-sm opacity-80"
+                  className="mt-0.5 truncate text-sm opacity-80 sm:text-base"
                   style={{ textAlign: 'start' }}
                 >
                   {nameOther}
@@ -193,7 +184,7 @@ export function MembershipCard({
           </div>
           {facts}
         </div>
-        {qr}
+        <div className="flex justify-center">{qr}</div>
       </div>
     </div>
   );
