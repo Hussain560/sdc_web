@@ -1,6 +1,6 @@
 import { nowMs } from '@/lib/now';
-import { CalendarClock, IdCard } from 'lucide-react';
-import { Alert, EmptyState } from '@/components/ui';
+import { IdCard, UsersRound } from 'lucide-react';
+import { Alert, Badge, EmptyState } from '@/components/ui';
 import { Link } from '@/i18n/navigation';
 import { requireUser } from '@/lib/auth/session';
 import { formatDate } from '@/lib/format';
@@ -11,6 +11,7 @@ import {
   RenewalButton,
 } from '@/modules/members/components/MyMembershipActions';
 import { getMyMembership } from '@/modules/members/my-membership';
+import { MEMBER_STATUS_LABEL } from '@/modules/members/schemas';
 
 const DAY = 86_400_000;
 
@@ -61,8 +62,13 @@ export default async function MyMembershipPage({
   const soon = active && days !== null && days <= 30;
 
   return (
-    <div className="m-enter flex flex-col gap-5">
-      <h1 className="text-2xl font-extrabold">{L('عضويتي', 'My membership')}</h1>
+    <div data-wide className="m-enter flex flex-col gap-5">
+      <div className="flex flex-col gap-1">
+        <h1 className="text-3xl font-extrabold">{L('عضويتي', 'My membership')}</h1>
+        <p className="text-muted">
+          {L('بطاقتك، ومدة عضويتك، وما يمكنك فعله.', 'Your card, your term and what you can do.')}
+        </p>
+      </div>
 
       {state.status === 'suspended' && (
         <Alert tone="warning">
@@ -105,73 +111,132 @@ export default async function MyMembershipPage({
         </Alert>
       )}
 
-      <div className="m-pop">
-        <MembershipCard data={card} lang={lang} />
-      </div>
-      {active && <CardActions canRotate={!!mine.cardToken} />}
-
-      <section
-        className="rounded-shape-xl border border-line bg-surface p-5"
-        aria-labelledby="term-title"
-      >
-        <h2 id="term-title" className="flex items-center gap-2 font-bold">
-          <CalendarClock size={17} aria-hidden="true" />
-          {L('مدة العضوية', 'Your term')}
-        </h2>
-        {state.termEndsAt ? (
-          <>
-            <div
-              className="mt-3 h-2 overflow-hidden rounded-full bg-surface-sunken"
-              role="progressbar"
-              aria-valuenow={pct}
-              aria-valuemin={0}
-              aria-valuemax={100}
-              aria-label={L('مضى من المدة', 'Term elapsed')}
-            >
-              <div
-                className="h-full rounded-full bg-accent transition-[width] duration-700"
-                style={{ width: `${pct}%` }}
-              />
-            </div>
-            <p className="mt-2 text-sm text-muted">
-              {days !== null && days >= 0
-                ? L(
-                    `تنتهي في ${formatDate(state.termEndsAt, lang)} — بقي ${days} يوماً.`,
-                    `Ends on ${formatDate(state.termEndsAt, lang)} — ${days} days left.`,
-                  )
-                : L(
-                    `انتهت في ${formatDate(state.termEndsAt, lang)}.`,
-                    `Ended on ${formatDate(state.termEndsAt, lang)}.`,
-                  )}
-            </p>
-          </>
-        ) : (
-          <p className="mt-2 text-sm text-muted">
-            {L('عضويتك مفتوحة بلا تاريخ انتهاء.', 'Your membership has no end date.')}
-          </p>
-        )}
-        {(soon || state.status === 'expired') && (
-          <div className="mt-4">
-            <RenewalButton
-              requestedAt={state.renewalRequestedAt}
-              label={L('اطلب التجديد', 'Request a renewal')}
-            />
+      <div className="grid gap-5 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] lg:items-start">
+        <div className="flex flex-col gap-4">
+          <div className="m-pop">
+            <MembershipCard data={card} lang={lang} />
           </div>
-        )}
-      </section>
+          {active && <CardActions canRotate={!!mine.cardToken} />}
+          {mine.cardToken && (
+            <p className="text-sm text-muted">
+              {L(
+                'من يمسح الرمز يرى اسمك ورقم عضويتك وحالتها وتاريخ انتهائها فقط. ',
+                'Whoever scans the code sees only your name, member number, status and end date. ',
+              )}
+              <Link
+                href={`/verify/member/${mine.cardToken}`}
+                className="font-semibold text-accent-text underline underline-offset-4"
+              >
+                {L('شاهد صفحة التحقق', 'See the verification page')}
+              </Link>
+            </p>
+          )}
+        </div>
 
-      {(active || state.status === 'suspended') && (
-        <LeaveSection
-          pending={
-            state.leaveRequest
-              ? {
-                  createdAt: state.leaveRequest.createdAt,
-                  preferredLastDay: state.leaveRequest.preferredLastDay,
-                }
-              : null
-          }
-        />
-      )}
+        <div className="flex flex-col gap-4">
+          <section
+            className="rounded-shape-2xl border border-line bg-surface p-6"
+            aria-labelledby="term-title"
+          >
+            <div className="flex items-center justify-between gap-3">
+              <h2 id="term-title" className="text-xl font-extrabold">
+                {L('حالة العضوية', 'Membership status')}
+              </h2>
+              <Badge tone={MEMBER_STATUS_LABEL[state.status].tone}>
+                {MEMBER_STATUS_LABEL[state.status][lang]}
+              </Badge>
+            </div>
+            {state.termEndsAt ? (
+              <>
+                <div className="mt-4 flex items-center justify-between text-sm text-muted">
+                  <span>{formatDate(state.joinedAt, lang)}</span>
+                  <span>{formatDate(state.termEndsAt, lang)}</span>
+                </div>
+                <div
+                  className="mt-2 h-2 overflow-hidden rounded-full bg-surface-sunken"
+                  role="progressbar"
+                  aria-valuenow={pct}
+                  aria-valuemin={0}
+                  aria-valuemax={100}
+                  aria-label={L('مضى من المدة', 'Term elapsed')}
+                >
+                  <div
+                    className="h-full rounded-full bg-accent transition-[width] duration-700"
+                    style={{ width: `${pct}%` }}
+                  />
+                </div>
+                <p className="mt-4 text-muted">
+                  {days !== null && days >= 0 ? (
+                    <>
+                      <span className="text-3xl font-extrabold text-text">{days}</span>{' '}
+                      {L('يوماً متبقياً', days === 1 ? 'day left' : 'days left')}
+                    </>
+                  ) : (
+                    L(
+                      `انتهت في ${formatDate(state.termEndsAt, lang)}.`,
+                      `Ended on ${formatDate(state.termEndsAt, lang)}.`,
+                    )
+                  )}
+                </p>
+              </>
+            ) : (
+              <p className="mt-3 text-sm text-muted">
+                {L('عضويتك مفتوحة بلا تاريخ انتهاء.', 'Your membership has no end date.')}
+              </p>
+            )}
+            {(soon || state.status === 'expired') && (
+              <div className="mt-4">
+                <RenewalButton
+                  requestedAt={state.renewalRequestedAt}
+                  label={L('اطلب التجديد', 'Request a renewal')}
+                />
+              </div>
+            )}
+          </section>
+
+          {mine.positions.length > 0 && (
+            <section
+              className="rounded-shape-2xl border border-line bg-surface p-6"
+              aria-labelledby="positions-title"
+            >
+              <h2 id="positions-title" className="text-xl font-extrabold">
+                {L('مناصبي', 'My positions')}
+              </h2>
+              <ul className="mt-4 flex flex-col gap-3">
+                {mine.positions.map((x) => (
+                  <li key={x.id} className="flex items-center gap-3">
+                    <span
+                      aria-hidden="true"
+                      className="flex size-12 shrink-0 items-center justify-center rounded-shape-lg bg-accent-soft text-accent-text"
+                    >
+                      <UsersRound size={20} />
+                    </span>
+                    <div className="min-w-0">
+                      <p className="font-bold">{x.title}</p>
+                      <p className="text-sm text-muted">
+                        {L('منذ', 'Since')} {formatDate(x.since, lang)}
+                      </p>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
+
+          {(active || state.status === 'suspended') && (
+            <LeaveSection
+              pending={
+                state.leaveRequest
+                  ? {
+                      createdAt: state.leaveRequest.createdAt,
+                      preferredLastDay: state.leaveRequest.preferredLastDay,
+                    }
+                  : null
+              }
+            />
+          )}
+        </div>
+      </div>
     </div>
   );
 }

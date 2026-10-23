@@ -1,5 +1,6 @@
 import 'server-only';
 import QRCode from 'qrcode';
+import { getUser } from '@/lib/auth/session';
 import { createClient } from '@/lib/supabase/server';
 import { getAccountState, type AccountState } from '@/modules/account/state';
 import type { MembershipCardData } from './components/MembershipCard';
@@ -10,6 +11,8 @@ export type MyMembership = {
   card: MembershipCardData;
   cardToken: string | null;
   verifyUrl: string | null;
+  /** My current positions: a role, a committee and since when. */
+  positions: Array<{ id: string; title: string; since: string }>;
   /** The latest decided leave request, shown for a while after the decision. */
   lastLeave: {
     status: 'approved' | 'declined';
@@ -26,7 +29,8 @@ export async function getMyMembership(lang: 'ar' | 'en'): Promise<MyMembership |
   const state = account?.member;
   if (!state) return null;
   const supabase = await createClient();
-  const [{ data: m }, { data: leave }] = await Promise.all([
+  const user = await getUser();
+  const [{ data: m }, { data: leave }, { data: roles }] = await Promise.all([
     supabase
       .from('members')
       .select(
@@ -42,6 +46,15 @@ export async function getMyMembership(lang: 'ar' | 'en'): Promise<MyMembership |
       .order('decided_at', { ascending: false })
       .limit(1)
       .maybeSingle(),
+    user
+      ? supabase
+          .from('role_assignments')
+          .select(
+            'id, starts_at, ends_at, display_title_ar, display_title_en, roles(name_ar, name_en), committees(name_ar, name_en)',
+          )
+          .eq('user_id', user.id)
+          .order('starts_at')
+      : Promise.resolve({ data: [] }),
   ]);
   if (!m) return null;
   const cardToken = m.card_token ?? null;
@@ -66,6 +79,20 @@ export async function getMyMembership(lang: 'ar' | 'en'): Promise<MyMembership |
       photoUrl: m.show_photo ? memberThumbUrl(m.photo_path) : null,
       qrSvg,
     },
+    positions: (roles ?? [])
+      .filter((x) => !x.ends_at || Date.parse(x.ends_at) > Date.now())
+      .map((x) => {
+        const ar = lang === 'ar';
+        const role = x.roles ? (ar ? x.roles.name_ar : x.roles.name_en) : '';
+        const com = x.committees ? (ar ? x.committees.name_ar : x.committees.name_en) : '';
+        return {
+          id: x.id,
+          title:
+            (ar ? x.display_title_ar : x.display_title_en) ||
+            [role, com].filter(Boolean).join(' • '),
+          since: x.starts_at,
+        };
+      }),
     lastLeave:
       leave && Date.now() - decidedAt < 30 * 86_400_000
         ? {

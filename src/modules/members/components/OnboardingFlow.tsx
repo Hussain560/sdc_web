@@ -13,8 +13,10 @@ import { useState, useTransition } from 'react';
 import { LocaleSwitch } from '@/components/layout/LocaleSwitch';
 import { Logo } from '@/components/layout/Logo';
 import { ThemeSwitch } from '@/components/layout/ThemeSwitch';
-import { Avatar, Button, Switch, cn } from '@/components/ui';
+import { Avatar, Button, LinkButton, Switch, cn } from '@/components/ui';
 import { Link, useRouter } from '@/i18n/navigation';
+import { completeness } from '../completeness';
+import { MembershipCard, type MembershipCardData } from './MembershipCard';
 import { saveOnboardingStep } from '../lifecycle-actions';
 import { saveMyProfilePart, saveMySkills } from '../profile-actions';
 import type { PublicSkill } from '../public';
@@ -36,6 +38,9 @@ export type OnboardingProps = {
   catalog: PublicSkill[];
   skills: string[];
   visibility: { directory: boolean; photo: boolean; skills: boolean; headline: boolean };
+  /** What the finishing card shows, and what the profile already has (for the completeness bar). */
+  card: MembershipCardData;
+  base: { headline: boolean; about: boolean; links: number };
 };
 
 const STEP_COUNT = 5;
@@ -55,7 +60,17 @@ const T = {
       ['صورتك', 'اختيارية ودائماً بيدك.'],
       ['اهتماماتك', 'ليجدك من يبحث عن مهارتك.'],
       ['الخصوصية', 'أنت من يقرّر.'],
+      ['أنت جاهز', 'مرحباً بك بيننا.'],
     ] as const,
+    doneLabel: 'اكتملت',
+    readyTitle: 'بطاقتك جاهزة',
+    readyBody: (pct: number) =>
+      `احفظها في جوالك من «عضويتي». ملفك مكتمل بنسبة ${pct}٪${pct < 100 ? '، وخطوتان تكفيان لإكماله' : ''}.`,
+    cardLabel: 'بطاقة عضوية',
+    memberNo: 'رقم العضوية',
+    until: (d: string) => `حتى ${d}`,
+    completeProfile: 'أكمل ملفي',
+    goMembership: 'اذهب إلى عضويتي',
     hello: (n: string) => `أهلاً بك يا ${n}`,
     helloLede:
       'أنت الآن عضو في المجتمع السعودي للمطورين. خمس خطوات قصيرة تجعل ملفك جاهزاً. كلها قابلة للتعديل لاحقاً.',
@@ -105,7 +120,17 @@ const T = {
       ['Your photo', 'Optional, and always up to you.'],
       ['Your interests', 'So people can find your skills.'],
       ['Privacy', 'You decide.'],
+      ['You are ready', 'Welcome among us.'],
     ] as const,
+    doneLabel: 'Done',
+    readyTitle: 'Your card is ready',
+    readyBody: (pct: number) =>
+      `Keep it on your phone from “My membership”. Your profile is ${pct}% complete${pct < 100 ? ', and two steps finish it' : ''}.`,
+    cardLabel: 'Membership card',
+    memberNo: 'Member no.',
+    until: (d: string) => `Until ${d}`,
+    completeProfile: 'Complete my profile',
+    goMembership: 'Go to my membership',
     hello: (n: string) => `Welcome, ${n}`,
     helloLede:
       'You are now a member of the Saudi Developers Community. Five short steps get your profile ready. All of it can be changed later.',
@@ -171,10 +196,20 @@ export function OnboardingFlow(p: OnboardingProps) {
     return k ? (ar ? k.nameAr : k.nameEn) : slug;
   };
 
-  const finish = (save: boolean) =>
-    run(async () => {
-      setError(null);
-      if (save) {
+  // Skipping leaves for the account; finishing shows the card at once and saves in the background.
+  const finish = (save: boolean) => {
+    setError(null);
+    if (!save) {
+      run(async () => {
+        await saveOnboardingStep({ step: STEP_COUNT, done: true }, { lang });
+        router.replace('/account/membership');
+        router.refresh();
+      });
+      return;
+    }
+    setI(STEP_COUNT);
+    void (async () => {
+      try {
         const r = await saveMyProfilePart(
           {
             is_directory_visible: vis.directory,
@@ -184,19 +219,17 @@ export function OnboardingFlow(p: OnboardingProps) {
           },
           { lang },
         );
-        if (!r.ok) {
-          setError(r.message || s.failed);
-          return;
+        const d = r.ok ? await saveOnboardingStep({ step: STEP_COUNT, done: true }, { lang }) : r;
+        if (!d.ok) {
+          setI(STEP_COUNT - 1);
+          setError(d.message || s.failed);
         }
+      } catch {
+        setI(STEP_COUNT - 1);
+        setError(s.failed);
       }
-      const d = await saveOnboardingStep({ step: STEP_COUNT, done: true }, { lang });
-      if (!d.ok) {
-        setError(d.message || s.failed);
-        return;
-      }
-      router.replace('/account/membership');
-      router.refresh();
-    });
+    })();
+  };
 
   // Moving on is instant: the step is saved in the background, and a failure is reported where the person is.
   const go = (to: number, before?: () => Promise<{ ok: boolean; message?: string }>) => {
@@ -225,6 +258,15 @@ export function OnboardingFlow(p: OnboardingProps) {
           : [...cur, slug],
     );
 
+  const done = i >= STEP_COUNT;
+  const pct = completeness({
+    hasPhoto: !!photo,
+    headline: p.base.headline ? 'x' : '',
+    about: p.base.about ? 'x' : '',
+    skillCount: picked.length,
+    linkCount: p.base.links,
+  }).percent;
+  const stepLabel = done ? s.doneLabel : s.of(i + 1);
   const [title, sub] = s.panel[i] ?? s.panel[0];
   const chip =
     'inline-flex min-h-11 items-center rounded-full border-[1.5px] px-4 text-sm font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-focus-ring';
@@ -254,6 +296,37 @@ export function OnboardingFlow(p: OnboardingProps) {
   );
 
   const stepBody = (() => {
+    if (done)
+      return (
+        <div className="flex flex-col items-center gap-6 text-center">
+          <div className="w-full" style={{ perspective: 1400 }}>
+            <div className="m-flip">
+              <MembershipCard
+                data={{ ...p.card, photoUrl: vis.photo ? (photo ?? p.card.photoUrl) : null }}
+                lang={lang}
+              />
+            </div>
+          </div>
+          <h1 className="t-h1">{s.readyTitle}</h1>
+          <p className="t-lede max-w-md text-muted">{s.readyBody(pct)}</p>
+          <div className="grid w-full max-w-sm grid-cols-5 gap-2" aria-hidden="true">
+            {[0, 1, 2, 3, 4].map((n) => (
+              <span
+                key={n}
+                className={cn('h-1.5 rounded-full', n < pct / 20 ? 'bg-accent' : 'bg-line')}
+              />
+            ))}
+          </div>
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            <LinkButton href="/account/profile" size="lg">
+              {s.completeProfile}
+            </LinkButton>
+            <LinkButton href="/account/membership" size="lg" variant="secondary">
+              {s.goMembership}
+            </LinkButton>
+          </div>
+        </div>
+      );
     if (i === 0)
       return (
         <>
@@ -459,14 +532,22 @@ export function OnboardingFlow(p: OnboardingProps) {
       >
         <div className="flex items-center justify-between">
           <Logo label={p.logo.home} alt={p.logo.alt} />
-          <span className="text-sm font-semibold">{s.of(i + 1)}</span>
+          <span className="text-sm font-semibold">{stepLabel}</span>
         </div>
         {/* The brand mark, large and soft behind the text (the design's corner mark). */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="/assets/brand/sdc-mark.svg"
           alt=""
-          className="pointer-events-none absolute -bottom-16 end-10 h-[32rem] w-auto opacity-30"
+          className="pointer-events-none absolute"
+          style={{
+            bottom: -64,
+            insetInlineEnd: 40,
+            height: 512,
+            width: 'auto',
+            maxWidth: 'none',
+            opacity: 0.3,
+          }}
         />
         <div className="relative flex flex-col gap-3">
           <div className="flex items-center gap-2" aria-hidden="true">
@@ -475,7 +556,7 @@ export function OnboardingFlow(p: OnboardingProps) {
                 key={n}
                 className={cn(
                   'h-2 rounded-full bg-on-brand transition-all duration-300',
-                  n === i ? 'w-8' : 'w-2 opacity-40',
+                  n === Math.min(i, STEP_COUNT - 1) ? 'w-8' : 'w-2 opacity-40',
                 )}
               />
             ))}
@@ -495,7 +576,7 @@ export function OnboardingFlow(p: OnboardingProps) {
             <LocaleSwitch />
             <ThemeSwitch />
           </div>
-          <span className="text-sm font-semibold text-muted lg:hidden">{s.of(i + 1)}</span>
+          <span className="text-sm font-semibold text-muted lg:hidden">{stepLabel}</span>
         </div>
         <div
           className="mt-4 h-1.5 overflow-hidden rounded-full bg-line lg:hidden"
@@ -506,7 +587,7 @@ export function OnboardingFlow(p: OnboardingProps) {
         >
           <div
             className="h-full rounded-full bg-accent transition-all duration-300"
-            style={{ width: `${((i + 1) / STEP_COUNT) * 100}%` }}
+            style={{ width: `${(Math.min(i + 1, STEP_COUNT) / STEP_COUNT) * 100}%` }}
           />
         </div>
         <main
@@ -521,25 +602,27 @@ export function OnboardingFlow(p: OnboardingProps) {
               {error}
             </p>
           )}
-          <div className="flex items-center justify-between gap-3 border-t border-line pt-6">
-            <Button
-              variant="ghost"
-              disabled={i === 0}
-              onClick={() => i > 0 && go(i - 1)}
-              className="gap-1.5"
-            >
-              {s.back}
-              <ArrowRight size={16} aria-hidden="true" className="ltr:rotate-180" />
-            </Button>
-            <div className="flex items-center gap-2">
-              {(i === 2 || i === 3) && (
-                <Button variant="ghost" onClick={() => go(i + 1)}>
-                  {s.notNow}
-                </Button>
-              )}
-              {primary}
+          {!done && (
+            <div className="flex items-center justify-between gap-3 border-t border-line pt-6">
+              <Button
+                variant="ghost"
+                disabled={i === 0}
+                onClick={() => i > 0 && go(i - 1)}
+                className="gap-1.5"
+              >
+                {s.back}
+                <ArrowRight size={16} aria-hidden="true" className="ltr:rotate-180" />
+              </Button>
+              <div className="flex items-center gap-2">
+                {(i === 2 || i === 3) && (
+                  <Button variant="ghost" onClick={() => go(i + 1)}>
+                    {s.notNow}
+                  </Button>
+                )}
+                {primary}
+              </div>
             </div>
-          </div>
+          )}
         </main>
       </div>
     </div>

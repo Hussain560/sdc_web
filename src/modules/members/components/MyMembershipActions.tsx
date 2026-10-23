@@ -229,10 +229,10 @@ export function LeaveSection({
 
   return (
     <section
-      className="rounded-shape-xl border border-dashed border-line p-5"
+      className="rounded-shape-2xl border border-dashed border-line p-6"
       aria-labelledby="leave-title"
     >
-      <h2 id="leave-title" className="font-bold">
+      <h2 id="leave-title" className="text-xl font-extrabold">
         {L('مغادرة المجتمع', 'Leaving the community')}
       </h2>
       <p className="mt-1 text-sm text-muted">

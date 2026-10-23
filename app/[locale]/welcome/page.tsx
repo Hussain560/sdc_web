@@ -5,6 +5,7 @@ import { requireUser } from '@/lib/auth/session';
 import { getAccountState } from '@/modules/account/state';
 import { OnboardingFlow } from '@/modules/members/components/OnboardingFlow';
 import { getMyEditorData } from '@/modules/members/editor';
+import { getMyMembership } from '@/modules/members/my-membership';
 import { getSkillCatalog } from '@/modules/members/public';
 
 export const metadata: Metadata = { robots: { index: false, follow: false } };
@@ -17,12 +18,13 @@ export default async function WelcomePage({ params }: { params: Promise<{ locale
   const { locale } = await params;
   const lang = locale === 'en' ? 'en' : 'ar';
   await requireUser('/welcome');
-  const [state, editor, catalog] = await Promise.all([
+  const [state, editor, catalog, mine] = await Promise.all([
     getAccountState(),
     getMyEditorData(),
     getSkillCatalog(),
+    getMyMembership(lang),
   ]);
-  if (!state?.member || !editor) redirect({ href: '/account/profile', locale });
+  if (!state?.member || !editor || !mine) redirect({ href: '/account/profile', locale });
   const v = editor!.values;
   const full = (f: string, m: string, l: string) => [f, m, l].filter(Boolean).join(' ');
   const fullName =
@@ -44,6 +46,12 @@ export default async function WelcomePage({ params }: { params: Promise<{ locale
       photoUrl={editor!.photoUrl}
       catalog={[...catalog.values()]}
       skills={editor!.skills}
+      card={mine!.card}
+      base={{
+        headline: Boolean(v.headline_ar || v.headline_en),
+        about: Boolean(v.about_ar || v.about_en),
+        links: Object.values(v.links).filter(Boolean).length,
+      }}
       visibility={{
         directory: v.is_directory_visible,
         photo: v.show_photo,

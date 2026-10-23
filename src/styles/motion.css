@@ -59,6 +59,21 @@
   animation: m-pop var(--duration-base) cubic-bezier(0.34, 1.56, 0.64, 1) both;
 }
 
+@keyframes m-flip {
+  from {
+    opacity: 0;
+    transform: rotateY(-100deg) scale(0.92);
+  }
+  55% {
+    opacity: 1;
+    transform: rotateY(12deg) scale(1.02);
+  }
+}
+.m-flip {
+  animation: m-flip 900ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  transform-origin: center;
+}
+
 /* M1 page enter: server-rendered, first screen only. The first five children follow each other by 60 ms. */
 .m-enter > * {
   animation: m-rise var(--duration-base) var(--ease-out) both;
@@ -271,6 +286,7 @@
   .m-enter > *,
   .m-reveal,
   .m-pop,
+  .m-flip,
   .m-stagger > *,
   .m-in,
   .m-count,

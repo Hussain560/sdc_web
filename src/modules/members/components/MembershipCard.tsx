@@ -32,95 +32,168 @@ export function MembershipCard({
   const L = (a: string, e: string) => (ar ? a : e);
   const st = MEMBER_STATUS_LABEL[data.status];
   const full = size === 'full';
+  const nameMain = ar ? data.nameAr : data.nameEn || data.nameAr;
+  const nameOther = ar ? data.nameEn : data.nameAr;
+  const qr = data.qrSvg ? (
+    <div
+      className={`rounded-shape-lg bg-white p-2.5 ${full ? 'size-60' : 'size-40 sm:size-48'} [&>svg]:size-full`}
+      role="img"
+      aria-label={L('رمز التحقق من العضوية', 'Membership verification code')}
+      dangerouslySetInnerHTML={{ __html: data.qrSvg }}
+    />
+  ) : (
+    <div
+      className={`flex items-center justify-center rounded-shape-lg bg-white/60 text-center text-sm text-on-brand ${full ? 'size-60' : 'size-40 sm:size-48'}`}
+    >
+      {L('الرمز غير فعّال', 'Code not active')}
+    </div>
+  );
+  const statusPill = (
+    <span className="inline-flex items-center gap-2 rounded-full bg-black/15 px-3 py-1 text-sm font-semibold">
+      <span
+        aria-hidden="true"
+        className={`size-2 rounded-full ${data.status === 'active' ? 'bg-accent' : 'bg-warning'}`}
+      />
+      {st[lang]}
+    </span>
+  );
+  const facts = (
+    <dl className={`grid gap-3 text-sm ${full ? 'grid-cols-2 text-start' : 'grid-cols-3'}`}>
+      <div className={full ? 'col-span-2' : ''}>
+        <dt className="opacity-75">{L('رقم العضوية', 'Member no.')}</dt>
+        <dd
+          dir="ltr"
+          className="font-mono font-semibold tracking-wide"
+          style={{ textAlign: 'start' }}
+        >
+          {data.memberNo}
+        </dd>
+      </div>
+      <div>
+        <dt className="opacity-75">{L('عضو منذ', 'Member since')}</dt>
+        <dd className="font-semibold">{formatDate(data.joinedAt, lang)}</dd>
+      </div>
+      <div>
+        <dt className="opacity-75">{L('صالحة حتى', 'Valid until')}</dt>
+        <dd className="font-semibold">
+          {data.termEndsAt ? formatDate(data.termEndsAt, lang) : '—'}
+        </dd>
+      </div>
+    </dl>
+  );
+
+  if (full)
+    return (
+      <div
+        className="relative isolate mx-auto w-full max-w-sm overflow-hidden rounded-shape-2xl bg-brand p-6 text-on-brand shadow-elev-2"
+        aria-label={L('بطاقة العضوية', 'Membership card')}
+        role="group"
+      >
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute -end-10 -top-10 -z-10 size-56 rounded-full bg-accent/20"
+        />
+        <div className="flex flex-col items-center gap-4 text-center">
+          {qr}
+          <div className="min-w-0">
+            <p className="text-2xl font-extrabold leading-tight">{nameMain}</p>
+            {nameOther && (
+              <p
+                dir={ar ? 'ltr' : 'rtl'}
+                className="mt-0.5 text-sm opacity-80"
+                style={{ textAlign: 'center' }}
+              >
+                {nameOther}
+              </p>
+            )}
+            <div className="mt-3">{facts}</div>
+          </div>
+          <div className="flex items-center justify-center gap-3">
+            {statusPill}
+            <Avatar
+              name={nameMain}
+              src={data.photoUrl}
+              size={56}
+              className="ring-2 ring-white/60"
+            />
+          </div>
+        </div>
+      </div>
+    );
+
+  // The wide card (design: "عضويتي"): the brand mark large behind everything, status and logo on top, the person and
+  // the three facts on the start side, the QR code on the end side.
   return (
     <div
-      className={`relative isolate overflow-hidden rounded-shape-2xl bg-brand text-on-brand shadow-elev-2 ${full ? 'mx-auto w-full max-w-sm p-6' : 'p-5 sm:p-7'}`}
+      className="relative isolate overflow-hidden rounded-shape-2xl bg-brand p-5 text-on-brand shadow-elev-2 sm:p-8"
       aria-label={L('بطاقة العضوية', 'Membership card')}
       role="group"
     >
+      {/* The brand X as two soft strokes across the card, like the printed card. */}
       <span
         aria-hidden="true"
-        className="pointer-events-none absolute -end-10 -top-10 -z-10 size-56 rounded-full bg-accent/20"
-      />
-      <span
-        aria-hidden="true"
-        className="pointer-events-none absolute -start-16 bottom-0 -z-10 h-64 w-24 -rotate-12 rounded-full bg-accent/15"
-      />
-      <div
-        className={
-          full
-            ? 'flex flex-col items-center gap-4 text-center'
-            : 'grid items-center gap-5 sm:grid-cols-[auto_1fr_auto]'
-        }
+        className="pointer-events-none absolute inset-0 -z-10 overflow-hidden"
       >
-        {data.qrSvg ? (
-          <div
-            className={`rounded-shape-lg bg-white p-2.5 ${full ? 'size-60' : 'size-36 sm:size-44'} [&>svg]:size-full`}
-            role="img"
-            aria-label={L('رمز التحقق من العضوية', 'Membership verification code')}
-            dangerouslySetInnerHTML={{ __html: data.qrSvg }}
-          />
-        ) : (
-          <div
-            className={`flex items-center justify-center rounded-shape-lg bg-white/60 text-center text-sm text-on-brand ${full ? 'size-60' : 'size-36 sm:size-44'}`}
-          >
-            {L('الرمز غير فعّال', 'Code not active')}
-          </div>
-        )}
-        <div className={`min-w-0 ${full ? '' : 'sm:order-none'}`}>
-          <p
-            className={`font-extrabold leading-tight ${full ? 'text-2xl' : 'text-xl sm:text-2xl'}`}
-          >
-            {ar ? data.nameAr : data.nameEn || data.nameAr}
-          </p>
-          {(ar ? data.nameEn : data.nameAr) && (
-            <p
-              dir={ar ? 'ltr' : 'rtl'}
-              className="mt-0.5 text-sm opacity-80"
-              style={{ textAlign: full ? 'center' : 'start' }}
-            >
-              {ar ? data.nameEn : data.nameAr}
-            </p>
-          )}
-          <p
-            dir="ltr"
-            className="mt-3 font-mono text-sm tracking-wide"
-            style={{ textAlign: full ? 'center' : 'start' }}
-          >
-            {data.memberNo}
-          </p>
-          <dl
-            className={`mt-3 grid gap-3 text-sm ${full ? 'grid-cols-2 text-start' : 'grid-cols-2'}`}
-          >
-            <div>
-              <dt className="opacity-75">{L('عضو منذ', 'Member since')}</dt>
-              <dd className="font-semibold">{formatDate(data.joinedAt, lang)}</dd>
-            </div>
-            <div>
-              <dt className="opacity-75">{L('صالحة حتى', 'Valid until')}</dt>
-              <dd className="font-semibold">
-                {data.termEndsAt ? formatDate(data.termEndsAt, lang) : '—'}
-              </dd>
-            </div>
-          </dl>
-        </div>
-        <div
-          className={`flex ${full ? 'items-center justify-center gap-3' : 'flex-col items-end gap-3 sm:justify-between sm:self-stretch'}`}
-        >
-          <span className="inline-flex items-center gap-2 rounded-full bg-black/15 px-3 py-1 text-sm font-semibold">
-            <span
-              aria-hidden="true"
-              className={`size-2 rounded-full ${data.status === 'active' ? 'bg-accent' : 'bg-warning'}`}
+        <span
+          className="absolute rounded-full bg-black/[0.16]"
+          style={{
+            top: '-30%',
+            insetInlineStart: '34%',
+            width: '13%',
+            height: '125%',
+            transform: 'rotate(-34deg)',
+          }}
+        />
+        <span
+          className="absolute rounded-full bg-black/[0.11]"
+          style={{
+            top: '-30%',
+            insetInlineStart: '34%',
+            width: '13%',
+            height: '125%',
+            transform: 'rotate(34deg)',
+          }}
+        />
+      </span>
+      <div
+        className="motif-dots pointer-events-none absolute inset-0 -z-10 opacity-40"
+        aria-hidden="true"
+      />
+      <div className="mb-4 flex items-center justify-end gap-3">
+        {statusPill}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/assets/brand/sdc-mark.svg"
+          alt=""
+          aria-hidden="true"
+          style={{ height: 36, width: 'auto' }}
+        />
+      </div>
+      <div className="grid items-center gap-6 sm:grid-cols-[1fr_auto]">
+        <div className="flex min-w-0 flex-col gap-8">
+          <div className="flex items-center gap-4">
+            <Avatar
+              name={nameMain}
+              src={data.photoUrl}
+              size={72}
+              className="ring-2 ring-white/60"
             />
-            {st[lang]}
-          </span>
-          <Avatar
-            name={ar ? data.nameAr : data.nameEn || data.nameAr}
-            src={data.photoUrl}
-            size={full ? 56 : 72}
-            className="ring-2 ring-white/60"
-          />
+            <div className="min-w-0">
+              <p className="text-2xl font-extrabold leading-tight sm:text-3xl">{nameMain}</p>
+              {nameOther && (
+                <p
+                  dir={ar ? 'ltr' : 'rtl'}
+                  className="mt-0.5 text-sm opacity-80"
+                  style={{ textAlign: 'start' }}
+                >
+                  {nameOther}
+                </p>
+              )}
+            </div>
+          </div>
+          {facts}
         </div>
+        {qr}
       </div>
     </div>
   );
