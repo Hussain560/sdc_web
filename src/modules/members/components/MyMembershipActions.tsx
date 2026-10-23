@@ -30,7 +30,7 @@ export function CardActions({ canRotate }: { canRotate: boolean }) {
       <div className="flex flex-wrap gap-2">
         <Link
           href="/card"
-          className="inline-flex min-h-11 items-center gap-2 rounded-full bg-accent px-5 font-semibold text-on-accent hover:bg-accent-hover"
+          className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full bg-accent px-5 font-semibold text-on-accent hover:bg-accent-hover sm:w-auto"
         >
           <Maximize2 size={16} aria-hidden="true" />
           {L('عرض بملء الشاشة', 'Show full screen')}
@@ -46,7 +46,7 @@ export function CardActions({ canRotate }: { canRotate: boolean }) {
           href={`${ar ? '' : '/en'}/card/print`}
           target="_blank"
           rel="noopener"
-          className="inline-flex min-h-11 items-center gap-2 rounded-full border-[1.5px] border-line-strong px-5 font-semibold hover:border-accent"
+          className="hidden min-h-11 items-center gap-2 rounded-full border-[1.5px] border-line-strong px-5 font-semibold hover:border-accent sm:inline-flex"
         >
           <Printer size={16} aria-hidden="true" />
           {L('طباعة', 'Print')}

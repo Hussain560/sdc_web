@@ -18,7 +18,12 @@ export default async function CardPage({ params }: { params: Promise<{ locale: s
     <main className="flex min-h-dvh flex-col items-center justify-center gap-6 bg-canvas px-4 py-8">
       {mine ? (
         <div className="m-pop w-full">
-          <MembershipCard data={mine.card} lang={lang} size="full" />
+          <MembershipCard
+            data={mine.card}
+            lang={lang}
+            size="full"
+            closeHref="/account/membership"
+          />
         </div>
       ) : (
         <p className="text-center text-muted">
@@ -33,13 +38,15 @@ export default async function CardPage({ params }: { params: Promise<{ locale: s
           )}
         </p>
       )}
-      <Link
-        href="/account/membership"
-        className="inline-flex min-h-11 items-center gap-2 rounded-full border-[1.5px] border-line-strong px-5 font-semibold hover:border-accent"
-      >
-        <ArrowRight size={16} aria-hidden="true" className="ltr:rotate-180" />
-        {L('عودة إلى عضويتي', 'Back to my membership')}
-      </Link>
+      {!mine && (
+        <Link
+          href="/account/membership"
+          className="inline-flex min-h-11 items-center gap-2 rounded-full border-[1.5px] border-line-strong px-5 font-semibold hover:border-accent"
+        >
+          <ArrowRight size={16} aria-hidden="true" className="ltr:rotate-180" />
+          {L('عودة إلى عضويتي', 'Back to my membership')}
+        </Link>
+      )}
     </main>
   );
 }
