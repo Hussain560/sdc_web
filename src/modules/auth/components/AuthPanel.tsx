@@ -15,11 +15,13 @@ export function AuthPanel() {
     <aside
       aria-hidden="true"
       className={`motif-dots relative flex shrink-0 items-center justify-center overflow-hidden rounded-b-shape-2xl bg-band text-muted lg:col-start-2 lg:row-start-1 lg:h-auto lg:rounded-shape-2xl ${
-        isLogin ? 'h-30' : 'h-24'
+        isLogin ? 'h-48' : 'h-24'
       }`}
     >
       {isLogin ? (
-        <AnimatedBrandVideo className="h-26 w-auto max-w-[55%] object-contain object-center lg:h-auto lg:max-h-[75vh] lg:max-w-[min(70%,420px)]" />
+        <div className="h-44 w-28 lg:h-[72vh] lg:w-[min(70%,420px)]">
+          <AnimatedBrandVideo fill className="" />
+        </div>
       ) : (
         <Image
           src="/assets/brand/sdc-mark.png"

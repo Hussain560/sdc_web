@@ -81,7 +81,7 @@ export default async function RootLayout({
       className={`${rubik.variable} ${plexArabic.variable}`}
       suppressHydrationWarning
     >
-      <body>
+      <body suppressHydrationWarning>
         {/* Sets data-theme before first paint. next/script avoids React's "script tag in component" warning. */}
         <Script
           id="theme-init"

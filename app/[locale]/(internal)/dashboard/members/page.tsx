@@ -1,3 +1,4 @@
+import { CountUp } from '@/components/motion/CountUp';
 import { Download, Shield, Users } from 'lucide-react';
 import { EmptyState, LinkButton, Pagination, Tabs, type TabItem } from '@/components/ui';
 import { Forbidden } from '@/components/layout/Forbidden';
@@ -117,10 +118,13 @@ export default async function MembersAdminPage({
   }));
   const hasFilters = !!(sp.q || sp.committee || sp.track || sp.completeness);
 
-  const kpi = (label: string, value: string | number, hint?: string) => (
+  const kpi = (label: string, value: string | number, hint?: string, suffix = '') => (
     <div className="rounded-xl border border-line bg-surface p-4">
       <p className="text-sm text-muted">{label}</p>
-      <p className="mt-1 text-3xl font-extrabold tabular-nums">{value}</p>
+      <p className="mt-1 text-3xl font-extrabold tabular-nums">
+        {typeof value === 'number' ? <CountUp value={value} locale={lang} /> : value}
+        {suffix}
+      </p>
       {hint && <p className="mt-1 text-xs text-muted">{hint}</p>}
     </div>
   );
@@ -164,7 +168,12 @@ export default async function MembersAdminPage({
       >
         {kpi(L('أعضاء نشطون', 'Active members'), list.kpis.active)}
         {kpi(L('ظاهرون في الدليل', 'Listed in the directory'), list.kpis.listed)}
-        {kpi(L('متوسط اكتمال الملفات', 'Average completeness'), `${list.kpis.avgCompleteness}%`)}
+        {kpi(
+          L('متوسط اكتمال الملفات', 'Average completeness'),
+          list.kpis.avgCompleteness,
+          undefined,
+          '%',
+        )}
         {kpi(
           L('ملفات أقل من 40٪', 'Profiles under 40%'),
           list.kpis.lowCompleteness,

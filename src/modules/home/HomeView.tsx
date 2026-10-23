@@ -123,7 +123,7 @@ export function HomeView({
                 className="m-parallax absolute inset-0 -z-10 bg-[radial-gradient(60%_60%_at_50%_50%,color-mix(in_srgb,var(--signal)_14%,transparent),transparent)]"
                 style={{ '--m-par': '48px' } as CSSProperties}
               />
-              <AnimatedBrandVideo className="m-parallax aspect-[546/380] h-auto w-[70%] object-contain lg:w-[115%]" />
+              <AnimatedBrandVideo className="m-parallax mx-auto aspect-[4/5] h-auto w-[78%] max-w-[22rem] object-contain sm:aspect-[546/380] sm:w-[70%] sm:max-w-[26rem] lg:w-[115%] lg:max-w-none" />
             </div>
           </div>
           {sections.stats.length > 0 && (

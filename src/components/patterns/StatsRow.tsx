@@ -1,4 +1,5 @@
 import type { CSSProperties } from 'react';
+import { CountUp } from '@/components/motion/CountUp';
 import { cn } from '@/components/ui/cn';
 
 /**
@@ -33,12 +34,8 @@ export function StatsRow({
           <dd className="t-stat text-signal">
             {s.value < 1000 ? (
               <>
-                {/* The digits are drawn by CSS and count up; the figure is also plain text for screen readers. */}
-                <span
-                  aria-hidden="true"
-                  className="m-count"
-                  style={{ '--m-to': s.value } as CSSProperties}
-                />
+                {/* The digits count up when they scroll into view; the figure is also plain text for screen readers. */}
+                <CountUp value={s.value} locale={locale} />
                 <span className="sr-only">{fmt.format(s.value)}</span>
               </>
             ) : (

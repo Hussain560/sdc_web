@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import Image from 'next/image';
 import type { CSSProperties } from 'react';
+import { CountUp } from '@/components/motion/CountUp';
 import { CapsuleCover } from '@/components/patterns/CapsuleMark';
 import { SectionHeader } from '@/components/patterns/SectionHeader';
 import { AnimatedBrandVideo } from '@/components/patterns/AnimatedBrandVideo';
@@ -137,7 +138,7 @@ export function AboutView({ lang, data }: { lang: Lang; data: AboutData }) {
                   >
                     <div
                       className={cn(
-                        'relative flex h-full flex-col gap-1 overflow-hidden rounded-shape-xl',
+                        'm-lift relative flex h-full flex-col gap-1 overflow-hidden rounded-shape-xl',
                         big
                           ? 'min-h-80 bg-accent-soft p-8 text-on-accent-soft md:p-10'
                           : i === 1
@@ -152,13 +153,13 @@ export function AboutView({ lang, data }: { lang: Lang; data: AboutData }) {
                         <span className={cn('t-body-sm', big ? '' : 'text-muted')}>{note}</span>
                       )}
                       <b
-                        aria-hidden="true"
-                        style={{ '--m-to': f.value } as CSSProperties}
                         className={cn(
-                          'm-count mt-auto leading-[1.1] font-bold text-signal tabular-nums',
+                          'mt-auto leading-[1.1] font-bold text-signal tabular-nums',
                           big ? 'text-[length:clamp(3rem,2rem+3vw,5rem)]' : 'text-5xl',
                         )}
-                      />
+                      >
+                        <CountUp value={f.value} locale={lang} />
+                      </b>
                       <span className="sr-only">{`${f.value.toLocaleString(lang === 'ar' ? 'ar-SA-u-nu-latn' : 'en-US')} ${copy.title}`}</span>
                     </div>
                   </li>
