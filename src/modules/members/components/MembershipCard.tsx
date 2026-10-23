@@ -104,21 +104,14 @@ export function MembershipCard({
   if (full)
     return (
       <div
-        className="relative isolate mx-auto flex min-h-[calc(100dvh-5.5rem)] w-full max-w-sm flex-col items-center gap-4 overflow-hidden rounded-shape-2xl bg-brand p-6 text-center text-on-brand shadow-elev-2"
+        className="relative isolate mx-auto flex min-h-dvh w-full flex-col items-center gap-4 overflow-hidden bg-brand p-6 text-center text-on-brand sm:min-h-[calc(100dvh-3rem)] sm:max-w-md sm:rounded-shape-2xl sm:shadow-elev-2"
         aria-label={L('بطاقة العضوية', 'Membership card')}
         role="group"
       >
         <span
           aria-hidden="true"
-          className="pointer-events-none absolute -z-10 bg-black/10"
-          style={{
-            top: '-6%',
-            insetInlineStart: '-22%',
-            width: '75%',
-            height: '40%',
-            transform: 'rotate(-22deg)',
-            borderRadius: 9999,
-          }}
+          className="pointer-events-none absolute inset-0 -z-10 bg-black/[0.14]"
+          style={{ clipPath: 'polygon(0 0, 58% 0, 0 46%)' }}
         />
         <div className="flex w-full items-center justify-between">
           {closeHref ? (

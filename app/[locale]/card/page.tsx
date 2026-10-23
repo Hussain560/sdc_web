@@ -15,9 +15,9 @@ export default async function CardPage({ params }: { params: Promise<{ locale: s
   await requireUser('/card');
   const mine = await getMyMembership(lang);
   return (
-    <main className="flex min-h-dvh flex-col items-center justify-center gap-6 bg-canvas px-4 py-8">
+    <main className="flex min-h-dvh flex-col items-center justify-center gap-4 bg-canvas sm:p-6">
       {mine ? (
-        <div className="m-pop w-full">
+        <div className="w-full">
           <MembershipCard
             data={mine.card}
             lang={lang}
