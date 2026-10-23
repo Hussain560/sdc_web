@@ -637,8 +637,9 @@ export function OnboardingFlow(p: OnboardingProps) {
         <main
           id="main"
           className={cn(
-            'flex w-full flex-1 flex-col gap-6 px-4 py-6 lg:m-auto lg:max-w-(--container-tight) lg:flex-none lg:px-0 lg:py-10',
+            'flex w-full flex-1 flex-col gap-6 px-4 py-6 lg:m-auto lg:flex-none lg:px-0 lg:py-10',
             !done && 'max-lg:pb-28',
+            done ? 'lg:max-w-2xl' : 'lg:max-w-(--container-tight)',
           )}
         >
           <div key={i} className="m-enter flex flex-col gap-6">

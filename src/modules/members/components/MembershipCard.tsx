@@ -41,14 +41,14 @@ export function MembershipCard({
   const nameOther = ar ? data.nameEn : data.nameAr;
   const qr = data.qrSvg ? (
     <div
-      className={`rounded-shape-lg bg-white p-2.5 ${full ? 'size-60' : 'size-32 sm:size-40 lg:size-48'} [&>svg]:size-full`}
+      className={`rounded-shape-lg bg-white p-2.5 ${full ? 'size-60' : 'size-32 @lg:size-40 @2xl:size-48'} [&>svg]:size-full`}
       role="img"
       aria-label={L('رمز التحقق من العضوية', 'Membership verification code')}
       dangerouslySetInnerHTML={{ __html: data.qrSvg }}
     />
   ) : (
     <div
-      className={`flex items-center justify-center rounded-shape-lg bg-white/60 text-center text-sm text-on-brand ${full ? 'size-60' : 'size-32 sm:size-40 lg:size-48'}`}
+      className={`flex items-center justify-center rounded-shape-lg bg-white/60 text-center text-sm text-on-brand ${full ? 'size-60' : 'size-32 @lg:size-40 @2xl:size-48'}`}
     >
       {L('الرمز غير فعّال', 'Code not active')}
     </div>
@@ -67,7 +67,7 @@ export function MembershipCard({
       className={`grid gap-3 text-sm ${full ? 'grid-cols-2 text-start' : 'grid-cols-3 gap-4 border-t border-current/20 pt-4'}`}
     >
       <div className={full ? 'col-span-2' : ''}>
-        <dt className="text-xs opacity-75 sm:text-sm">{L('رقم العضوية', 'Member no.')}</dt>
+        <dt className="text-xs opacity-75 @lg:text-sm">{L('رقم العضوية', 'Member no.')}</dt>
         <dd
           dir="ltr"
           className="whitespace-nowrap font-mono font-semibold tracking-wide"
@@ -77,11 +77,11 @@ export function MembershipCard({
         </dd>
       </div>
       <div>
-        <dt className="text-xs opacity-75 sm:text-sm">{L('عضو منذ', 'Member since')}</dt>
+        <dt className="text-xs opacity-75 @lg:text-sm">{L('عضو منذ', 'Member since')}</dt>
         <dd className="font-semibold">{formatDate(data.joinedAt, lang)}</dd>
       </div>
       <div>
-        <dt className="text-xs opacity-75 sm:text-sm">{L('صالحة حتى', 'Valid until')}</dt>
+        <dt className="text-xs opacity-75 @lg:text-sm">{L('صالحة حتى', 'Valid until')}</dt>
         <dd className="font-semibold">
           {data.termEndsAt ? formatDate(data.termEndsAt, lang) : '—'}
         </dd>
@@ -168,7 +168,7 @@ export function MembershipCard({
   // Phones (design: "عضويتي" on mobile): a compact card, the person and number on the start side and the QR on the end.
   const compact = (
     <div
-      className="relative isolate overflow-hidden rounded-shape-2xl bg-brand p-4 text-on-brand shadow-elev-2 sm:hidden"
+      className="relative isolate overflow-hidden rounded-shape-2xl bg-brand p-4 text-on-brand shadow-elev-2 @lg:hidden"
       aria-label={L('بطاقة العضوية', 'Membership card')}
       role="group"
     >
@@ -222,10 +222,10 @@ export function MembershipCard({
   // The wide card (design: "عضويتي"): a plastic card in proportion. The brand mark sits large behind everything, the
   // status and the small logo are on top, the person and the three facts on the start side, the QR code on the end side.
   return (
-    <>
+    <div className="@container">
       {compact}
       <div
-        className="relative isolate hidden flex-col gap-5 overflow-hidden rounded-shape-2xl bg-brand p-5 text-on-brand shadow-elev-2 sm:flex sm:aspect-[1.53] sm:gap-0 sm:p-8"
+        className="relative isolate hidden flex-col gap-5 overflow-hidden rounded-shape-2xl bg-brand p-5 text-on-brand shadow-elev-2 @lg:flex @lg:aspect-[1.53] @lg:gap-0 @lg:p-8"
         aria-label={L('بطاقة العضوية', 'Membership card')}
         role="group"
       >
@@ -257,24 +257,24 @@ export function MembershipCard({
             aria-hidden="true"
             style={{ height: 40, width: 'auto' }}
           />
-          <div className="sm:me-[40%]">{statusPill}</div>
+          <div className="@lg:me-[40%]">{statusPill}</div>
         </div>
 
-        <div className="grid flex-1 gap-5 sm:grid-cols-[1fr_auto] sm:grid-rows-[1fr_auto] sm:gap-x-6 sm:gap-y-4">
-          <div className="flex min-w-0 flex-col justify-center sm:row-start-1">
+        <div className="grid flex-1 gap-5 @lg:grid-cols-[1fr_auto] @lg:grid-rows-[1fr_auto] @lg:gap-x-6 @lg:gap-y-4">
+          <div className="flex min-w-0 flex-col justify-center @lg:row-start-1">
             <div className="flex items-center gap-4">
               <Avatar
                 name={nameMain}
                 src={data.photoUrl}
                 size={72}
-                className="shrink-0 ring-[3px] ring-white/60 sm:size-24! sm:text-3xl!"
+                className="shrink-0 ring-[3px] ring-white/60 @lg:size-24! @lg:text-3xl!"
               />
               <div className="min-w-0">
-                <p className="text-2xl font-extrabold leading-tight sm:text-3xl">{nameMain}</p>
+                <p className="text-2xl font-extrabold leading-tight @lg:text-3xl">{nameMain}</p>
                 {nameOther && (
                   <p
                     dir={ar ? 'ltr' : 'rtl'}
-                    className="mt-0.5 truncate text-sm opacity-80 sm:text-base"
+                    className="mt-0.5 truncate text-sm opacity-80 @lg:text-base"
                     style={{ textAlign: 'start' }}
                   >
                     {nameOther}
@@ -283,12 +283,12 @@ export function MembershipCard({
               </div>
             </div>
           </div>
-          <div className="sm:col-start-1 sm:row-start-2 sm:self-end">{facts}</div>
-          <div className="order-last flex items-center justify-center sm:order-none sm:col-start-2 sm:row-span-2 sm:row-start-1">
+          <div className="@lg:col-start-1 @lg:row-start-2 @lg:self-end">{facts}</div>
+          <div className="order-last flex items-center justify-center @lg:order-none @lg:col-start-2 @lg:row-span-2 @lg:row-start-1">
             {qr}
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }
