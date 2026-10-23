@@ -15,6 +15,7 @@ import {
 import Image from 'next/image';
 import type { CSSProperties } from 'react';
 import { CountUp } from '@/components/motion/CountUp';
+import { StepsReveal } from '@/components/motion/StepsReveal';
 import { CapsuleCover } from '@/components/patterns/CapsuleMark';
 import { SectionHeader } from '@/components/patterns/SectionHeader';
 import { AnimatedBrandVideo } from '@/components/patterns/AnimatedBrandVideo';
@@ -248,31 +249,31 @@ export function AboutView({ lang, data }: { lang: Lang; data: AboutData }) {
                 aria-hidden="true"
                 className="m-line absolute inset-x-[16%] top-8 hidden h-0.5 bg-accent md:block"
               />
-              <ol className="relative grid gap-8 md:grid-cols-3 md:gap-6 md:text-center">
+              <StepsReveal className="grid gap-8 md:grid-cols-3 md:gap-6 md:text-center">
                 {t.steps.map(([title, text, href], i) => (
                   <li
                     key={href}
-                    className="m-reveal grid grid-cols-[4rem_1fr] items-start gap-x-4 gap-y-1 md:flex md:flex-col md:items-center md:gap-3"
+                    className="grid grid-cols-[4rem_1fr] items-start gap-x-4 gap-y-1 md:flex md:flex-col md:items-center md:gap-3"
                   >
                     <span
                       aria-hidden="true"
-                      className="row-span-3 grid size-16 place-items-center rounded-full bg-accent text-2xl font-bold text-on-accent shadow-[0_0_0_8px_var(--canvas)] md:row-span-1"
+                      className="m-step-dot row-span-3 grid size-16 place-items-center rounded-full bg-accent text-2xl font-bold text-on-accent shadow-[0_0_0_8px_var(--canvas)] md:row-span-1"
                     >
                       {i + 1}
                     </span>
-                    <h3 className="t-h3 md:mt-2">{title}</h3>
-                    <p className="t-body max-w-[28ch] text-muted">{text}</p>
+                    <h3 className="m-step-body t-h3 md:mt-2">{title}</h3>
+                    <p className="m-step-body t-body max-w-[28ch] text-muted">{text}</p>
                     <TextLink
                       href={href}
                       variant="standalone"
-                      className="min-h-11 justify-self-start"
+                      className="m-step-body min-h-11 justify-self-start"
                     >
                       {title}
                       <Arrow aria-hidden="true" className="size-4" />
                     </TextLink>
                   </li>
                 ))}
-              </ol>
+              </StepsReveal>
             </div>
           </section>
 

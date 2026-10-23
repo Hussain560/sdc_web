@@ -394,3 +394,69 @@ html[data-navigating] main button {
     opacity: 0.6;
   }
 }
+
+/*
+ * M17 steps that come alive on scroll (StepsReveal): while the list is "armed" each number circle starts as an outline and
+ * fills when its step arrives, the text slides in after it, and on phones a thread grows down to the latest step.
+ * Not scroll-linked CSS (phones lack it): the component sets data-in on each step.
+ */
+.m-steps-line {
+  position: absolute;
+  top: var(--l-top, 2rem);
+  height: var(--l-h, calc(100% - 4rem));
+  inset-inline-start: calc(2rem - 1px);
+  width: 2px;
+  background: var(--color-line);
+  list-style: none;
+}
+.m-steps-line-fill {
+  display: block;
+  width: 100%;
+  height: calc(var(--p, 1) * 100%);
+  background: var(--color-accent);
+  transition: height 700ms var(--ease-out);
+}
+.m-steps .m-step-dot,
+.m-steps .m-step-body {
+  transition:
+    background-color 420ms var(--ease-out),
+    color 420ms var(--ease-out),
+    box-shadow 420ms var(--ease-out),
+    transform 520ms var(--ease-out),
+    opacity 520ms var(--ease-out);
+}
+.m-steps[data-armed] .m-step-dot {
+  background: var(--canvas);
+  color: var(--text-muted);
+  box-shadow:
+    inset 0 0 0 2px var(--border-strong),
+    0 0 0 8px var(--canvas);
+  transform: scale(0.86);
+}
+.m-steps[data-armed] .m-step-body {
+  opacity: 0;
+  transform: translateY(14px);
+}
+.m-steps[data-armed] li[data-in] .m-step-dot {
+  background: var(--accent);
+  color: var(--text-on-accent);
+  box-shadow: 0 0 0 8px var(--canvas);
+  transform: scale(1);
+}
+.m-steps[data-armed] li[data-in] .m-step-body {
+  opacity: 1;
+  transform: none;
+}
+.m-steps[data-armed] li[data-in] .m-step-body:nth-child(3) {
+  transition-delay: 90ms;
+}
+.m-steps[data-armed] li[data-in] .m-step-body:nth-child(4) {
+  transition-delay: 170ms;
+}
+@media (prefers-reduced-motion: reduce) {
+  .m-steps .m-step-dot,
+  .m-steps .m-step-body,
+  .m-steps-line-fill {
+    transition: none;
+  }
+}
