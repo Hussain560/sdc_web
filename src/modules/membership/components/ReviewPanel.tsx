@@ -70,7 +70,7 @@ export function ReviewPanel(p: ReviewPanelProps) {
   const [scores, setScores] = useState<Record<string, number>>(mine?.scores ?? {});
   const [comment, setComment] = useState(mine?.comment ?? '');
   const [note, setNote] = useState('');
-  const [openNext, setOpenNext] = useState(true);
+  const [done, setDone] = useState<{ decision: Decision; nextId: string | null } | null>(null);
   const [confirm, setConfirm] = useState<Decision | null>(null);
   const [infoOpen, setInfoOpen] = useState(false);
   const [infoText, setInfoText] = useState('');
@@ -128,39 +128,10 @@ export function ReviewPanel(p: ReviewPanelProps) {
           setError(membershipMessage(out?.code ?? 'INTERNAL', lang));
           return;
         }
-        const moved = Boolean(openNext && p.nextId);
-        const verb =
-          decision === 'accept'
-            ? ar
-              ? 'قُبل طلب'
-              : 'Accepted'
-            : decision === 'reject'
-              ? ar
-                ? 'رُفض طلب'
-                : 'Rejected'
-              : ar
-                ? 'نُقل إلى الانتظار طلب'
-                : 'Moved to the waiting list:';
-        const label = `${verb} ${p.name}${
-          moved ? (ar ? '. فتحنا الطلب التالي.' : '. Opened the next request.') : ''
-        }`;
-        toast.success(label, {
-          label: ar ? 'تراجع' : 'Undo',
-          onClick: () => {
-            void undoDecision(p.id, { lang }).then((u) => {
-              if (!u.ok) toast.error(u.message);
-              else {
-                toast.info(ar ? 'تم التراجع، لم يُرسل أي بريد.' : 'Undone. No e-mail was sent.');
-                router.push(`/dashboard/membership/applications/${p.id}`);
-                router.refresh();
-              }
-            });
-          },
-        });
-        if (openNext && p.nextId) go(p.nextId);
-        else router.refresh();
+        setDone({ decision, nextId: p.nextId });
+        router.refresh();
       }),
-    [p.id, p.nextId, note, lang, ar, openNext, go, router, toast],
+    [p.id, p.nextId, note, lang, router],
   );
 
   const ask = (d: Decision) => {
@@ -231,8 +202,7 @@ export function ReviewPanel(p: ReviewPanelProps) {
       toast.success(
         ar ? 'أُرسل طلب التعديل إلى المتقدّم.' : 'The request was sent to the applicant.',
       );
-      if (openNext && p.nextId) go(p.nextId);
-      else router.refresh();
+      router.refresh();
     });
   };
 
@@ -366,13 +336,6 @@ export function ReviewPanel(p: ReviewPanelProps) {
             maxLength={1000}
             rows={3}
             onChange={(e) => setNote(e.target.value)}
-          />
-          <Checkbox
-            label={
-              ar ? 'افتح الطلب التالي بعد القرار' : 'Open the next application after the decision'
-            }
-            checked={openNext}
-            onChange={(e) => setOpenNext(e.target.checked)}
           />
           <p className="hidden items-center gap-1.5 text-xs text-muted lg:flex">
             <Keyboard size={13} aria-hidden="true" />
@@ -542,6 +505,66 @@ export function ReviewPanel(p: ReviewPanelProps) {
           </div>
         </div>
       )}
+
+      <Dialog
+        open={done !== null}
+        onClose={() => setDone(null)}
+        title={
+          done?.decision === 'accept'
+            ? ar
+              ? `قُبل طلب ${p.name}`
+              : `${p.name} was accepted`
+            : done?.decision === 'reject'
+              ? ar
+                ? `رُفض طلب ${p.name}`
+                : `${p.name} was rejected`
+              : ar
+                ? `نُقل ${p.name} إلى الانتظار`
+                : `${p.name} moved to the waiting list`
+        }
+        description={
+          ar
+            ? 'حُفظ القرار. سيصل المتقدّم بريد بعد لحظات، ويمكنك التراجع قبل إرساله.'
+            : 'The decision is saved. The applicant is e-mailed in a few seconds, and you can undo before it is sent.'
+        }
+        footer={
+          <>
+            <Button
+              variant="ghost"
+              onClick={() =>
+                void undoDecision(p.id, { lang }).then((u) => {
+                  setDone(null);
+                  if (!u.ok) toast.error(u.message);
+                  else {
+                    toast.info(
+                      ar ? 'تم التراجع، لم يُرسل أي بريد.' : 'Undone. No e-mail was sent.',
+                    );
+                    router.refresh();
+                  }
+                })
+              }
+            >
+              {ar ? 'تراجع عن القرار' : 'Undo decision'}
+            </Button>
+            <Button variant="secondary" onClick={() => setDone(null)}>
+              {ar ? 'البقاء في هذه الصفحة' : 'Stay on this page'}
+            </Button>
+            {done?.nextId ? (
+              <Button
+                onClick={() => {
+                  const id = done.nextId;
+                  setDone(null);
+                  go(id);
+                }}
+              >
+                {ar ? 'فتح المتقدّم التالي' : 'Open next applicant'}
+              </Button>
+            ) : null}
+          </>
+        }
+      >
+        <span className="sr-only">{ar ? 'تم القرار' : 'Decision made'}</span>
+      </Dialog>
 
       <Dialog
         open={confirm === 'reject'}
