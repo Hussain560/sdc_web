@@ -527,30 +527,36 @@ export function ReviewPanel(p: ReviewPanelProps) {
             ? 'حُفظ القرار. سيصل المتقدّم بريد بعد لحظات، ويمكنك التراجع قبل إرساله.'
             : 'The decision is saved. The applicant is e-mailed in a few seconds, and you can undo before it is sent.'
         }
+        footerAlign="start"
         footer={
-          <>
-            <Button
-              variant="ghost"
-              onClick={() =>
-                void undoDecision(p.id, { lang }).then((u) => {
-                  setDone(null);
-                  if (!u.ok) toast.error(u.message);
-                  else {
-                    toast.info(
-                      ar ? 'تم التراجع، لم يُرسل أي بريد.' : 'Undone. No e-mail was sent.',
-                    );
-                    router.refresh();
-                  }
-                })
-              }
-            >
-              {ar ? 'تراجع عن القرار' : 'Undo decision'}
-            </Button>
-            <Button variant="secondary" onClick={() => setDone(null)}>
-              {ar ? 'البقاء في هذه الصفحة' : 'Stay on this page'}
-            </Button>
+          <div className="flex w-full flex-col gap-3">
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <Button
+                variant="ghost"
+                fullWidth
+                onClick={() =>
+                  void undoDecision(p.id, { lang }).then((u) => {
+                    setDone(null);
+                    if (!u.ok) toast.error(u.message);
+                    else {
+                      toast.info(
+                        ar ? 'تم التراجع، لم يُرسل أي بريد.' : 'Undone. No e-mail was sent.',
+                      );
+                      router.refresh();
+                    }
+                  })
+                }
+              >
+                {ar ? 'تراجع عن القرار' : 'Undo decision'}
+              </Button>
+              <Button variant="secondary" fullWidth onClick={() => setDone(null)}>
+                {ar ? 'البقاء في هذه الصفحة' : 'Stay on this page'}
+              </Button>
+            </div>
             {done?.nextId ? (
               <Button
+                size="lg"
+                fullWidth
                 onClick={() => {
                   const id = done.nextId;
                   setDone(null);
@@ -560,7 +566,7 @@ export function ReviewPanel(p: ReviewPanelProps) {
                 {ar ? 'فتح المتقدّم التالي' : 'Open next applicant'}
               </Button>
             ) : null}
-          </>
+          </div>
         }
       >
         <span className="sr-only">{ar ? 'تم القرار' : 'Decision made'}</span>
