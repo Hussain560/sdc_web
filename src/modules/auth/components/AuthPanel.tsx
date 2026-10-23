@@ -24,11 +24,11 @@ export function AuthPanel() {
         </div>
       ) : (
         <Image
-          src="/assets/brand/sdc-mark.png"
+          src="/assets/brand/sdc-mark.svg"
           alt=""
           width={160}
           height={160}
-          className="size-12 lg:size-40"
+          className="size-12 object-contain lg:size-40"
         />
       )}
     </aside>

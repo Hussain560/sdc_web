@@ -1,12 +1,12 @@
 import { cn } from '@/components/ui/cn';
 
 /**
- * The SDC emblem (brand kit, `public/assets/brand/sdc-mark.png`) where a picture is missing: an event without a cover,
+ * The SDC emblem (brand kit, `public/assets/brand/sdc-mark.svg`) where a picture is missing: an event without a cover,
  * a project without a cover, the featured card. Size it with `className` (height or width); it keeps its proportions.
  */
 export function CapsuleMark({ className }: { className?: string }) {
   return (
-    <img src="/assets/brand/sdc-mark.png" alt="" className={cn('block h-auto w-auto', className)} />
+    <img src="/assets/brand/sdc-mark.svg" alt="" className={cn('block h-auto w-auto', className)} />
   );
 }
 

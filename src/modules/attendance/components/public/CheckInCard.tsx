@@ -307,11 +307,11 @@ export default function CheckInCard({
         <div className="flex w-full flex-col items-center gap-7 rounded-shape-2xl border border-line bg-surface px-6 py-10 text-center md:px-10 md:py-14">
           {form ? (
             <Image
-              src="/assets/brand/sdc-mark.png"
+              src="/assets/brand/sdc-mark.svg"
               alt=""
               width={72}
               height={72}
-              className="size-[72px]"
+              className="size-[72px] object-contain"
             />
           ) : (
             <span

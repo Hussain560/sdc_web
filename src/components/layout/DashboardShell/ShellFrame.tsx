@@ -305,7 +305,7 @@ function SidebarContent({
           {/* The mark is an SVG, so it bypasses the image optimizer. */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="/assets/brand/sdc-mark.png"
+            src="/assets/brand/sdc-mark.svg"
             alt=""
             width={20}
             height={37}

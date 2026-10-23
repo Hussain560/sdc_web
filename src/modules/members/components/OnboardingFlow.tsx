@@ -198,19 +198,23 @@ export function OnboardingFlow(p: OnboardingProps) {
       router.refresh();
     });
 
-  const go = (to: number, before?: () => Promise<{ ok: boolean; message?: string }>) =>
-    run(async () => {
-      setError(null);
-      if (before) {
-        const r = await before();
+  // Moving on is instant: the step is saved in the background, and a failure is reported where the person is.
+  const go = (to: number, before?: () => Promise<{ ok: boolean; message?: string }>) => {
+    setError(null);
+    setI(to);
+    void (async () => {
+      try {
+        const r = before ? await before() : { ok: true };
         if (!r.ok) {
           setError(r.message || s.failed);
           return;
         }
+        await saveOnboardingStep({ step: to }, { lang });
+      } catch {
+        setError(s.failed);
       }
-      await saveOnboardingStep({ step: to }, { lang });
-      setI(to);
-    });
+    })();
+  };
 
   const toggleSkill = (slug: string) =>
     setPicked((cur) =>
@@ -418,21 +422,20 @@ export function OnboardingFlow(p: OnboardingProps) {
 
   const primary =
     i === 0 ? (
-      <Button size="lg" loading={busy} onClick={() => go(1)}>
+      <Button size="lg" onClick={() => go(1)}>
         {s.start}
       </Button>
     ) : i === 1 ? (
-      <Button size="lg" loading={busy} onClick={() => go(2)}>
+      <Button size="lg" onClick={() => go(2)}>
         {s.nameYes}
       </Button>
     ) : i === 2 ? (
-      <Button size="lg" loading={busy} onClick={() => go(3)}>
+      <Button size="lg" onClick={() => go(3)}>
         {s.next}
       </Button>
     ) : i === 3 ? (
       <Button
         size="lg"
-        loading={busy}
         onClick={() =>
           go(4, async () => {
             const r = await saveMySkills(picked, { lang });
@@ -458,14 +461,13 @@ export function OnboardingFlow(p: OnboardingProps) {
           <Logo label={p.logo.home} alt={p.logo.alt} />
           <span className="text-sm font-semibold">{s.of(i + 1)}</span>
         </div>
-        {/* The brand X, drawn as two soft strokes behind the text (the design's corner mark). */}
-        <span
-          aria-hidden="true"
-          className="pointer-events-none absolute -bottom-10 end-10 h-[22rem] w-[16rem]"
-        >
-          <span className="absolute start-4 top-0 h-full w-16 origin-center -rotate-[32deg] rounded-full bg-on-brand/20" />
-          <span className="absolute end-4 top-0 h-full w-16 origin-center rotate-[32deg] rounded-full bg-on-brand/15" />
-        </span>
+        {/* The brand mark, large and soft behind the text (the design's corner mark). */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/assets/brand/sdc-mark.svg"
+          alt=""
+          className="pointer-events-none absolute -bottom-16 end-10 h-[32rem] w-auto opacity-30"
+        />
         <div className="relative flex flex-col gap-3">
           <div className="flex items-center gap-2" aria-hidden="true">
             {Array.from({ length: STEP_COUNT }, (_, n) => (
@@ -522,7 +524,7 @@ export function OnboardingFlow(p: OnboardingProps) {
           <div className="flex items-center justify-between gap-3 border-t border-line pt-6">
             <Button
               variant="ghost"
-              disabled={busy || i === 0}
+              disabled={i === 0}
               onClick={() => i > 0 && go(i - 1)}
               className="gap-1.5"
             >
@@ -531,7 +533,7 @@ export function OnboardingFlow(p: OnboardingProps) {
             </Button>
             <div className="flex items-center gap-2">
               {(i === 2 || i === 3) && (
-                <Button variant="ghost" disabled={busy} onClick={() => go(i + 1)}>
+                <Button variant="ghost" onClick={() => go(i + 1)}>
                   {s.notNow}
                 </Button>
               )}

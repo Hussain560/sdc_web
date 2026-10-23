@@ -437,7 +437,8 @@ export async function saveOnboardingStep(
     p_done: input?.done === true,
   });
   if (error) return dbFailure(error, lang);
-  refresh();
+  // Only finishing changes what the rest of the site shows; a step in between must stay cheap.
+  if (input?.done) refresh();
   return ok(undefined);
 }
 
