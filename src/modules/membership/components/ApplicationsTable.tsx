@@ -272,7 +272,14 @@ export function ApplicationsTable({
                   flash.has(r.id) && 'm-pop bg-accent-soft',
                 )}
               >
-                <td className="ps-4">
+                {/* The whole cell selects (a bigger target); it never opens the application. */}
+                <td
+                  className="cursor-pointer ps-4 pe-2"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (open(r) && (e.target as HTMLElement).tagName !== 'INPUT') toggle(r.id);
+                  }}
+                >
                   <input
                     type="checkbox"
                     aria-label={
@@ -348,14 +355,18 @@ export function ApplicationsTable({
             className="cursor-pointer rounded-shape-xl border border-line bg-surface p-3 data-[selected]:border-accent data-[selected]:bg-accent-soft/40"
           >
             <div className="flex items-start gap-3">
-              <input
-                type="checkbox"
-                aria-label={ar ? `تحديد ${applicantName(r, ar)}` : `Select ${applicantName(r, ar)}`}
-                checked={selected.has(r.id)}
-                disabled={!open(r)}
-                onChange={() => toggle(r.id)}
-                className="mt-1 size-5 shrink-0 accent-[var(--accent)]"
-              />
+              <label className="-m-2 flex shrink-0 p-2">
+                <input
+                  type="checkbox"
+                  aria-label={
+                    ar ? `تحديد ${applicantName(r, ar)}` : `Select ${applicantName(r, ar)}`
+                  }
+                  checked={selected.has(r.id)}
+                  disabled={!open(r)}
+                  onChange={() => toggle(r.id)}
+                  className="size-5 accent-[var(--accent)]"
+                />
+              </label>
               <div className="min-w-0 flex-1">
                 <Link
                   href={`/dashboard/membership/applications/${r.id}`}
