@@ -106,8 +106,8 @@ const messages: Partial<Record<ErrorCode, Record<Lang, string>>> = {
     en: 'Invalid dates (closing after opening; extend to a later date).',
   },
   INVALID_TRANSITION: {
-    ar: 'الإجراء غير متاح في الحالة الحالية للدورة.',
-    en: "This action isn't available in the cycle's current state.",
+    ar: 'هذا الإجراء غير متاح في الحالة الحالية. حدّث الصفحة وتحقّق من حالة الطلب.',
+    en: 'This action is not available in the current state. Refresh the page and check the application status.',
   },
   NOT_EDITABLE: {
     ar: 'لا يمكن تعديل الطلب أو الدورة الآن.',

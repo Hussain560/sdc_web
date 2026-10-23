@@ -310,47 +310,42 @@ export default async function ApplicationPage({
               <UserRound size={17} aria-hidden="true" />
               {ar ? 'الهوية والتواصل' : 'Identity & contact'}
             </h2>
-            <div className="overflow-x-auto">
-              <table className="w-full min-w-[28rem] text-sm">
-                <thead className="text-xs text-muted">
-                  <tr>
-                    <th scope="col" className="w-20 py-2 text-start font-medium" />
-                    <th scope="col" className="py-2 text-start font-medium">
-                      {ar ? 'الأول' : 'First'}
-                    </th>
-                    <th scope="col" className="py-2 text-start font-medium">
-                      {ar ? 'الأوسط' : 'Middle'}
-                    </th>
-                    <th scope="col" className="py-2 text-start font-medium">
-                      {ar ? 'العائلة' : 'Family'}
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr className="border-t border-line">
-                    <th scope="row" className="py-2 text-start font-medium text-muted">
-                      {ar ? 'عربي' : 'Arabic'}
-                    </th>
-                    <td className="py-2">{a.firstNameAr ?? a.fullNameAr}</td>
-                    <td className="py-2">{a.middleNameAr ?? '—'}</td>
-                    <td className="py-2">{a.lastNameAr ?? '—'}</td>
-                  </tr>
-                  <tr className="border-t border-line">
-                    <th scope="row" className="py-2 text-start font-medium text-muted">
-                      English
-                    </th>
-                    <td dir="ltr" className="py-2 text-left">
-                      {a.firstNameEn ?? a.fullNameEn ?? '—'}
-                    </td>
-                    <td dir="ltr" className="py-2 text-left">
-                      {a.middleNameEn ?? '—'}
-                    </td>
-                    <td dir="ltr" className="py-2 text-left">
-                      {a.lastNameEn ?? '—'}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+            <div className="flex flex-col gap-5">
+              {(
+                [
+                  {
+                    dir: 'rtl',
+                    label: 'عربي',
+                    heads: ['الأول', 'الأوسط', 'العائلة'],
+                    values: [a.firstNameAr ?? a.fullNameAr, a.middleNameAr, a.lastNameAr],
+                  },
+                  {
+                    dir: 'ltr',
+                    label: 'English',
+                    heads: ['First', 'Middle', 'Last'],
+                    values: [a.firstNameEn ?? a.fullNameEn, a.middleNameEn, a.lastNameEn],
+                  },
+                ] as const
+              ).map((r) => (
+                <div
+                  key={r.label}
+                  dir={r.dir}
+                  className="grid grid-cols-[4.5rem_repeat(3,minmax(0,1fr))] gap-x-4 gap-y-1 border-t border-line pt-3 text-start text-sm"
+                >
+                  <span aria-hidden="true" />
+                  {r.heads.map((h) => (
+                    <span key={h} className="text-xs font-medium text-muted">
+                      {h}
+                    </span>
+                  ))}
+                  <span className="font-semibold text-muted">{r.label}</span>
+                  {r.values.map((v, i) => (
+                    <span key={i} className="break-words">
+                      {v || '—'}
+                    </span>
+                  ))}
+                </div>
+              ))}
             </div>
             <dl className="mt-2 divide-y divide-line border-t border-line">
               <div className={row}>
