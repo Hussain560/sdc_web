@@ -271,10 +271,18 @@ export function OnboardingFlow(p: OnboardingProps) {
   const chip =
     'inline-flex min-h-11 items-center rounded-full border-[1.5px] px-4 text-sm font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-focus-ring';
 
+  const heading = [
+    s.hello(p.firstName),
+    s.nameTitle,
+    s.photoTitle,
+    s.interestsTitle,
+    s.privacyTitle,
+  ][Math.min(i, STEP_COUNT - 1)]!;
+  // On a phone the heading lives in the green header (design), so only the lede stays in the body.
   const head = (t: string, lede: string) => (
     <div className="flex flex-col gap-2">
-      <h1 className="t-h1">{t}</h1>
-      <p className="t-lede text-muted">{lede}</p>
+      <h1 className="t-h1 max-lg:sr-only">{t}</h1>
+      <p className={cn('t-lede text-muted max-lg:text-base', i === 3 && 'max-lg:hidden')}>{lede}</p>
     </div>
   );
 
@@ -567,8 +575,57 @@ export function OnboardingFlow(p: OnboardingProps) {
         </div>
       </aside>
 
-      <div className="flex min-h-dvh flex-col px-4 py-4 lg:min-h-0 lg:px-12 lg:py-6">
-        <div className="flex items-center justify-between">
+      <div className="flex min-h-dvh flex-col lg:min-h-0 lg:px-12 lg:py-6">
+        {/* Phones (design: "التهيئة · الخطوة 4"): a green header with the step, skip, the five bars and the heading. */}
+        {!done && (
+          <header className="bg-brand px-4 pb-6 pt-4 text-on-brand lg:hidden">
+            <div className="flex items-center justify-between gap-3 text-sm font-semibold">
+              <span className="flex items-center gap-2">
+                {i > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => go(i - 1)}
+                    aria-label={s.back}
+                    className="-ms-2 flex size-9 items-center justify-center rounded-full hover:bg-black/10 focus-visible:outline-2 focus-visible:outline-focus-ring"
+                  >
+                    <ArrowRight size={18} aria-hidden="true" className="ltr:rotate-180" />
+                  </button>
+                )}
+                {stepLabel}
+              </span>
+              <button
+                type="button"
+                disabled={busy}
+                onClick={() => finish(false)}
+                className="min-h-9 underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-focus-ring"
+              >
+                {s.skipAll}
+              </button>
+            </div>
+            <div
+              className="mt-3 grid grid-cols-5 gap-2"
+              role="progressbar"
+              aria-valuemin={1}
+              aria-valuemax={STEP_COUNT}
+              aria-valuenow={i + 1}
+              aria-label={stepLabel}
+            >
+              {Array.from({ length: STEP_COUNT }, (_, n) => (
+                <span
+                  key={n}
+                  className={cn(
+                    'h-1.5 rounded-full transition-colors duration-300',
+                    n <= i ? 'bg-on-brand' : 'bg-on-brand/30',
+                  )}
+                />
+              ))}
+            </div>
+            <p className="mt-5 text-3xl font-extrabold leading-tight" aria-hidden="true">
+              {heading}
+            </p>
+          </header>
+        )}
+        <div className="hidden items-center justify-between lg:flex">
           <div className="flex items-center gap-1">
             <Button variant="ghost" disabled={busy} onClick={() => finish(false)}>
               {s.skipAll}
@@ -576,23 +633,13 @@ export function OnboardingFlow(p: OnboardingProps) {
             <LocaleSwitch />
             <ThemeSwitch />
           </div>
-          <span className="text-sm font-semibold text-muted lg:hidden">{stepLabel}</span>
-        </div>
-        <div
-          className="mt-4 h-1.5 overflow-hidden rounded-full bg-line lg:hidden"
-          role="progressbar"
-          aria-valuemin={1}
-          aria-valuemax={STEP_COUNT}
-          aria-valuenow={i + 1}
-        >
-          <div
-            className="h-full rounded-full bg-accent transition-all duration-300"
-            style={{ width: `${(Math.min(i + 1, STEP_COUNT) / STEP_COUNT) * 100}%` }}
-          />
         </div>
         <main
           id="main"
-          className="m-auto flex w-full max-w-(--container-tight) flex-col gap-6 py-10"
+          className={cn(
+            'flex w-full flex-1 flex-col gap-6 px-4 py-6 lg:m-auto lg:max-w-(--container-tight) lg:flex-none lg:px-0 lg:py-10',
+            !done && 'max-lg:pb-28',
+          )}
         >
           <div key={i} className="m-enter flex flex-col gap-6">
             {stepBody}
@@ -603,23 +650,23 @@ export function OnboardingFlow(p: OnboardingProps) {
             </p>
           )}
           {!done && (
-            <div className="flex items-center justify-between gap-3 border-t border-line pt-6">
+            <div className="flex items-center justify-between gap-3 border-t border-line max-lg:fixed max-lg:inset-x-0 max-lg:bottom-0 max-lg:z-20 max-lg:bg-surface max-lg:p-4 max-lg:pb-[max(1rem,env(safe-area-inset-bottom))] lg:pt-6">
               <Button
                 variant="ghost"
                 disabled={i === 0}
                 onClick={() => i > 0 && go(i - 1)}
-                className="gap-1.5"
+                className="gap-1.5 max-lg:hidden"
               >
                 {s.back}
                 <ArrowRight size={16} aria-hidden="true" className="ltr:rotate-180" />
               </Button>
-              <div className="flex items-center gap-2">
+              <div className="flex flex-1 items-center gap-2 max-lg:gap-3 lg:flex-none">
                 {(i === 2 || i === 3) && (
                   <Button variant="ghost" onClick={() => go(i + 1)}>
                     {s.notNow}
                   </Button>
                 )}
-                {primary}
+                <div className="flex flex-1 lg:flex-none [&>*]:max-lg:flex-1">{primary}</div>
               </div>
             </div>
           )}
