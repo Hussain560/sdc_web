@@ -227,3 +227,28 @@ also needs `members.view_contact`. A founder or committee head can open the reco
 - **E-mail log** `/dashboard/admin/emails`: 28 rows covering every lifecycle template, sent, skipped, in progress,
   retrying (2), failed for good (2) and recovered (1). Templates, entities and error reasons are shown in words.
 - Loaded by `npm run db:lifecycle` (`dev-email-logs.sql`, `dev-audit-logs.sql`); only the leader and admin see them.
+
+## 16. Full membership flow, step by step (applicant → admin → e-mail → member)
+
+**Setup (already done in the local database):**
+- The **Winter 2027 intake** is open (25 places, closes in 30 days). The Autumn intake is closed.
+- The mail inbox is at **http://127.0.0.1:54324** (Mailpit). Every e-mail the app sends appears there.
+- Running `npm run db:lifecycle` does not change the open cycle.
+
+**Flow:**
+1. **Apply.** Open `http://localhost:3000/join`, then "قدّم طلب العضوية". Use an address that has no account, e.g. `flow.applicant@example.test`. Finish the five steps and submit. You get a reference (SDC-26-…).
+2. **Received mail.** In Mailpit, open the "استلام طلب العضوية" e-mail. It has the tracking link (`/join/status/…`). Open it: the page shows the status "received".
+3. **Admin accepts.** Sign out, then sign in as `dev.admin@example.test` (password `Dev!Passw0rd1`). Go to **العضوية → الطلبات**, select the new application (or open it with "مراجعة"). Use **قبول**. You have 6 seconds to press **تراجع** (undo) before the decision mail is released.
+4. **Acceptance mail.** In Mailpit, open "قبول طلب العضوية". It contains the **activation link**.
+5. **Activate the account.** Open the activation link. Choose a password (the welcome screen). You are signed in and see the welcome tour at `/account/welcome`.
+6. **Member is active.** Go to `/account/membership`: the card with QR, the term, and the leave/renewal options. As admin, the member appears in **العضوية → الأعضاء**, with the timeline showing: application, acceptance, activation.
+7. **Other mails.** Waitlist, rejection and activation-reminder mails are in the same inbox. To trigger the daily jobs (activation reminders, lapsed activations, term reminders), run:
+   ```bash
+   curl -H "Authorization: Bearer $CRON_SECRET" "http://localhost:3000/api/cron/membership-daily?dry=1"
+   ```
+   Use `dry=1` to preview; drop it to send for real. Running it twice changes nothing the second time.
+
+**Tips:**
+- Delete old test mails in Mailpit with "Delete all" before a test to keep the list clear.
+- Accepting more people than the cycle has places is refused (capacity).
+- The dashboard's e-mail log (**Admin → سجل البريد**) shows every send with its state.
