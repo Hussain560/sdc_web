@@ -822,10 +822,10 @@ export function ApplicationForm({
             {step === 'questions' && (
               <>
                 <div>
-                  <h1 className="t-h3">{L('أسئلة الدورة', 'Cycle questions')}</h1>
+                  <h1 className="t-h3">{L('أسئلة هذه الدورة', 'Cycle questions')}</h1>
                   <p className="mt-1 text-muted">
                     {L(
-                      `أسئلة هذه الدورة وضعتها القيادة لـ ${cycleName}. أجب بصدق، فلا إجابة خاطئة.`,
+                      `وضعتها القيادة لدورة «${cycleName}». أجب بصدق، فلا إجابة خاطئة.`,
                       `These questions were set by leadership for ${cycleName}. Answer honestly, there is no wrong answer.`,
                     )}
                   </p>

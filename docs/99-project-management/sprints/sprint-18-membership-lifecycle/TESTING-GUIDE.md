@@ -252,3 +252,15 @@ also needs `members.view_contact`. A founder or committee head can open the reco
 - Delete old test mails in Mailpit with "Delete all" before a test to keep the list clear.
 - Accepting more people than the cycle has places is refused (capacity).
 - The dashboard's e-mail log (**Admin → سجل البريد**) shows every send with its state.
+
+## 17. Gender, study year, cycle questions and the Winter 2027 test data
+
+- **Join form:** step 1 asks for the **gender** (private: only the review team, leadership and the member see it); step 2 shows
+  **السنة الدراسية** when the status is "student". Both are required for that status.
+- **Cycle questions** of the open Winter 2027 intake are seeded as designed: why (long text), committee (radio cards with a
+  hint each), interests (chips) and "can you attend monthly" (required). Radio cards also render any single-choice question.
+- **Applications to test the review flow** (18 in Winter 2027, 3-criterion rubric, scores from 2–3 reviewers): sign in as
+  `dev.admin@example.test` → العضوية → الطلبات. Tracking links: `/join/status/<sha256("winter-track-<n>")>`.
+- **Who sees what:** the member sees their gender on their profile page (read-only); leadership with `members.view_contact`
+  (admin, leader) sees it on the member page and edits it from "Edit data"; the member edits only the study year.
+- **Tracking page:** one status card with the chip, the title, the text and the timeline inside it (all states).
