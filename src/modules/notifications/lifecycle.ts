@@ -277,7 +277,7 @@ export async function notifyActivationReminder(
       return {
         name: appName(a, lang),
         eventTitle: cycleName(a, lang),
-        activationUrl: await activationLinkFor(a.email, lang),
+        activationUrl: await activationLinkFor(a.id, lang),
         activationDeadline: longDate(
           new Date(new Date(a.accepted_at ?? Date.now()).getTime() + days * 86_400_000),
           lang,
@@ -304,12 +304,55 @@ export async function notifyActivationLapsed(
   });
 }
 
-/** A one-time link to choose a password (recovery link through the confirm route). */
-export async function activationLinkFor(email: string, lang: Lang): Promise<string | undefined> {
-  const gen = await createAdminClient().auth.admin.generateLink({ type: 'recovery', email });
-  const hash = gen.data?.properties?.hashed_token;
-  if (!hash) return undefined;
-  return `${siteUrl()}/auth/confirm?token_hash=${encodeURIComponent(hash)}&type=recovery&next=${encodeURIComponent('/reset-password?welcome=1')}${lang === 'en' ? '&locale=en' : ''}`;
+/**
+ * The activation link of an accepted applicant: a random token valid for the cycle's activation period (7 days by
+ * default), stored hashed. Opening it (/activate/<token>) creates a fresh one-time sign-in link on the spot, so the link
+ * in the e-mail never dies after an hour. Issuing a new one replaces the old.
+ */
+export async function activationLinkFor(
+  applicationId: string,
+  lang: Lang,
+): Promise<string | undefined> {
+  const { data, error } = await createAdminClient().rpc('issue_activation_token', {
+    p_application: applicationId,
+  });
+  if (error || typeof data !== 'string') {
+    console.error('[membership] activation token failed', error?.message);
+    return undefined;
+  }
+  return `${siteUrl()}${prefix(lang)}/activate/${data}`;
+}
+
+/**
+ * The activation links for the applications that were just accepted: one for every person whose account is not active
+ * yet (a person who is already an active member needs none). Never throws; a person without a link is simply left out.
+ */
+export async function prepareActivationLinks(ids: string[]): Promise<Map<string, string>> {
+  const out = new Map<string, string>();
+  const db = createAdminClient();
+  const { data: apps } = await db
+    .from('membership_applications')
+    .select('id, user_id, locale')
+    .in('id', ids)
+    .eq('status', 'accepted');
+  for (const a of apps ?? []) {
+    try {
+      if (a.user_id) {
+        const { data: active } = await db
+          .from('members')
+          .select('id')
+          .eq('user_id', a.user_id)
+          .not('activated_at', 'is', null)
+          .limit(1);
+        if ((active ?? []).length > 0) continue;
+      }
+      const url = await activationLinkFor(a.id, loc(a.locale));
+      if (url) out.set(a.id, url);
+    } catch (e) {
+      console.error('[membership] activation link failed', a.id, (e as Error).message);
+    }
+  }
+  return out;
 }
 
 // ----------------------------------------------------------------------------------------------- members
@@ -655,6 +698,21 @@ export async function flushOutbox(
   return { sent, skipped, failed };
 }
 
+/**
+ * Releases the held mails only if some are due: one cheap count, so it can run on every dashboard request. This is what
+ * keeps a decision mail from waiting for the daily job when the delayed flush after the decision did not run (a restart,
+ * a closed tab, a serverless instance that went away).
+ */
+export async function flushIfDue(): Promise<void> {
+  const db = createAdminClient();
+  const { count } = await db
+    .from('email_outbox')
+    .select('id', { count: 'exact', head: true })
+    .eq('status', 'pending')
+    .lte('not_before', new Date().toISOString());
+  if ((count ?? 0) > 0) await flushOutbox();
+}
+
 export async function cancelDecisionMail(applicationId: string): Promise<void> {
   await createAdminClient().rpc('cancel_outbox', {
     p_entity_type: 'membership_application',
@@ -685,7 +743,7 @@ export async function sendActivationMail(
         name: appName(a, lang),
         eventTitle: cycleName(a, lang),
         membershipUrl: `${siteUrl()}${prefix(lang)}/account/profile`,
-        activationUrl: await activationLinkFor(a.email, lang),
+        activationUrl: await activationLinkFor(a.id, lang),
         activationDays: days,
         activationDeadline: longDate(new Date(Date.now() + days * 86_400_000), lang),
         whatsappUrl: await communityWhatsapp(),

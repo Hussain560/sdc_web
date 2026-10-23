@@ -9,11 +9,15 @@ import { useLanguage } from '@/context/LanguageContext';
 import { Link, useRouter } from '@/i18n/navigation';
 import { formatDate } from '@/lib/format';
 import { membershipMessage } from '../messages';
-import { decideApplications } from '../review-actions';
+import { decideApplications, releaseDecisionMails } from '../review-actions';
 import type { ReviewApplication } from '../review-queries';
 import { ACADEMIC_LABEL, APPLICATION_STATUS_LABEL, type AcademicStatus } from '../types';
 
 type Decision = 'accept' | 'reject' | 'waitlist';
+
+/** After the undo window the held decision mails are released from the browser too (never lost to a restart). */
+export const scheduleRelease = (undoSeconds: number) =>
+  window.setTimeout(() => void releaseDecisionMails(), (undoSeconds + 1) * 1000);
 
 export const applicantName = (
   r: Pick<ReviewApplication, 'fullNameAr' | 'fullNameEn'>,
@@ -95,6 +99,7 @@ export function ApplicationsTable({
     const ids = [...selected];
     startTransition(async () => {
       const r = await decideApplications({ ids, decision, note }, { lang });
+      if (r.ok) scheduleRelease(r.data.undoSeconds);
       setPending(null);
       setNote('');
       if (!r.ok) {
@@ -108,7 +113,7 @@ export function ApplicationsTable({
       }));
       const failed = list.filter((x) => !x.ok);
       const word = {
-        accept: ['قُبل', 'accepted'],
+        accept: ['تم قبول', 'accepted'],
         reject: ['رُفض', 'rejected'],
         waitlist: ['نُقل', 'moved'],
       }[decision];

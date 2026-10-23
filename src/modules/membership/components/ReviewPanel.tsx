@@ -5,6 +5,7 @@ import { useCallback, useEffect, useMemo, useState, useTransition } from 'react'
 import { Alert, Avatar, Button, Checkbox, Dialog, Textarea, cn, useToast } from '@/components/ui';
 import { useLanguage } from '@/context/LanguageContext';
 import { useRouter } from '@/i18n/navigation';
+import { scheduleRelease } from './ApplicationsTable';
 import { membershipMessage } from '../messages';
 import {
   claimApplication,
@@ -119,6 +120,7 @@ export function ReviewPanel(p: ReviewPanelProps) {
           setError(r.message);
           return;
         }
+        scheduleRelease(r.data.undoSeconds);
         const out = r.data.outcomes[0];
         if (!out?.ok) {
           setError(membershipMessage(out?.code ?? 'INTERNAL', lang));
@@ -127,7 +129,7 @@ export function ReviewPanel(p: ReviewPanelProps) {
         const label =
           decision === 'accept'
             ? ar
-              ? 'قُبل الطلب'
+              ? 'تم قبول الطلب'
               : 'Accepted'
             : decision === 'reject'
               ? ar

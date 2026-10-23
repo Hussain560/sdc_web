@@ -116,7 +116,7 @@ export function ReviewTable({
     const failed = results.filter((r) => !r.ok);
     const verb =
       decision === 'accept'
-        ? L('قُبل', 'accepted')
+        ? L('مقبول', 'accepted')
         : decision === 'reject'
           ? L('رُفض', 'rejected')
           : L('نُقل إلى قائمة الانتظار', 'moved to the waitlist');

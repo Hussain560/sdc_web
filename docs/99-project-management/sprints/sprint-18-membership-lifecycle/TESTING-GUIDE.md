@@ -264,3 +264,14 @@ also needs `members.view_contact`. A founder or committee head can open the reco
 - **Who sees what:** the member sees their gender on their profile page (read-only); leadership with `members.view_contact`
   (admin, leader) sees it on the member page and edits it from "Edit data"; the member edits only the study year.
 - **Tracking page:** one status card with the chip, the title, the text and the timeline inside it (all states).
+
+## 18. The activation link (how it works)
+
+- The acceptance mail carries `http://localhost:3000/activate/<token>`: a random token, stored hashed, valid for the cycle's
+  **activation period (7 days by default)** and stated in the mail ("valid for 7 days until …").
+- Opening it creates a fresh one-time sign-in link on the spot and sends the person to **choose a password**
+  (`/reset-password?welcome=1`); after that they sign in and land on the **welcome tour**.
+- An **expired**, unknown or non-accepted link shows a calm page with a form to get a **new link** by e-mail (the new link
+  replaces the old). If the account is already active the page says so and offers sign-in.
+- The decision mail is held for 6 seconds (undo window) and then released by: the server after the decision, the
+  browser of the person who decided, any dashboard page view, and the daily job. It should arrive within seconds.

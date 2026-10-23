@@ -84,7 +84,7 @@ export const ACTION_LABEL: Record<string, Localized> = {
     ar: 'صحّحت القيادة بيانات عضو',
     en: 'Leadership corrected member data',
   },
-  'membership_application.accepted': { ar: 'قُبل طلب عضوية', en: 'Application accepted' },
+  'membership_application.accepted': { ar: 'تم قبول طلب عضوية', en: 'Application accepted' },
   'membership_application.rejected': { ar: 'رُفض طلب عضوية', en: 'Application rejected' },
   'membership_application.waitlisted': {
     ar: 'نُقل طلب إلى الانتظار',

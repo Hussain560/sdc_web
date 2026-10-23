@@ -5,7 +5,7 @@ import { useEffect, useState, useTransition, type ReactNode } from 'react';
 import { Button, Field, useToast } from '@/components/ui';
 import { useLanguage } from '@/context/LanguageContext';
 import { Link } from '@/i18n/navigation';
-import { requestTrackingLink } from '../track-actions';
+import { requestActivationByEmail, requestTrackingLink } from '../track-actions';
 
 const trackedKey = (cycleId: string) => `sdc-join-token:${cycleId}`;
 
@@ -110,7 +110,7 @@ export function ApplyCta({
 }
 
 /** "I did not get the e-mail": a new tracking link goes to the address, and the answer is always the same. */
-export function RequestLinkForm() {
+export function RequestLinkForm({ kind = 'tracking' }: { kind?: 'tracking' | 'activation' }) {
   const { lang } = useLanguage();
   const ar = lang === 'ar';
   const toast = useToast();
@@ -123,8 +123,12 @@ export function RequestLinkForm() {
       <p role="status" className="flex items-start gap-2 text-sm">
         <Mail size={16} aria-hidden="true" className="mt-0.5 shrink-0 text-accent-text" />
         {ar
-          ? 'إن كان لهذا البريد طلب لدينا، فقد أرسلنا إليه رابطاً جديداً. انظر في الرسائل غير المرغوبة أيضاً.'
-          : 'If this address has an application with us, we sent it a new link. Check your spam folder too.'}
+          ? kind === 'activation'
+            ? 'إن كان لهذا البريد طلب مقبول لم يُفعَّل بعد، فقد أرسلنا إليه رابط تفعيل جديداً صالحاً أياماً. انظر في الرسائل غير المرغوبة أيضاً.'
+            : 'إن كان لهذا البريد طلب لدينا، فقد أرسلنا إليه رابطاً جديداً. انظر في الرسائل غير المرغوبة أيضاً.'
+          : kind === 'activation'
+            ? 'If this address has an accepted application that is not activated yet, we sent it a new activation link, valid for several days. Check your spam folder too.'
+            : 'If this address has an application with us, we sent it a new link. Check your spam folder too.'}
       </p>
     );
   return (
@@ -134,7 +138,10 @@ export function RequestLinkForm() {
         e.preventDefault();
         setError(null);
         start(async () => {
-          const r = await requestTrackingLink(email, { lang });
+          const r =
+            kind === 'activation'
+              ? await requestActivationByEmail(email, { lang })
+              : await requestTrackingLink(email, { lang });
           if (!r.ok) {
             setError(r.message);
             if (r.code === 'RATE_LIMITED') toast.warning(r.message);

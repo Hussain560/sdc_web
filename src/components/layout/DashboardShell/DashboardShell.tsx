@@ -1,6 +1,8 @@
+import { after } from 'next/server';
 import { visibleNav } from '@/config/dashboard-nav';
 import type { AccessContext } from '@/modules/access/types';
 import { getNavCounts } from '@/modules/membership/nav-counts';
+import { flushIfDue } from '@/modules/notifications/lifecycle';
 import { ShellFrame } from './ShellFrame';
 
 /**
@@ -15,6 +17,8 @@ export async function DashboardShell({
   access: AccessContext;
   children: React.ReactNode;
 }) {
+  // Decision mails that are due but were not released (a restart, a closed tab) go out with the next page view.
+  after(() => flushIfDue().catch(() => undefined));
   const nav = visibleNav(
     access,
     access.positions.find((p) => p.committeeId)?.committeeId ?? undefined,

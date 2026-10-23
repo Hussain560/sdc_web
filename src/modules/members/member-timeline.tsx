@@ -245,7 +245,7 @@ export function buildMemberTimeline(
         item: {
           key: `ad${a.id}`,
           icon: <CircleCheck />,
-          title: L(`قُبل في ${a.cycleAr}`, `Accepted in ${a.cycleEn ?? a.cycleAr}`),
+          title: L(`تم القبول في ${a.cycleAr}`, `Accepted in ${a.cycleEn ?? a.cycleAr}`),
           detail: day(a.decidedAt),
           tone: 'done',
           note:

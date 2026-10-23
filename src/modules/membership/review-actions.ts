@@ -10,6 +10,7 @@ import {
   cancelDecisionMail,
   enqueueDecisionMail,
   flushOutbox,
+  prepareActivationLinks,
   notifyApplicationInfoRequested,
   sendActivationMail,
   UNDO_HOLD_SECONDS,
@@ -102,10 +103,15 @@ export async function decideApplications(
       : input.decision === 'reject'
         ? TEMPLATE.rejected
         : TEMPLATE.waitlisted;
+  // Accepted people get a link that lives as long as the activation period (7 days by default).
+  const activation =
+    input.decision === 'accept'
+      ? await prepareActivationLinks(outcomes.filter((x) => x.ok).map((x) => x.id))
+      : new Map<string, string>();
   // The mails wait in the outbox; the response returns at once and a delayed flush releases them.
   for (const r of outcomes.filter((x) => x.ok)) {
     try {
-      await enqueueDecisionMail(r.id, template, accounts.activation.get(r.id));
+      await enqueueDecisionMail(r.id, template, activation.get(r.id));
     } catch (e) {
       console.error('[membership] enqueue failed', (e as Error).message);
     }
@@ -120,6 +126,16 @@ export async function decideApplications(
   });
   refresh();
   return ok({ outcomes, undoSeconds: UNDO_HOLD_SECONDS });
+}
+
+/** The undo window is over: release the held decision mails now (the delayed flush and the daily job are the backups). */
+export async function releaseDecisionMails(): Promise<void> {
+  if (!(await getAccess())) return;
+  try {
+    await flushOutbox();
+  } catch (e) {
+    console.error('[membership] release failed', (e as Error).message);
+  }
 }
 
 /** Undoes a decision while its e-mail is still held back. Returns the status the application went back to. */

@@ -1,11 +1,8 @@
 import 'server-only';
 import { createAdminClient } from '@/lib/supabase/admin';
-import type { Lang } from '@/modules/auth/messages';
-
-const siteUrl = () => (process.env.SITE_URL ?? 'http://localhost:3000').replace(/\/$/, '');
 
 export type AccountOutcome = {
-  /** application id → the link to set a password, only for accounts created by this acceptance */
+  /** Kept for callers; the links are issued after the decision by prepareActivationLinks. */
   activation: Map<string, string>;
   /** applications whose account could not be prepared (they are left undecided) */
   failed: Set<string>;
@@ -56,16 +53,8 @@ export async function ensureApplicantAccounts(ids: string[]): Promise<AccountOut
         .is('user_id', null);
       if (link.error) throw new Error(link.error.message);
 
-      if (created) {
-        const gen = await db.auth.admin.generateLink({ type: 'recovery', email: mail });
-        const hash = gen.data?.properties?.hashed_token;
-        if (gen.error || !hash) throw new Error(gen.error?.message ?? 'generateLink failed');
-        const lang: Lang = a.locale === 'en' ? 'en' : 'ar';
-        out.activation.set(
-          a.id,
-          `${siteUrl()}/auth/confirm?token_hash=${encodeURIComponent(hash)}&type=recovery&next=${encodeURIComponent('/reset-password?welcome=1')}${lang === 'en' ? '&locale=en' : ''}`,
-        );
-      }
+      // The activation link is issued after the decision (prepareActivationLinks), so a re-accepted person gets one too.
+      void created;
     } catch (e) {
       console.error('[membership] account for application failed', a.id, (e as Error).message);
       out.failed.add(a.id);

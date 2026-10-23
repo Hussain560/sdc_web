@@ -200,7 +200,7 @@ export default async function TrackingPage({
         key: 'acc',
         icon: <CircleCheck />,
         tone: 'done',
-        title: L('قُبلت', 'Accepted'),
+        title: L('تم قبول طلبك', 'Accepted'),
         detail: t.acceptedAt ? when(t.acceptedAt, lang) : undefined,
       });
       items.push({
@@ -246,7 +246,7 @@ export default async function TrackingPage({
         key: 'acc',
         icon: <CircleCheck />,
         tone: 'done',
-        title: L('قُبلت', 'Accepted'),
+        title: L('تم قبول طلبك', 'Accepted'),
         detail: t.acceptedAt ? when(t.acceptedAt, lang) : undefined,
       });
       items.push({
@@ -443,7 +443,7 @@ function heroFor(
         chip: L('مقبول', 'Accepted'),
         chipClass: 'bg-accent-soft text-on-accent-soft',
         chipIcon: <CircleCheck size={14} aria-hidden="true" />,
-        title: () => L('مبروك، قُبلت!', 'Congratulations, you are in!'),
+        title: () => L('مبروك، تم قبولك!', 'Congratulations, you are in!'),
         text: L(
           `أرسلنا رابط تفعيل حسابك إلى بريدك. فعّله${t.activationDeadline ? ` قبل ${date(t.activationDeadline)}` : ' خلال أيام'} لتحجز مقعدك.`,
           `We sent the link to activate your account to your e-mail. Use it${t.activationDeadline ? ` before ${date(t.activationDeadline)}` : ' within days'} to keep your place.`,

@@ -13,6 +13,7 @@ import {
   resendApplicationActivation,
   restoreApplication,
 } from '../review-actions';
+import { scheduleRelease } from './ApplicationsTable';
 import type { ActivationRow, WaitlistRow } from '../review-queries';
 
 const DAY = 86_400_000;
@@ -105,7 +106,7 @@ export function WaitlistBoard({
                     <p className="font-semibold">{name(r.name)}</p>
                     <p className="text-sm text-muted">
                       {ar
-                        ? `قُبل ${formatDate(r.acceptedAt, lang)}`
+                        ? `تم القبول ${formatDate(r.acceptedAt, lang)}`
                         : `Accepted ${formatDate(r.acceptedAt, lang)}`}
                     </p>
                   </div>
@@ -288,6 +289,7 @@ export function WaitlistBoard({
                           { lang },
                         );
                         if (!r.ok) return { ok: false, message: r.message };
+                        scheduleRelease(r.data.undoSeconds);
                         const o = r.data.outcomes[0];
                         return o?.ok
                           ? { ok: true }

@@ -221,8 +221,8 @@ function copy(key: TemplateKey, lang: Lang, d: TemplateData): Copy {
                 ? 'أنشأنا لك حسابًا في بوابة الأعضاء. اضغط الزر أدناه لاختيار كلمة المرور وتفعيل حسابك، ثم أكمل ملفك الشخصي واختر ما إذا كنت ترغب في الظهور في دليل الأعضاء.'
                 : 'We created your account in the members portal. Use the button below to choose a password and activate it, then complete your profile and choose whether to appear in the member directory.',
               ar
-                ? 'إذا انتهت صلاحية الرابط فاختر «نسيت كلمة المرور» من صفحة الدخول لتحصل على رابط جديد.'
-                : 'If the link has expired, use “Forgot password” on the sign-in page to get a new one.',
+                ? `الرابط صالح لمدة ${d.activationDays ?? 7} أيام${d.activationDeadline ? ` حتى ${d.activationDeadline}` : ''}. إن انتهت صلاحيته فافتحه واطلب رابط تفعيل جديداً من الصفحة التي تظهر.`
+                : `The link is valid for ${d.activationDays ?? 7} days${d.activationDeadline ? ` until ${d.activationDeadline}` : ''}. If it has expired, open it and ask for a new activation link on the page that appears.`,
             ]
           : [
               ar

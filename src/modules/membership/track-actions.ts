@@ -93,6 +93,64 @@ export async function requestTrackingLink(email: string, ctx: { lang: Lang }): P
   return ok(undefined);
 }
 
+/**
+ * "My activation link ended": a new one to the address of an accepted application that is not activated yet. The answer
+ * is always the same, so nobody can learn who has an application; limited per address and per caller.
+ */
+export async function requestActivationByEmail(
+  email: string,
+  ctx: { lang: Lang },
+): Promise<Result> {
+  const lang = langOf(ctx?.lang);
+  const mail = String(email ?? '')
+    .trim()
+    .toLowerCase();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(mail)) return failCode('VALIDATION_FAILED', lang);
+  const db = createAdminClient();
+  const ip = await ipHash();
+  const { data: allowedMail } = await db.rpc('allow_public_attempt', {
+    p_kind: 'act-mail',
+    p_key: mail,
+    p_max: 3,
+    p_minutes: 60,
+  });
+  const { data: allowedIp } = await db.rpc('allow_public_attempt', {
+    p_kind: 'act-ip',
+    p_key: ip ?? 'none',
+    p_max: 10,
+    p_minutes: 60,
+  });
+  if (!allowedMail || !allowedIp) return failCode('RATE_LIMITED', lang);
+  const { data } = await db
+    .from('membership_applications')
+    .select('id, user_id')
+    .ilike('email', mail)
+    .eq('status', 'accepted')
+    .order('accepted_at', { ascending: false })
+    .limit(1);
+  const app = data?.[0];
+  if (app) {
+    const { data: active } = app.user_id
+      ? await db
+          .from('members')
+          .select('id')
+          .eq('user_id', app.user_id)
+          .not('activated_at', 'is', null)
+          .limit(1)
+      : { data: [] };
+    if ((active ?? []).length === 0) {
+      after(async () => {
+        try {
+          await sendActivationMail(app.id, 'resend');
+        } catch (e) {
+          console.error('[membership] activation link mail failed', (e as Error).message);
+        }
+      });
+    }
+  }
+  return ok(undefined);
+}
+
 /** Sends the activation link again to the address of an accepted application (the person holds its tracking link). */
 export async function requestActivationLink(token: string, ctx: { lang: Lang }): Promise<Result> {
   const lang = langOf(ctx?.lang);
