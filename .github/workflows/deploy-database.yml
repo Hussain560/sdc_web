@@ -46,7 +46,7 @@ jobs:
         run: supabase db push --db-url "$SUPABASE_DB_URL" --dry-run
       - name: Apply migrations
         if: env.SKIP != '1'
-        run: supabase db push --db-url "$SUPABASE_DB_URL"
+        run: supabase db push --db-url "$SUPABASE_DB_URL" --yes
 
   production:
     name: Apply migrations (production project)
@@ -74,4 +74,4 @@ jobs:
         run: supabase db push --db-url "$SUPABASE_DB_URL" --dry-run
       - name: Apply migrations
         if: env.SKIP != '1'
-        run: supabase db push --db-url "$SUPABASE_DB_URL"
+        run: supabase db push --db-url "$SUPABASE_DB_URL" --yes
