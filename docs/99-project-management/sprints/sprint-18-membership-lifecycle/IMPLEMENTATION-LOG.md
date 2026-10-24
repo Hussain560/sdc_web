@@ -144,23 +144,26 @@ only one `next dev` may write `.next/dev` (two servers corrupted the manifest).
 
 ## Round 4 — proof (2026-10-24)
 
-- New:  (the whole lifecycle in the browser) and   (axe over the membership screens, AR/EN × dark/light),  (info request from the waiting
-  list; finite ban). pgTAP 29 updated for the finite ban.
-- Found and fixed by them: the onboarding could lose its finished flag (the last step now waits for the save);   had a focusable logo inside an  panel (now inert);  text at reduced opacity failed contrast.
-- Stale specs updated: the account landing is , the sidebar has the waiting list and leave requests, the
+- New: `tests/auth/membership-lifecycle.spec.ts` (the whole lifecycle in the browser), `tests/auth/a11y-membership.spec.ts`
+  (axe over the membership screens, AR/EN × dark/light) and `supabase/tests/33_late_fixes.sql` (info request from the
+  waiting list; finite ban). pgTAP 29 updated for the finite ban.
+- Found and fixed by them: the onboarding could lose its finished flag (the last step now waits for the save); `/welcome`
+  had a focusable logo inside an `aria-hidden` panel (now inert); `/card` text at reduced opacity failed contrast.
+- Stale specs updated: the account landing is `/account/profile`, the sidebar has the waiting list and leave requests, the
   accept dialog names the count, mails carry the 7-day link, errors are shown in words, the join form is at
-   with new fields and an extra confirmation, the review page of one's own application is a locked card.
-- Test infrastructure: public pages cache the intake cycle, so a cycle must be opened through the dashboard (not SQL) before
-   shows; helpers wait for the streaming reveal.
-- Clean-up:  deleted, dead code removed (lint warnings in the touched files).
-- Not done: the visual re-baseline and the full clean-reset pgTAP run (no  without the owner's request).
+  `/join/apply` with new fields and an extra confirmation, the review page of one's own application is a locked card.
+- Test infrastructure: public pages cache the intake cycle, so a cycle must be opened through the dashboard (not SQL)
+  before `/join/apply` shows; helpers wait for the streaming reveal.
+- Clean-up: `WelcomeTour.tsx` deleted, dead code removed (lint warnings in the touched files).
+- Not done: the visual re-baseline and the full clean-reset pgTAP run (no `db reset` without the owner's request).
 
 ## What is left or risky
 
 The prioritised list and the Sprint 19 plan are in [NEXT-STEPS.md](./NEXT-STEPS.md). In short: a clean-database run of
 pgTAP and the auth suite (five older specs fail on the dev database and are unverified), the visual re-baseline, the
 pixel comparison with the boards, the password-policy decision, the activation page's other states, the hosted checks and
-.
+`temp.txt`.
+
 
 ## Decision change after Q-M8 (owner request)
 
