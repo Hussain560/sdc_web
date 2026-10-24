@@ -155,14 +155,17 @@ only one `next dev` may write `.next/dev` (two servers corrupted the manifest).
 - Test infrastructure: public pages cache the intake cycle, so a cycle must be opened through the dashboard (not SQL)
   before `/join/apply` shows; helpers wait for the streaming reveal.
 - Clean-up: `WelcomeTour.tsx` deleted, dead code removed (lint warnings in the touched files).
-- Not done: the visual re-baseline and the full clean-reset pgTAP run (no `db reset` without the owner's request).
+- Clean database (owner asked for it): `npx supabase db reset` → pgTAP **37 files, 1941 assertions, all pass** → the public
+  visual suite re-baselined (`chore(visual)`, 96 images; 359 passed, 0 failed) after three fixes (events tab counts had
+  low contrast; the language-toggle and auth-layout specs were outdated) → the auth suite: 83 passed, 6 failed (older
+  specs; also fail alone on a fresh reset). The dev database was re-seeded with `npm run db:lifecycle`.
+- `temp.txt` (keys of a hosted project) deleted at the owner's request; the keys still need to be rotated.
 
 ## What is left or risky
 
-The prioritised list and the Sprint 19 plan are in [NEXT-STEPS.md](./NEXT-STEPS.md). In short: a clean-database run of
-pgTAP and the auth suite (five older specs fail on the dev database and are unverified), the visual re-baseline, the
-pixel comparison with the boards, the password-policy decision, the activation page's other states, the hosted checks and
-`temp.txt`.
+The prioritised list and the Sprint 19 plan are in [NEXT-STEPS.md](./NEXT-STEPS.md). In short: the pixel comparison with
+the boards, five older specs with outdated selectors, the password-policy decision, the activation page's other states,
+the hosted checks and rotating the keys.
 
 
 ## Decision change after Q-M8 (owner request)

@@ -117,7 +117,10 @@ test.describe('administration', () => {
       await page.getByLabel('Community WhatsApp group link').fill('');
 
       await page.goto('/en');
-      await expect(page.getByRole('link', { name: 'Instagram' })).toHaveAttribute('href', url);
+      await expect(page.getByRole('link', { name: 'Instagram' }).first()).toHaveAttribute(
+        'href',
+        url,
+      );
 
       await page.goto(`/en/dashboard/admin/audit?action=settings`);
       await expect(page.getByRole('heading', { name: 'Audit log', level: 1 })).toBeVisible();

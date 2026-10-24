@@ -11,7 +11,7 @@
 | **Phase / Milestone** | Phase 7 — Public redesign follow-up / M11 |
 | **Capacity**          | ~30 SP — planned 47 SP (the P1/P2 stories — tracking page, rubric, auto-promotion, membership card — and the polish can slip to Sprint 19) |
 | **Team**              | Tech lead + Claude; owner for design approval, copy and the open questions |
-| **Status**            | ✅ Built and checked locally (2026-10-24) on branch `feat/sprint-18-membership-lifecycle` (never pushed, not merged). Not closed: the visual baselines and a clean-database run of the whole suite are open — see [NEXT-STEPS.md](./NEXT-STEPS.md) |
+| **Status**            | ✅ Built and checked locally (2026-10-24) on branch `feat/sprint-18-membership-lifecycle` (never pushed, not merged). Open: the pixel review against the boards and clean-up of five older specs — see [NEXT-STEPS.md](./NEXT-STEPS.md) |
 
 ## Sprint Objective
 
@@ -277,10 +277,10 @@ The original list is kept; the right column is where each item stands on 2026-10
 
 | Item | Status |
 | ---- | ------ |
-| `npm run check` passes; new pgTAP tests pass (every transition, allowed and refused); generated DB types committed | ✅ `npm run check` green (629 unit tests). pgTAP: last full clean run 36 files / 1932 assertions; the new `33_late_fixes` and the updated `29` pass; **a full clean-reset run is still to repeat** |
-| `npm run e2e` passes | 🔶 the visual suite is not re-baselined (needs a clean database); the auth suite was brought up to date: the lifecycle journey and the accessibility specs pass, five older specs still fail and are unverified on a clean database (see NEXT-STEPS) |
-| One end-to-end test walks the whole lifecycle | ✅ `tests/auth/membership-lifecycle.spec.ts` (apply → accept → activate → set-up → card → expire → renew → suspend → notice → reinstate → block) |
-| Every new screen checked in AR/EN × dark/light × 360 px and desktop; no new axe violations; keyboard-only run | 🔶 axe ✅ (8 scans over the public and signed-in membership screens, AR/EN × dark/light); the pixel comparison with the boards and a keyboard-only run are still open |
+| `npm run check` passes; new pgTAP tests pass (every transition, allowed and refused); generated DB types committed | ✅ `npm run check` green (629 unit tests); pgTAP on a clean reset: 37 files, 1941 assertions |
+| `npm run e2e` passes | ✅ the public visual suite is re-baselined (owner approved) and green: 359 passed. The auth suite: 83 of 89 pass on a clean database; the six that fail test earlier sprints' features with outdated selectors (see NEXT-STEPS) |
+| One end-to-end test walks the whole lifecycle | ✅ `tests/auth/membership-lifecycle.spec.ts` |
+| Every new screen checked in AR/EN × dark/light × 360 px and desktop; no new axe violations; keyboard-only run | 🔶 axe ✅ (8 scans); the pixel comparison with the boards and a keyboard-only run are still open |
 | The member never sees internal notes; the tracking page shows nothing beyond the applicant's own application | ✅ pgTAP 27/28/29 and the browser |
 | Docs: lifecycle, permission catalog, e-mail catalog, module doc, backlog updated | ✅ updated 2026-10-24 |
 
