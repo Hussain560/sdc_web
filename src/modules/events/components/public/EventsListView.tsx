@@ -256,7 +256,7 @@ export function EventsListView({
                     )}
                   >
                     {t[tab]}
-                    <span className="tabular-nums opacity-75">{`(${counts[tab]})`}</span>
+                    <span className="tabular-nums">{`(${counts[tab]})`}</span>
                   </Link>
                 </li>
               ))}

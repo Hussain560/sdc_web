@@ -31,7 +31,12 @@ test.describe('locale routing (ADR-010)', () => {
   test('language toggle keeps the page and switches the URL', async ({ page, setup }) => {
     await setup();
     await page.goto('/events');
-    await page.getByRole('banner').getByRole('button', { name: 'English' }).click();
+    // On a phone the language switch lives in the menu sheet; on a wide screen it is in the header.
+    const phone = (page.viewportSize()?.width ?? 1280) < 1024;
+    if (phone) await page.getByRole('button', { name: /القائمة|Menu/ }).click();
+    await (phone ? page.getByRole('dialog') : page.getByRole('banner'))
+      .getByRole('button', { name: 'English' })
+      .click();
     await expect(page).toHaveURL(/\/en\/events$/);
     await expect(page.locator('html')).toHaveAttribute('dir', 'ltr');
   });

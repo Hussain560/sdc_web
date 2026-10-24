@@ -39,12 +39,14 @@ test('auth pages collapse the brand panel to a strip below 1024 px and the form 
 }) => {
   await setup({ lang: 'en' });
   await page.setViewportSize({ width: 390, height: 800 });
-  await page.goto('/en/login');
+  // The brand panel becomes a 96 px strip (the sign-in page keeps a taller one for the animated mark).
+  await page.goto('/en/forgot-password');
   await settle(page);
-  await expect(page.locator('aside')).toBeHidden();
-  const strip = page.locator('div[aria-hidden="true"].motif-dots').first();
+  const strip = page.locator('aside[aria-hidden="true"].motif-dots').first();
   const box = await strip.boundingBox();
   expect(Math.round(box?.height ?? 0)).toBe(96);
+  await page.goto('/en/login');
+  await settle(page);
   await expect(page.getByLabel('E-mail')).toBeVisible();
   await expect(page.getByRole('button', { name: 'Sign in' })).toBeVisible();
 });
