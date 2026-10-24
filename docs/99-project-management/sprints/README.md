@@ -41,7 +41,9 @@ Planned dates are the original forecast (2-week sprints starting Sundays, Saudi 
 | [Sprint 14](./sprint-14-design-system-v2-foundation/plan.md) | Public redesign I — Design System v2 tokens, components, chrome, auth layout | 2027-04-11 → 04-24 | 7 | M9 | 27 | 2026-10-10 (PR #2) | ✅ Complete |
 | [Sprint 15](./sprint-15-home-and-event-page/plan.md) | Public redesign II — chrome roll-out, home, event page, registration dialog | 2027-04-25 → 05-08 | 7 | M9 | 28 | 2026-10-10 (PR #3) | ✅ Complete |
 | [Sprint 16](./sprint-16-members-and-remaining-pages/plan.md) | Public redesign III — members (privacy first) and the remaining pages | 2027-05-09 → 05-22 | 7 | M9 · `v1.1.0` | 27 | 2026-10-10 → 10-11 (PRs #3, #4) | ✅ Complete; baselines, copy review and the tag are open |
-| [Sprint 17](./sprint-17-members-profiles-and-motion/plan.md) | Members: rich profiles, photo upload, add-member wizard, assign-position fixes, members redesign, motion | 2026-10-18 → 10-31 | 7 | M10 | 36 | — | ⬜ Planned (waits on designs, step 0) |
+| [Sprint 17](./sprint-17-members-profiles-and-motion/plan.md) | Members: rich profiles, photo upload, add-member wizard, assign-position fixes, members redesign, motion | 2026-10-18 → 10-31 | 7 | M10 | 36 | — | 🔄 Merged into `develop` (Sprint 17 PR); see its plan for what is open |
+| [Sprint 18](./sprint-18-membership-lifecycle/plan.md) | Membership lifecycle: join, review, activate, renew, end, card | 2026-11-01 → 11-14 | 7 | M11 | 47 | 2026-10-21 → 10-24 | ✅ Merged into `develop`; pixel review and old specs open ([next steps](./sprint-18-membership-lifecycle/NEXT-STEPS.md)) |
+| [Sprint 19](./sprint-19-management-and-events/plan.md) | Management and events: dashboard per role, event lifecycle and detail, presenters, PNG certificates, committees, articles, reports | 2026-10-25 → 11-21 | 7 | M12 | 61 | — | 🔜 Planned (step 0: designs) |
 
 Each sprint folder gets `notes.md` when it starts and `report.md` when it ends (from [`_template/`](./_template/plan.md)).
 

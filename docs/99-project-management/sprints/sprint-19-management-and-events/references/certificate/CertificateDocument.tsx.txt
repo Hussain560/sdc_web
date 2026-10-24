@@ -1,0 +1,303 @@
+import {
+  Defs,
+  Document,
+  Font,
+  Image,
+  LinearGradient,
+  Page,
+  Path,
+  Rect,
+  Stop,
+  StyleSheet,
+  Svg,
+  Text,
+  View,
+} from '@react-pdf/renderer';
+import path from 'node:path';
+import { CERTIFICATE_EMBLEM, CERTIFICATE_LOGO, CERTIFICATE_SIGNATURE } from './certificate-images';
+
+/**
+ * The attendance certificate (A4 landscape), design 07 "classic" of the SDC certificate template: a heavy double frame
+ * with the identity mark in its four corners, the vertical colour logo, the community name in Arabic and English, a
+ * centred statement, and a footer with the community leader's signature, the round emblem and the verification QR.
+ * PDF colours cannot use CSS variables, so the values below are the written SDC identity colours (this file is exempt
+ * from the token check). Arabic is set with IBM Plex Sans Arabic (shaped and right-to-left by the PDF engine); Latin
+ * text uses Inter.
+ */
+const TEAL = '#2D7566';
+const GREEN = '#58BF88';
+const INK = '#2D2D2D';
+const MUTED = '#5E6B66';
+const LINE = '#CFDDD7';
+
+/** Millimetres to PDF points. */
+const mm = (v: number) => v * 2.8346;
+
+/**
+ * The PDF engine lays out an Arabic line that starts with a digit ("4 أكتوبر 2026") left to right, which puts the
+ * day after the year. A leading RIGHT-TO-LEFT MARK fixes it. Only used for dates: it would move the « » quotes.
+ */
+const RLM = '\u200f';
+const ARABIC = /[\u0600-\u06ff]/;
+const rtl = (s: string) => (ARABIC.test(s) ? `${RLM}${s}` : s);
+
+const SIGNER = { name: 'مهند الحربي', title: 'قائد المجتمع' };
+
+/** The identity mark (P4) as a vector path, viewBox 0 0 70 61. */
+const MARK =
+  'M34.7396 41.8721L15.5233 61H15.5041C15.4143 60.9822 15.326 60.9573 15.2401 60.9255C13.2681 58.9913 11.6968 56.6862 10.6162 54.1422C9.53563 51.5983 8.96711 48.8656 8.94326 46.1011C8.9194 43.3365 9.44068 40.5944 10.4772 38.0321C11.5137 35.4699 13.0451 33.1378 14.9834 31.1698L19.5715 26.5086L0 6.69316V6.56576C1.94329 4.52152 4.27534 2.88757 6.85876 1.76021C9.44217 0.632842 12.2247 0.0348587 15.0424 0.00147908C17.8601 -0.0319005 20.6559 0.500007 23.2652 1.56586C25.8745 2.63171 28.2445 4.20995 30.2355 6.20758L34.9268 10.9072L39.2654 6.50566C41.277 4.46527 43.6751 2.84779 46.3189 1.7481C48.9628 0.648413 51.7993 0.0886459 54.6619 0.101632C57.5246 0.114619 60.3559 0.700092 62.9897 1.82372C65.6235 2.94736 68.0069 4.58653 70 6.6451V6.85903L50.3685 26.3692L54.6711 30.6818C56.6646 32.6803 58.2386 35.0584 59.3004 37.6758C60.3621 40.2932 60.8901 43.0971 60.8532 45.9221C60.8163 48.7472 60.2152 51.5363 59.0855 54.125C57.9558 56.7137 56.3202 59.0496 54.2751 60.9952C54.0228 61.0045 53.7705 60.9761 53.5264 60.9111L34.7396 41.8721Z';
+
+const assets = (...p: string[]) => path.join(process.cwd(), 'public', 'assets', ...p);
+
+let fontsReady = false;
+function registerFonts() {
+  if (fontsReady) return;
+  Font.register({
+    family: 'PlexArabic',
+    fonts: [
+      {
+        src: assets('font', 'IBM_Plex_Sans_Arabic', 'IBMPlexSansArabic-Regular.ttf'),
+        fontWeight: 400,
+      },
+      {
+        src: assets('font', 'IBM_Plex_Sans_Arabic', 'IBMPlexSansArabic-Bold.ttf'),
+        fontWeight: 700,
+      },
+    ],
+  });
+  Font.register({
+    family: 'InterPdf',
+    fonts: [
+      { src: assets('font', 'Inter', 'static', 'Inter_18pt-Regular.ttf'), fontWeight: 400 },
+      { src: assets('font', 'Inter', 'static', 'Inter_18pt-SemiBold.ttf'), fontWeight: 600 },
+    ],
+  });
+  // Never hyphenate: Arabic words must not be split.
+  Font.registerHyphenationCallback((word) => [word]);
+  fontsReady = true;
+}
+
+/**
+ * Name size: as large as fits on one line of the text column (about 600 pt), never below 22 pt; a very long name
+ * wraps to a second line. Widths are estimated per character (Plex Arabic Bold: about 0.48 em Arabic, 0.6 em Latin).
+ */
+function nameSize(name: string): number {
+  const ems = [...name].reduce((w, ch) => w + (ARABIC.test(ch) ? 0.48 : 0.6), 0);
+  return Math.max(22, Math.min(34, Math.floor(600 / Math.max(ems, 1))));
+}
+
+const FRAME = mm(8);
+const CORNER = mm(15);
+
+const styles = StyleSheet.create({
+  page: { backgroundColor: '#FFFFFF', fontFamily: 'PlexArabic', color: INK, position: 'relative' },
+  frame: {
+    position: 'absolute',
+    top: FRAME,
+    left: FRAME,
+    right: FRAME,
+    bottom: FRAME,
+    borderWidth: mm(1.2),
+    borderColor: TEAL,
+  },
+  frameInner: {
+    position: 'absolute',
+    top: FRAME + mm(3.6),
+    left: FRAME + mm(3.6),
+    right: FRAME + mm(3.6),
+    bottom: FRAME + mm(3.6),
+    borderWidth: mm(0.3),
+    borderColor: GREEN,
+  },
+  corner: {
+    position: 'absolute',
+    width: CORNER,
+    height: CORNER,
+    backgroundColor: '#FFFFFF',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  logo: {
+    position: 'absolute',
+    top: mm(17),
+    left: (mm(297) - mm(26.9)) / 2,
+    width: mm(26.9),
+    height: mm(30),
+  },
+  side: { position: 'absolute', top: mm(20), width: mm(80) },
+  sideAr: { fontSize: 11, fontWeight: 700, color: TEAL, textAlign: 'right' },
+  sideEn: { fontFamily: 'InterPdf', fontWeight: 600, fontSize: 9.5, color: TEAL },
+  head: { position: 'absolute', top: mm(50), left: mm(30), right: mm(30), alignItems: 'center' },
+  title: { fontSize: 40, fontWeight: 700, color: TEAL, textAlign: 'center' },
+  titleEnRow: { flexDirection: 'row', alignItems: 'center', marginTop: 2 },
+  titleEnLine: { width: mm(16), height: 0.8, backgroundColor: GREEN },
+  titleEn: {
+    fontFamily: 'InterPdf',
+    fontWeight: 600,
+    fontSize: 9.4,
+    letterSpacing: 2.3,
+    color: GREEN,
+    marginHorizontal: mm(4),
+  },
+  body: { position: 'absolute', top: mm(82), left: mm(32), right: mm(32), alignItems: 'center' },
+  statement: { fontSize: 14, color: MUTED, textAlign: 'center' },
+  name: { fontWeight: 700, color: INK, textAlign: 'center', marginTop: 4, lineHeight: 1.35 },
+  rule: { marginTop: 10, marginBottom: 10 },
+  event: { fontSize: 15, fontWeight: 700, color: TEAL, textAlign: 'center', lineHeight: 1.5 },
+  factsRow: { flexDirection: 'row-reverse', justifyContent: 'center', marginTop: 5 },
+  factItem: { flexDirection: 'row-reverse', alignItems: 'center' },
+  facts: { fontSize: 11.5, color: MUTED },
+  factsNum: { fontFamily: 'InterPdf', fontSize: 10.5, color: MUTED, marginRight: 4 },
+  dot: { fontSize: 11.5, color: GREEN, marginHorizontal: 8 },
+  factsEn: { fontFamily: 'InterPdf', fontSize: 9, color: MUTED, textAlign: 'center', marginTop: 4 },
+  signer: {
+    position: 'absolute',
+    right: mm(26),
+    bottom: mm(20),
+    width: mm(60),
+    alignItems: 'center',
+  },
+  signature: { height: mm(21), width: mm(28), objectFit: 'contain', marginBottom: -mm(3) },
+  signLine: { width: mm(48), height: 0.8, backgroundColor: INK, marginBottom: 6 },
+  signName: { fontSize: 11.5, fontWeight: 700, textAlign: 'center' },
+  signTitle: { fontSize: 9.2, color: MUTED, textAlign: 'center' },
+  emblem: {
+    position: 'absolute',
+    bottom: mm(20),
+    left: (mm(297) - mm(34)) / 2,
+    width: mm(34),
+    height: mm(34),
+  },
+  verify: {
+    position: 'absolute',
+    left: mm(26),
+    bottom: mm(20),
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+  },
+  qrBox: { width: mm(25), height: mm(25), padding: 3, borderWidth: 0.8, borderColor: LINE },
+  qr: { width: '100%', height: '100%' },
+  verifyText: { marginLeft: mm(3.4), maxWidth: mm(80), paddingBottom: 2 },
+  verifyLabel: { fontSize: 8, color: MUTED },
+  verifyId: { fontFamily: 'InterPdf', fontWeight: 600, fontSize: 9, color: INK, marginTop: 2 },
+  verifyUrl: { fontFamily: 'InterPdf', fontSize: 7, color: TEAL, marginTop: 2 },
+});
+
+/** The identity mark on a white square over each corner of the frame. */
+function Corner({ at }: { at: { top?: number; bottom?: number; left?: number; right?: number } }) {
+  return (
+    <View style={[styles.corner, at]}>
+      <Svg viewBox="0 0 70 61" width={mm(10)} height={mm(10 * (61 / 70))}>
+        <Path d={MARK} fill={TEAL} />
+      </Svg>
+    </View>
+  );
+}
+
+export type CertificateData = {
+  id: string;
+  recipientName: string;
+  titleAr: string;
+  titleEn: string | null;
+  dateAr: string;
+  dateEn: string;
+  percent: number;
+  sessionsAttended: number;
+  sessionsExpected: number;
+  verifyUrl: string;
+  /** PNG data URL of the verification QR code. */
+  qrDataUrl: string;
+};
+
+export function CertificateDocument({ c }: { c: CertificateData }) {
+  registerFonts();
+  const size = nameSize(c.recipientName);
+  // Each fact is drawn as its own text (right to left): a run mixing Arabic, digits and "%" is reordered wrongly.
+  const facts = [c.dateAr ? [rtl(c.dateAr)] : [], ['نسبة الحضور', `${c.percent}%`]].filter(
+    (f) => f.length,
+  );
+  const factsEn = c.titleEn
+    ? [c.titleEn, c.dateEn, `${c.percent}% attendance`].filter(Boolean).join('  ·  ')
+    : null;
+  const edge = mm(2);
+  // The id is printed on its own line and the QR carries the full link, so the URL line shows only its base: the
+  // full URL is too long for the space beside the emblem.
+  const verifyBase = c.verifyUrl.endsWith(c.id) ? c.verifyUrl.slice(0, -c.id.length) : c.verifyUrl;
+  return (
+    <Document title={`Certificate ${c.id}`} author="Saudi Developer Community">
+      <Page size="A4" orientation="landscape" style={styles.page}>
+        <View style={styles.frame} />
+        <View style={styles.frameInner} />
+        <Corner at={{ top: edge, right: edge }} />
+        <Corner at={{ top: edge, left: edge }} />
+        <Corner at={{ bottom: edge, right: edge }} />
+        <Corner at={{ bottom: edge, left: edge }} />
+
+        <Image src={CERTIFICATE_LOGO} style={styles.logo} />
+        <View style={[styles.side, { right: mm(26) }]}>
+          <Text style={styles.sideAr}>المجتمع السعودي للمطورين</Text>
+        </View>
+        <View style={[styles.side, { left: mm(26) }]}>
+          <Text style={styles.sideEn}>Saudi Developers Community</Text>
+        </View>
+
+        <View style={styles.head}>
+          <Text style={styles.title}>شهادة حضور</Text>
+          <View style={styles.titleEnRow}>
+            <View style={styles.titleEnLine} />
+            <Text style={styles.titleEn}>CERTIFICATE OF ATTENDANCE</Text>
+            <View style={styles.titleEnLine} />
+          </View>
+        </View>
+
+        <View style={styles.body}>
+          <Text style={styles.statement}>يشهد المجتمع السعودي للمطورين بحضور</Text>
+          <Text style={[styles.name, { fontSize: size }]}>{c.recipientName}</Text>
+          <Svg width={mm(70)} height={2} style={styles.rule}>
+            <Defs>
+              <LinearGradient id="rule" x1="0" y1="0" x2="1" y2="0">
+                <Stop offset="0" stopColor={GREEN} />
+                <Stop offset="1" stopColor={TEAL} />
+              </LinearGradient>
+            </Defs>
+            <Rect x="0" y="0" width={mm(70)} height={2} fill="url(#rule)" />
+          </Svg>
+          <Text style={styles.event}>«{c.titleAr}»</Text>
+          <View style={styles.factsRow}>
+            {facts.map((parts, i) => (
+              <View key={parts.join()} style={styles.factItem}>
+                {i > 0 ? <Text style={styles.dot}>·</Text> : null}
+                {parts.map((p) => (
+                  <Text key={p} style={/^[\d.]+%$/.test(p) ? styles.factsNum : styles.facts}>
+                    {p}
+                  </Text>
+                ))}
+              </View>
+            ))}
+          </View>
+          {factsEn ? <Text style={styles.factsEn}>{factsEn}</Text> : null}
+        </View>
+
+        <View style={styles.signer}>
+          <Image src={CERTIFICATE_SIGNATURE} style={styles.signature} />
+          <View style={styles.signLine} />
+          <Text style={styles.signName}>{SIGNER.name}</Text>
+          <Text style={styles.signTitle}>{SIGNER.title}</Text>
+        </View>
+
+        <Image src={CERTIFICATE_EMBLEM} style={styles.emblem} />
+
+        <View style={styles.verify}>
+          <View style={styles.qrBox}>
+            <Image src={c.qrDataUrl} style={styles.qr} />
+          </View>
+          <View style={styles.verifyText}>
+            <Text style={styles.verifyLabel}>للتحقق من الشهادة · Verify this certificate</Text>
+            <Text style={styles.verifyId}>{c.id}</Text>
+            <Text style={styles.verifyUrl}>{verifyBase}</Text>
+          </View>
+        </View>
+      </Page>
+    </Document>
+  );
+}

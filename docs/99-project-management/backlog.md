@@ -238,6 +238,28 @@ Work the team did because the situation changed or the owner asked. Ids are new.
 | MEM-020 | Digital membership card with QR code and public verification page | P1 — ✅ Sprint 18 (local branch) |
 | NOT-004 | Lifecycle e-mails (new templates, both languages, sent once, retried) | P0 — ✅ Sprint 18 (local branch) |
 
-## Follow-ups from Sprint 18 (candidates for Sprint 19)
+## Follow-ups from Sprint 18
 
-See [NEXT-STEPS.md](./sprints/sprint-18-membership-lifecycle/NEXT-STEPS.md): Playwright journeys and the lifecycle end-to-end test, visual baselines, accessibility sweep, pgTAP for the late migrations, password-policy decision, clean-up, and the optional ideas (two-reviewer rule, editable decision e-mails, QR check-in at events).
+See [NEXT-STEPS.md](./sprints/sprint-18-membership-lifecycle/NEXT-STEPS.md): the pixel review against the boards, five older specs, the activation page states and the password-policy decision. They ride along in Sprint 19 as optional carry-over.
+
+### Sprint 19 — Management and events ([plan](./sprints/sprint-19-management-and-events/plan.md), [process](./sprints/sprint-19-management-and-events/event-lifecycle.md))
+
+| ID | Story | P |
+| -- | ----- | - |
+| EVT-013 | Event lifecycle audit and fixes (every transition in pgTAP, feedback and e-mail per step, checklist) | P0 — ⬜ Sprint 19 |
+| PRS-001 | Presenter accounts: invite members or outside guests, activation link, event-scoped attendance rights | P0 — ⬜ Sprint 19 |
+| CRT-001 | Certificates as PNG attached to the e-mail; no storage, no link, no QR | P0 — ⬜ Sprint 19 |
+| CRT-002 | Certificate lifecycle and feedback: preview, batches with progress, per-person results, view and download | P0 — ⬜ Sprint 19 |
+| DSH-001 | Role-based dashboard data | P0 — ⬜ Sprint 19 |
+| DSH-002 | Dashboard home per role; greeting card removed | P0 — ⬜ Sprint 19 ⛔ designs |
+| EVT-012 | Event detail redesign (stepper, action bar, tabs, phone) | P0 — ⬜ Sprint 19 ⛔ designs |
+| ATT-001 | Attendance tab and full-screen QR redesign | P0 — ⬜ Sprint 19 ⛔ designs |
+| PRS-002 | Presenter workspace ("My events", Overview and Attendance only) | P0 — ⬜ Sprint 19 ⛔ designs |
+| EVT-010 | Events list redesign | P0 — ⬜ Sprint 19 ⛔ designs |
+| EVT-011 | Event wizard redesign with the presenters step | P0 — ⬜ Sprint 19 ⛔ designs |
+| REG-010 | Registrations page redesign | P1 — ⬜ Sprint 19 ⛔ designs |
+| REG-011 | "My events" for members | P1 — ⬜ Sprint 19 ⛔ designs |
+| CRT-003 | Certificate templates v2 with the SDC identity | P1 — ⬜ Sprint 19 ⛔ designs |
+| CMT-004 | Committees index and page redesign | P1 — ⬜ Sprint 19 ⛔ designs |
+| ART-004 | Articles list and editor redesign | P1 — ⬜ Sprint 19 ⛔ designs |
+| RPT-004 | Reports redesign | P2 — ⬜ Sprint 19 ⛔ designs |
