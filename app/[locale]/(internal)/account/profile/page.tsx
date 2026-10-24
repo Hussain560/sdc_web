@@ -8,7 +8,7 @@ import { getReferenceData } from '@/modules/membership/queries';
 import { MemberProfileEditor } from '@/modules/members/components/editor/MemberProfileEditor';
 import { getMyEditorData } from '@/modules/members/editor';
 import { getSkillCatalog } from '@/modules/members/public';
-import { MEMBER_STATUS_LABEL, type MemberStatus } from '@/modules/members/schemas';
+import { memberStatusLabel, type MemberStatus } from '@/modules/members/schemas';
 
 /**
  * My profile: one page for the account (e-mail, message language) and, for community members, the public profile
@@ -49,7 +49,7 @@ export default async function AccountProfilePage({
     );
 
   const status = editor.status as MemberStatus;
-  const st = MEMBER_STATUS_LABEL[status];
+  const st = memberStatusLabel(status);
   const canEdit = status === 'active';
   const [reference, catalog] = canEdit
     ? await Promise.all([getReferenceData(), getSkillCatalog()])

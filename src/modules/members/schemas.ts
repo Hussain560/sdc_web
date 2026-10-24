@@ -118,6 +118,14 @@ export const MEMBER_STATUS_LABEL: Record<
   ended: { ar: 'انتهت', en: 'Ended', tone: 'neutral' },
 };
 
+/** The label of a status; an unknown value (data from outside the lifecycle) shows as itself instead of breaking the page. */
+export const memberStatusLabel = (status: string | null | undefined) =>
+  MEMBER_STATUS_LABEL[status as MemberStatus] ?? {
+    ar: status || '—',
+    en: status || '—',
+    tone: 'neutral' as const,
+  };
+
 /** Why a membership ended (shown next to "Ended"). */
 export const END_REASON_LABEL: Record<string, { ar: string; en: string }> = {
   left: { ar: 'غادر', en: 'Left' },
