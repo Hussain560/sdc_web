@@ -64,13 +64,17 @@ test.describe('review and decisions', () => {
       await gotoReady(page, '/en/dashboard/membership/applications');
       await page.getByRole('checkbox', { name: 'Select all' }).check();
       await page.getByRole('button', { name: 'Accept' }).first().click();
-      await page.getByRole('dialog').getByRole('button', { name: 'Confirm' }).click();
+      await page
+        .getByRole('dialog')
+        .getByRole('button', { name: /^Accept \d+/ })
+        .click();
       await expect(page.getByText('Decision applied to 2.')).toBeVisible();
 
       const welcome = await waitForMail(a.email, {
         subject: /Welcome to the Saudi Developer Community/i,
       });
-      expect(welcome.html).toContain('/account/profile');
+      // An account that never signed in gets the 7-day activation link.
+      expect(welcome.html).toContain('/activate/');
       const rows = await sql<{ n: string }>(
         `select count(*)::text as n from public.members where application_id is not null and user_id in ($1, $2)`,
         [a.id, b.id],
@@ -128,13 +132,13 @@ test.describe('review and decisions', () => {
         [cycle[0]!.id, leader.id, `القائد ${tag}`],
       );
       await signInAndWait(page, leader.email, undefined, '/en/login');
-      await gotoReady(page, '/en/dashboard/membership/applications');
-      await page
-        .getByRole('row', { name: new RegExp(tag) })
-        .getByRole('button', { name: 'Accept' })
-        .click();
-      await page.getByRole('dialog').getByRole('button', { name: 'Confirm' }).click();
-      await expect(page.getByText(/can't decide your own application/)).toBeVisible();
+      const [own] = await sql<{ id: string }>(
+        `select id from public.membership_applications where user_id = $1`,
+        [leader.id],
+      );
+      await gotoReady(page, `/en/dashboard/membership/applications/${own!.id}`);
+      await expect(page.getByText('Nobody reviews their own application')).toBeVisible();
+      await expect(page.getByRole('button', { name: /^Accept/ })).toHaveCount(0);
     } finally {
       await wipe();
       await remove(leader);

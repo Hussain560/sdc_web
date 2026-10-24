@@ -70,7 +70,7 @@ test('a leader adds a member with a position who activates the account from the 
       name: /Added Leader was added|Added By Leader was added/,
     });
     await expect(done).toBeVisible({ timeout: 20_000 });
-    await expect(done.getByText(/activation e-mail was sent to/)).toBeVisible();
+    await expect(done.getByText(/Activation e-mail sent to/)).toBeVisible();
 
     const [row] = await sql<{ n: string; phone: string; full: string; positions: string }>(
       `select count(*)::text as n, max(m.phone) as phone, max(p.full_name_ar) as full,
@@ -112,9 +112,10 @@ test('a leader adds a member with a position who activates the account from the 
     await mpage.locator('input[type="password"]').nth(0).fill(PASSWORD);
     await mpage.locator('input[type="password"]').nth(1).fill(PASSWORD);
     await mpage.locator('button[type="submit"]').click();
-    await expect(mpage).toHaveURL(/\/en\/login/, { timeout: 15_000 });
-    await signInViaUi(mpage, email, PASSWORD, '/en/login');
-    await mpage.waitForURL((u) => !/\/login/.test(u.pathname), { timeout: 30_000 });
+    // A new member stays signed in and sees "your account is ready".
+    await expect(mpage.getByRole('heading', { name: 'Your account is ready' })).toBeVisible({
+      timeout: 15_000,
+    });
     await mctx.close();
 
     // A committee head has no button (and no page).

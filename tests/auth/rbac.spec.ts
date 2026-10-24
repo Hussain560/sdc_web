@@ -110,7 +110,9 @@ const cases: Array<{
       '/en/dashboard/reports',
       '/en/dashboard/membership/cycles',
       '/en/dashboard/membership/applications',
+      '/en/dashboard/membership/waitlist',
       '/en/dashboard/members',
+      '/en/dashboard/membership/leave-requests',
       '/en/dashboard/admin/users',
       '/en/dashboard/admin/roles',
       '/en/dashboard/admin/privacy',
@@ -132,7 +134,9 @@ const cases: Array<{
       '/en/dashboard/reports',
       '/en/dashboard/membership/cycles',
       '/en/dashboard/membership/applications',
+      '/en/dashboard/membership/waitlist',
       '/en/dashboard/members',
+      '/en/dashboard/membership/leave-requests',
       '/en/dashboard/admin/users',
       '/en/dashboard/admin/roles',
       '/en/dashboard/admin/audit',
@@ -171,7 +175,7 @@ test.describe('route protection', () => {
     try {
       await signInAndWait(page, p.email, undefined, '/en/login');
       await gotoReady(page, '/en/dashboard');
-      await expect(page).toHaveURL(/\/en\/account$/);
+      await expect(page).toHaveURL(/\/en\/account\/profile$/);
     } finally {
       await remove(p);
     }
@@ -349,7 +353,7 @@ test.describe('assigning and ending positions', () => {
 
       // Access ended with the term — no deploy needed: the next request has no dashboard.
       await gotoReady(memberPage, '/en/dashboard');
-      await expect(memberPage).toHaveURL(/\/en\/account$/);
+      await expect(memberPage).toHaveURL(/\/en\/account\/profile$/);
       await memberCtx.close();
     } finally {
       await remove(leader, member);
@@ -370,7 +374,7 @@ test.describe('assigning and ending positions', () => {
       );
 
       await gotoReady(page, '/en/dashboard');
-      await expect(page).toHaveURL(/\/en\/account$/);
+      await expect(page).toHaveURL(/\/en\/account\/profile$/);
     } finally {
       await remove(member);
     }

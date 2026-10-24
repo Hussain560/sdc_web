@@ -46,7 +46,7 @@ test.describe('e-mail log', () => {
       // The failed attempt shows its error and the automatic retry notice.
       const row = page.getByRole('row').filter({ hasText: target.email });
       await expect(row.getByText('Will retry', { exact: true })).toBeVisible();
-      await expect(row.getByText(/PROVIDER_ERROR/)).toBeVisible();
+      await expect(row.getByText('The mail provider could not send it')).toBeVisible();
 
       await row.getByRole('button', { name: 'Retry' }).click();
       await expect(
