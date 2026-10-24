@@ -142,18 +142,25 @@ Lessons worth keeping: the global `img, video {max-width:100%; height:auto}` rul
 media sized with classes needs a wrapper or inline style; the auth service cannot read `banned_until = infinity`;
 only one `next dev` may write `.next/dev` (two servers corrupted the manifest).
 
+## Round 4 — proof (2026-10-24)
+
+- New:  (the whole lifecycle in the browser) and   (axe over the membership screens, AR/EN × dark/light),  (info request from the waiting
+  list; finite ban). pgTAP 29 updated for the finite ban.
+- Found and fixed by them: the onboarding could lose its finished flag (the last step now waits for the save);   had a focusable logo inside an  panel (now inert);  text at reduced opacity failed contrast.
+- Stale specs updated: the account landing is , the sidebar has the waiting list and leave requests, the
+  accept dialog names the count, mails carry the 7-day link, errors are shown in words, the join form is at
+   with new fields and an extra confirmation, the review page of one's own application is a locked card.
+- Test infrastructure: public pages cache the intake cycle, so a cycle must be opened through the dashboard (not SQL) before
+   shows; helpers wait for the streaming reveal.
+- Clean-up:  deleted, dead code removed (lint warnings in the touched files).
+- Not done: the visual re-baseline and the full clean-reset pgTAP run (no  without the owner's request).
+
 ## What is left or risky
 
-The full, prioritised list with the Sprint 19 plan is in [NEXT-STEPS.md](./NEXT-STEPS.md). In short:
-
-- **Tests**: no new Playwright journeys (applicant, reviewer, leadership, member, notices) and no lifecycle end-to-end
-  test; no pgTAP for migrations `…1200` and `…1300`; 100 visual tests fail because the baselines were already stale.
-- **Quality sweep**: no systematic AR/EN × dark/light × 360 px comparison, no axe run and no keyboard-only run on the new screens.
-- **Open owner decisions**: the password policy (design says 10 characters and no common passwords; recommendation: keep today's rule) and deleting `temp.txt` and rotating its keys. Q-L7 is closed: no vice-leader role.
-- **Clean-up**: `WelcomeTour.tsx` is unused; `sdc-mark.svg` is a 1.1 MB image wrapped in an SVG (a true vector would be lighter);
-  `ResponsiveTables` labels cells after hydration; the seeds are local-only.
-- **Release**: the branch has 165 commits and has never been pushed or merged (owner rule); merging needs the baseline
-  approval and a hosted check of the e-mail transport and `SITE_URL`.
+The prioritised list and the Sprint 19 plan are in [NEXT-STEPS.md](./NEXT-STEPS.md). In short: a clean-database run of
+pgTAP and the auth suite (five older specs fail on the dev database and are unverified), the visual re-baseline, the
+pixel comparison with the boards, the password-policy decision, the activation page's other states, the hosted checks and
+.
 
 ## Decision change after Q-M8 (owner request)
 

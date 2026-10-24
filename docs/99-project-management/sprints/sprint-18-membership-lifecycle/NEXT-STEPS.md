@@ -1,91 +1,91 @@
 # Sprint 18 — Where we stand and what is next
 
-> Written 2026-10-24, after the owner's review rounds. Read with the [plan](./plan.md) and the
+> Updated 2026-10-24 (second pass, after the "prove it" round). Read with the [plan](./plan.md) and the
 > [implementation log](./IMPLEMENTATION-LOG.md).
 
 ## 1. Is the membership lifecycle complete?
 
-**Feature-complete: yes. Closed and perfect: not yet.**
+**Feature-complete: yes. Proven end to end: yes, with the exceptions below. Closed: not yet** — the visual baselines
+and a clean-database run of the whole suite are still open.
 
-Every story of the sprint (MBR-007…013, MEM-016…020, ACC-008, ACC-009, NOT-004) is built, and so is a long list of
-changes the owner asked for after seeing the screens (plan → "Delivered beyond the plan"). A person can apply, be
-reviewed and decided with confirmation and undo, receive an e-mail within seconds, activate with a 7-day link, set up
-their profile in five steps, hold a digital card, be renewed, suspended, ended or blocked, and every one of those moments
-leaves an audit trail, an e-mail (once) and a notice the person understands.
+Every story (MBR-007…013, MEM-016…020, ACC-008, ACC-009, NOT-004) is built, plus the changes the owner asked for in the
+review rounds. The lifecycle is now covered by an automated browser journey that runs on the real stack (database,
+auth, Mailpit): apply → received mail → accept after the confirmation → acceptance mail with the 7-day link →
+password → "your account is ready" → the five-step set-up → the card → the term ends (daily job) → renew → suspend →
+the member's notice → reinstate → block → the blocked notice. It passes.
 
-What stops us from calling it closed is **proof and polish**, not missing features:
+## 2. Test and quality status (honest, 2026-10-24)
 
-| Gap | Why it matters | Size |
-| --- | -------------- | ---- |
-| No automated browser journey of the lifecycle | The whole walk is only checked by hand and by database tests | M |
-| `npm run e2e` is red (100 visual tests) | The baselines were stale before the sprint; we cannot tell a real regression from old noise | M |
-| No accessibility / keyboard sweep of the new screens | The sprint's own Definition of Done asks for it | M |
-| No database test for the two late migrations | `…1200` (info request from the waiting list) and `…1300` (finite ban) were checked by hand only | S |
-| Two edited Playwright specs were never run | `my-data` and `privacy` now open the merged "عضويتي" page | S |
+| Check | Result | Note |
+| ----- | ------ | ---- |
+| `npm run check` (format, lint, types, tokens, contrast, unit tests) | ✅ green: 0 lint errors, 629 unit tests | run as one command |
+| pgTAP | ✅ `33_late_fixes` (9) and `29_member_lifecycle` (79, the ban assertion updated) pass | **the full 36-file run on a clean reset is still to repeat** (the owner's rule: no `db reset` unless asked; the last full clean run was 36 files / 1932 assertions, before migrations `…1200` and `…1300`) |
+| Lifecycle journey (`tests/auth/membership-lifecycle.spec.ts`) | ✅ 2 tests pass | new |
+| Accessibility (`tests/auth/a11y-membership.spec.ts`) | ✅ 8 scans pass | new: public journey pages and the signed-in membership screens, AR/EN × dark/light |
+| Auth suite, first full run | 68 passed, 21 failed | most failures were **stale expectations** (landing page `/account` → `/account/profile`, sidebar items, the accept dialog, mail wording, error labels) |
+| After updating those specs | ✅ auth-flows, rbac (all but one), members (2 of 3), members-create, emails, my-data, membership, lifecycle, a11y pass | re-run per spec |
+| Still failing, **not caused by this sprint as far as we can tell, not yet verified on a clean database** | members "legacy claim", rbac "/members shows a founder" (a cached public page), registrations ×3, reports-admin "settings" | they depend on the legacy seed data and on cached public pages; the demo data in the dev database differs from a clean reset |
+| Visual suite (`npm run e2e`) | 🔶 not re-baselined | needs a clean, freshly seeded database; see §3 |
 
-## 2. Test and quality status (honest)
+What the new tests found (and what we fixed):
 
-| Check | Last result | Note |
-| ----- | ----------- | ---- |
-| `npm run check` (format, lint, types, tokens, contrast, unit tests) | green | type-check and lint were run after every change in the review rounds; the full `check` was last run as a whole before them |
-| `npx supabase test db` | 36 files, 1932 assertions, green on a clean reset | seeds left in the DB make tests 05 and 26 fail: always test on a clean reset |
-| `npm run e2e` | 259 passed, 100 failed, 129 skipped | every failure is a screenshot or contrast check on pages the sprint did not restyle; **`e2e:update` was never run** (owner rule) |
-| New Playwright journeys | none written | see the plan below |
-| Browser pass | done by hand on the screens changed in each round | mostly dark theme, desktop and 375 px; not a systematic AR/EN × dark/light × 360 px sweep |
-| Accessibility (axe, keyboard-only) | not run on the new screens | |
+- **Onboarding could lose its "finished" flag**: the finishing screen showed before the save completed, so leaving at
+  once could cancel it and send the member back into the set-up. The last step now waits for the save.
+- **`/welcome`**: a focusable logo inside a decorative panel (axe: serious) → the panel is inert.
+- **`/card`**: small text at reduced opacity failed contrast → full opacity.
+- **Streaming pages** (every route with a `loading.tsx`) keep a hidden copy of the page in the document for a few
+  hundred milliseconds until React reveals it; test helpers now wait for the reveal. Harmless for people, but strict
+  locators and anchors can see two copies if they run too early.
 
 ## 3. What remains — by priority
 
 ### Must do before we merge (P0)
 
-1. **Re-baseline the visual tests** from a freshly seeded database (separate `chore(visual)` change, needs the owner's
-   approval; never `e2e:update` without it). Until then `npm run e2e` cannot be a gate.
-2. **Write the lifecycle end-to-end test**: apply → info requested → resubmit → accept (confirm) → activation link →
-   password → five-step set-up → card → expire (moved clock) → renew → suspend → notice → reinstate → leave request →
-   end; plus a blocked sign-in. Use the seeds and Mailpit.
-3. **pgTAP for the late migrations**: an info request from the waiting list; blocking sets a finite ban and sign-in is
-   refused with the blocked notice (the service answers "user banned"); unblocking clears it.
-4. **Run the two edited specs** (`tests/auth/my-data.spec.ts`, `tests/auth/privacy.spec.ts`) and the whole auth suite once.
-5. **Run `npm run check` as a whole** and fix anything the review rounds left (unused imports, the unused `WelcomeTour.tsx`).
+1. **Clean-database run of everything**: `npx supabase db reset`, then `npx supabase test db` (expect 37 files), then
+   `npm run e2e:auth`. This also tells us whether the five "still failing" specs are really environment.
+2. **Re-baseline the visual tests** from that fresh database (separate `chore(visual)` change). Never `e2e:update` on the
+   demo database: the baselines would contain the demo members and events.
 
 ### Should do (P1)
 
-6. **Accessibility pass** on the new screens: axe on `/join`, `/join/status`, `/activate`, `/welcome`, `/account/membership`,
-   `/card`, the applications list, the review page and the members record; one keyboard-only run of the join form and the
-   review page; check the new dialogs (focus, Escape, labels).
-7. **Systematic visual comparison** with the boards: 1440 / 390 / 360 px × AR/EN × light/dark, listed per screen.
-8. **Owner decisions**: password policy (design: 10 characters, a letter and a number, not a common password; today: 8
-   with four character classes, also set in the auth settings); whether the activation badge
-   should show the cycle name and "valid until" like the design.
-9. **The activation page's other states** from the design ("expired link", "new link sent" with a resend countdown):
-   the expired page works and sends a new link, but it is not styled as the board.
-10. **Hosted checks**: the e-mail transport (today Mailpit), `SITE_URL`, `CRON_SECRET` and the Vercel cron
-    (`/api/cron/membership-daily` is already in `vercel.json`); the privacy policy page should name the new data (gender,
-    study year) and the "my data" export already includes them (it reads the whole member row).
-11. **Security hygiene**: delete `temp.txt` (keys for a hosted project) and rotate those keys.
+3. **Owner decisions**: password policy (design says 10 characters and no common passwords; we enforce 8 with four
+   character classes, also in the auth settings — recommendation: keep) and whether the activation badge should show the
+   cycle name and "valid until" like the design.
+4. **The activation page's other states** from the design ("expired link", "new link sent" with a resend countdown): the
+   expired page works and sends a new link, but it is not styled as the board.
+5. **A systematic visual comparison** with the boards at 1440 / 390 / 360 px, AR/EN, light/dark (axe is done; this is the
+   pixel review).
+6. **Hosted checks**: the e-mail transport (today Mailpit), `SITE_URL`, `CRON_SECRET` and the Vercel cron
+   (`/api/cron/membership-daily` is already in `vercel.json`); the privacy policy page should name the new data (gender,
+   study year; the "my data" export already includes them).
+7. **Security hygiene**: `temp.txt` (keys for a hosted project) is still in the project folder, untracked and excluded
+   from git. Delete it and rotate those keys — it is the owner's file, so we left it alone.
 
 ### Nice to have (P2)
 
-12. Replace `sdc-mark.svg` (a 1.1 MB PNG inside an SVG) with a real vector.
-13. Options editor for question hints (`option_hints`) in the cycle form (today set by seed or SQL).
-14. "How long ago" on the "another reviewer holds it" note and an "ask them to release it" action (the design shows both;
+8. Replace `sdc-mark.svg` (a 1.1 MB PNG inside an SVG) with a real vector — needs the source artwork.
+9. Options editor for question hints (`option_hints`) in the cycle form (today set by seed or SQL).
+10. "How long ago" on the "another reviewer holds it" note and an "ask them to release it" action (the design shows both;
     we have no claim time in the page data and no notification path).
-15. Remove the `ResponsiveTables` after-hydration labelling in favour of per-table cards where a table is important.
-16. The ideas still on the list: two-reviewer rule for rejections, interview state, editable decision e-mail texts,
-    re-apply cooldown, QR check-in at events, appeal link in the termination e-mail.
+11. The ideas still on the list: two-reviewer rule for rejections, interview state, editable decision e-mail texts,
+    re-apply cooldown, QR check-in at events, appeal link in the termination e-mail. (A vice-leader role was decided
+    against, Q-L7.)
 
-## 4. Proposed Sprint 19 — "Prove it and release it" (about 20 SP)
+Done in this pass and no longer open: the unused tour component was deleted, dead code removed, the stale Playwright
+specs updated, the lifecycle journey and the accessibility sweep written and passing.
+
+## 4. Proposed Sprint 19 — "Prove it and release it" (about 12 SP now)
 
 | Item | SP |
 | ---- | -- |
+| Clean-database run of pgTAP and the auth suite; fix what it shows | 3 |
 | Re-baseline visuals (approved) and make `npm run e2e` a real gate again | 3 |
-| Lifecycle end-to-end test and the per-role journeys (applicant, reviewer, leadership, member, notices) | 8 |
-| pgTAP for `…1200` and `…1300`; run and fix the edited specs | 2 |
-| Accessibility sweep and the systematic visual comparison, with fixes | 5 |
-| Clean-up (unused tour, real vector logo, `temp.txt`) and the owner's decisions (password policy) | 2 |
+| Pixel comparison with the boards (1440 / 390 / 360, AR/EN, light/dark) and fixes | 3 |
+| Activation page states (expired, resent) and the owner's two decisions | 2 |
+| Hosted checks and `temp.txt` | 1 |
 
-Then merge `feat/sprint-18-membership-lifecycle` (165 commits; the owner decides when, nothing is pushed), run the
-hosted checks of item 10 on the first deploy and watch the first daily job.
+Then merge `feat/sprint-18-membership-lifecycle` (the owner decides when; nothing is pushed), run the hosted checks on
+the first deploy and watch the first daily job.
 
 ## 5. Where things are
 
@@ -96,4 +96,9 @@ hosted checks of item 10 on the first deploy and watch the first daily job.
 | Build record and decisions | [IMPLEMENTATION-LOG.md](./IMPLEMENTATION-LOG.md) |
 | How to try everything (accounts, data, steps) | [TESTING-GUIDE.md](./TESTING-GUIDE.md) |
 | Design boards | [designs/](./designs/) |
-| Demo data | `npm run db:lifecycle` (seeds in `supabase/dev-*.sql`); password of every seeded account `Dev!Passw0rd1` |
+| Demo data | `npm run db:lifecycle` on a clean database (seeds in `supabase/dev-*.sql`); password of every seeded account `Dev!Passw0rd1` |
+| Browser tests | `tests/auth/membership-lifecycle.spec.ts`, `tests/auth/a11y-membership.spec.ts` (run with `npm run e2e:auth`) |
+
+Note for running the auth suite: several specs clear the intake cycles and applications of the database they run on
+(published cycles may not overlap), and failed runs can leave test accounts behind. Run them on a database you can
+re-seed.
