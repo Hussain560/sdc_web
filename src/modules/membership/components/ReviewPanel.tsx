@@ -1,6 +1,6 @@
 'use client';
 
-import { CircleCheck, Flag, Hand, Keyboard, Star } from 'lucide-react';
+import { CircleCheck, Flag, Hand, Keyboard, Lock, Star, UserRound } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useState, useTransition } from 'react';
 import { Alert, Avatar, Button, Checkbox, Dialog, Textarea, cn, useToast } from '@/components/ui';
 import { useLanguage } from '@/context/LanguageContext';
@@ -136,7 +136,8 @@ export function ReviewPanel(p: ReviewPanelProps) {
 
   const ask = (d: Decision) => {
     if (!decidable || claimedByOther) return;
-    if (d === 'reject') setConfirm('reject');
+    // Accepting makes a member and sends an e-mail, rejecting ends the application: both ask first.
+    if (d === 'reject' || d === 'accept') setConfirm(d);
     else decide(d);
   };
 
@@ -232,11 +233,22 @@ export function ReviewPanel(p: ReviewPanelProps) {
       </div>
 
       {p.isOwn ? (
-        <Alert tone="info">
-          {ar
-            ? 'هذا طلب قدّمته أنت. يظهر لك للقراءة فقط، ولا تظهر عليه أدوات التقييم أو القرار.'
-            : 'This is your own application. You can read it, but the scoring and decision tools are hidden.'}
-        </Alert>
+        <div
+          role="status"
+          className="flex items-start gap-3 rounded-shape-xl bg-surface-raised p-4"
+        >
+          <Lock size={20} aria-hidden="true" className="mt-0.5 shrink-0 text-muted" />
+          <div>
+            <p className="font-bold">
+              {ar ? 'لا يراجع أحد طلبه بنفسه' : 'Nobody reviews their own application'}
+            </p>
+            <p className="mt-1 text-sm text-muted">
+              {ar
+                ? 'هذا طلب قدّمته أنت. يظهر لك للقراءة فقط، ولا تظهر عليه أدوات التقييم أو القرار.'
+                : 'This is an application you submitted. You can read it, but the scoring and decision tools are not shown.'}
+            </p>
+          </div>
+        </div>
       ) : !decidable ? (
         <p className="text-sm text-muted">
           {ar
@@ -245,44 +257,66 @@ export function ReviewPanel(p: ReviewPanelProps) {
         </p>
       ) : (
         <>
-          <p
-            className={cn(
-              'flex flex-wrap items-center gap-2 rounded-shape-lg px-3 py-2 text-sm',
-              p.status === 'under_review' ? 'bg-accent-soft' : 'bg-surface-raised text-muted',
-            )}
-          >
-            {p.status === 'under_review' ? (
-              <>
-                <Hand size={15} aria-hidden="true" className="text-accent-text" />
-                {p.reviewerId === p.userId
-                  ? ar
-                    ? 'أنت تراجع هذا الطلب'
-                    : 'You are reviewing this'
-                  : ar
-                    ? `يراجعه ${p.reviewerName ?? 'مراجع آخر'}`
-                    : `Being reviewed by ${p.reviewerName ?? 'another reviewer'}`}
-                {(p.reviewerId === p.userId || p.isAdmin) && (
-                  <button
-                    type="button"
-                    onClick={() => claim(true)}
-                    className="text-accent-text underline underline-offset-4"
-                    disabled={busy}
-                  >
-                    {ar ? 'إفلات' : 'Release'}
-                  </button>
-                )}
-              </>
-            ) : p.status === 'submitted' ? (
-              <button
-                type="button"
-                onClick={() => claim(false)}
-                className="text-accent-text underline underline-offset-4"
-                disabled={busy}
-              >
-                {ar ? 'استلم هذا الطلب للمراجعة' : 'Claim this application'}
-              </button>
-            ) : null}
-          </p>
+          {claimedByOther && (
+            <div
+              role="status"
+              className="flex items-start gap-3 rounded-shape-xl bg-warning-soft p-4 text-text"
+            >
+              <UserRound size={20} aria-hidden="true" className="mt-0.5 shrink-0 text-warning" />
+              <div>
+                <p className="font-bold">
+                  {ar
+                    ? `تراجعه ${p.reviewerName ?? 'مراجع آخر'}`
+                    : `${p.reviewerName ?? 'Another reviewer'} is reviewing this`}
+                </p>
+                <p className="mt-1 text-sm">
+                  {ar
+                    ? 'يمكنك القراءة والتقييم. القرار لمن استلم الطلب، أو لمدير النظام.'
+                    : 'You can read and score. The decision belongs to whoever claimed it, or to the system administrator.'}
+                </p>
+              </div>
+            </div>
+          )}
+          {!claimedByOther && (
+            <p
+              className={cn(
+                'flex flex-wrap items-center gap-2 rounded-shape-lg px-3 py-2 text-sm',
+                p.status === 'under_review' ? 'bg-accent-soft' : 'bg-surface-raised text-muted',
+              )}
+            >
+              {p.status === 'under_review' && !claimedByOther ? (
+                <>
+                  <Hand size={15} aria-hidden="true" className="text-accent-text" />
+                  {p.reviewerId === p.userId
+                    ? ar
+                      ? 'أنت تراجع هذا الطلب'
+                      : 'You are reviewing this'
+                    : ar
+                      ? `يراجعه ${p.reviewerName ?? 'مراجع آخر'}`
+                      : `Being reviewed by ${p.reviewerName ?? 'another reviewer'}`}
+                  {(p.reviewerId === p.userId || p.isAdmin) && (
+                    <button
+                      type="button"
+                      onClick={() => claim(true)}
+                      className="text-accent-text underline underline-offset-4"
+                      disabled={busy}
+                    >
+                      {ar ? 'إفلات' : 'Release'}
+                    </button>
+                  )}
+                </>
+              ) : p.status === 'submitted' ? (
+                <button
+                  type="button"
+                  onClick={() => claim(false)}
+                  className="text-accent-text underline underline-offset-4"
+                  disabled={busy}
+                >
+                  {ar ? 'استلم هذا الطلب للمراجعة' : 'Claim this application'}
+                </button>
+              ) : null}
+            </p>
+          )}
           {error && <Alert tone="danger">{error}</Alert>}
           <div className="grid grid-cols-2 gap-2">
             <button
@@ -573,27 +607,64 @@ export function ReviewPanel(p: ReviewPanelProps) {
       </Dialog>
 
       <Dialog
-        open={confirm === 'reject'}
+        open={confirm !== null}
         onClose={() => setConfirm(null)}
         busy={busy}
-        title={ar ? 'عدم قبول هذا الطلب؟' : 'Reject this application?'}
+        title={
+          confirm === 'accept'
+            ? ar
+              ? `قبول طلب ${p.name}؟`
+              : `Accept ${p.name}'s application?`
+            : ar
+              ? 'عدم قبول هذا الطلب؟'
+              : 'Reject this application?'
+        }
         description={
-          ar
-            ? 'يصل المتقدّم بريد بسيط بلا ملاحظة ولا سبب. يمكنك التراجع خلال لحظات قبل إرساله.'
-            : 'The applicant gets a plain e-mail with no note and no reason. You can undo for a few seconds before it is sent.'
+          confirm === 'accept'
+            ? ar
+              ? 'سيصبح المتقدّم عضواً في المجتمع، ويصله بريد القبول مع رابط تفعيل حسابه. يمكنك التراجع خلال لحظات قبل إرسال البريد.'
+              : 'The applicant becomes a member of the community and gets the acceptance e-mail with a link to activate the account. You can undo for a few seconds before it is sent.'
+            : ar
+              ? 'يصل المتقدّم بريد بسيط بلا ملاحظة ولا سبب. يمكنك التراجع خلال لحظات قبل إرساله.'
+              : 'The applicant gets a plain e-mail with no note and no reason. You can undo for a few seconds before it is sent.'
         }
         footer={
           <>
             <Button variant="ghost" onClick={() => setConfirm(null)} disabled={busy}>
               {ar ? 'تراجع' : 'Back'}
             </Button>
-            <Button variant="destructive" onClick={() => decide('reject')} loading={busy}>
-              {ar ? 'عدم قبول' : 'Reject'}
-            </Button>
+            {confirm === 'accept' ? (
+              <Button onClick={() => decide('accept')} loading={busy}>
+                {ar ? 'نعم، اقبل الطلب' : 'Yes, accept'}
+              </Button>
+            ) : (
+              <Button variant="destructive" onClick={() => decide('reject')} loading={busy}>
+                {ar ? 'عدم قبول' : 'Reject'}
+              </Button>
+            )}
           </>
         }
       >
-        <span className="sr-only">{ar ? 'تأكيد' : 'Confirm'}</span>
+        {confirm === 'accept' && p.capacity ? (
+          <p
+            className={cn(
+              'rounded-shape-xl p-3 text-sm',
+              p.capacity.accepted >= p.capacity.capacity
+                ? 'bg-warning-soft text-warning'
+                : 'bg-surface-raised text-muted',
+            )}
+          >
+            {p.capacity.accepted >= p.capacity.capacity
+              ? ar
+                ? `اكتملت مقاعد الدورة (${p.capacity.accepted} / ${p.capacity.capacity}). القبول يتجاوز العدد المحدّد.`
+                : `The cycle is full (${p.capacity.accepted} / ${p.capacity.capacity}). Accepting goes over the set number.`
+              : ar
+                ? `المقاعد: ${p.capacity.accepted} من ${p.capacity.capacity} مشغولة، وهذا القبول يشغل مقعداً.`
+                : `Places: ${p.capacity.accepted} of ${p.capacity.capacity} taken; this one takes a place.`}
+          </p>
+        ) : (
+          <span className="sr-only">{ar ? 'تأكيد' : 'Confirm'}</span>
+        )}
       </Dialog>
 
       <Dialog

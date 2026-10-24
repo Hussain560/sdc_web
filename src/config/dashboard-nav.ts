@@ -51,7 +51,7 @@ type NavItemDef = {
   children?: NavItemDef[];
 };
 
-export type NavBadgeKey = 'applications' | 'waitlist' | 'leave';
+export type NavBadgeKey = 'applications' | 'waitlist' | 'leave' | 'privacy';
 export type NavCounts = Partial<Record<NavBadgeKey, number>>;
 
 type NavGroupDef = { key: NavGroupKey; label: Localized; items: NavItemDef[] };
@@ -262,6 +262,7 @@ export const DASHBOARD_NAV: NavGroupDef[] = [
         icon: 'shield',
         requires: { permission: 'settings.manage', scope: 'any' },
         ready: true,
+        badge: 'privacy',
       },
       {
         key: 'admin-emails',

@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState, useTransition } from 'react';
 import {
   Alert,
+  Avatar,
   Button,
   Checkbox,
   Combobox,
@@ -238,63 +239,91 @@ export function AssignRoleDialog({
         className="max-h-[90dvh] overflow-y-auto"
       >
         <form onSubmit={submit} className="flex flex-col gap-4">
-          <Combobox
-            label={L('العضو', 'Member')}
-            requiredLabel={L('مطلوب', 'required')}
-            placeholder={L('اكتب أي جزء من الاسم أو البريد', 'Type any part of the name or e-mail')}
-            query={query}
-            onQueryChange={setQuery}
-            options={options}
-            status={comboStatus}
-            selected={selectedOption}
-            onSelect={(o) => {
-              const u = search.data?.rows.find((r) => r.userId === o.id);
-              if (u) setPicked(u);
-            }}
-            onClear={() => {
-              setPicked(null);
-              setQuery('');
-            }}
-            onRetry={retry}
-            emptyAction={
-              addMemberHref ? (
-                <Link
-                  href={addMemberHref}
-                  className="t-body-sm font-semibold text-accent-text underline"
-                >
-                  {L('لم تجده؟ أضفه عضواً جديداً', 'Not there? Add them as a new member')}
-                </Link>
-              ) : undefined
-            }
-            texts={{
-              hint: L(
-                'اكتب حرفين على الأقل. نبحث بالاسم الأول والأوسط والأخير باللغتين وبالبريد.',
-                'Type at least two letters. We search the first, middle and last name in both languages, and the e-mail.',
-              ),
-              loading: L('جارٍ البحث…', 'Searching…'),
-              noResults: L('لا أحد بهذا الاسم أو البريد', 'Nobody with this name or e-mail'),
-              noResultsHint: L(
-                'جرّب جزءاً آخر من الاسم، أو اسمه بالإنجليزية.',
-                'Try another part of the name, or the name in English.',
-              ),
-              error: L('تعذّر البحث الآن.', 'Search is unavailable right now.'),
-              retry: L('إعادة المحاولة', 'Try again'),
-              restricted: L(
-                'لا تملك صلاحية البحث في كل المستخدمين (users.view). تستطيع اختيار أعضاء لجنتك فقط.',
-                'You cannot search every user (users.view). You can only pick members of your committee.',
-              ),
-              keys: L(
-                '↑ ↓ للتنقل · Enter للاختيار · Esc للإغلاق',
-                '↑ ↓ to move · Enter to choose · Esc to close',
-              ),
-              count: (n) => L(`${n} نتيجة`, `${n} results`),
-              change: L('تغيير', 'Change'),
-            }}
-          />
-          {fieldErrors.userId && (
-            <p role="alert" className="text-xs text-danger">
-              {L('اختر عضواً.', 'Pick a member.')}
-            </p>
+          {presetUser ? (
+            <div className="flex flex-col gap-2">
+              <span className="text-sm font-semibold">{L('العضو', 'Member')}</span>
+              <div className="flex items-center gap-3 rounded-shape-xl border border-line bg-surface-raised p-3">
+                <Avatar
+                  name={nameOf(presetUser)}
+                  src={memberThumbUrl(presetUser.photoPath)}
+                  size={40}
+                />
+                <div className="min-w-0">
+                  <p className="truncate font-bold">{nameOf(presetUser)}</p>
+                  <p
+                    dir="ltr"
+                    className="truncate text-sm text-muted"
+                    style={{ textAlign: 'start' }}
+                  >
+                    {presetUser.email ?? otherName(presetUser)}
+                  </p>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <>
+              <Combobox
+                label={L('العضو', 'Member')}
+                requiredLabel={L('مطلوب', 'required')}
+                placeholder={L(
+                  'اكتب أي جزء من الاسم أو البريد',
+                  'Type any part of the name or e-mail',
+                )}
+                query={query}
+                onQueryChange={setQuery}
+                options={options}
+                status={comboStatus}
+                selected={selectedOption}
+                onSelect={(o) => {
+                  const u = search.data?.rows.find((r) => r.userId === o.id);
+                  if (u) setPicked(u);
+                }}
+                onClear={() => {
+                  setPicked(null);
+                  setQuery('');
+                }}
+                onRetry={retry}
+                emptyAction={
+                  addMemberHref ? (
+                    <Link
+                      href={addMemberHref}
+                      className="t-body-sm font-semibold text-accent-text underline"
+                    >
+                      {L('لم تجده؟ أضفه عضواً جديداً', 'Not there? Add them as a new member')}
+                    </Link>
+                  ) : undefined
+                }
+                texts={{
+                  hint: L(
+                    'اكتب حرفين على الأقل. نبحث بالاسم الأول والأوسط والأخير باللغتين وبالبريد.',
+                    'Type at least two letters. We search the first, middle and last name in both languages, and the e-mail.',
+                  ),
+                  loading: L('جارٍ البحث…', 'Searching…'),
+                  noResults: L('لا أحد بهذا الاسم أو البريد', 'Nobody with this name or e-mail'),
+                  noResultsHint: L(
+                    'جرّب جزءاً آخر من الاسم، أو اسمه بالإنجليزية.',
+                    'Try another part of the name, or the name in English.',
+                  ),
+                  error: L('تعذّر البحث الآن.', 'Search is unavailable right now.'),
+                  retry: L('إعادة المحاولة', 'Try again'),
+                  restricted: L(
+                    'لا تملك صلاحية البحث في كل المستخدمين (users.view). تستطيع اختيار أعضاء لجنتك فقط.',
+                    'You cannot search every user (users.view). You can only pick members of your committee.',
+                  ),
+                  keys: L(
+                    '↑ ↓ للتنقل · Enter للاختيار · Esc للإغلاق',
+                    '↑ ↓ to move · Enter to choose · Esc to close',
+                  ),
+                  count: (n) => L(`${n} نتيجة`, `${n} results`),
+                  change: L('تغيير', 'Change'),
+                }}
+              />
+              {fieldErrors.userId && (
+                <p role="alert" className="text-xs text-danger">
+                  {L('اختر عضواً.', 'Pick a member.')}
+                </p>
+              )}
+            </>
           )}
 
           <Select

@@ -3,7 +3,7 @@
 import { nowMs } from '@/lib/now';
 import { Hourglass, KeyRound, ListOrdered, RotateCcw, Send } from 'lucide-react';
 import { useState, useTransition } from 'react';
-import { Avatar, Badge, Button, EmptyState, cn, useToast } from '@/components/ui';
+import { Avatar, Badge, Button, Dialog, EmptyState, cn, useToast } from '@/components/ui';
 import { useLanguage } from '@/context/LanguageContext';
 import { useRouter } from '@/i18n/navigation';
 import { formatDate } from '@/lib/format';
@@ -48,6 +48,8 @@ export function WaitlistBoard({
   const router = useRouter();
   const toast = useToast();
   const [busyId, setBusyId] = useState<string | null>(null);
+  // Offering a place makes a member and sends an e-mail: it asks first.
+  const [offer, setOffer] = useState<WaitlistRow | null>(null);
   const [, start] = useTransition();
   const waiting = activation.filter((r) => r.status === 'accepted');
   const lapsed = activation.filter((r) => r.status === 'lapsed');
@@ -280,26 +282,7 @@ export function WaitlistBoard({
                   disabledReason={
                     seatFree ? undefined : ar ? 'اكتملت المقاعد' : 'The places are full'
                   }
-                  onClick={() =>
-                    run(
-                      w.id,
-                      async () => {
-                        const r = await decideApplications(
-                          { ids: [w.id], decision: 'accept' },
-                          { lang },
-                        );
-                        if (!r.ok) return { ok: false, message: r.message };
-                        scheduleRelease(r.data.undoSeconds);
-                        const o = r.data.outcomes[0];
-                        return o?.ok
-                          ? { ok: true }
-                          : { ok: false, message: membershipMessage(o?.code ?? 'INTERNAL', lang) };
-                      },
-                      ar
-                        ? 'عُرض المقعد وأُرسل بريد القبول.'
-                        : 'The place was offered and the acceptance e-mail sent.',
-                    )
-                  }
+                  onClick={() => setOffer(w)}
                 >
                   {ar ? 'اعرض المقعد الآن' : 'Offer the place now'}
                 </Button>
@@ -308,6 +291,58 @@ export function WaitlistBoard({
           </ol>
         )}
       </section>
+      <Dialog
+        open={offer !== null}
+        onClose={() => setOffer(null)}
+        title={
+          offer
+            ? ar
+              ? `عرض المقعد على ${name({ ar: offer.nameAr, en: offer.nameEn })}؟`
+              : `Offer the place to ${name({ ar: offer.nameAr, en: offer.nameEn })}?`
+            : ''
+        }
+        description={
+          ar
+            ? 'سيُقبل الطلب ويصبح المتقدّم عضواً، ويصله بريد القبول مع رابط تفعيل حسابه. يمكنك التراجع خلال لحظات قبل إرسال البريد.'
+            : 'The application is accepted and the applicant becomes a member, with the acceptance e-mail and a link to activate the account. You can undo for a few seconds before it is sent.'
+        }
+        footer={
+          <>
+            <Button variant="ghost" onClick={() => setOffer(null)}>
+              {ar ? 'تراجع' : 'Back'}
+            </Button>
+            <Button
+              onClick={() => {
+                const w = offer;
+                setOffer(null);
+                if (!w) return;
+                run(
+                  w.id,
+                  async () => {
+                    const r = await decideApplications(
+                      { ids: [w.id], decision: 'accept' },
+                      { lang },
+                    );
+                    if (!r.ok) return { ok: false, message: r.message };
+                    scheduleRelease(r.data.undoSeconds);
+                    const o = r.data.outcomes[0];
+                    return o?.ok
+                      ? { ok: true }
+                      : { ok: false, message: membershipMessage(o?.code ?? 'INTERNAL', lang) };
+                  },
+                  ar
+                    ? 'عُرض المقعد وأُرسل بريد القبول.'
+                    : 'The place was offered and the acceptance e-mail sent.',
+                );
+              }}
+            >
+              {ar ? 'نعم، اعرض المقعد' : 'Yes, offer the place'}
+            </Button>
+          </>
+        }
+      >
+        <span className="sr-only">{ar ? 'تأكيد' : 'Confirm'}</span>
+      </Dialog>
     </div>
   );
 }

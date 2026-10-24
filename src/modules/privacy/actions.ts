@@ -75,7 +75,7 @@ export async function requestAccountDeletion(reason: string, ctx: { lang: Lang }
     p_reason: reason.slice(0, 500),
   });
   if (error) return dbFailure(error, lang);
-  revalidatePath('/account/privacy');
+  revalidatePath('/account/membership');
   revalidatePath('/dashboard/admin/privacy');
   return ok(undefined);
 }

@@ -6,7 +6,7 @@ import type { AccessContext } from '@/modules/access/types';
 
 /**
  * The live numbers next to the membership menu items: new applications, people waiting to activate (or lapsed and
- * restorable), pending leave requests. Only what the caller may act on is counted; a failure just hides the badge.
+ * restorable), pending leave requests and open privacy requests. Only what the caller may act on is counted; a failure just hides the badge.
  */
 export async function getNavCounts(access: AccessContext): Promise<NavCounts> {
   const counts: NavCounts = {};
@@ -32,6 +32,14 @@ export async function getNavCounts(access: AccessContext): Promise<NavCounts> {
         .select('id', { count: 'exact', head: true })
         .eq('status', 'pending');
       counts.leave = count ?? 0;
+    }
+    // Privacy requests (access, deletion) wait for an administrator; the badge says how many are still open.
+    if (can(access, 'settings.manage')) {
+      const { count } = await supabase
+        .from('data_requests')
+        .select('id', { count: 'exact', head: true })
+        .eq('status', 'pending');
+      counts.privacy = count ?? 0;
     }
   } catch {
     /* badges are a convenience */
