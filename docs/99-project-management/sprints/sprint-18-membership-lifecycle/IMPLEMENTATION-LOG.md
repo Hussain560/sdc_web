@@ -161,6 +161,17 @@ only one `next dev` may write `.next/dev` (two servers corrupted the manifest).
   specs; also fail alone on a fresh reset). The dev database was re-seeded with `npm run db:lifecycle`.
 - `temp.txt` (keys of a hosted project) deleted at the owner's request; the keys still need to be rotated.
 
+## Found on the dev database (2026-10-24)
+
+The first deploy to the hosted dev project showed that migration `20270411000100_member_lifecycle` fails on a database that
+already holds an `inactive` member: the constraint `members_ended_reason` was added before the converted rows received an
+end reason (a clean database has no such rows, so tests passed). Fixed by adding the constraint after the update. Reproduced
+locally by resetting to `20270411000000`, creating an `inactive` and a suspended member and running `supabase migration up`; all
+13 pending migrations then apply. Lesson: test migrations against a copy of real data, not only against a clean reset. The
+dev deploy workflow also skipped its migration steps because the repository has no `SUPABASE_DB_URL` in its `dev` environment, so
+the migrations have to be pushed by hand (`supabase db push --db-url ...`) until that secret is set. The members list also
+no longer crashes on an unknown member status (`memberStatusLabel`).
+
 ## What is left or risky
 
 The prioritised list and the Sprint 19 plan are in [NEXT-STEPS.md](./NEXT-STEPS.md). In short: the pixel comparison with
