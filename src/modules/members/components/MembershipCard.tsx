@@ -2,7 +2,7 @@ import { X } from 'lucide-react';
 import { Avatar } from '@/components/ui';
 import { Link } from '@/i18n/navigation';
 import { formatDate } from '@/lib/format';
-import { MEMBER_STATUS_LABEL } from '../schemas';
+import { memberStatusLabel } from '../schemas';
 
 export type MembershipCardData = {
   nameAr: string;
@@ -35,7 +35,7 @@ export function MembershipCard({
 }) {
   const ar = lang === 'ar';
   const L = (a: string, e: string) => (ar ? a : e);
-  const st = MEMBER_STATUS_LABEL[data.status];
+  const st = memberStatusLabel(data.status);
   const full = size === 'full';
   const nameMain = ar ? data.nameAr : data.nameEn || data.nameAr;
   const nameOther = ar ? data.nameEn : data.nameAr;

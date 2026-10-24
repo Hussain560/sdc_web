@@ -21,7 +21,7 @@ import { CompletenessBar } from '@/modules/members/components/CompletenessBar';
 import { EditMemberDialog } from '@/modules/members/components/EditMemberDialog';
 import { MemberActions } from '@/modules/members/components/MemberActions';
 import { memberPhotoUrl, memberThumbUrl } from '@/modules/members/photo-url';
-import { END_REASON_LABEL, MEMBER_STATUS_LABEL } from '@/modules/members/schemas';
+import { END_REASON_LABEL, memberStatusLabel } from '@/modules/members/schemas';
 import { MemberTermCards } from '@/modules/members/components/MemberTermCards';
 import { MemberNoteForm } from '@/modules/members/components/MemberNoteForm';
 import { buildMemberTimeline, type TimelineFilter } from '@/modules/members/member-timeline';
@@ -158,7 +158,7 @@ export default async function MemberAdminPage({
       ? { tone: 'danger' as const, text: L('الحساب محظور', 'Account blocked') }
       : m.status === 'active' && !account.activated
         ? { tone: 'info' as const, text: L('بانتظار التفعيل', 'Waiting to activate') }
-        : { tone: MEMBER_STATUS_LABEL[m.status].tone, text: MEMBER_STATUS_LABEL[m.status][lang] };
+        : { tone: memberStatusLabel(m.status).tone, text: memberStatusLabel(m.status)[lang] };
   const filter: TimelineFilter = sp.f === 'decisions' || sp.f === 'positions' ? sp.f : 'all';
   const timelineItems = buildMemberTimeline(detail, lang, filter);
   const filterHref = (f: string) => (f === 'all' ? '?' : `?f=${f}`);

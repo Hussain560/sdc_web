@@ -21,7 +21,7 @@ import { useLanguage } from '@/context/LanguageContext';
 import { Link, useRouter } from '@/i18n/navigation';
 import { formatDate } from '@/lib/format';
 import type { AdminMemberRow } from '../admin-queries';
-import { END_REASON_LABEL, MEMBER_STATUS_LABEL } from '../schemas';
+import { END_REASON_LABEL, MEMBER_STATUS_LABEL, memberStatusLabel } from '../schemas';
 import { memberThumbUrl } from '../photo-url';
 import { CompletenessBar } from './CompletenessBar';
 import {
@@ -87,7 +87,7 @@ export function stateOf(r: AdminMemberRow, ar: boolean, lang: 'ar' | 'en') {
       sub: null,
       subTone: 'muted' as const,
     };
-  const st = MEMBER_STATUS_LABEL[r.status];
+  const st = memberStatusLabel(r.status);
   return { tone: st.tone, text: st[lang], sub: null, subTone: 'muted' as const };
 }
 

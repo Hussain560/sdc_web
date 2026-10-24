@@ -23,11 +23,13 @@ alter table public.members
   add column leaves_on           date,
   add column activated_at        timestamptz,
   add column renewal_requested_at timestamptz,
-  add constraint members_term_order check (term_ends_at is null or term_starts_at is null or term_ends_at >= term_starts_at),
-  add constraint members_ended_reason check (status <> 'ended' or end_reason is not null);
+  add constraint members_term_order check (term_ends_at is null or term_starts_at is null or term_ends_at >= term_starts_at);
 
 -- Existing ended rows came from the old "inactive": left by their own choice, or legacy imports.
 update public.members set end_reason = case when joined_via = 'legacy' then 'legacy' else 'left' end where status = 'ended';
+-- The rule is added after the rows were given their reason: a database that already holds ended members (the old "inactive")
+-- would otherwise refuse the constraint.
+alter table public.members add constraint members_ended_reason check (status <> 'ended' or end_reason is not null);
 -- Existing suspensions get a neutral category (their reason moves to the history below).
 update public.members set suspension_category = 'other' where status = 'suspended';
 alter table public.members add constraint members_suspension_has_category check (status <> 'suspended' or suspension_category is not null);

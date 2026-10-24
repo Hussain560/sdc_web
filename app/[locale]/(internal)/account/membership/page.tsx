@@ -13,7 +13,7 @@ import {
 } from '@/modules/members/components/MyMembershipActions';
 import { getMyMembership } from '@/modules/members/my-membership';
 import { MyDataSection } from '@/modules/privacy/components/MyDataSection';
-import { MEMBER_STATUS_LABEL } from '@/modules/members/schemas';
+import { memberStatusLabel } from '@/modules/members/schemas';
 
 const DAY = 86_400_000;
 
@@ -179,8 +179,8 @@ export default async function MyMembershipPage({
               <h2 id="term-title" className="text-xl font-extrabold">
                 {L('حالة العضوية', 'Membership status')}
               </h2>
-              <Badge tone={MEMBER_STATUS_LABEL[state.status].tone}>
-                {MEMBER_STATUS_LABEL[state.status][lang]}
+              <Badge tone={memberStatusLabel(state.status).tone}>
+                {memberStatusLabel(state.status)[lang]}
               </Badge>
             </div>
             {state.termEndsAt ? (
