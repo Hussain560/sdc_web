@@ -13,3 +13,16 @@ Data and rules first, so the screens are built on a database that already enforc
 7. Screens after design approval: MBR-008 join form → MBR-011 review page → MBR-010 list → MEM-018 bulk actions →
    MEM-019 member detail → MBR-009 tracking page → sign-in notices and onboarding.
 8. The lifecycle end-to-end test, docs, then the visual baselines in a separate `chore(visual)` change.
+
+## Where each step stands (2026-10-24)
+
+| Step | Status |
+| ---- | ------ |
+| 1 Design brief and boards | ✅ boards saved under `designs/` |
+| 2 MBR-007 | ✅ |
+| 3 MEM-017 | ✅ |
+| 4 ACC-008 | ✅ (blocked sign-in fixed in migration `…1300`) |
+| 5 MEM-016 + NOT-004 | ✅ |
+| 6 ACC-009 | ✅ (7-day activation token, five-step onboarding) |
+| 7 Screens | ✅ all, then reworked after the owner's reviews (see "Delivered beyond the plan" in the plan) |
+| 8 Lifecycle end-to-end test, docs, visual baselines | 🔶 docs ✅ · **e2e journey ⬜ · baselines ⬜** (see [NEXT-STEPS.md](./NEXT-STEPS.md)) |

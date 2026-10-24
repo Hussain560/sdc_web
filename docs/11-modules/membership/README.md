@@ -2,8 +2,8 @@
 
 | Field            | Value |
 | ---------------- | ----- |
-| **Last Updated** | 2026-10-02 |
-| **Status**       | Draft |
+| **Last Updated** | 2026-10-24 |
+| **Status**       | Intake (Sprints 07–08) built; the full membership lifecycle (Sprint 18) is built on a local branch — see [Sprint 18](../../99-project-management/sprints/sprint-18-membership-lifecycle/plan.md) |
 | **Owner**        | Community leader |
 | **Phase / Sprints** | Phase 3B / Sprint 07 (cycles, `/join`, apply) · Sprint 08 (review, decisions) |
 | **Code**         | `src/modules/membership/` |
@@ -25,7 +25,7 @@ This module runs SDC's **periodic membership intake**, about once a year (D-001)
 
 ## 2. Current state (CURRENT / PROBLEM)
 
-**Nothing exists.** `/register` creates accounts only. Members are inserted manually into an open table, not linked to accounts. There is no record of who applied, when, or why someone became a member.
+_Historical (before Sprint 07):_ nothing existed; `/register` created accounts only. **Today** the intake, review, activation, term, renewal, suspension, ending, blocking, the card and the onboarding exist — the business process is [lifecycle.md](../../99-project-management/sprints/sprint-18-membership-lifecycle/lifecycle.md) and the build record is the Sprint 18 [implementation log](../../99-project-management/sprints/sprint-18-membership-lifecycle/IMPLEMENTATION-LOG.md). The rest of this page describes the Sprint 07–08 intake and has not been rewritten.
 
 ## 3. Actors and permissions
 

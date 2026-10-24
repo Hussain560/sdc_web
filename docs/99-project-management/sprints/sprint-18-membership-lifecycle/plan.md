@@ -11,7 +11,7 @@
 | **Phase / Milestone** | Phase 7 — Public redesign follow-up / M11 |
 | **Capacity**          | ~30 SP — planned 47 SP (the P1/P2 stories — tracking page, rubric, auto-promotion, membership card — and the polish can slip to Sprint 19) |
 | **Team**              | Tech lead + Claude; owner for design approval, copy and the open questions |
-| **Status**            | ⬜ Planned — waits on step 0 (designs from Claude Design) |
+| **Status**            | ✅ Built and checked locally (2026-10-24) on branch `feat/sprint-18-membership-lifecycle` (never pushed, not merged). Not closed: e2e journeys, visual baselines and the accessibility sweep are open — see [NEXT-STEPS.md](./NEXT-STEPS.md) |
 
 ## Sprint Objective
 
@@ -49,21 +49,23 @@ MEM-016, ACC-008) start in parallel.
 
 | Story ID | Title | Priority | Points | Status |
 | -------- | ----- | -------- | ------ | ------ |
-| MBR-007 | Applications data v2: split names (first, middle, last × ar/en), reference number, `info_requested` state, tracking token | P0 | 3 | ⬜ |
-| MBR-008 | Join form redesign: steps, split names, phone with country, validation, autosave draft, submission feedback | P0 | 5 | ⬜ ⛔ step 0 |
-| MBR-009 | Track my application (no account): link from the e-mail, status timeline, edit when info is requested, withdraw | P1 | 3 | ⬜ ⛔ step 0 |
-| MBR-010 | Applications list redesign: filters, cycle switcher, bulk bar, phone cards | P0 | 3 | ⬜ ⛔ step 0 |
-| MBR-012 | Reviewer scoring rubric: criteria per cycle, 1–5 scores and a comment per reviewer, summary on the review page | P1 | 3 | ⬜ ⛔ step 0 |
-| MBR-013 | Waitlist auto-promotion when an accepted person does not activate in time | P1 | 2 | ⬜ |
-| MBR-011 | Application review page redesign: every field, answers, duplicates, history, sticky decision panel, request info, next/previous | P0 | 5 | ⬜ ⛔ step 0 |
-| MEM-016 | Membership term: term dates, cycle term end, daily expiry job, reminders, renew (single and bulk) | P0 | 5 | ⬜ |
-| MEM-017 | Membership states v2: `expired`, `ended` with reason, leave requests that leadership approves or declines, suspension that really stops access, positions end with the membership | P0 | 4 | ⬜ |
-| MEM-018 | Members list bulk actions (renew, suspend, reinstate, end, approve or decline leave requests, resend activation, e-mail, export) with per-row results | P0 | 3 | ⬜ ⛔ step 0 |
-| MEM-019 | Member detail: lifecycle timeline and actions with reasons and messages | P1 | 2 | ⬜ ⛔ step 0 |
-| MEM-020 | Digital membership card with a QR code and a public verification page | P1 | 3 | ⬜ ⛔ step 0 |
-| ACC-008 | Block and unblock accounts (`users.block`), session end, sign-in notices for blocked / suspended / expired | P0 | 3 | ⬜ |
-| ACC-009 | Activation follow-up: reminders, expired link handling, resend, onboarding screen after the first sign-in | P0 | 3 | ⬜ ⛔ step 0 |
-| NOT-004 | Lifecycle e-mails (new templates, both languages, idempotent, retried) | P0 | 3 | ⬜ |
+| MBR-007 | Applications data v2: split names (first, middle, last × ar/en), reference number, `info_requested` state, tracking token | P0 | 3 | ✅ |
+| MBR-008 | Join form redesign: steps, split names, phone with country, validation, autosave draft, submission feedback | P0 | 5 | ✅ |
+| MBR-009 | Track my application (no account): link from the e-mail, status timeline, edit when info is requested, withdraw | P1 | 3 | ✅ |
+| MBR-010 | Applications list redesign: filters, cycle switcher, bulk bar, phone cards | P0 | 3 | ✅ |
+| MBR-012 | Reviewer scoring rubric: criteria per cycle, 1–5 scores and a comment per reviewer, summary on the review page | P1 | 3 | ✅ |
+| MBR-013 | Waitlist auto-promotion when an accepted person does not activate in time | P1 | 2 | ✅ |
+| MBR-011 | Application review page redesign: every field, answers, duplicates, history, sticky decision panel, request info, next/previous | P0 | 5 | ✅ |
+| MEM-016 | Membership term: term dates, cycle term end, daily expiry job, reminders, renew (single and bulk) | P0 | 5 | ✅ |
+| MEM-017 | Membership states v2: `expired`, `ended` with reason, leave requests that leadership approves or declines, suspension that really stops access, positions end with the membership | P0 | 4 | ✅ |
+| MEM-018 | Members list bulk actions (renew, suspend, reinstate, end, approve or decline leave requests, resend activation, e-mail, export) with per-row results | P0 | 3 | ✅ |
+| MEM-019 | Member detail: lifecycle timeline and actions with reasons and messages | P1 | 2 | ✅ |
+| MEM-020 | Digital membership card with a QR code and a public verification page | P1 | 3 | ✅ |
+| ACC-008 | Block and unblock accounts (`users.block`), session end, sign-in notices for blocked / suspended / expired | P0 | 3 | ✅ |
+| ACC-009 | Activation follow-up: reminders, expired link handling, resend, onboarding screen after the first sign-in | P0 | 3 | ✅ |
+| NOT-004 | Lifecycle e-mails (new templates, both languages, idempotent, retried) | P0 | 3 | ✅ |
+
+_Status key: ✅ built and checked locally (database tests, unit tests and a browser pass; the automated browser journeys are still to write — see "Definition of Done — where we stand")._
 
 ### Acceptance criteria per story
 
@@ -196,6 +198,38 @@ MEM-016, ACC-008) start in parallel.
   event (idempotency key), retried by the existing route; previews in the e-mail tests. New in this round: activation
   reminders, activation lapsed, waitlist offer (the normal acceptance e-mail), and the card is never attached to e-mails.
 
+## Delivered beyond the plan (owner review rounds, 2026-10-22 → 24)
+
+These were not in the first plan; they came from the owner's reviews of the running screens.
+
+| # | What | Where |
+| - | ---- | ----- |
+| X1 | **Gender (private) and study year (students only)** on the application, the member record, the join form, the profile and the admin edit. Shown only to the member and to leadership with `view_contact`; never public. | migration `…1000`, pgTAP 31 |
+| X2 | **Cycle questions as designed**: radio cards (with hints) and chips; the Winter 2027 cycle and more scored applications as test data | `ApplicationForm`, `supabase/dev-cycle-questions.sql`, `dev-winter-applications.sql` |
+| X3 | **Activation link that lasts**: our own random token (stored hashed, 7 days by default, stated in the mail) at `/activate/<token>`; opening it makes a one-time sign-in link on the spot. Replaces the 1-hour recovery link. An expired link offers a new one by e-mail. | migration `…1100`, pgTAP 32 |
+| X4 | **Decision mails reach people in seconds**: the 6-second undo hold is released by the server after the decision, the decider's browser, any dashboard page view and the daily job | `flushIfDue`, `releaseDecisionMails` |
+| X5 | **Activation page** like the design: accepted badge, name and e-mail, a four-part strength bar and a live list of the password rules, then "حسابك جاهز" with "لنبدأ" | `ResetPasswordForm`, `PasswordStrength` |
+| X6 | **Onboarding rebuilt** (replaces the tour): five steps on the split layout at `/welcome` (welcome, name, photo, interests, privacy), saved as you go, instant steps, a phone layout with a green header and a fixed footer, and a finishing screen with the real membership card flipping in | `OnboardingFlow`, `/welcome` (`/account/welcome` redirects) |
+| X7 | **"عضويتي" redesigned and merged**: the wide plastic-style card, a compact phone card, a full-screen card at the door; the status, positions ("مناصبي") and leave cards beside it; **"بياناتي" now sits under it**. The tabs "مناصبي" and "بياناتي" are gone; old URLs redirect | `MembershipCard`, `/account/membership`, `MyDataSection` |
+| X8 | **Leadership edits the whole member profile** in the four-step wizard (decision change after Q-M8) | migration `…0900`, pgTAP 25 |
+| X9 | **Accept asks first**: the review page and the waiting list confirm before accepting (seat count, e-mail, undo); a result dialog after any decision with undo, stay or open the next | `ReviewPanel`, `WaitlistBoard` |
+| X10 | **Reviewer states as designed**: "another reviewer holds it" (read and score, decision blocked), "your own application" (locked), an error state for the membership screens | `ReviewPanel`, `membership/error.tsx` |
+| X11 | **Assign position from a member's page is fixed to that member** (no "change"); the sidebar shows the number of open **privacy requests** like the membership counters | `AssignRoleDialog`, `nav-counts` |
+| X12 | **Blocked sign-in shows the blocked notice** (the ban is finite; "infinity" made the auth service fail and the person saw "wrong password") | migration `…1300` |
+| X13 | **Asking an applicant to edit works from the waiting list** | migration `…1200` |
+| X14 | **System-status feedback and phone pass**: top progress bar and dimmed page while navigating, skeletons for every new route, tables as labelled cards on phones, motion on numbers and steps | `NavFeedback`, `ResponsiveTables`, `skeletons`, `CountUp`, `StepsReveal` |
+| X15 | **Words instead of keys** on the audit log and e-mail log (filters, entities, fields, errors), and seeded e-mail and audit data | `audit-labels.ts`, `email-labels.ts` |
+| X16 | **Brand**: the transparent `sdc-mark.svg` replaces the PNG everywhere; the animated logo, About cards and login back link merged from the teammate branch | `public/assets/brand` |
+
+## Changed or removed from the plan
+
+- The **welcome tour** (`WelcomeTour.tsx`) is replaced by the five-step flow. The component is no longer used and can be deleted.
+- The **tabs "مناصبي" and "بياناتي"** and their side-menu items are removed; the pages redirect to "عضويتي".
+- The **1-hour recovery link** as the activation link is replaced by the 7-day token (X3).
+- **Password policy**: the activation page shows the rule the system enforces (8+ characters with upper, lower, number, symbol). The design shows "10 characters, a letter and a number, not a common password". The rule was not changed (it also lives in the auth settings): **owner decision pending**.
+- **Suspension ends positions** instead of pausing them (D3 in the log) — unchanged from the first run.
+- Not built and still suggested: two-reviewer rule, interview state, editable decision e-mail texts, QR check-in at events, appeal link, a vice-leader role (Q-L7).
+
 ## Added from the suggestions (decided)
 
 Activation reminders and the onboarding screen (ACC-009), the reviewer scoring rubric (MBR-012), waitlist auto-promotion
@@ -217,10 +251,10 @@ Activation reminders and the onboarding screen (ACC-009), the reviewer scoring r
 
 | Dependency | Needed for | Status |
 | ---------- | ---------- | ------ |
-| Approved designs (step 0) | MBR-008…011, MEM-018, MEM-019 UI, ACC-008 notices | ⬜ |
-| Owner answers Q-L1…Q-L10 | MEM-016, MBR-008, ACC-008, MBR-012, MBR-013, MEM-020 | ⬜ |
-| A daily scheduler for the cron route (Vercel cron on the hosted project, a manual call locally) | MEM-016, ACC-009 | ⬜ |
-| Owner approval of new visual baselines (separate `chore(visual)` change) | Merging the redesigned pages | ⬜ |
+| Approved designs (step 0) | MBR-008…011, MEM-018, MEM-019 UI, ACC-008 notices | ✅ received from Claude Design, saved under [designs/](./designs/) |
+| Owner answers Q-L1…Q-L10 | MEM-016, MBR-008, ACC-008, MBR-012, MBR-013, MEM-020 | ✅ the defaults were used (table in the log); the owner can still change any |
+| A daily scheduler for the cron route (Vercel cron on the hosted project, a manual call locally) | MEM-016, ACC-009 | ✅ `vercel.json` runs `/api/cron/membership-daily` at 04:00; locally call it with `CRON_SECRET` |
+| Owner approval of new visual baselines (separate `chore(visual)` change) | Merging the redesigned pages | ⬜ still open |
 
 ## Open questions
 
@@ -239,15 +273,16 @@ Activation reminders and the onboarding screen (ACC-009), the reviewer scoring r
 
 ## Definition of Done (sprint-specific)
 
-- `npm run check` and `npm run e2e` pass; new pgTAP tests pass (every lifecycle transition, allowed and refused);
-  generated DB types committed.
-- One end-to-end test walks the whole lifecycle: apply → info requested → resubmit → accept → activate → sign in →
-  expire (clock moved) → renew → suspend → notice on sign-in → reinstate → end.
-- Every new screen verified in AR/EN × dark/light × 360 px and desktop; axe has no new violations; keyboard-only run of
-  the join form and the review page.
-- The member never sees internal notes; the tracking page shows no data beyond the applicant's own application.
-- Docs: lifecycle, permission catalog (`users.block`), e-mail catalog, the membership module doc and the backlog
-  updated in the same pull requests.
+The original list is kept; the right column is where each item stands on 2026-10-24.
+
+| Item | Status |
+| ---- | ------ |
+| `npm run check` passes; new pgTAP tests pass (every transition, allowed and refused); generated DB types committed | ✅ check green at the last full run; pgTAP 36 files / 1932 assertions on a clean reset. Migrations `…1200` (info request from the waiting list) and `…1300` (finite ban) were applied after that run and have **no pgTAP assertion yet** |
+| `npm run e2e` passes | ⬜ **not green**: 100 visual tests fail on pages this sprint did not touch (baselines were stale before it); `e2e:update` was never run (owner rule). Two specs (`my-data`, `privacy`) were edited to the merged page and **not run** |
+| One end-to-end test walks the whole lifecycle (apply → info → resubmit → accept → activate → sign in → expire → renew → suspend → notice → reinstate → end) | ⬜ not written. The same walk was done by hand and with seeds; the daily job is covered in pgTAP 30 with a moved clock |
+| Every new screen checked in AR/EN × dark/light × 360 px and desktop; no new axe violations; keyboard-only run of the join form and review page | 🔶 checked by eye on the screens touched in the review rounds (phone and desktop, mostly dark); no systematic sweep, no axe run on the new screens, no keyboard-only run |
+| The member never sees internal notes; the tracking page shows nothing beyond the applicant's own application | ✅ covered by pgTAP 27/28/29 and checked in the browser |
+| Docs: lifecycle, permission catalog (`users.block`), e-mail catalog, module doc, backlog updated | ✅ updated 2026-10-24 (this pass); the module README now points here |
 
 ## Risks
 

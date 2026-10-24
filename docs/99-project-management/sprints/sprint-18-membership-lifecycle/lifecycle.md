@@ -73,11 +73,11 @@ remains.
 
 | State | Meaning |
 | ----- | ------- |
-| invited | Account created on acceptance, activation link e-mailed (valid 7 days) |
+| invited | Account created on acceptance, activation link e-mailed. The link is our own random token (stored hashed) at `/activate/<token>`, valid for the cycle's activation period (7 days by default) and stated in the mail; opening it makes a one-time sign-in link on the spot, so it never dies after an hour |
 | activated | Password set; first sign-in opens onboarding (complete the profile) |
 | invite expired | Link no longer valid; a reminder goes at day 3 and day 6; leadership can resend from the member page |
 | lapsed | Not activated within the deadline: the place goes to the waitlist (§2.1.2) |
-| onboarding | After the first sign-in a short guided screen (welcome, names, photo, skills, what is public) shown once, skippable, saved per step in the database |
+| onboarding | After choosing a password the person sees "حسابك جاهز" and starts the **five-step set-up** at `/welcome` (welcome, confirm the name, photo, interests, what visitors see), then a finishing screen with the membership card. Shown once, skippable, saved per step in the database, reopenable by opening `/welcome` |
 
 ### 2.3 Membership (`members.status`, expanded)
 
@@ -183,3 +183,11 @@ explanation.
 Every transition writes `private.write_audit` with actor, reason and before/after status. The member page shows one
 timeline: applied, decided, activated, positions, renewals, suspensions, end. Reviewers see the application's own
 timeline (submitted, claimed, info requested, resubmitted, decided, e-mails sent).
+
+## Updates after the review rounds (2026-10-24)
+
+- **Application and member data** also carry **gender** (private: the member and leadership with `view_contact` only) and a **study year** (students only).
+- **Blocking** bans the auth user for a long finite time (100 years), never "infinity": the auth service cannot read an infinite ban and answered with an error, so a blocked person saw "wrong password". With a finite ban the sign-in answers "user banned" and the app shows the blocked notice.
+- **"My membership"** is the one member page: card, term, positions, leave request and "my data" (access and deletion request). The separate positions and data tabs no longer exist.
+- **Accepting asks first** (review page and waiting list), and a decision result dialog offers undo, staying or opening the next application.
+- **Asking an applicant to edit** is allowed from `submitted`, `under_review` and `waitlisted`; a resubmission puts the application back in `submitted`.

@@ -222,18 +222,22 @@ Work the team did because the situation changed or the owner asked. Ids are new.
 
 | ID | Story | P |
 | -- | ----- | - |
-| MBR-007 | Applications data v2: split names, reference number, `info_requested`, tracking token | P0 — ⬜ Sprint 18 |
-| MBR-008 | Join form redesign: steps, split names, phone with country, autosave, submission feedback | P0 — ⬜ Sprint 18 ⛔ designs |
-| MBR-009 | Track my application without an account (status, correction, withdraw) | P1 — ⬜ Sprint 18 ⛔ designs |
-| MBR-010 | Applications list redesign with bulk bar and phone cards | P0 — ⬜ Sprint 18 ⛔ designs |
-| MBR-011 | Application review page redesign (all fields, duplicates, history, decision panel, request info) | P0 — ⬜ Sprint 18 ⛔ designs |
-| MEM-016 | Membership term: dates, daily expiry job, reminders, renew (single and bulk) | P0 — ⬜ Sprint 18 |
-| MEM-017 | Membership states v2 (`expired`, `ended` + reason, leave requests approved by leadership, suspension that stops access) | P0 — ⬜ Sprint 18 |
-| MEM-018 | Members list bulk actions and leave-requests queue with per-row results | P0 — ⬜ Sprint 18 ⛔ designs |
-| MEM-019 | Member detail lifecycle timeline and actions | P1 — ⬜ Sprint 18 ⛔ designs |
-| ACC-008 | Block and unblock accounts (`users.block`), sign-in notices | P0 — ⬜ Sprint 18 |
-| ACC-009 | Activation reminders, expired-link resend, onboarding screen after first sign-in | P0 — ⬜ Sprint 18 ⛔ designs |
-| MBR-012 | Reviewer scoring rubric (criteria per cycle, scores and comments, summary on review page) | P1 — ⬜ Sprint 18 ⛔ designs |
-| MBR-013 | Waitlist auto-promotion when accepted people do not activate in time | P1 — ⬜ Sprint 18 |
-| MEM-020 | Digital membership card with QR code and public verification page | P1 — ⬜ Sprint 18 ⛔ designs |
-| NOT-004 | Lifecycle e-mails (new templates, both languages, sent once, retried) | P0 — ⬜ Sprint 18 |
+| MBR-007 | Applications data v2: split names, reference number, `info_requested`, tracking token | P0 — ✅ Sprint 18 (local branch) |
+| MBR-008 | Join form redesign: steps, split names, phone with country, autosave, submission feedback | P0 — ✅ Sprint 18 (local branch) |
+| MBR-009 | Track my application without an account (status, correction, withdraw) | P1 — ✅ Sprint 18 (local branch) |
+| MBR-010 | Applications list redesign with bulk bar and phone cards | P0 — ✅ Sprint 18 (local branch) |
+| MBR-011 | Application review page redesign (all fields, duplicates, history, decision panel, request info) | P0 — ✅ Sprint 18 (local branch) |
+| MEM-016 | Membership term: dates, daily expiry job, reminders, renew (single and bulk) | P0 — ✅ Sprint 18 (local branch) |
+| MEM-017 | Membership states v2 (`expired`, `ended` + reason, leave requests approved by leadership, suspension that stops access) | P0 — ✅ Sprint 18 (local branch) |
+| MEM-018 | Members list bulk actions and leave-requests queue with per-row results | P0 — ✅ Sprint 18 (local branch) |
+| MEM-019 | Member detail lifecycle timeline and actions | P1 — ✅ Sprint 18 (local branch) |
+| ACC-008 | Block and unblock accounts (`users.block`), sign-in notices | P0 — ✅ Sprint 18 (local branch) |
+| ACC-009 | Activation reminders, expired-link resend, onboarding screen after first sign-in | P0 — ✅ Sprint 18 (local branch) |
+| MBR-012 | Reviewer scoring rubric (criteria per cycle, scores and comments, summary on review page) | P1 — ✅ Sprint 18 (local branch) |
+| MBR-013 | Waitlist auto-promotion when accepted people do not activate in time | P1 — ✅ Sprint 18 (local branch) |
+| MEM-020 | Digital membership card with QR code and public verification page | P1 — ✅ Sprint 18 (local branch) |
+| NOT-004 | Lifecycle e-mails (new templates, both languages, sent once, retried) | P0 — ✅ Sprint 18 (local branch) |
+
+## Follow-ups from Sprint 18 (candidates for Sprint 19)
+
+See [NEXT-STEPS.md](./sprints/sprint-18-membership-lifecycle/NEXT-STEPS.md): Playwright journeys and the lifecycle end-to-end test, visual baselines, accessibility sweep, pgTAP for the late migrations, password-policy decision, clean-up, and the optional ideas (two-reviewer rule, editable decision e-mails, QR check-in at events).

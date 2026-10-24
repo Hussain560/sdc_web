@@ -119,8 +119,8 @@ curl -H "Authorization: Bearer $CRON_SECRET" "http://localhost:3000/api/cron/mem
 ## 7. Activation of a new member
 
 1. Accept an application whose e-mail has no account (any seeded applicant) and let the undo window pass.
-2. Mailpit → the acceptance mail has the **activation link** → open it → choose a password (the welcome variant).
-3. Sign in → you land on **`/welcome`** (5 steps, saved one by one, skippable; reopen it by going to the URL).
+2. Mailpit → the acceptance mail has the **activation link** (valid 7 days, stated in the mail) → open it → the activation page: a badge "قُبلت عضويتك", your name, the strength bar and the rules list; → "فعّل حسابي" → **"حسابك جاهز"** → "لنبدأ".
+3. "لنبدأ" (or the first sign-in) opens **`/welcome`**: five steps (welcome, name, photo, interests, privacy), each saved as you go, "تخطَّ الآن" at any time, instant next/back; on a phone a green header with five bars and a fixed footer. The last step shows **"بطاقتك جاهزة"** with your real card flipping in and the completeness bar.
 4. After the first sign-in the account counts as **activated**; the waiting-list clock stops for that person.
 
 ## 8. Member journey
@@ -133,9 +133,9 @@ curl -H "Authorization: Bearer $CRON_SECRET" "http://localhost:3000/api/cron/mem
 - **`dev.expiring`** → "Request a renewal" → leadership gets a mail and sees it in members → "ending soon".
 - **Leave**: `dev.regular` → "Request to leave" (reason + preferred last day). The member **stays active** until
   leadership decides; they can withdraw the request. A member can **never end their own membership**.
-- **`dev.newmember`** → welcome tour. **`dev.expired` / `dev.suspended` / `dev.ended`** → one notice dialog per sign-in
+- **`dev.newmember`** → the five-step set-up. **`dev.expired` / `dev.suspended` / `dev.ended`** → one notice dialog per sign-in
   (suspended shows the **category** only), and the card/verify page shows the real status.
-- **`dev.blocked`** → sign-in is refused → `/notice/blocked` (no reason). Their sessions are ended.
+- **`dev.blocked`** (password `Dev!Passw0rd1`) → sign-in is refused → `/notice/blocked` (no reason shown). Their sessions are ended. (Fixed in migration `…1300`: before it the person saw "wrong password".)
 - Switch language (EN/AR) and theme on every screen; check phone width (375 px).
 
 ## 9. Leadership: members and requests (`dev.leader`)
@@ -162,7 +162,7 @@ curl -H "Authorization: Bearer $CRON_SECRET" "http://localhost:3000/api/cron/mem
 ```bash
 npm run check                 # format, lint, types, tokens, contrast, unit tests
 npx supabase db reset && npx supabase test db   # database tests (clean DB required)
-npm run e2e                   # visual gate; NOTE: baselines were already stale before this sprint (see the log)
+npm run e2e                   # visual gate; NOTE: 100 tests fail on stale baselines that pre-date this sprint (see the log); never run e2e:update without approval
 ```
 
 Reset the demo data at any time: `npx supabase db reset && npm run db:lifecycle`.
@@ -275,3 +275,19 @@ also needs `members.view_contact`. A founder or committee head can open the reco
   replaces the old). If the account is already active the page says so and offers sign-in.
 - The decision mail is held for 6 seconds (undo window) and then released by: the server after the decision, the
   browser of the person who decided, any dashboard page view, and the daily job. It should arrive within seconds.
+
+## 19. What changed in the last rounds — what to try
+
+| Try | Where | Expect |
+| --- | ----- | ------ |
+| Click the left cell of a row | applications list | the row is selected (it does not open); the bar shows the count |
+| Accept an application | review page → "قبول" | a confirmation naming the applicant, the seat count and the e-mail; "نعم، اقبل الطلب"; then the result dialog (undo / stay / next) |
+| Offer a place | waiting list → "اعرض المقعد الآن" | the same confirmation |
+| Open an application another reviewer claimed (not as admin) | review page | an amber note with the reviewer's name; buttons disabled; you can still score |
+| Open your own application | review page | a locked card; no scoring or decision tools |
+| Ask an applicant to edit from the waiting list | review page → "طلب تعديل" | it is sent; the application returns to "new" when resubmitted |
+| Assign a position from a member's page | member record → "تعيين منصب" | the member is fixed (no "تغيير", no search box) |
+| Privacy requests | sidebar → "طلبات الخصوصية" | a number badge with the open requests (a demo request from `dev.leaving` exists) |
+| My membership | `/account/membership` | tabs are only profile · membership · security; positions and "بياناتي" are on this page; `/account/roles` and `/account/privacy` redirect here |
+| The card | wide screen / phone / `/card` | wide plastic-style card; compact card on a phone; full-bleed card with a close button at the door |
+| Break a page | (stop the database) then open a membership page | "تعذّر تحميل الصفحة" with a retry button |

@@ -5,7 +5,7 @@
 
 ## Summary
 
-**Built:** the whole membership lifecycle on a new database layer (8 migrations, pgTAP files 27–30 (1881 assertions across 34 files, passing) plus updated 03/08/19/21/25),
+**Built:** the whole membership lifecycle on a new database layer (14 migrations from `20270411000000` to `…1300`, pgTAP files 27–32 (36 files and 1932 assertions in the last full clean run) plus updated 03/08/19/21/25),
 server actions, 18 AR/EN e-mail templates with an undo outbox and a daily idempotent job (`/api/cron/membership-daily`),
 the public journey (join states, 5-step form with draft, tracking page, activation, verification page, blocked notice),
 the dashboard (cycles with rubric and funnel, applications with bulk actions, review with scoring and shortcuts, waiting list,
@@ -25,8 +25,8 @@ no horizontal scroll at 375 px on every measured dashboard/account route).
 2. `temp.txt` in the project root holds keys for a hosted Supabase project; it is untracked and now excluded locally
    (`.git/info/exclude`). Consider deleting it and rotating those keys.
 3. Open questions Q-L1…Q-L10 below were answered with the listed defaults.
-4. Not done in this run: new Playwright journeys and new visual baselines for the new pages, a pixel comparison of every
-   board at 1440/390/360 in light and dark, and a full keyboard/AA pass. See "What is left or risky".
+4. Not done: new Playwright journeys and baselines, a systematic comparison of every board at 1440/390/360 in light and dark, and a full keyboard/AA pass. See "What is left or risky" and [NEXT-STEPS.md](./NEXT-STEPS.md).
+5. After the first run the owner reviewed the screens and asked for the changes in "Round 2 and 3" below; the sprint is feature-complete but **not closed** (tests and the quality sweep are open).
 
 ## Implementation map
 
@@ -121,16 +121,39 @@ _(filled as they happen)_
 - Suspension ends committee positions (D3) rather than pausing them.
 - Tables use one generic phone-card pattern (labels from the column headers) instead of a hand-made card list per table.
 
+## Round 2 and 3 — owner review of the running screens (2026-10-22 → 24)
+
+The first run (above) delivered every story. The owner then walked the screens with the demo data and asked for the
+changes below; each is one or more commits on the same branch. The table in the plan ("Delivered beyond the plan",
+X1–X16) is the readable list; the technical part is here.
+
+| Area | What changed |
+| ---- | ------------ |
+| Database | Migrations `20270411000900` staff profile edit · `…1000` gender and study year (functions and review view patched) · `…1100` activation tokens (`issue_activation_token`, `resolve_activation_token`, service role only) · `…1200` info request from the waiting list · `…1300` finite auth ban (and the accounts blocked before) |
+| pgTAP | 25 (72 assertions), new 31 gender and study year (19), new 32 activation tokens (15). Last full run on a clean reset: **36 files, 1932 assertions, passing** — before `…1200` and `…1300` |
+| Server | `activationLinkFor` / `prepareActivationLinks` / `flushIfDue` (notifications), `releaseDecisionMails`, `requestActivationByEmail`, `saveOnboardingStep` only revalidates when finishing, privacy count in `getNavCounts` |
+| Public UI | join form (gender, study year, radio cards), tracking page, `/activate/[token]`, activation form with strength bar, `/welcome` (five steps), `/card` full screen |
+| Dashboard UI | applications (whole selection cell toggles), review page (confirm, result dialog, reviewer states), waiting list (confirm), member record (full edit wizard, assign position fixed to the member), audit and e-mail logs in words, sidebar privacy badge |
+| Member UI | "عضويتي" (wide / compact / full-screen card, merged positions and data), account tabs reduced |
+| Brand | `sdc-mark.svg` everywhere; the old PNGs removed |
+| Tests touched | unit test for the event card (SVG path); two Playwright specs now open the merged page (**not run**) |
+
+Lessons worth keeping: the global `img, video {max-width:100%; height:auto}` rule beats Tailwind height classes, so
+media sized with classes needs a wrapper or inline style; the auth service cannot read `banned_until = infinity`;
+only one `next dev` may write `.next/dev` (two servers corrupted the manifest).
+
 ## What is left or risky
 
-- New Playwright journeys (applicant, reviewer, leadership, notices) and baselines for the new pages are not written.
-- The boards were compared by eye in the browser only; a systematic 1440/390/360 light/dark comparison and a keyboard/AA
-  sweep of every new screen is still to do.
-- `ResponsiveTables` adds data labels after hydration with a MutationObserver; tables that render richer first cells show
-  them as one block. Review on devices.
-- The reset-password "welcome" screen kept its existing design (no strength meter yet).
-- Data files are local-only seeds: `supabase/dev-lifecycle-seed.sql`.
-- `npx supabase db reset` then `npx supabase test db` — 34 files, 1881 assertions, PASS. (A from-scratch ordering bug — block columns used before they were created — was found and fixed; seeds left in the DB make 05/26 fail, so test on a clean reset.)
+The full, prioritised list with the Sprint 19 plan is in [NEXT-STEPS.md](./NEXT-STEPS.md). In short:
+
+- **Tests**: no new Playwright journeys (applicant, reviewer, leadership, member, notices) and no lifecycle end-to-end
+  test; no pgTAP for migrations `…1200` and `…1300`; 100 visual tests fail because the baselines were already stale.
+- **Quality sweep**: no systematic AR/EN × dark/light × 360 px comparison, no axe run and no keyboard-only run on the new screens.
+- **Open owner decisions**: the password policy (design says 10 characters and no common passwords), the vice-leader role (Q-L7), deleting `temp.txt` and rotating its keys.
+- **Clean-up**: `WelcomeTour.tsx` is unused; `sdc-mark.svg` is a 1.1 MB image wrapped in an SVG (a true vector would be lighter);
+  `ResponsiveTables` labels cells after hydration; the seeds are local-only.
+- **Release**: the branch has 165 commits and has never been pushed or merged (owner rule); merging needs the baseline
+  approval and a hosted check of the e-mail transport and `SITE_URL`.
 
 ## Decision change after Q-M8 (owner request)
 
