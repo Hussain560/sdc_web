@@ -539,7 +539,7 @@ export function OnboardingFlow(p: OnboardingProps) {
     <div className="min-h-dvh bg-canvas lg:grid lg:grid-cols-[45%_1fr] lg:gap-4 lg:p-4">
       <aside
         aria-hidden="true"
-        className="motif-dots relative hidden overflow-hidden rounded-shape-2xl bg-brand text-on-brand lg:flex lg:flex-col lg:justify-between lg:p-10"
+        className="motif-dots relative hidden overflow-hidden rounded-shape-2xl bg-brand text-on-brand lg:sticky lg:top-4 lg:flex lg:h-[calc(100dvh-2rem)] lg:flex-col lg:justify-between lg:self-start lg:p-10"
       >
         <div className="flex items-center justify-between">
           <Logo label={p.logo.home} alt={p.logo.alt} />
@@ -654,7 +654,7 @@ export function OnboardingFlow(p: OnboardingProps) {
             </p>
           )}
           {!done && (
-            <div className="flex items-center justify-between gap-3 border-t border-line max-lg:fixed max-lg:inset-x-0 max-lg:bottom-0 max-lg:z-20 max-lg:bg-surface max-lg:p-4 max-lg:pb-[max(1rem,env(safe-area-inset-bottom))] lg:pt-6">
+            <div className="flex items-center justify-between gap-3 border-t border-line max-lg:fixed max-lg:inset-x-0 max-lg:bottom-0 max-lg:z-20 max-lg:bg-surface max-lg:p-4 max-lg:pb-[max(1rem,env(safe-area-inset-bottom))] lg:sticky lg:bottom-0 lg:bg-canvas lg:pb-4 lg:pt-4">
               <Button
                 variant="ghost"
                 disabled={i === 0}
