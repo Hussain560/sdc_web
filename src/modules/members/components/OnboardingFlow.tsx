@@ -207,8 +207,9 @@ export function OnboardingFlow(p: OnboardingProps) {
       });
       return;
     }
-    setI(STEP_COUNT);
-    void (async () => {
+    // The last step waits for the save: the finishing screen only shows once "done" is stored, so leaving at once can
+    // never send the member back into the set-up at the next sign-in.
+    run(async () => {
       try {
         const r = await saveMyProfilePart(
           {
@@ -221,14 +222,14 @@ export function OnboardingFlow(p: OnboardingProps) {
         );
         const d = r.ok ? await saveOnboardingStep({ step: STEP_COUNT, done: true }, { lang }) : r;
         if (!d.ok) {
-          setI(STEP_COUNT - 1);
           setError(d.message || s.failed);
+          return;
         }
+        setI(STEP_COUNT);
       } catch {
-        setI(STEP_COUNT - 1);
         setError(s.failed);
       }
-    })();
+    });
   };
 
   // Moving on is instant: the step is saved in the background, and a failure is reported where the person is.

@@ -96,6 +96,13 @@ export async function gotoReady(page: Page, url: string) {
     const form = document.querySelector('form');
     return !form || Object.keys(form).some((k) => k.startsWith('__reactProps$'));
   });
+  // Streaming: the page is revealed a few hundred milliseconds after load, and until then a hidden copy of it is in
+  // the document (it would make strict locators ambiguous).
+  await page
+    .waitForFunction(() => !document.querySelector('div[hidden][id^="S:"]'), undefined, {
+      timeout: 10_000,
+    })
+    .catch(() => undefined);
 }
 
 /** Signs in through the UI and waits until the app has left /login (the Server Action finished). */

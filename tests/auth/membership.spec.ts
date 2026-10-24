@@ -1,14 +1,6 @@
 import { expect, test, type Page } from '@playwright/test';
 import { sql } from './db';
-import {
-  PASSWORD,
-  confirmLink,
-  gotoReady,
-  signInAndWait,
-  signInViaUi,
-  uniqueEmail,
-  waitForMail,
-} from './helpers';
+import { PASSWORD, gotoReady, signInAndWait, uniqueEmail, waitForMail } from './helpers';
 import { persona, remove } from './personas';
 
 // Intake cycle scheduling → /join states → apply WITHOUT an account → accept creates the account and e-mails the
@@ -37,19 +29,24 @@ test.beforeAll(async () => {
 test.afterAll(wipe);
 
 async function fillApplication(page: Page, email: string) {
-  await page.locator('#field-fullNameAr').fill(`متقدم ${tag}`);
+  await page.locator('#field-firstNameAr').fill(`متقدم`);
+  await page.locator('#field-lastNameAr').fill(`اختبار`);
+  await page.locator('#field-firstNameEn').fill('Applicant');
+  await page.locator('#field-lastNameEn').fill(`Test${tag}`);
   await page.locator('#field-email').fill(email);
-  await page.getByRole('button', { name: 'Next' }).click();
-  await page.getByText('Student', { exact: true }).click();
+  await page.locator('#field-phone').fill('501234567');
+  await page.locator('#field-gender').getByText('Male', { exact: true }).click();
+  await page.getByRole('button', { name: /^Next/ }).click();
+  await page.locator('#field-academicStatus').getByText('Graduate', { exact: true }).click();
   await page.locator('#field-universityId').selectOption({ index: 1 });
   await page.locator('#field-majorId').selectOption({ index: 1 });
   await page.locator('#field-trackId').selectOption({ index: 1 });
-  await page.getByRole('button', { name: 'Next' }).click();
+  await page.getByRole('button', { name: /^Next/ }).click();
   await page.locator('#field-bioAr').fill('مطوّر يحب المجتمع');
-  await page.getByRole('button', { name: 'Next' }).click();
-  // Step 4: the cycle's extra question (required).
+  await page.getByRole('button', { name: /^Next/ }).click();
+  // The cycle's extra question (required).
   await page.locator('[id="field-q:q1"]').fill('Because I want to grow');
-  await page.getByRole('button', { name: 'Next' }).click();
+  await page.getByRole('button', { name: /^Next/ }).click();
 }
 
 test.describe('intake cycle → /join → application', () => {
@@ -68,7 +65,7 @@ test.describe('intake cycle → /join → application', () => {
     try {
       // /join is "closed" before any cycle exists.
       await page.goto('/en/join');
-      await expect(page.getByText('Membership applications are closed')).toBeVisible();
+      await expect(page.getByText('Applications are closed').first()).toBeVisible();
 
       // A committee head cannot manage cycles.
       const hctx = await browser.newContext({ baseURL: 'http://127.0.0.1:3300' });
@@ -94,20 +91,21 @@ test.describe('intake cycle → /join → application', () => {
       await expect(lpage).toHaveURL(/\/en\/dashboard\/membership\/cycles$/, { timeout: 20_000 });
 
       // A visitor sees the form at once: no sign-in, no sign-up.
-      await page.goto('/en/join');
-      await expect(page.getByText(/You do not need an account to apply/)).toBeVisible();
+      await page.goto('/en/join/apply');
+      await expect(page.locator('#field-firstNameAr')).toBeVisible();
       await expect(
         page.getByRole('link', { name: /sign in to apply|create account/i }),
       ).toHaveCount(0);
-      await gotoReady(page, '/en/join');
+      await gotoReady(page, '/en/join/apply');
       // Validation: step 1 needs a name and a valid e-mail.
-      await page.locator('#field-fullNameAr').fill('');
-      await page.getByRole('button', { name: 'Next' }).click();
+      await page.locator('#field-firstNameAr').fill('');
+      await page.getByRole('button', { name: /^Next/ }).click();
       await expect(page.getByRole('alert').first()).toBeVisible();
       await fillApplication(page, email);
-      await page.locator('#field-consent').check();
+      await page.getByLabel('I confirm the details are correct and mine.').check();
+      await page.locator('#field-consent input').check();
       await page.waitForTimeout(5200); // the form refuses submissions faster than five seconds
-      await page.getByRole('button', { name: 'Submit application' }).click();
+      await page.getByRole('button', { name: 'Send my application' }).click();
       await expect(page.getByText('We received your application')).toBeVisible({ timeout: 20_000 });
 
       // No mail on submission: the applicant hears from us when the application is decided.
@@ -118,23 +116,27 @@ test.describe('intake cycle → /join → application', () => {
       expect(app!.user_id).toBeNull();
 
       // The same e-mail cannot apply twice in the cycle.
-      await page.goto('/en/join');
+      await page.goto('/en/join/apply');
       await fillApplication(page, email);
-      await page.locator('#field-consent').check();
+      await page.getByLabel('I confirm the details are correct and mine.').check();
+      await page.locator('#field-consent input').check();
       await page.waitForTimeout(5200);
-      await page.getByRole('button', { name: 'Submit application' }).click();
+      await page.getByRole('button', { name: 'Send my application' }).click();
       await expect(page.getByText(/already received an application/)).toBeVisible();
 
       // The leader accepts: the account is created and the e-mail carries the activation link.
       await gotoReady(lpage, '/en/dashboard/membership/applications');
       await lpage.getByRole('checkbox', { name: 'Select all' }).check();
       await lpage.getByRole('button', { name: 'Accept' }).first().click();
-      await lpage.getByRole('dialog').getByRole('button', { name: 'Confirm' }).click();
+      await lpage
+        .getByRole('dialog')
+        .getByRole('button', { name: /^Accept \d+/ })
+        .click();
       await expect(lpage.getByText('Decision applied to 1.')).toBeVisible();
       const accepted = await waitForMail(email, {
         subject: /Welcome to the Saudi Developer Community/i,
       });
-      expect(accepted.html).toContain('type=recovery');
+      expect(accepted.html).toContain('/activate/');
       expect(accepted.html).toContain('Activate your account');
       const [member] = await sql<{ n: string }>(
         `select count(*)::text as n from public.members m join public.profiles p on p.id = m.user_id where lower(p.email) = $1`,
@@ -145,17 +147,14 @@ test.describe('intake cycle → /join → application', () => {
       // The new member opens the link, chooses a password and signs in.
       const mctx = await browser.newContext({ baseURL: 'http://127.0.0.1:3300' });
       const mpage = await mctx.newPage();
-      await mpage.goto(confirmLink(accepted, 'http://127.0.0.1:3300'));
-      await expect(mpage).toHaveURL(/\/reset-password\?welcome=1/);
-      await expect(
-        mpage.getByRole('heading', { name: 'Choose a password for your account' }),
-      ).toBeVisible();
-      await mpage.locator('input[type="password"]').nth(0).fill(PASSWORD);
-      await mpage.locator('input[type="password"]').nth(1).fill(PASSWORD);
-      await mpage.locator('button[type="submit"]').click();
-      await expect(mpage).toHaveURL(/\/en\/login/, { timeout: 15_000 });
-      await signInViaUi(mpage, email, PASSWORD, '/en/login');
-      await mpage.waitForURL((u) => !/\/login/.test(u.pathname), { timeout: 30_000 });
+      const link = /https?:\/\/[^"'\s<]+\/activate\/[0-9a-f]+/.exec(accepted.html)?.[0];
+      await mpage.goto(link!);
+      await expect(mpage).toHaveURL(/\/reset-password\?welcome=1/, { timeout: 30_000 });
+      await expect(mpage.getByText('Your membership is accepted')).toBeVisible();
+      await mpage.locator('input[name=password]').fill(PASSWORD);
+      await mpage.locator('input[name=confirmPassword]').fill(PASSWORD);
+      await mpage.getByRole('button', { name: 'Activate my account' }).click();
+      await expect(mpage.getByRole('heading', { name: 'Your account is ready' })).toBeVisible();
       await mctx.close();
 
       // Leader closes early → /join shows the closed-awaiting state and the database refuses applications.
@@ -164,7 +163,7 @@ test.describe('intake cycle → /join → application', () => {
       await lpage.getByRole('dialog').getByRole('button', { name: 'Confirm' }).click();
       await expect(lpage.getByText('Closed — awaiting decisions').first()).toBeVisible();
       await page.goto('/en/join');
-      await expect(page.getByText(/Applications closed on/)).toBeVisible();
+      await expect(page.getByText(/closed on/)).toBeVisible();
       await lctx.close();
     } finally {
       await wipe();

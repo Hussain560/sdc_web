@@ -17,6 +17,9 @@ test('my data shows the member record and the application; the profile holds the
       `update public.members set last_name_ar = 'التجربة', phone = '+966555000222' where user_id = $1`,
       [who.id],
     );
+    // Published cycles may never overlap: clear leftovers (demo data or earlier runs).
+    await sql('delete from public.membership_applications');
+    await sql('delete from public.membership_cycles');
     const [cycle] = await sql<{ id: string }>(
       `insert into public.membership_cycles (name_ar, opens_at, closes_at, status, questions)
        values ($1, now() - interval '3 days', now() - interval '1 day', 'published',
@@ -36,11 +39,11 @@ test('my data shows the member record and the application; the profile holds the
     // On screen: the member record with the phone, then the application and the answer that was given.
     await gotoReady(page, '/en/account/membership');
     await expect(page.getByRole('heading', { name: 'Member record' })).toBeVisible();
-    await expect(page.getByText('+966555000222')).toBeVisible();
+    await expect(page.getByText('+966555000222').first()).toBeVisible();
     await expect(page.getByRole('heading', { name: /Membership application/ })).toBeVisible();
-    await expect(page.getByText('+966555000333')).toBeVisible();
-    await expect(page.getByText('Why do you want to join?')).toBeVisible();
-    await expect(page.getByText('لأتعلم مع المجتمع')).toBeVisible();
+    await expect(page.getByText('+966555000333').first()).toBeVisible();
+    await expect(page.getByText('Why do you want to join?').first()).toBeVisible();
+    await expect(page.getByText('لأتعلم مع المجتمع').first()).toBeVisible();
 
     // The profile page: the name is locked, the phone is there and can be changed.
     await gotoReady(page, '/en/account/profile');
@@ -63,7 +66,7 @@ test('my data shows the member record and the application; the profile holds the
     await gotoReady(page, '/en/account');
     await expect(page).toHaveURL(new RegExp('/en/account/profile$'));
     const tabs = page.getByRole('navigation', { name: 'Account menu' }).getByRole('link');
-    await expect(tabs).toHaveCount(4);
+    await expect(tabs).toHaveCount(3);
     await expect(tabs.first()).toHaveText('My profile');
   } finally {
     await sql(`delete from public.membership_applications where user_id = $1`, [who.id]);
