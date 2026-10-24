@@ -134,7 +134,7 @@ membership shows its real status, never "active".
 | Action | Who | Needs | Effect | E-mail |
 | ------ | --- | ----- | ------ | ------ |
 | Ask to leave | the member | confirmation dialog, optional reason and preferred last day | creates a **pending leave request**; nothing changes yet | received (member) and a notice to leadership |
-| Approve / decline a leave request | `members.manage` (system administrator, community leader, and the vice leader role if the owner adds it, Q-L7) | one click; approving can set the last day | approve: `ended` / `left`, positions end, hidden from directory; decline: member stays active | approved / declined (plain, no message) |
+| Approve / decline a leave request | `members.manage` (system administrator, community leader; no vice role, Q-L7 closed) | one click; approving can set the last day | approve: `ended` / `left`, positions end, hidden from directory; decline: member stays active | approved / declined (plain, no message) |
 | End membership (terminate) | `members.manage` | reason (internal) and optional message to the member | `ended` / `terminated`, positions end | yes, with the optional message |
 | Suspend / reinstate | `members.manage` | reason; optional end date of the suspension | `suspended` ↔ `active`; positions are kept but inactive | yes |
 | Renew | `members.manage` | new end date | `expired` or `active` → `active` with new `term_ends_at` | yes |
@@ -166,7 +166,7 @@ explanation.
 | `membership.review` (exists) | system admin, community leader | decisions, info requests, bulk decisions |
 | `members.manage` (exists) | system admin, community leader | renew, suspend, end, resend activation, bulk member actions |
 | `users.block` **new** | system admin, community leader | block / unblock any account |
-| `members.manage` (leave requests) | system admin, community leader (and the vice leader if added, Q-L7) | approve or decline leave requests |
+| `members.manage` (leave requests) | system admin, community leader (no vice role, Q-L7 closed) | approve or decline leave requests |
 | `members.edit_own_name` (Sprint 17) | system admin, community leader, founders | unchanged |
 
 ## 7. E-mails (new templates marked)

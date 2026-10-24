@@ -80,7 +80,7 @@ _(filled as they happen)_
 | Q-L4 | e-mail verified after acceptance only; the review step shows the address large with "not my e-mail" |
 | Q-L5 | rejected applicants may apply again; the reviewer sees the earlier application |
 | Q-L6 | suspended members keep certificates and past registrations |
-| Q-L7 | no vice-leader role added |
+| Q-L7 | no vice-leader role added — **closed by the owner (2026-10-24): no vice role, nothing to build** |
 | Q-L8 | 7 days |
 | Q-L9 | best score when the cycle has a rubric, otherwise order of submission; offered freed place is held for 24 hours before the next promotion (see tension 1) |
 | Q-L10 | name, member number, status and term end |
@@ -149,7 +149,7 @@ The full, prioritised list with the Sprint 19 plan is in [NEXT-STEPS.md](./NEXT-
 - **Tests**: no new Playwright journeys (applicant, reviewer, leadership, member, notices) and no lifecycle end-to-end
   test; no pgTAP for migrations `…1200` and `…1300`; 100 visual tests fail because the baselines were already stale.
 - **Quality sweep**: no systematic AR/EN × dark/light × 360 px comparison, no axe run and no keyboard-only run on the new screens.
-- **Open owner decisions**: the password policy (design says 10 characters and no common passwords), the vice-leader role (Q-L7), deleting `temp.txt` and rotating its keys.
+- **Open owner decisions**: the password policy (design says 10 characters and no common passwords; recommendation: keep today's rule) and deleting `temp.txt` and rotating its keys. Q-L7 is closed: no vice-leader role.
 - **Clean-up**: `WelcomeTour.tsx` is unused; `sdc-mark.svg` is a 1.1 MB image wrapped in an SVG (a true vector would be lighter);
   `ResponsiveTables` labels cells after hydration; the seeds are local-only.
 - **Release**: the branch has 165 commits and has never been pushed or merged (owner rule); merging needs the baseline

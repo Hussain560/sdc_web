@@ -16,6 +16,8 @@ const publicRoutes = [
 ];
 
 async function scan(page: import('@playwright/test').Page, route: string, lang: 'ar' | 'en') {
+  // Entrance animations (staggered fades) would be measured half-way: scan the settled page.
+  await page.emulateMedia({ reducedMotion: 'reduce' });
   await gotoReady(page, lang === 'en' ? `/en${route}` : route);
   await page.waitForTimeout(600);
   const result = await new AxeBuilder({ page })
@@ -29,7 +31,7 @@ async function scan(page: import('@playwright/test').Page, route: string, lang: 
     );
 }
 
-test.describe.configure({ mode: 'serial' });
+test.describe.configure({ mode: 'default' });
 
 test.beforeAll(async () => {
   await sql(`delete from public.membership_applications`);

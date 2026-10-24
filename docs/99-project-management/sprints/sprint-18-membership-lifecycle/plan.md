@@ -228,7 +228,7 @@ These were not in the first plan; they came from the owner's reviews of the runn
 - The **1-hour recovery link** as the activation link is replaced by the 7-day token (X3).
 - **Password policy**: the activation page shows the rule the system enforces (8+ characters with upper, lower, number, symbol). The design shows "10 characters, a letter and a number, not a common password". The rule was not changed (it also lives in the auth settings): **owner decision pending**.
 - **Suspension ends positions** instead of pausing them (D3 in the log) — unchanged from the first run.
-- Not built and still suggested: two-reviewer rule, interview state, editable decision e-mail texts, QR check-in at events, appeal link, a vice-leader role (Q-L7).
+- Not built and still suggested: two-reviewer rule, interview state, editable decision e-mail texts, QR check-in at events, appeal link. (A vice-leader role was decided against, Q-L7.)
 
 ## Added from the suggestions (decided)
 
@@ -265,7 +265,7 @@ Activation reminders and the onboarding screen (ACC-009), the reviewer scoring r
 | Q-L3 | Grace period after expiry before hiding the member from the directory? | None: hidden on the day of expiry, restored on renewal |
 | Q-L4 | Verify the applicant's e-mail before the application counts (a confirmation link) or after acceptance only? | After acceptance (the activation link proves it) |
 | Q-L5 | Can a rejected applicant apply again in the next cycle? | Yes; the reviewer sees the earlier application |
-| Q-L7 | There is no "vice leader" role today. Add a role (for example `community_vice`) that holds `members.manage` and `membership.review`, so the vice can decide leave requests and applications? | Not added: only the system administrator and the community leader decide; the vice role is a later change |
+| Q-L7 | There is no "vice leader" role today. Add a role (for example `community_vice`) that holds `members.manage` and `membership.review`, so the vice can decide leave requests and applications? | **Closed (owner, 2026-10-24): no vice role.** Only the system administrator and the community leader decide |
 | Q-L8 | How many days does an accepted person have to activate before the place is offered to the waitlist? | 7 days (the activation link is valid for 7 days) |
 | Q-L9 | Who is offered a freed place: the next in order of submission, or the best score? | Best score when the cycle has a rubric, otherwise order of submission |
 | Q-L10 | Does the QR verification page show the member's name, or only the member number and the status? | Name, member number, status and term end |

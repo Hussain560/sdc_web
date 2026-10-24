@@ -131,11 +131,7 @@ export function MembershipCard({
         <div className="min-w-0">
           <p className="text-2xl font-extrabold leading-tight">{nameMain}</p>
           {nameOther && (
-            <p
-              dir={ar ? 'ltr' : 'rtl'}
-              className="mt-0.5 text-sm opacity-80"
-              style={{ textAlign: 'center' }}
-            >
+            <p dir={ar ? 'ltr' : 'rtl'} className="mt-0.5 text-sm" style={{ textAlign: 'center' }}>
               {nameOther}
             </p>
           )}
@@ -156,7 +152,7 @@ export function MembershipCard({
             {L('حتى', 'Until')} {data.termEndsAt ? formatDate(data.termEndsAt, lang) : '—'}
           </span>
         </div>
-        <p className="mt-auto pt-4 text-sm opacity-80">
+        <p className="mt-auto pt-4 text-sm">
           {L(
             'ارفع سطوع الشاشة عند المسح. تعمل البطاقة دون اتصال بعد حفظها.',
             'Raise the screen brightness when scanning. The card works offline once saved.',

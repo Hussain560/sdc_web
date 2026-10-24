@@ -55,7 +55,7 @@ What stops us from calling it closed is **proof and polish**, not missing featur
    review page; check the new dialogs (focus, Escape, labels).
 7. **Systematic visual comparison** with the boards: 1440 / 390 / 360 px × AR/EN × light/dark, listed per screen.
 8. **Owner decisions**: password policy (design: 10 characters, a letter and a number, not a common password; today: 8
-   with four character classes, also set in the auth settings); the vice-leader role (Q-L7); whether the activation badge
+   with four character classes, also set in the auth settings); whether the activation badge
    should show the cycle name and "valid until" like the design.
 9. **The activation page's other states** from the design ("expired link", "new link sent" with a resend countdown):
    the expired page works and sends a new link, but it is not styled as the board.
@@ -82,7 +82,7 @@ What stops us from calling it closed is **proof and polish**, not missing featur
 | Lifecycle end-to-end test and the per-role journeys (applicant, reviewer, leadership, member, notices) | 8 |
 | pgTAP for `…1200` and `…1300`; run and fix the edited specs | 2 |
 | Accessibility sweep and the systematic visual comparison, with fixes | 5 |
-| Clean-up (unused tour, real vector logo, `temp.txt`) and the owner's decisions (password policy, Q-L7) | 2 |
+| Clean-up (unused tour, real vector logo, `temp.txt`) and the owner's decisions (password policy) | 2 |
 
 Then merge `feat/sprint-18-membership-lifecycle` (165 commits; the owner decides when, nothing is pushed), run the
 hosted checks of item 10 on the first deploy and watch the first daily job.

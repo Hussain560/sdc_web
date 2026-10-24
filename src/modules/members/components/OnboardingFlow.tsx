@@ -540,6 +540,7 @@ export function OnboardingFlow(p: OnboardingProps) {
     <div className="min-h-dvh bg-canvas lg:grid lg:grid-cols-[45%_1fr] lg:gap-4 lg:p-4">
       <aside
         aria-hidden="true"
+        inert
         className="motif-dots relative hidden overflow-hidden rounded-shape-2xl bg-brand text-on-brand lg:sticky lg:top-4 lg:flex lg:h-[calc(100dvh-2rem)] lg:flex-col lg:justify-between lg:self-start lg:p-10"
       >
         <div className="flex items-center justify-between">
