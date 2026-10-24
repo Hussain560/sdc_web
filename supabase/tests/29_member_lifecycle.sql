@@ -137,7 +137,7 @@ select is((public.block_accounts(array['00000000-0000-0000-0000-00000000a2a8', '
 select is((public.block_accounts(array['00000000-0000-0000-0000-00000000a2a8']::uuid[], 'again'))->0->>'code', 'INVALID_TRANSITION', 'already blocked');
 reset role;
 select ok((select blocked_at from public.profiles where id = '00000000-0000-0000-0000-00000000a2a8') is not null, 'the profile is blocked');
-select ok((select banned_until from auth.users where id = '00000000-0000-0000-0000-00000000a2a8') > now() + interval '100 years', 'the auth user is banned');
+select ok((select banned_until from auth.users where id = '00000000-0000-0000-0000-00000000a2a8') between now() + interval '99 years' and now() + interval '101 years', 'the auth user is banned for a long finite time (an infinite ban makes the auth service fail)');
 select is((select card_token from public.members where id = '00000000-0000-0000-0000-00000000b2a7'), null, 'a blocked member card is revoked');
 set local role authenticated;
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-00000000a2a8","role":"authenticated"}', true);

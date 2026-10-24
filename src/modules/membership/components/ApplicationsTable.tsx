@@ -7,7 +7,6 @@ import { BulkBar } from '@/components/patterns/BulkBar';
 import { ResultsDialog } from '@/components/patterns/ResultsDialog';
 import { useLanguage } from '@/context/LanguageContext';
 import { Link, useRouter } from '@/i18n/navigation';
-import { formatDate } from '@/lib/format';
 import { membershipMessage } from '../messages';
 import { decideApplications, releaseDecisionMails } from '../review-actions';
 import type { ReviewApplication } from '../review-queries';
@@ -141,9 +140,6 @@ export function ApplicationsTable({
     reject: ar ? 'رفض الطلبات المحدّدة' : 'Reject the selected applications',
     waitlist: ar ? 'نقل المحدّدين إلى الانتظار' : 'Move the selected to the waiting list',
   };
-  const chosen = [...selected].map(nameOf);
-  const shown = chosen.slice(0, 5).join(ar ? '، ' : ', ');
-  const rest = chosen.length - 5;
 
   const statusBadge = (r: ReviewApplication) => {
     const st = APPLICATION_STATUS_LABEL[r.status];

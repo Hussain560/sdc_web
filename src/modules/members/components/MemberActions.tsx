@@ -43,7 +43,6 @@ export function MemberActions({
   claimEmail,
   canManage,
   canBlock = false,
-  canCreate = false,
   compact = false,
 }: {
   subject: MemberActionSubject;
@@ -51,7 +50,6 @@ export function MemberActions({
   claimEmail: string | null;
   canManage: boolean;
   canBlock?: boolean;
-  canCreate?: boolean;
   /** Only the claim invite (used in the list for a record with no account). */
   compact?: boolean;
 }) {

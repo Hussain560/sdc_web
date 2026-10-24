@@ -129,7 +129,6 @@ export default async function MemberAdminPage({
 
   const canManage = can(access, 'members.manage');
   const canBlock = can(access, 'users.block');
-  const canCreate = can(access, 'members.create');
   const canAssign = can(access, 'roles.assign');
   const isAdmin = access.positions.some((p) => p.role === 'system_admin');
   const [reference, committees, roles, labels, skillCatalog] = await Promise.all([
@@ -350,7 +349,6 @@ export default async function MemberAdminPage({
             claimEmail={null}
             canManage={canManage}
             canBlock={canBlock}
-            canCreate={canCreate}
           />
         </div>
       </header>
