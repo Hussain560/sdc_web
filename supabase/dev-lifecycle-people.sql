@@ -48,7 +48,7 @@ where p.email = 'dev.leaving@example.test'
 -- Blocked account: profile flag + the auth ban (what block_accounts does).
 update public.profiles set blocked_at = now() - interval '1 day', blocked_reason = 'INTERNAL: spam reports'
 where email = 'dev.blocked@example.test';
-update auth.users set banned_until = 'infinity' where email = 'dev.blocked@example.test';
+update auth.users set banned_until = now() + interval '100 years' where email = 'dev.blocked@example.test';
 
 -- Known tracking links: /join/status/<token> with token = sha256("dev-track-<n>") in hex (see docs guide) for every seeded application.
 update public.membership_applications
